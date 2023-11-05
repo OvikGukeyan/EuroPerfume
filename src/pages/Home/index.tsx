@@ -1,9 +1,10 @@
 import React from 'react';
-import { Carousel } from '../../components';
+import styles from './Home.module.scss'
+import { Carousel, Items } from '../../components';
 
 const Home: React.FC = () => {
   return (
-    <div>
+    <div className={styles.home_wrapper}>
       <Carousel>
         <div className='first'>
           <img src="./assets/slide1.webp" alt="" />
@@ -17,6 +18,8 @@ const Home: React.FC = () => {
 
         </div>
       </Carousel>
+
+      <Items/>
     </div>
   )
 }
