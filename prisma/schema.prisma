@@ -14,8 +14,14 @@ model User {
     fullName String
     email    String @unique
     password String
+    role UserRole @default(USER)
+    verified DateTime
 
     cart Cart?
+
+    provider String?
+    providerId String?
+    
 
     verificationCode VerificationCode?
 
@@ -37,11 +43,10 @@ model Product {
     name     String
     imageUrl String
 
-    category   Category @relation(fields: [categoryId], references: [id])
     categoryId Int
+    category   Category @relation(fields: [categoryId], references: [id])
 
     ingredients Ingredient[]
-
     items ProductItem[]
 
     createdAt DateTime @default(now())
@@ -147,10 +152,17 @@ model VerificationCode {
 
     createdAt DateTime @default(now())
 
+
+    @@unique([userId, code])
 }
 
 enum OrderStatus {
     PENDING
     SUCCEEDED
     CENCELLED
+}
+
+enum UserRole {
+    USER
+    ADMIN
 }
