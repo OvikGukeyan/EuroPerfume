@@ -1,6 +1,7 @@
 "use client"
 import React, { useState } from 'react'
 import { FilterCheckbox, FilterCheckboxProps } from './filter-checkbox';
+import { Skeleton } from '../ui/skeleton';
 
 type Item = FilterCheckboxProps;
 
@@ -37,6 +38,15 @@ export const CheckboxFiltersGroup: React.FC<Props> = (
 
     const onChangeSearchInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchValue(event.target.value)
+    }
+
+    if (loading) {
+        return <div className={className}>
+            <p className='font-bold mb-3'>{title}</p>
+            {...Array(limit).fill(0).map((_, index) =>
+                <Skeleton key={index} className='h-6 mb-6 rounded-[8px]' />
+            )}
+        </div>
     }
 
     const list = showAll ? items.filter(item => item.text.toLowerCase().includes(searchValue.toLowerCase())) : defaultItems.slice(0, limit)

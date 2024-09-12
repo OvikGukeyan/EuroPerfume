@@ -1,9 +1,15 @@
+"use client"
+
 import { cn } from '@/lib/utils'
-import React from 'react'
+import React, { useState } from 'react'
 import { Title, FilterCheckbox, CheckboxFiltersGroup } from './'
 import { Input, RangeSlider } from '../ui'
+import { useFilterIngredients } from '@/hooks/useFilterIngredients'
 
 export const Filters = () => {
+  const {ingredients, loading} = useFilterIngredients();
+  const items = ingredients.map(item => ({value: String(item.id), text: item.name}))
+
   return (
     <div className={cn('')}>
       <Title text='Filters' className='mb-5 font-bold' />
@@ -42,28 +48,9 @@ export const Filters = () => {
         title='Ingredients'
         className='mt-50'
         limit={6}
-        defaultItems={[
-          { text: 'Chese sous', value: '1' },
-          { text: 'Pepperoni', value: '2' },
-          { text: 'Mushrooms', value: '3' },
-          { text: 'Olives', value: '4' },
-          { text: 'Green Peppers', value: '5' },
-          { text: 'Onions', value: '6' }
-        ]}
-        items={[
-          { text: 'Chese sous', value: '1' },
-          { text: 'Pepperoni', value: '2' },
-          { text: 'Mushrooms', value: '3' },
-          { text: 'Olives', value: '4' },
-          { text: 'Green Peppers', value: '5' },
-          { text: 'Onions', value: '6' },
-          { text: 'Bacon', value: '7' },
-          { text: 'Tomatoes', value: '8' },
-          { text: 'Pineapple', value: '9' },
-          { text: 'Ham', value: '10' },
-          { text: 'Spinach', value: '11' },
-          { text: 'Jalapenos', value: '12' }
-        ]}
+        defaultItems={items.slice(0, 6)}
+        items={items}
+        loading={loading}
       />
     </div>
   )
