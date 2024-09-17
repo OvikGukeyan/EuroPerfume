@@ -8,14 +8,15 @@ type Item = FilterCheckboxProps;
 interface Props {
     title: string;
     items: Item[];
-    defaultItems: Item[];
+    defaultItems?: Item[];
     limit?: number;
     searchInputPlaceholder?: string;
     className?: string;
-    selectedIds?: Set<string>;
-    onClickCheckbox?: (value: string) => void;
+    selected?: Set<string>;
+    onClickCheckbox?: (id: string) => void;
     loading?: boolean;
-    name?: string;
+    name: string;
+    
 
 }
 
@@ -27,7 +28,7 @@ export const CheckboxFiltersGroup: React.FC<Props> = (
         limit = 5,
         searchInputPlaceholder = 'Search...',
         className,
-        selectedIds,
+        selected,
         onClickCheckbox,
         loading,
         name,
@@ -44,12 +45,13 @@ export const CheckboxFiltersGroup: React.FC<Props> = (
         return <div className={className}>
             <p className='font-bold mb-3'>{title}</p>
             {...Array(limit).fill(0).map((_, index) =>
-                <Skeleton key={index} className='h-6 mb-6 rounded-[8px]' />
+                <Skeleton key={index} className='h-6 mb-5 rounded-[8px]' />
             )}
+                <Skeleton className='w-28 h-6 mb-6 rounded-[8px]' />
         </div>
     }
 
-    const list = showAll ? items.filter(item => item.text.toLowerCase().includes(searchValue.toLowerCase())) : defaultItems.slice(0, limit)
+    const list = showAll ? items.filter(item => item.text.toLowerCase().includes(searchValue.toLowerCase())) : (defaultItems || items).slice(0, limit)
 
     return (
         <div className={className}>
@@ -57,7 +59,7 @@ export const CheckboxFiltersGroup: React.FC<Props> = (
 
             {showAll &&
                 <div className='mb-5'>
-                    <input value={searchValue} onChange={e => onChangeSearchInput(e)} placeholder={searchInputPlaceholder} className='bg-gray-50 border-none' />
+                    <input value={searchValue} onChange={e => onChangeSearchInput(e)} placeholder={searchInputPlaceholder} className='bg-gray-50 border-none pl-2 focus:outline-none' />
                 </div>
             }
 
@@ -65,7 +67,7 @@ export const CheckboxFiltersGroup: React.FC<Props> = (
                 {list.map((item, index) => (
                     <FilterCheckbox
                         onCheckedChange={() => onClickCheckbox?.(item.value)}
-                        checked={selectedIds?.has(item.value)}
+                        checked={selected?.has(item.value)}
                         key={String(item.value)}
                         value={item.value}
                         text={item.text}
