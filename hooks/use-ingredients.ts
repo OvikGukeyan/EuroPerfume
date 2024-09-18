@@ -1,21 +1,14 @@
-import { Api } from '@/services/api-client';
-import { Ingredient } from '@prisma/client';
-import { serverHooks } from 'next/dist/server/app-render/entry-base';
-import { useEffect, useState } from 'react';
-import { useSet } from 'react-use';
+import { useEffect, useState } from "react";
+import { Ingredient } from "@prisma/client";
+import { Api } from "@/services/api-client";
 
 interface ReturnProps {
     ingredients: Ingredient[]
     loading: boolean
-    selectedIngredients: Set<string>
-    onAddId: (id: string) => void
 }
-export const useFilterIngredients = (): ReturnProps => {
+export const useIngredients = (): ReturnProps => {
     const [ingredients, setIngredients] = useState<Ingredient[]>([]);
     const [loading, setLoading] = useState(false);
-
-    const [selectedIds, { toggle }] = useSet(new Set<string>([]));
-
 
     useEffect(() => {
         async function fetchIngredients() {
@@ -33,5 +26,6 @@ export const useFilterIngredients = (): ReturnProps => {
 
         fetchIngredients();
     }, [])
-    return { ingredients, loading, onAddId: toggle, selectedIngredients: selectedIds }
-} 
+
+return {ingredients, loading}
+}
