@@ -19,95 +19,96 @@ export const categories = [
   export const ingredients = [
     {
       name: 'Cheese Stuffed Crust',
-      price: 179,
+      price: 2.50,
       imageUrl:
         'https://cdn.dodostatic.net/static/Img/Ingredients/99f5cb91225b4875bd06a26d2e842106.png',
     },
     {
       name: 'Creamy Mozzarella',
-      price: 79,
+      price: 1.20,
       imageUrl:
         'https://cdn.dodostatic.net/static/Img/Ingredients/cdea869ef287426386ed634e6099a5ba.png',
     },
     {
       name: 'Cheddar and Parmesan Cheeses',
-      price: 79,
+      price: 1.80,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA69C1FE796',
     },
     {
       name: 'Spicy Jalapeño',
-      price: 59,
+      price: 0.90,
       imageUrl:
         'https://cdn.dodostatic.net/static/Img/Ingredients/11ee95b6bfdf98fb88a113db92d7b3df.png',
     },
     {
       name: 'Tender Chicken',
-      price: 79,
+      price: 2.00,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A39D824A82E11E9AFA5B328D35A',
     },
     {
       name: 'Mushrooms',
-      price: 59,
+      price: 0.70,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA67259A324',
     },
     {
       name: 'Ham',
-      price: 79,
+      price: 1.70,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A39D824A82E11E9AFA61B9A8D61',
     },
     {
       name: 'Spicy Pepperoni',
-      price: 79,
+      price: 1.70,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA6258199C3',
     },
     {
       name: 'Spicy Chorizo',
-      price: 79,
+      price: 1.70,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA62D5D6027',
     },
     {
       name: 'Pickled Cucumbers',
-      price: 59,
+      price: 0.80,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A21DA51A81211E9EA89958D782B',
     },
     {
       name: 'Fresh Tomatoes',
-      price: 59,
+      price: 0.70,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A39D824A82E11E9AFA7AC1A1D67',
     },
     {
       name: 'Red Onion',
-      price: 59,
+      price: 0.60,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA60AE6464C',
     },
     {
       name: 'Juicy Pineapples',
-      price: 59,
+      price: 0.90,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A21DA51A81211E9AFA6795BA2A0',
     },
     {
       name: 'Italian Herbs',
-      price: 39,
+      price: 0.50,
       imageUrl:
         'https://cdn.dodostatic.net/static/Img/Ingredients/370dac9ed21e4bffaf9bc2618d258734.png',
     },
     {
       name: 'Sweet Pepper',
-      price: 59,
+      price: 0.80,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA63F774C1B',
     },
     {
       name: 'Feta Cubes',
-      price: 79,
+      price: 1.70,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A39D824A82E11E9AFA6B0FFC349',
     },
     {
       name: 'Meatballs',
-      price: 79,
+      price: 2.00,
       imageUrl:
         'https://cdn.dodostatic.net/static/Img/Ingredients/b2f3a5d5afe44516a93cfc0d2ee60088.png',
     },
   ].map((obj, index) => ({ id: index + 1, ...obj }));
+
   
   export const products = [
     {
