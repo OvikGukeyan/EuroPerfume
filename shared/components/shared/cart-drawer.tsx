@@ -1,3 +1,5 @@
+'use client'
+
 import React, { FC } from 'react'
 import {
     Sheet,
@@ -11,6 +13,7 @@ import {
 import Link from 'next/link';
 import { Button } from '../ui';
 import { ArrowRight } from 'lucide-react';
+import { CartDrawerItem } from '.';
 interface Props {
     className?: string
 }
@@ -26,6 +29,15 @@ export const CartDrawer: FC<React.PropsWithChildren<Props>> = ({ children, class
                         There is <span className='font-bold'>{3}</span> items in the cart
                     </SheetTitle>
                 </SheetHeader>
+
+                <div className='-mx-6 mt-5 overflow-auto scrollbar flex-1'>
+                    <div className='mb-2'>
+                        <CartDrawerItem id={0} details={''} imageUrl={''} name={''} price={0} quantity={0} />
+                    </div>
+                    <div className='mb-2'>
+                        <CartDrawerItem id={0} details={''} imageUrl={''} name={''} price={0} quantity={0} />
+                    </div>
+                </div>
 
                 <SheetFooter className='-mx-6 bg-white p-8'>
                     <div className='w-full'>

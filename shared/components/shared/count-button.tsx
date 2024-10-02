@@ -1,6 +1,6 @@
 import { cn } from '@/shared/lib/utils';
-import React from 'react';
-import { CountIconButton } from './count-icon-button';
+import React, { FC } from 'react';
+import { CountIconButton } from '.';
 
 export interface CountButtonProps {
   value?: number;
@@ -9,7 +9,7 @@ export interface CountButtonProps {
   onClick?: (type: 'plus' | 'minus') => void;
 }
 
-export const CountButton: React.FC<CountButtonProps> = ({
+export const CountButton: FC<CountButtonProps> = ({
   className,
   onClick,
   value = 1,
