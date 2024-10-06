@@ -16,9 +16,9 @@ export const PizzaImage: FC<Props> = ({ className, imageUrl, size }) => {
                 src={imageUrl}
                 alt='pizza'
                 className={cn('relative left-2 top-2 tranzition-all z-10 duration-300', {
-                    'w-[300px] h-[300px]': size === 20,
-                    'w-[400px] h-[400px]': size === 30,
-                    'w-[500px] h-[500px]': size === 40,
+                    'w-[300px] h-auto': size === 20,
+                    'w-[400px] h-auto': size === 30,
+                    'w-[500px] h-auto': size === 40,
                 })}
             />
 
