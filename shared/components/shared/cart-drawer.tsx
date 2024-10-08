@@ -34,7 +34,7 @@ export const CartDrawer: FC<React.PropsWithChildren<Props>> = ({ children, class
             <SheetContent className="flex flex-col justify-between pb-0 bg-[#F4F1EE]">
                 <SheetHeader>
                     <SheetTitle>
-                        There is <span className='font-bold'>{3}</span> items in the cart
+                        There is <span className='font-bold'>{items.length}</span> items in the cart
                     </SheetTitle>
                 </SheetHeader>
 
