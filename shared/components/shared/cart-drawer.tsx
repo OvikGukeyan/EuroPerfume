@@ -21,11 +21,16 @@ interface Props {
     className?: string
 }
 export const CartDrawer: FC<React.PropsWithChildren<Props>> = ({ children, className }) => {
-    const [totalAmount, fetchCartItems, items] = useCartStore((state) => [state.totalAmount, state.fetchCartItems, state.items]);
-    
+    const [totalAmount, fetchCartItems, items, updateItemQuantity, removeCartItem] = useCartStore((state) => [state.totalAmount, state.fetchCartItems, state.items, state.updateItemQuantity, state.removeCartItem]);
+
     useEffect(() => {
         fetchCartItems()
     }, [])
+
+    const onClickCountButton = (id: number, quantity: number, type: 'plus' | 'minus') => {
+        const newQuantity = type === 'plus' ? quantity + 1 : quantity - 1;
+        updateItemQuantity(id, newQuantity)
+    }
     return (
         <Sheet>
             <SheetTrigger asChild>
@@ -41,13 +46,16 @@ export const CartDrawer: FC<React.PropsWithChildren<Props>> = ({ children, class
                 <div className='-mx-6 mt-5 overflow-auto scrollbar flex-1'>
                     {items.map((item) => (
                         <div key={item.id} className='mb-2'>
-                            <CartDrawerItem 
-                            id={item.id} 
-                            details={getCartItemDetails(item.pizzaType as PizzaType, item.pizzaSize as PizzaSize, item.ingredients)} 
-                            imageUrl={item.imageUrl} 
-                            name={item.name} 
-                            price={item.price} 
-                            quantity={item.quantity} />
+                            <CartDrawerItem
+                                id={item.id}
+                                details={getCartItemDetails(item.pizzaType as PizzaType, item.pizzaSize as PizzaSize, item.ingredients)}
+                                imageUrl={item.imageUrl}
+                                name={item.name}
+                                price={item.price}
+                                quantity={item.quantity}
+                                onClickCountButton={(type) => onClickCountButton(item.id, item.quantity, type)}
+                                onClickRemove={() => removeCartItem(item.id)}
+                            />
                         </div>
                     ))}
 
