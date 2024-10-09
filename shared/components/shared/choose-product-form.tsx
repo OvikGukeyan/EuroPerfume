@@ -8,14 +8,14 @@ import Image from 'next/image'
 interface Props {
     imageUrl: string;
     name: string;
-    onClickAdd?: VoidFunction;
+    onSubmit?: VoidFunction;
     className?: string;
 
 }
 export const ChooseProductForm: FC<Props> = ({
     name,
     imageUrl,
-    onClickAdd,
+    onSubmit,
     className,
 }) => {
     const TextDetaills = 'Text 20 text'
@@ -36,7 +36,7 @@ export const ChooseProductForm: FC<Props> = ({
                 <Title text={name} size="md" className='font-extrabold mb-1' />
 
                 <p className='text-gray-400'> {TextDetaills}</p>
-                <Button className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
+                <Button onClick={onSubmit} className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
                     Add too cart for {Price} €
                 </Button>
                 <GroupVariants items={[]} />

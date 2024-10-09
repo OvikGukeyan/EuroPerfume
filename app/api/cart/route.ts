@@ -1,4 +1,7 @@
 import { prisma } from "@/prisma/prisma-client";
+import { findOrCreateCart } from "@/shared/lib/find-or-create-cart";
+import { updateCartTotalAmount } from "@/shared/lib/update-cart-total-amount";
+import { CreateCartItemValues } from "@/shared/services/dto/cart.dto";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -7,16 +10,12 @@ export async function GET(req: NextRequest) {
         const token = req.cookies.get('cartToken')?.value;
 
         if (!token) {
-            NextResponse.json({totalAmount: 0, items: [] })
+            NextResponse.json({ totalAmount: 0, items: [] })
         }
 
         const userCart = await prisma.cart.findFirst({
             where: {
-                OR: [
-                    {
-                        token
-                    }
-                ]
+                token
             },
             include: {
                 items: {
@@ -36,6 +35,69 @@ export async function GET(req: NextRequest) {
         })
         return NextResponse.json(userCart)
     } catch (error) {
-        console.log(error)
+        console.log('[CART_GET] Server error', error)
+        return NextResponse.json({ message: 'Failed to get cart' }, { status: 500 })
     }
 }
+
+export async function POST(req: NextRequest) {
+    try {
+        let token = req.cookies.get('cartToken')?.value;
+
+        if (!token) {
+            token = crypto.randomUUID()
+        }
+
+        const userCart = await findOrCreateCart(token);
+
+        const data = (await req.json()) as CreateCartItemValues;
+
+        const findCartItem = await prisma.cartItem.findFirst({
+            where: {
+                cartId: userCart.id,
+                productItemId: data.productItemId,
+                ingredients: { every: { id: { in: data.ingredients } } }
+
+            }
+        });
+
+        if (findCartItem) {
+            await prisma.cartItem.update({
+                where: {
+                    id: findCartItem.id
+                },
+                data: {
+                    quantity: findCartItem.quantity + 1
+                }
+            })
+            const updatedUserCart = await updateCartTotalAmount(token);
+            const resp = NextResponse.json(updatedUserCart);
+            resp.cookies.set('cartToken', token, {
+                maxAge: 60 * 60 * 24 * 7
+            })
+
+            return resp;
+
+        }
+
+        await prisma.cartItem.create({
+            data: {
+                cartId: userCart.id,
+                productItemId: data.productItemId,
+                quantity: 1,
+                ingredients: { connect: data.ingredients?.map((id) => ({ id })) }
+            }
+        })
+
+        const updatedUserCart = await updateCartTotalAmount(token);
+        const resp = NextResponse.json(updatedUserCart);
+        resp.cookies.set('cartToken', token, {
+            maxAge: 60 * 60 * 24 * 7
+        })
+
+        return resp;
+    } catch (error) {
+        console.log('[CART_POST] Server error', error)
+        return NextResponse.json({ message: 'Failed to add item to cart' }, { status: 500 })
+    }
+} 

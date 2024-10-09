@@ -1,4 +1,4 @@
-'use client'
+"use client"
 
 import { cn } from '@/shared/lib/utils';
 import React, { FC } from 'react'
@@ -9,13 +9,14 @@ import { PizzaSize, PizzaType, pizzaTypes } from '@/shared/constants/pizza';
 import { IngredientItem, PizzaImage } from '.';
 import { Ingredient, ProductItem } from '@prisma/client';
 import { getPizzaDetails, usePizzaOptions } from '@/shared/lib';
+import { CreateCartItemValues } from '@/shared/services/dto/cart.dto';
 
 interface Props {
     imageUrl: string;
     name: string;
     ingredients: Ingredient[];
     items: ProductItem[];
-    onClickAddCart?: VoidFunction;
+    onSubmit: (itemId: number, ingredients: number[]) => void;
     className?: string;
 
 }
@@ -24,22 +25,20 @@ export const ChoosePizzaForm: FC<Props> = ({
     items,
     imageUrl,
     ingredients,
-    onClickAddCart,
+    onSubmit,
     className,
 }) => {
     
-    const { size, type, setSize, setType, selectedIngredients, addIngredient, availableSizes } = usePizzaOptions( items);
+    const { size, type, setSize, setType, selectedIngredients, addIngredient, availableSizes, currentItemId } = usePizzaOptions(items);
 
 
     const { TextDetaills, totalPrice } = getPizzaDetails(size, type, items, ingredients, selectedIngredients);
 
     const handeleClickAdd = () => {
-        onClickAddCart?.();
-        console.log({
-            size,
-            type,
-            ingredients: selectedIngredients
-        })
+        if(currentItemId) {
+            onSubmit(currentItemId, Array.from(selectedIngredients));
+        };
+        
     };
 
 
