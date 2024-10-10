@@ -8,6 +8,8 @@ import Image from 'next/image'
 interface Props {
     imageUrl: string;
     name: string;
+    price: number;
+    loading: boolean;
     onSubmit?: VoidFunction;
     className?: string;
 
@@ -15,11 +17,11 @@ interface Props {
 export const ChooseProductForm: FC<Props> = ({
     name,
     imageUrl,
+    price,
+    loading,
     onSubmit,
     className,
 }) => {
-    const TextDetaills = 'Text 20 text'
-    const Price = '14'
     return (
         <div className={cn('flex flex-1', className)}>
             <div className={cn('flex items-center justify-center flex-1 relative w-full', className)}>
@@ -35,9 +37,8 @@ export const ChooseProductForm: FC<Props> = ({
             <div className='w-[490px] bg-[#f2f2f2] p-7'>
                 <Title text={name} size="md" className='font-extrabold mb-1' />
 
-                <p className='text-gray-400'> {TextDetaills}</p>
-                <Button onClick={onSubmit} className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
-                    Add too cart for {Price} €
+                <Button loading={loading} onClick={() => onSubmit?.()} className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
+                    Add too cart for {price} €
                 </Button>
                 <GroupVariants items={[]} />
             </div>

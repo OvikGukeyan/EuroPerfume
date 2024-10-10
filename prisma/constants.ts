@@ -36,7 +36,7 @@ export const categories = [
     },
     {
       name: 'Spicy Jalapeño',
-      price: 0.90,
+      price: 1.00,
       imageUrl:
         'https://cdn.dodostatic.net/static/Img/Ingredients/11ee95b6bfdf98fb88a113db92d7b3df.png',
     },
@@ -47,7 +47,7 @@ export const categories = [
     },
     {
       name: 'Mushrooms',
-      price: 0.70,
+      price: 1.00,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA67259A324',
     },
     {
@@ -67,33 +67,33 @@ export const categories = [
     },
     {
       name: 'Pickled Cucumbers',
-      price: 0.80,
+      price: 1.80,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A21DA51A81211E9EA89958D782B',
     },
     {
       name: 'Fresh Tomatoes',
-      price: 0.70,
+      price: 1.70,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A39D824A82E11E9AFA7AC1A1D67',
     },
     {
       name: 'Red Onion',
-      price: 0.60,
+      price: 1.60,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA60AE6464C',
     },
     {
       name: 'Juicy Pineapples',
-      price: 0.90,
+      price: 1.90,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A21DA51A81211E9AFA6795BA2A0',
     },
     {
       name: 'Italian Herbs',
-      price: 0.50,
+      price: 1.50,
       imageUrl:
         'https://cdn.dodostatic.net/static/Img/Ingredients/370dac9ed21e4bffaf9bc2618d258734.png',
     },
     {
       name: 'Sweet Pepper',
-      price: 0.80,
+      price: 1.80,
       imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA63F774C1B',
     },
     {
