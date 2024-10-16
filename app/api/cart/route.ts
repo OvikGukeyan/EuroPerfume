@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
             where: {
                 cartId: userCart.id,
                 productItemId: data.productItemId,
-                ingredients: { every: { id: { in: data.ingredients } } }, 
+                ingredients: { every: { id: { in: data.ingredients } } },
             }
         });
 
@@ -69,24 +69,18 @@ export async function POST(req: NextRequest) {
                     quantity: findCartItem.quantity + 1
                 }
             })
-            const updatedUserCart = await updateCartTotalAmount(token);
-            const resp = NextResponse.json(updatedUserCart);
-            resp.cookies.set('cartToken', token, {
-                maxAge: 60 * 60 * 24 * 7
+        } else {
+            await prisma.cartItem.create({
+                data: {
+                    cartId: userCart.id,
+                    productItemId: data.productItemId,
+                    quantity: 1,
+                    ingredients: { connect: data.ingredients?.map((id) => ({ id })) }
+                }
             })
-
-            return resp;
-
         }
 
-        await prisma.cartItem.create({
-            data: {
-                cartId: userCart.id,
-                productItemId: data.productItemId,
-                quantity: 1,
-                ingredients: { connect: data.ingredients?.map((id) => ({ id })) }
-            }
-        })
+
 
         const updatedUserCart = await updateCartTotalAmount(token);
         const resp = NextResponse.json(updatedUserCart);

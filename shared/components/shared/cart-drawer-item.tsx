@@ -11,22 +11,24 @@ import { CreateCartItemValues } from '@/shared/services/dto/cart.dto';
 
 interface Props extends CartItemProps {
     onClickCountButton: (type: 'plus' | 'minus') => void;
-    onClickRemove: () => void
+    onClickRemove: () => void;
     className?: string;
 }
 export const CartDrawerItem: FC<Props> = ({
-    id,
     imageUrl,
     name,
     price,
     quantity,
     details,
+    disabled,
     onClickCountButton,
     onClickRemove,
     className,
 }) => {
+
+   
     return (
-        <div className={cn('flex bg-white p-5 gap-6', className)}>
+        <div className={cn('flex bg-white p-5 gap-6', { 'opacity-50 pointer-events-none': disabled} , className)}>
             <CartDetail.Image src={imageUrl} />
 
             <div className='flex-1'>
