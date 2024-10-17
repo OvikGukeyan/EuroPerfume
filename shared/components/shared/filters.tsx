@@ -69,7 +69,7 @@ export const Filters: FC<Props> = () => {
           />
           <Input
             type="number"
-            min={100}
+            min={0}
             max={50}
             placeholder="50"
             value={String(filters.prices.priceTo)}
