@@ -18,6 +18,7 @@ export default function CheckoutLayout({
             <Container>
                 <Header hasSearch={false} hasCart={false} className="border-b-gray-200" />
                 {children}
+                <h3>333</h3>
             </Container>
         </main>
     );

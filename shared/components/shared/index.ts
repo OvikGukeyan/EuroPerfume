@@ -22,6 +22,7 @@ export { CartDrawerItem } from './cart-drawer-item';
 export { CountButton } from './count-button';
 export { ProductForm } from './product-form';
 export { WhiteBlock } from './white-block';
+export {OrderDetails} from './order-details'
 export * from './modals';
 
 
