@@ -5,6 +5,9 @@ import { NextRequest, NextResponse } from "next/server";
 export async function PATCH(req: NextRequest, { params }: { params: { id: string } }) {
     try {
         const id = Number(params.id);
+        if (isNaN(id)) {
+            return NextResponse.json({ message: 'Invalid cart item ID' }, { status: 400 });
+        }
         const data = (await req.json()) as { quantity: number };
         const token = req.cookies.get('cartToken')?.value;
 
@@ -43,6 +46,9 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
     try {
         const id = Number(params.id);
+        if (isNaN(id)) {
+            return NextResponse.json({ message: 'Invalid cart item ID' }, { status: 400 });
+        }
         const token = req.cookies.get('cartToken')?.value;
 
         if (!token) {
