@@ -1,3 +1,4 @@
+import { CheckoutItem } from '@/shared/components/shared';
 export { Header } from './header';
 export { Container } from './container';
 export { Title } from './title';
@@ -22,7 +23,11 @@ export { CartDrawerItem } from './cart-drawer-item';
 export { CountButton } from './count-button';
 export { ProductForm } from './product-form';
 export { WhiteBlock } from './white-block';
-export {OrderDetails} from './order-details'
+export { OrderDetails } from './order-details';
+export { CheckoutItem } from './checkout-item';
+export {CheckoutItemSkeleton} from './checkout-item-skeleton';
+export {CheckoutSidebar} from './checkout-sidebar';
+
 export * from './modals';
 
 

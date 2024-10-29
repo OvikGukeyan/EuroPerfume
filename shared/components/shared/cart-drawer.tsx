@@ -15,18 +15,14 @@ import Link from 'next/link';
 import { Button } from '../ui';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { CartDrawerItem, Title } from '.';
-import { useCartStore } from '@/shared/store';
 import { getCartItemDetails } from '@/shared/lib';
 import { PizzaSize, PizzaType } from '@/shared/constants/pizza';
-interface Props {
-    className?: string
-}
-export const CartDrawer: FC<React.PropsWithChildren<Props>> = ({ children, className }) => {
-    const [totalAmount, fetchCartItems, items, updateItemQuantity, removeCartItem] = useCartStore((state) => [state.totalAmount, state.fetchCartItems, state.items, state.updateItemQuantity, state.removeCartItem]);
-    useEffect(() => {
-        fetchCartItems()
-    }, []);
+import { useCart } from '@/shared/hooks';
 
+export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
+    const {totalAmount, items, updateItemQuantity, removeCartItem, loading} = useCart();
+    const [redirecting, setRedirecting] = React.useState(false);
+    
     const onClickCountButton = (id: number, quantity: number, type: 'plus' | 'minus') => {
         const newQuantity = type === 'plus' ? quantity + 1 : quantity - 1;
         updateItemQuantity(id, newQuantity)
@@ -95,13 +91,13 @@ export const CartDrawer: FC<React.PropsWithChildren<Props>> = ({ children, class
                                 </div>
 
 
-                                <Link href="/cart">
+                                <Link href="/checkout">
                                     <Button
-                                        // onClick={() => setRedirecting(true)}
-                                        // loading={loading || redirecting}
+                                        onClick={() => setRedirecting(true)}
+                                        loading={loading || redirecting}
                                         type="submit"
                                         className="w-full h-12 text-base">
-                                        Оформить заказ
+                                        Checkout
                                         <ArrowRight className="w-5 ml-2" />
                                     </Button>
                                 </Link>

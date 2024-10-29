@@ -1,13 +1,24 @@
 'use client'
 
-import { Container, OrderDetails, Title, WhiteBlock } from "@/shared/components/shared"
-import { Button, Input, Textarea } from "@/shared/components/ui";
-import { useCartStore } from "@/shared/store";
-import { ArrowRight, Package, Percent, Trash2, Truck } from "lucide-react"
-import { useEffect } from "react";
+import { CheckoutItem, CheckoutSidebar, Container, OrderDetails, Title, WhiteBlock } from "@/shared/components/shared"
+import { Input, Textarea } from "@/shared/components/ui";
+import { PizzaSize, PizzaType } from "@/shared/constants/pizza";
+import { useCart } from "@/shared/hooks";
+import { getCartItemDetails } from "@/shared/lib";
+import { Trash2 } from "lucide-react";
+
+
+
 
 export default function Checkout() {
-    const [totalAmount, fetchCartItems, items, updateItemQuantity, removeCartItem, loading] = useCartStore((state) => [state.totalAmount, state.fetchCartItems, state.items, state.updateItemQuantity, state.removeCartItem, state.loading]);
+    const { totalAmount, items, updateItemQuantity, removeCartItem } = useCart()
+
+    const onClickCountButton = (id: number, quantity: number, type: 'plus' | 'minus') => {
+        const newQuantity = type === 'plus' ? quantity + 1 : quantity - 1;
+        updateItemQuantity(id, newQuantity)
+    }
+
+    
 
     return (
         <Container className="mt-10">
@@ -25,23 +36,27 @@ export default function Checkout() {
                                 </button>
                             )
                         }>
-                        {/* <div className="flex flex-col gap-5">
-  {loading
-    ? [...Array(3)].map((_, index) => <CartItemSkeleton key={index} />)
-    : items.map((item) => (
-        <CartItem
-          key={item.id}
-          name={item.name}
-          imageUrl={item.imageUrl}
-          price={item.price}
-          quantity={item.quantity}
-          onClickRemove={() => removeCartItem(item.id)}
-          onClickCountButton={(type) =>
-            onClickCountButton(item.id, item.quantity, type)
-          }
-        />
-      ))}
-</div> */}
+                        <div className="flex flex-col gap-5">
+                            <div className="flex flex-col gap-5">
+                                {
+                                    items.map((item) => (
+                                        <CheckoutItem
+                                            key={item.id}
+                                            id={item.id}
+                                            details={getCartItemDetails(item.pizzaType as PizzaType, item.pizzaSize as PizzaSize, item.ingredients)}
+                                            imageUrl={item.imageUrl}
+                                            name={item.name}
+                                            price={item.price}
+                                            quantity={item.quantity}
+                                            disabled={item.disabled}
+                                            onClickCountButton={(type) => onClickCountButton(item.id, item.quantity, type)}
+                                            onClickRemove={() => removeCartItem(item.id)}
+                                        />
+                                    ))
+                                }
+                            </div>
+
+                        </div>
 
                         {!totalAmount && <p className="text-center text-gray-400 p-10">The cart is empty</p>}
                     </WhiteBlock>
@@ -80,43 +95,9 @@ export default function Checkout() {
                 </div>
 
                 <div className="w-[450px]">
-                    <WhiteBlock className='p-6 sticky top-4'>
-                        <div className="flex flex-col gap-1">
-                            <span className="text-xl">Total price:</span>
-                            <span className="text-[34px] font-extrabold">55 €</span>
-                        </div>
-
-                        <OrderDetails title={
-                            <div className="flex items-center">
-                                <Package size={18} className="mr-2 text-gray-400" />
-                                Order price
-                            </div>
-
-                        }
-                            value="5" />
-
-                        <OrderDetails title={
-                            <div className="flex items-center">
-                                <Percent size={18} className="mr-2 text-gray-400" />
-                                Fees
-                            </div>
-                        } value="5" />
-
-                        <OrderDetails title={
-                            <div className="flex items-center">
-                                <Truck size={18} className="mr-2 text-gray-400" />
-                                Delivery
-                            </div>
-                        } value="5" />
-
-                        <Button
-                            type="submit"
-                            // disabled={!totalAmount || submitting}
-                            className="w-full h-14 rounded-2xl mt-6 text-base font-bold">
-                            Move to payment
-                            <ArrowRight className="w-5 ml-2" />
-                        </Button>
-                    </WhiteBlock>
+                    <CheckoutSidebar 
+                        totalAmount={totalAmount}
+                    />
 
 
                 </div>
