@@ -14,7 +14,7 @@ export default function Checkout() {
     const { totalAmount, items, updateItemQuantity, removeCartItem } = useCart()
 
     const form = useForm({
-        resolver: zodResolver(),
+        // resolver: zodResolver(),
         defaultValues: {
             email: '',
             firstName: '',
