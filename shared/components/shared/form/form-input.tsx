@@ -1,6 +1,7 @@
 import React, { FC } from 'react'
 import { ClearButton, ErrorText, RequiredSymbol } from '..';
 import { Input } from '../../ui';
+import { useFormContext } from 'react-hook-form';
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     name: string;
@@ -9,6 +10,13 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
     className?: string
 }
 export const FormInput: FC<Props> = ({ className, name, label, required, ...props }) => {
+    const {
+        register,
+        formState: { errors },
+        watch,
+        setValue
+    } = useFormContext();
+
     return (
         <div className={className}>
             {label && (

@@ -25,7 +25,7 @@ export { WhiteBlock } from './white-block';
 export { OrderDetails } from './order-details';
 export { CheckoutItem } from './checkout-item';
 export {CheckoutItemSkeleton} from './checkout-item-skeleton';
-export {CheckoutSidebar} from './checkout-sidebar';
+export {CheckoutSidebar} from './checkout/checkout-sidebar';
 export {RequiredSymbol} from './required-symbol';
 export {ErrorText} from './error-text';
 export {ClearButton} from './clear-button'

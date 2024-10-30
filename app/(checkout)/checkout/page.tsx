@@ -1,20 +1,17 @@
 'use client'
 
-import { CheckoutCart, CheckoutItem, CheckoutSidebar, Container, FormInput, Title, WhiteBlock } from "@/shared/components/shared"
-import { Input, Textarea } from "@/shared/components/ui";
-import { PizzaSize, PizzaType } from "@/shared/constants/pizza";
+import { CheckoutCart, CheckoutDeliveryForm, CheckoutPersonalForm, CheckoutSidebar, Container, Title } from "@/shared/components/shared"
 import { useCart } from "@/shared/hooks";
-import { getCartItemDetails } from "@/shared/lib";
-import { Check, Trash2 } from "lucide-react";
-import { useForm, SubmitHandler } from 'react-hook-form'
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { checkoutFormSchema, CheckoutFormValues } from "@/shared/components/shared/checkout/schemas/checkout-form-schema";
 
 
 export default function Checkout() {
     const { totalAmount, items, updateItemQuantity, removeCartItem } = useCart()
 
-    const form = useForm({
-        // resolver: zodResolver(),
+    const form = useForm<CheckoutFormValues>({
+        resolver: zodResolver(checkoutFormSchema),
         defaultValues: {
             email: '',
             firstName: '',
@@ -24,6 +21,11 @@ export default function Checkout() {
             comment: '',
         }
     })
+
+    const onSubmit = (data: CheckoutFormValues) => {
+
+        console.log(data)
+    }
 
 
     const onClickCountButton = (id: number, quantity: number, type: 'plus' | 'minus') => {
@@ -36,55 +38,31 @@ export default function Checkout() {
     return (
         <Container className="mt-10">
             <Title text="Checkout" size="xl" className="font-extrabold mb-8" />
-            <div className="flex gap-10">
-                <div className="flex flex-col gap-10 flex-1 mb-20">
+            <FormProvider {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)}>
+                    <div className="flex gap-10">
+                        <div className="flex flex-col gap-10 flex-1 mb-20">
 
-                    <CheckoutCart items={items} totalAmount={totalAmount} removeCartItem={removeCartItem} onClickCountButton={onClickCountButton} />
+                            <CheckoutCart items={items} totalAmount={totalAmount} removeCartItem={removeCartItem} onClickCountButton={onClickCountButton} />
 
-                    <WhiteBlock
-                        title="2. Персональная информация"
-                        // className={!totalAmount ? 'opacity-50 pointer-events-none' : ''}
-                        contentClassName="p-8">
-                        <div className="grid grid-cols-2 gap-5">
-                            <Input name="firstName" className="text-base" placeholder="Имя" />
-                            <Input name="lastName" className="text-base" placeholder="Фамилия" />
-                            <Input name="email" className="text-base" placeholder="E-Mail" />
-                            <FormInput name="phone" className="text-base" placeholder="Телефон" />
+                            <CheckoutPersonalForm totalAmount={totalAmount} />
+
+                            <CheckoutDeliveryForm totalAmount={totalAmount} />
                         </div>
-                    </WhiteBlock>
 
-                    <WhiteBlock
-                        className={!totalAmount ? 'opacity-50 pointer-events-none' : ''}
-                        title="3. Delivery information"
-                        contentClassName="p-8">
-                        <div className="flex flex-col gap-5">
-                            {/* <Controller
-                                control={form.control}
-                                name="address"
-                                render={({ field }) => <AdressInput onChange={field.onChange} />}
-                            /> */}
-
-                            <Textarea
-                                name="comment"
-                                className="text-base resize-none"
-                                placeholder="Description"
-                                rows={5}
-
+                        <div className="w-[450px]">
+                            <CheckoutSidebar
+                                totalAmount={totalAmount}
                             />
+
+
                         </div>
-                    </WhiteBlock>
-                </div>
-
-                <div className="w-[450px]">
-                    <CheckoutSidebar
-                        totalAmount={totalAmount}
-                    />
 
 
-                </div>
+                    </div>
+                </form>
+            </FormProvider>
 
-
-            </div>
 
         </Container>
     )

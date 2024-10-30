@@ -1,8 +1,7 @@
 import React, { FC } from 'react'
-import { WhiteBlock } from './white-block'
-import { OrderDetails } from './order-details'
 import { ArrowRight, Package, Percent, Truck } from 'lucide-react'
-import { Button } from '../ui'
+import { OrderDetails, WhiteBlock } from '..';
+import { Button } from '../../ui';
 
 interface Props {
     className?: string;
