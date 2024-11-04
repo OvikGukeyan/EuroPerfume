@@ -29,7 +29,7 @@ export {CheckoutSidebar} from './checkout/checkout-sidebar';
 export {RequiredSymbol} from './required-symbol';
 export {ErrorText} from './error-text';
 export {ClearButton} from './clear-button'
-
+export {AdressInput} from './adress-input'
 
 export * from './form';
 export * from './modals';
