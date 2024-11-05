@@ -20,7 +20,7 @@ import { PizzaSize, PizzaType } from '@/shared/constants/pizza';
 import { useCart } from '@/shared/hooks';
 
 export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
-    const {totalAmount, items, updateItemQuantity, removeCartItem, loading} = useCart();
+    const {totalAmount, items, updateItemQuantity, removeCartItem, loading, itemLoading} = useCart();
     const [redirecting, setRedirecting] = React.useState(false);
     
     const onClickCountButton = (id: number, quantity: number, type: 'plus' | 'minus') => {
@@ -94,7 +94,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                                 <Link href="/checkout">
                                     <Button
                                         onClick={() => setRedirecting(true)}
-                                        loading={loading || redirecting}
+                                        loading={loading || redirecting || itemLoading}
                                         type="submit"
                                         className="w-full h-12 text-base">
                                         Checkout

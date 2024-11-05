@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { AdressInput, FormTextarea, WhiteBlock } from '..';
+import { AdressInput, ErrorText, FormTextarea, WhiteBlock } from '..';
 import { cn } from '@/shared/lib/utils';
 import { Controller, useFormContext } from 'react-hook-form';
 
@@ -8,7 +8,7 @@ interface Props {
     className?: string;
 }
 export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
-    const {control: form } = useFormContext()
+    const { control } = useFormContext()
     return (
         <WhiteBlock
             className={cn(className, !totalAmount ? 'opacity-50 pointer-events-none' : '')}
@@ -16,10 +16,15 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
             contentClassName="p-8">
             <div className="flex flex-col gap-5">
                 <Controller
-                                control={form}
-                                name="address"
-                                render={({ field }) => <AdressInput onChange={field.onChange} />}
-                            />
+                    control={control}
+                    name="address"
+                    render={({ field, fieldState: { error } }) => (
+                        <>
+                            <AdressInput onChange={field.onChange} />
+                            {error?.message && <ErrorText text={error.message} />}
+                        </>
+                    )}
+                />
 
                 <FormTextarea
                     name="comment"

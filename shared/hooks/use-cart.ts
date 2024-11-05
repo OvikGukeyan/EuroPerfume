@@ -8,6 +8,7 @@ type ReturnPeops = {
     totalAmount: number;
     items: CartStateItem[];
     loading: boolean;
+    itemLoading: boolean;
     updateItemQuantity: (id: number, quantity: number) => Promise<void>;
     removeCartItem: (id: number) => Promise<void>;
     addCartItem: (values: CreateCartItemValues) => Promise<void>;

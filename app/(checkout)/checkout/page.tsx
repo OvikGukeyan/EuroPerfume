@@ -8,7 +8,7 @@ import { checkoutFormSchema, CheckoutFormValues } from "@/shared/constants/";
 
 
 export default function Checkout() {
-    const { totalAmount, items, updateItemQuantity, removeCartItem } = useCart()
+    const { totalAmount, items, updateItemQuantity, removeCartItem, loading, itemLoading } = useCart()
 
     const form = useForm<CheckoutFormValues>({
         resolver: zodResolver(checkoutFormSchema),
@@ -19,11 +19,10 @@ export default function Checkout() {
             phone: '',
             address: '',
             comment: '',
-        }
+        },
     })
 
     const onSubmit = (data: CheckoutFormValues) => {
-
         console.log(data)
     }
 
@@ -43,7 +42,7 @@ export default function Checkout() {
                     <div className="flex gap-10">
                         <div className="flex flex-col gap-10 flex-1 mb-20">
 
-                            <CheckoutCart items={items} totalAmount={totalAmount} removeCartItem={removeCartItem} onClickCountButton={onClickCountButton} />
+                            <CheckoutCart loading={loading} items={items} totalAmount={totalAmount} removeCartItem={removeCartItem} onClickCountButton={onClickCountButton} />
 
                             <CheckoutPersonalForm totalAmount={totalAmount} />
 
@@ -52,6 +51,8 @@ export default function Checkout() {
 
                         <div className="w-[450px]">
                             <CheckoutSidebar
+                                itemLoading={itemLoading}
+                                loading={loading}
                                 totalAmount={totalAmount}
                             />
 

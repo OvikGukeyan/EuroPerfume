@@ -6,12 +6,24 @@ interface Props {
 }
 
 export const AdressInput: React.FC<Props> = ({ onChange }) => {
-  return <Autocomplete options={{
-    types: ['address'],
-    componentRestrictions: { country: 'de' }
-  }}
-    placeholder="Enter your address" 
+  return <Autocomplete
+    style={{
+      padding: '8px',
+      fontSize: '16px',
+      border: '1px solid #ccc',
+      borderRadius: '10px',
+      outline: 'none',
+
+    }}
+    options={{
+      types: ['address'],
+      componentRestrictions: { country: 'de' }
+    }}
+    placeholder="Enter your address"
     apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-    onPlaceSelected={(data) => console.log(data)} 
-    />;
+    onPlaceSelected={(place) => {
+      const address = place?.formatted_address || '';
+      onChange?.(address);
+    }}
+  />;
 };
