@@ -31,11 +31,11 @@ export const Header: React.FC<Props> = ({ className, hasSearch=true, hasCart=tru
 
         </div>}
 
-        <div className="flex items-center gap-3">
-          <Button variant='outline' className='flex items-center gap-1'>
+        <div className="flex  items-center gap-3">
+          {/* <Button variant='outline' className='flex items-center gap-1'>
             <User size={16} />
             Sign-In
-          </Button>
+          </Button> */}
 
             {hasCart && <CartButton/>}
 
