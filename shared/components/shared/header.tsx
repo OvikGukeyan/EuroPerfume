@@ -1,7 +1,7 @@
 import { cn } from '@/shared/lib/utils';
 import React from 'react'
 import Image from 'next/image';
-import { ArrowRight, ShoppingCart, User } from 'lucide-react';
+import { User } from 'lucide-react';
 import Link from 'next/link';
 import { CartButton, Container, SearchInput } from '@/shared/components/shared';
 import { Button } from '@/shared/components/ui';
@@ -26,7 +26,7 @@ export const Header: React.FC<Props> = ({ className, hasSearch=true, hasCart=tru
           </div>
         </Link>
 
-        {hasSearch && <div className='mx-10 flex-1'>
+        {hasSearch && <div className='mx-10 flex-1 hidden sm:flex'>
           <SearchInput/>
 
         </div>}

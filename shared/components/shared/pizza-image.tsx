@@ -9,7 +9,7 @@ interface Props {
 }
 export const PizzaImage: FC<Props> = ({ className, imageUrl, size }) => {
     return (
-        <div className={cn('flex items-center justify-center flex-1 relative w-full', className)}>
+        <div className={cn('flex items-center justify-center flex-1 relative w-full mt-16 mb-20', className)}>
             <Image
                 width={300}
                 height={300}

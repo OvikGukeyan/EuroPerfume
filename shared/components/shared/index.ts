@@ -28,8 +28,9 @@ export {CheckoutItemSkeleton} from './checkout-item-skeleton';
 export {CheckoutSidebar} from './checkout/checkout-sidebar';
 export {RequiredSymbol} from './required-symbol';
 export {ErrorText} from './error-text';
-export {ClearButton} from './clear-button'
-export {AdressInput} from './adress-input'
+export {ClearButton} from './clear-button';
+export {AdressInput} from './adress-input';
+export {FiltersDrawer} from './filters-drawer';
 
 export * from './form';
 export * from './modals';

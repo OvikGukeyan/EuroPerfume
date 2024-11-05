@@ -47,10 +47,10 @@ export const ChoosePizzaForm: FC<Props> = ({
     
 
     return (
-        <div className={cn('flex flex-1 ', className)}>
+        <div className={cn('flex flex-col lg:flex-row gap-5 flex-1 items-center ', className)}>
             <PizzaImage imageUrl={imageUrl} size={size} />
 
-            <div className='w-[490px] bg-[#f2f2f2] p-7'>
+            <div className='w-full md:w-[490px]  bg-[#f2f2f2] p-7'>
                 <Title text={name} size="md" className='font-extrabold mb-1' />
 
                 <p className='text-gray-400'> {TextDetaills}</p>
