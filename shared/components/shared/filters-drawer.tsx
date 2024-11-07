@@ -8,13 +8,13 @@ export const FiltersDrawer = () => {
     return (
         <div>
             <Suspense>
-                <div className="w-[250px] hidden lg:block">
+                <div className="w-[250px] hidden xl:block">
                     <Filters />
                 </div>
 
                 <Sheet>
                     <SheetTrigger asChild>
-                        <Button className="lg:hidden flex items-center gap-2">
+                        <Button className="xl:hidden flex items-center gap-2">
                             Filters
                             <Filter/>
                         </Button>

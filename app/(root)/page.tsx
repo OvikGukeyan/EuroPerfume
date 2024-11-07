@@ -12,7 +12,7 @@ export default async function Home({searchParams}: {searchParams: GetSearchParam
       </Container>
       <TopBar categories={categoryes.filter((category) => category.products.length > 0)} />
       <Container className="mt-10 pb-14">
-        <div className='flex flex-col lg:flex-row gap-[60px]'>
+        <div className='flex flex-col xl:flex-row gap-[60px]'>
           <FiltersDrawer/>
 
           <div className="flex-1">

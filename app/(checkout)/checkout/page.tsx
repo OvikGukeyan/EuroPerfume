@@ -5,9 +5,13 @@ import { useCart } from "@/shared/hooks";
 import { useForm, FormProvider } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { checkoutFormSchema, CheckoutFormValues } from "@/shared/constants/";
+import { createOrder } from "@/app/actions";
+import toast from "react-hot-toast";
+import { useState } from "react";
 
 
 export default function Checkout() {
+    const [submitting, setSubmitting] = useState(false);
     const { totalAmount, items, updateItemQuantity, removeCartItem, loading, itemLoading } = useCart()
 
     const form = useForm<CheckoutFormValues>({
@@ -22,8 +26,28 @@ export default function Checkout() {
         },
     })
 
-    const onSubmit = (data: CheckoutFormValues) => {
-        console.log(data)
+    const onSubmit = async (data: CheckoutFormValues) => {
+        try {
+            setSubmitting(true);
+            const url = await createOrder(data);
+
+            toast.success('Order created successfully! Redirecting to payment...', {
+                icon: '✅',
+            })
+
+            if(url) {
+                location.href = url
+            }
+
+        } catch (error) {
+            setSubmitting(false);
+            console.log(error);
+            toast.error('Failed to create order', {
+                icon: '🚨',
+            })
+        }finally {
+            setSubmitting(false);
+        }
     }
 
 
@@ -52,7 +76,7 @@ export default function Checkout() {
                         <div className="w-[450px]">
                             <CheckoutSidebar
                                 itemLoading={itemLoading}
-                                loading={loading}
+                                loading={loading || submitting}
                                 totalAmount={totalAmount}
                             />
 

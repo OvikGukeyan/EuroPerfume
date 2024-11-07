@@ -9,7 +9,6 @@ import { PizzaSize, PizzaType, pizzaTypes } from '@/shared/constants/pizza';
 import { IngredientItem, PizzaImage } from '.';
 import { Ingredient, ProductItem } from '@prisma/client';
 import { getPizzaDetails, usePizzaOptions } from '@/shared/lib';
-import { CreateCartItemValues } from '@/shared/services/dto/cart.dto';
 
 interface Props {
     imageUrl: string;
