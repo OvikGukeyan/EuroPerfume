@@ -63,7 +63,7 @@ export default function Checkout() {
             <Title text="Checkout" size="xl" className="font-extrabold mb-8" />
             <FormProvider {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
-                    <div className="flex gap-10">
+                    <div className="flex flex-col lg:flex-row gap-10">
                         <div className="flex flex-col gap-10 flex-1 mb-20">
 
                             <CheckoutCart loading={loading} items={items} totalAmount={totalAmount} removeCartItem={removeCartItem} onClickCountButton={onClickCountButton} />
@@ -73,7 +73,7 @@ export default function Checkout() {
                             <CheckoutDeliveryForm totalAmount={totalAmount} />
                         </div>
 
-                        <div className="w-[450px]">
+                        <div className="w-[450px] mx-auto">
                             <CheckoutSidebar
                                 itemLoading={itemLoading}
                                 loading={loading || submitting}
