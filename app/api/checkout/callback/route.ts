@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
         console.log(`Оплата успешна! Заказ ID: ${orderId}, Email: ${customerEmail}`);
 
         // Обновление статуса заказа в базе данных
-        await updateOrderStatus(orderId, 'completed');
+        await updateOrderStatus(orderId, OrderStatus.SUCCEEDED);
     }
 
     return NextResponse.json({ received: true });
