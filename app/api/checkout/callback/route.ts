@@ -1,5 +1,9 @@
 import { prisma } from '@/prisma/prisma-client';
+import { OrderSuccessTemplate, PayOrderTemplate } from '@/shared/components';
+import { sendEmail } from '@/shared/lib/send-email';
+import { CartItemDTO } from '@/shared/services/dto/cart.dto';
 import { OrderStatus } from '@prisma/client';
+import { error } from 'console';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 
@@ -36,28 +40,40 @@ export async function POST(req: NextRequest) {
         const session = event.data.object as Stripe.Checkout.Session;
 
         const orderId = session.metadata?.orderId;
-        const customerEmail = session.customer_details?.email;
+        const customerEmail = session.customer_details?.email as string;
 
-        console.log(`Оплата успешна! Заказ ID: ${orderId}, Email: ${customerEmail}`);
+        const order = await prisma.order.findFirst({
+            where: {
+                id: Number(orderId),
+            },
+        })
+        
+        if(!order){
+            return NextResponse.json({ error: 'Order not found' });
+        }
 
         // Обновление статуса заказа в базе данных
-        await updateOrderStatus(orderId, OrderStatus.SUCCEEDED);
+        await prisma.order.update({
+            where: {
+                id: Number(orderId),
+            },
+            data: {
+                status: OrderStatus.SUCCEEDED,
+            },
+        });
+
+
+        const items = order?.items as unknown as CartItemDTO[];
+
+        await sendEmail(customerEmail, 'Order success', OrderSuccessTemplate({
+            orderId: order.id,
+            items
+        }))
     }
 
     return NextResponse.json({ received: true });
 }
 
 // Пример функции для обновления заказа в базе данных
-async function updateOrderStatus(orderId: string | undefined, status: string) {
-    if (!orderId) return;
-    await prisma.order.update({
-        where: {
-            id: Number(orderId),
-        },
-        data: {
-            status: OrderStatus.SUCCEEDED,
-        },
-    });
-    // Здесь можно добавить код для обновления в базе данных
-}
+
 
