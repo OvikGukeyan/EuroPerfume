@@ -1,5 +1,6 @@
 import { Container, Header } from "@/shared/components/shared";
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
 
 
@@ -16,7 +17,9 @@ export default function CheckoutLayout({
     return (
         <main className="min-h-screen bg-[#F4F1EE]">
             <Container>
-                <Header hasSearch={false} hasCart={false} className="border-b-gray-200" />
+                <Suspense fallback={<div>Loading...</div>}>
+                    <Header hasSearch={false} hasCart={false} className="border-b-gray-200" />
+                </Suspense>
                 {children}
             </Container>
         </main>

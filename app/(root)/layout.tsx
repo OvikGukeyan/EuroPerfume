@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import { Header } from "@/shared/components/shared";
+import { Suspense } from "react";
 
 
 
@@ -19,7 +20,9 @@ export default function HomeLayout({
   return (
     <html lang="en">
       <main className="min-h-screen">
-        <Header />
+        <Suspense fallback={<div>Loading...</div>}>
+          <Header />
+        </Suspense>
         {children}
         {modal}
       </main>

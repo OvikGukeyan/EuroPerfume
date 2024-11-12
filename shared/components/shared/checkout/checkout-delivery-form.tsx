@@ -1,3 +1,5 @@
+'use client'
+
 import React, { FC } from 'react'
 import { AdressInput, ErrorText, FormTextarea, WhiteBlock } from '..';
 import { cn } from '@/shared/lib/utils';

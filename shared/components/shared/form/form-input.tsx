@@ -1,3 +1,5 @@
+'use client'
+
 import React, { FC } from 'react'
 import { ClearButton, ErrorText, RequiredSymbol } from '..';
 import { Input } from '../../ui';

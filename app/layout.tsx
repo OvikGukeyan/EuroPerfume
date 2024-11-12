@@ -1,7 +1,6 @@
 import { Nunito } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/shared/components";
-import { Suspense } from "react";
 
 const nunito = Nunito({
     subsets: ['cyrillic'],
@@ -18,11 +17,9 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <Suspense fallback={null}>
                 <head>
                     <link data-rh='true' rel='icon' href='/logo.png' />
                 </head>
-            </Suspense>
 
             <body className={nunito.className}>
                 <Providers>
