@@ -1,10 +1,15 @@
+'use client'
+
 import { cn } from '@/shared/lib/utils';
-import React from 'react'
+import React, { useEffect } from 'react'
 import Image from 'next/image';
 import { User } from 'lucide-react';
 import Link from 'next/link';
 import { CartButton, Container, SearchInput } from '@/shared/components/shared';
 import { Button } from '@/shared/components/ui';
+import { useRouter, useSearchParams } from 'next/navigation';
+import toast from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 interface Props {
   hasSearch?: boolean
@@ -13,6 +18,23 @@ interface Props {
 }
 
 export const Header: React.FC<Props> = ({ className, hasSearch=true, hasCart=true }) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const {data: session} = useSession();
+
+  useEffect(() => {
+    if(searchParams.has('paid')) {
+      setTimeout(() => {
+        toast.success('Payment successful!');
+        router.push('/');
+      }, 500)
+    }else if(searchParams.has('faild')){
+      setTimeout(() => {
+        toast.error('Payment failed!');
+        router.push('/');
+      }, 500)
+    }
+  })
   return (
     <header className={cn(' border-b', className)}>
       <Container className='flex items-center justify-between py-8'>
@@ -32,10 +54,10 @@ export const Header: React.FC<Props> = ({ className, hasSearch=true, hasCart=tru
         </div>}
 
         <div className="flex  items-center gap-3">
-          {/* <Button variant='outline' className='flex items-center gap-1'>
+          <Button variant='outline' className='flex items-center gap-1'>
             <User size={16} />
             Sign-In
-          </Button> */}
+          </Button>
 
             {hasCart && <CartButton/>}
 

@@ -31,6 +31,7 @@ export {ErrorText} from './error-text';
 export {ClearButton} from './clear-button';
 export {AdressInput} from './adress-input';
 export {FiltersDrawer} from './filters-drawer';
+export {Providers} from './providers';
 
 export * from './email-templates';
 export * from './form';

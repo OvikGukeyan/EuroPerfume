@@ -28,7 +28,7 @@ export const createPayment = async (data: Props) => {
         ],
         mode: 'payment',
         success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/?paid`,
-        cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/?paid`,
+        cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/?faild`,
         metadata: {
             order_id: data.orderId, 
         },
