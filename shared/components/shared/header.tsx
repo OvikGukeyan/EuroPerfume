@@ -34,7 +34,7 @@ export const Header: React.FC<Props> = ({ className, hasSearch=true, hasCart=tru
         router.push('/');
       }, 500)
     }
-  })
+  }, [])
   return (
     <header className={cn(' border-b', className)}>
       <Container className='flex items-center justify-between py-8'>
