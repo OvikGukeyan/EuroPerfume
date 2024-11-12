@@ -18,23 +18,23 @@ interface Props {
 }
 
 export const Header: React.FC<Props> = ({ className, hasSearch=true, hasCart=true }) => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const {data: session} = useSession();
+  // const searchParams = useSearchParams();
+  // const router = useRouter();
+  // const {data: session} = useSession();
 
-  useEffect(() => {
-    if(searchParams.has('paid')) {
-      setTimeout(() => {
-        toast.success('Payment successful!');
-        router.push('/');
-      }, 500)
-    }else if(searchParams.has('faild')){
-      setTimeout(() => {
-        toast.error('Payment failed!');
-        router.push('/');
-      }, 500)
-    }
-  }, [searchParams.toString(), router])
+  // useEffect(() => {
+  //   if(searchParams.has('paid')) {
+  //     setTimeout(() => {
+  //       toast.success('Payment successful!');
+  //       router.push('/');
+  //     }, 500)
+  //   }else if(searchParams.has('faild')){
+  //     setTimeout(() => {
+  //       toast.error('Payment failed!');
+  //       router.push('/');
+  //     }, 500)
+  //   }
+  // }, [searchParams.toString(), router])
   return (
     <header className={cn(' border-b', className)}>
       <Container className='flex items-center justify-between py-8'>

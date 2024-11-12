@@ -1,7 +1,7 @@
 "use client"
 
 import { cn } from '@/shared/lib/utils';
-import React, { FC, Suspense } from 'react';
+import React, { FC } from 'react';
 import { Title, CheckboxFiltersGroup } from '.';
 import { Input, RangeSlider } from '../ui';
 import { useFilters, useIngredients, useQueryFilters } from '@/shared/hooks';
@@ -28,7 +28,6 @@ export const Filters: FC<Props> = () => {
 
 
   return (
-    <Suspense>
       <div className={cn('')}>
         <Title text='Filters' className='mb-5 font-bold' />
 
@@ -99,7 +98,6 @@ export const Filters: FC<Props> = () => {
           name='ingredients'
         />
       </div>
-    </Suspense>
 
   )
 }
