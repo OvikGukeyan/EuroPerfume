@@ -7,7 +7,10 @@ interface Props {
     description: string;
 }
 export const createPayment = async (data: Props) => {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+        apiVersion: "2024-10-28.acacia",
+    });
+    console.log(22222, data.amount)
 
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
@@ -18,7 +21,7 @@ export const createPayment = async (data: Props) => {
                     product_data: {
                         name: data.description,
                     },
-                    unit_amount: data.amount * 100,
+                    unit_amount: Math.round(data.amount * 100),
                 },
                 quantity: 1,
             },
@@ -30,7 +33,6 @@ export const createPayment = async (data: Props) => {
             order_id: data.orderId, 
         },
     });
-
 
     return session
 }
