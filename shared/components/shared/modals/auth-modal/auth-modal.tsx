@@ -8,7 +8,7 @@ import React, { FC } from 'react'
 
 interface Props {
     open: boolean;
-    onClose: () => void;
+    onClose: VoidFunction;
     className?: string;
 }
 export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
