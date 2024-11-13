@@ -32,6 +32,7 @@ export {ClearButton} from './clear-button';
 export {AdressInput} from './adress-input';
 export {FiltersDrawer} from './filters-drawer';
 export {Providers} from './providers';
+export {ProfileButton} from './profile-button';
 
 export * from './email-templates';
 export * from './form';
