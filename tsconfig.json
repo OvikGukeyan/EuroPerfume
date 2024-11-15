@@ -22,6 +22,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "prisma/**/*.ts", "prisma/seed.ts"],  // Добавляем серверные скрипты
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "prisma/**/*.ts", "prisma/seed.ts", "@types/*.d.ts"],  // Добавляем серверные скрипты
   "exclude": ["node_modules"]
 }

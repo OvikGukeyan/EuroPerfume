@@ -1,10 +1,9 @@
 import { Button } from '@/shared/components/ui';
 import { Dialog, DialogContent } from '@/shared/components/ui/dialog'
-import { Github } from 'lucide-react';
 import { signIn } from 'next-auth/react';
-import { redirect } from 'next/dist/server/api-utils';
 import Image from 'next/image';
 import React, { FC } from 'react'
+import { LoginForm } from './forms/login-form';
 
 interface Props {
     open: boolean;
@@ -12,13 +11,18 @@ interface Props {
     className?: string;
 }
 export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
+    const [type, setType] = React.useState<'login' | 'register'>('login');
+
+    const onSwitchType = () => {
+        setType(type === 'login' ? 'register' : 'login');
+    }
     const handleClose = () => {
         onClose()
     }
     return (
         <Dialog open={open} onOpenChange={handleClose}>
             <DialogContent className='w-[450px] bg-white p-10'>
-                FORM
+                {type === 'login' ? <LoginForm onClose={handleClose}/> : 'Sign Up'}
                 <hr />
                 <div className='flex gap-2'>
                     <Button variant='secondary' className='gap-2 h-12 p-2 flex-1' type='button'
@@ -42,10 +46,13 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
                         }}
                     >
                         <Image src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/24px.svg" alt="Google" width={24} height={24} />
-                       Google
+                        Google
                     </Button>
 
                 </div>
+                <Button onClick={onSwitchType} variant='outline' type='button' className='h-12'>
+                    {type === 'login' ? 'Sign Ip' : 'Sign Up'}
+                </Button>
             </DialogContent>
         </Dialog>
     )
