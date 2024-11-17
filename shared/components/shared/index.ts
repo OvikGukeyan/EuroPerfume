@@ -33,6 +33,8 @@ export {AdressInput} from './adress-input';
 export {FiltersDrawer} from './filters-drawer';
 export {Providers} from './providers';
 export {ProfileButton} from './profile-button';
+export {InfoBlock} from './info-block';
+export {ProfileForm} from './profile-form';
 
 export * from './email-templates';
 export * from './form';
