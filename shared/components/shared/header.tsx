@@ -28,17 +28,17 @@ export const Header: React.FC<Props> = ({ className, hasSearch = true, hasCart =
       setTimeout(() => {
         toast.success('Payment successful!');
         router.push('/');
-      }, 1000);
+      }, 500);
     } else if (failed) {
       setTimeout(() => {
         toast.error('Payment failed!');
         router.push('/');
-      }, 1000);
+      }, 500);
     } else if (verified) {
       setTimeout(() => {
         toast.success('Email verified!');
         router.push('/');
-      }, 1000);
+      }, 500);
     }
   }, [router, searchParams]);
   return (
