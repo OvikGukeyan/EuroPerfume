@@ -14,26 +14,31 @@ interface Props {
   className?: string
 }
 
-export const Header: React.FC<Props> = ({ className, hasSearch=true, hasCart=true }) => {
+export const Header: React.FC<Props> = ({ className, hasSearch = true, hasCart = true }) => {
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
-  const {data: session} = useSession();
 
   useEffect(() => {
-    const paid = searchParams.get('paid');
-    const failed = searchParams.get('faild');
-    
+    const paid = searchParams.has('paid');
+    const failed = searchParams.has('faild');
+    const verified = searchParams.has('verified');
     if (paid) {
-      toast.success('Payment successful!');
+
       setTimeout(() => {
+        toast.success('Payment successful!');
         router.push('/');
-      }, 500);
+      }, 1000);
     } else if (failed) {
-      toast.error('Payment failed!');
       setTimeout(() => {
+        toast.error('Payment failed!');
         router.push('/');
-      }, 500);
+      }, 1000);
+    } else if (verified) {
+      setTimeout(() => {
+        toast.success('Email verified!');
+        router.push('/');
+      }, 1000);
     }
   }, [router, searchParams]);
   return (
@@ -50,15 +55,15 @@ export const Header: React.FC<Props> = ({ className, hasSearch=true, hasCart=tru
         </Link>
 
         {hasSearch && <div className='mx-10 flex-1 hidden sm:flex'>
-          <SearchInput/>
+          <SearchInput />
 
         </div>}
 
         <div className="flex  items-center gap-3">
-          <AuthModal open={openAuthModal} onClose={() => setOpenAuthModal(false)}/>
-          <ProfileButton onClickSignIn={() => setOpenAuthModal(true)}/>
+          <AuthModal open={openAuthModal} onClose={() => setOpenAuthModal(false)} />
+          <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />
 
-            {hasCart && <CartButton/>}
+          {hasCart && <CartButton />}
 
         </div>
       </Container>

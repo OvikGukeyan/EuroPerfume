@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import React, { FC } from 'react'
 import { LoginForm } from './forms/login-form';
+import { RegisterForm } from './forms/register-form';
 
 interface Props {
     open: boolean;
@@ -22,7 +23,8 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
     return (
         <Dialog open={open} onOpenChange={handleClose}>
             <DialogContent className='w-[450px] bg-white p-10'>
-                {type === 'login' ? <LoginForm onClose={handleClose}/> : 'Sign Up'}
+                {type === 'login' ? <LoginForm onClose={handleClose}/> : 
+                <RegisterForm onClose={handleClose}/>}
                 <hr />
                 <div className='flex gap-2'>
                     <Button variant='secondary' className='gap-2 h-12 p-2 flex-1' type='button'
@@ -51,7 +53,7 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
 
                 </div>
                 <Button onClick={onSwitchType} variant='outline' type='button' className='h-12'>
-                    {type === 'login' ? 'Sign Ip' : 'Sign Up'}
+                    {type === 'login' ? 'Sign Up' : 'Sign In'}
                 </Button>
             </DialogContent>
         </Dialog>
