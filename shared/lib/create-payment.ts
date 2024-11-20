@@ -10,7 +10,6 @@ export const createPayment = async (data: Props) => {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
         apiVersion: "2024-10-28.acacia",
     });
-    console.log(22222, data.amount)
 
     const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],

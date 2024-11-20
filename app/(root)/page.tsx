@@ -1,19 +1,20 @@
-import { Container, Title, TopBar, Filters, ProductsGroupList, FiltersDrawer } from "@/shared/components/shared";
+import { Container, Title, TopBar, ProductsGroupList, FiltersDrawer, Stories } from "@/shared/components/shared";
 import { Suspense } from "react";
 import { findPizzas, GetSearchParams } from "@/shared/lib/find-pizzas";
 
-export default async function Home({searchParams}: {searchParams: GetSearchParams}) {
+export default async function Home({ searchParams }: { searchParams: GetSearchParams }) {
   const categoryes = await findPizzas(searchParams)
-  
+
   return (
     <>
       <Container className="mt-10">
         <Title size="lg" className="font-extrabold" text='All pizzas' />
       </Container>
       <TopBar categories={categoryes.filter((category) => category.products.length > 0)} />
+      <Stories />
       <Container className="mt-10 pb-14">
         <div className='flex flex-col xl:flex-row gap-[60px]'>
-          <FiltersDrawer/>
+          <FiltersDrawer />
 
           <div className="flex-1">
             <div className="flex flex-col gap-16">
