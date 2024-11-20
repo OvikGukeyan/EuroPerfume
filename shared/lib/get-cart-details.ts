@@ -33,7 +33,6 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
             price: ingredient.price,
         })),
     })) as CartStateItem[];
-
     return {
         totalAmount: data.totalAmount,
         items

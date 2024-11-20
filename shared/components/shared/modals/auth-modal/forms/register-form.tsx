@@ -7,6 +7,8 @@ import Image from 'next/image';
 import { Button } from '@/shared/components/ui';
 import toast from 'react-hot-toast';
 import { registerUser } from '@/app/actions';
+import { signIn } from 'next-auth/react';
+
 
 interface Props {
     onClose: VoidFunction;
@@ -33,11 +35,22 @@ export const RegisterForm: FC<Props> = ({ className, onClose }) => {
 
 
 
-            toast.success('Registered successfully', { icon: '✅' });
+            // TO DO: Log in!!
+            const respons = await signIn('credentials', {
+                email: data.email,
+                password: data.password,
+                redirect: false
+            })
+
+            if (!respons?.ok) {
+                throw Error();
+            }
+
+            toast.success('Registered successfully. Check your email, to verify your account', { icon: '✅' });
 
             onClose?.();
         } catch (error) {
-            console.error('Error [LOGIN]', error);
+            console.error('Error [REGISTER]', error);
             toast.error('Something went wrong', { icon: '❌' });
         }
     }
