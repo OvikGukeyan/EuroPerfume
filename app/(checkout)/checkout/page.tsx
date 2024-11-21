@@ -91,7 +91,7 @@ export default function Checkout() {
                             <CheckoutDeliveryForm totalAmount={totalAmount} />
                         </div>
 
-                        <div className="w-[450px] mx-auto">
+                        <div className="w-full lg:w-[450px] mx-auto">
                             <CheckoutSidebar
                                 itemLoading={itemLoading}
                                 loading={loading || submitting}
