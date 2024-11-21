@@ -23,8 +23,8 @@ export const ChooseProductForm: FC<Props> = ({
     className,
 }) => {
     return (
-        <div className={cn('flex flex-1', className)}>
-            <div className={cn('flex items-center justify-center flex-1 relative w-full', className)}>
+        <div className={cn('flex flex-col lg:flex-row flex-1', className)}>
+            <div className={cn('flex  items-center justify-center flex-1 relative w-full', className)}>
                 <Image
                     width={350}
                     height={350}
@@ -34,7 +34,7 @@ export const ChooseProductForm: FC<Props> = ({
                 />
             </div>
 
-            <div className='w-[490px] bg-[#f2f2f2] p-7'>
+            <div className='w-full lg:w-[490px] bg-[#f2f2f2] p-7'>
                 <Title text={name} size="md" className='font-extrabold mb-1' />
 
                 <Button loading={loading} onClick={() => onSubmit?.()} className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
