@@ -59,7 +59,7 @@ export const ChoosePizzaForm: FC<Props> = ({
                     <GroupVariants items={pizzaTypes} value={String(type)} onClick={(value) => setType(Number(value) as PizzaType)} />
                 </div>
 
-                <div className="bg-gray-50 p-5 rounded-md h-[320px] overflow-auto scrollbar mt-5">
+                <div className="bg-gray-50 p-1 sm:p-5 rounded-md h-[320px] overflow-y-auto overflow-x-hidden scrollbar mt-5">
                     <div className='grid grid-cols-3 gap-3'>
                         {ingredients.map((ingredient) => (
                             <IngredientItem 
