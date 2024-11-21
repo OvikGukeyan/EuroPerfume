@@ -72,7 +72,7 @@ export const ChoosePizzaForm: FC<Props> = ({
                         ))}
                     </div>
                 </div>
-                <Button loading={loading} onClick={handeleClickAdd} className="h-[55px] px-10 text-base rounded-[18px] w-full mt-10">
+                <Button loading={loading} onClick={handeleClickAdd} className="h-[55px] px-10 text-base rounded-[18px] w-full mb-24 md:mb-0 mt-10">
                     Add too cart for {totalPrice} €
                 </Button>
                 {/* <GroupVariants items={[]} /> */}
