@@ -20,7 +20,7 @@ export const FiltersDrawer = () => {
                         </Button>
                     </SheetTrigger>
 
-                    <SheetContent  side={"left"} className="flex flex-col bg-[#FFF] p-4 lg:hidden overflow-y-auto">
+                    <SheetContent  side={"left"} className="flex flex-col bg-[#FFF] p-4 xl:hidden overflow-y-auto">
                         <Filters />
                     </SheetContent>
                 </Sheet>

@@ -47,7 +47,7 @@ export const Header: React.FC<Props> = ({ className, hasSearch = true, hasCart =
         <Link href={'/'}>
           <div className='flex items-center gap-4 '>
             <Image src={'/logo.png'} width={35} height={35} alt='logo' />
-            <div>
+            <div className='hidden sm:block'>
               <h1 className="text-2xl uppercase font-black">Ovik Pizza</h1>
               <p className="text-sm text-gray-400 leading-3">There is nowhere better</p>
             </div>
