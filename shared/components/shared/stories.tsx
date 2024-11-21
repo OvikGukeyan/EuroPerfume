@@ -3,10 +3,11 @@
 import { Api } from '@/shared/services/api-client';
 import { IStory } from '@/shared/services/stories';
 import React, { FC, useEffect, useState } from 'react'
-import { set } from 'react-hook-form';
 import { Container } from '.';
 import { cn } from '@/shared/lib/utils';
 import Image from 'next/image';
+import { X } from 'lucide-react';
+import ReactStories from 'react-insta-stories';
 
 interface Props {
   className?: string
@@ -49,6 +50,24 @@ export const Stories: FC<Props> = ({ className }) => {
             src={story.previewImageUrl}
           />
         ))}
+
+        {
+          open &&
+          <div className="absolute top-0 left-0 w-full h-full bg-black/80 flex items-center justify-center z-30">
+            <div className='relative' style={{ width: 390 }}>
+              <button className='absolute -top-5 -right-10 z-30' onClick={() => setOpen(false)}>
+                <X className='absolute top-0 right-0 w-8 h-8 text-white/50' />
+              </button>
+              <ReactStories
+                onAllStoriesEnd={() => setOpen(false)}
+                stories={selectedStory?.items.map((item) => ({ url: item.sourceUrl })) || []}
+                defaultInterval={5000}
+                width={390}
+                height={600}
+              />
+            </div>
+          </div>
+        }
       </Container>
     </>
   )
