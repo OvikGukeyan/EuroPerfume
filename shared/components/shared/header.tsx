@@ -54,7 +54,7 @@ export const Header: React.FC<Props> = ({ className, hasSearch = true, hasCart =
           </div>
         </Link>
 
-        {hasSearch && <div className='mx-10 flex-1 hidden sm:flex'>
+        {hasSearch && <div className='mx-10 flex-1 hidden md:flex'>
           <SearchInput />
 
         </div>}
