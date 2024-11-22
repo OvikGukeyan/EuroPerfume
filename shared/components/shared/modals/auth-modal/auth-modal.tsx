@@ -30,7 +30,7 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
                     <Button variant='secondary' className='gap-2 h-12 p-2 flex-1' type='button'
                         onClick={() => {
                             signIn('github'), {
-                                callbackUrl: 'http://localhost:3000',
+                                callbackUrl: process.env.NEXT_PUBLIC_BASE_URL,
                                 redirect: true
                             }
                         }}
@@ -42,7 +42,7 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
                     <Button variant='secondary' className='gap-2 h-12 p-2 flex-1' type='button'
                         onClick={() => {
                             signIn('google'), {
-                                callbackUrl: 'http://localhost:3000',
+                                callbackUrl: process.env.NEXT_PUBLIC_BASE_URL,
                                 redirect: true
                             }
                         }}
