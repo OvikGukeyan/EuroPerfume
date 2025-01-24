@@ -11,7 +11,7 @@ export const Providers: FC<PropsWithChildren> = ({ children }) => {
                 {children}
             </SessionProvider>
             <Toaster />
-            <NextTopLoader  />
+            <NextTopLoader />
         </>
     )
 }

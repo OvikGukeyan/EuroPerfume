@@ -1,5 +1,4 @@
 import { Container, Title, TopBar, ProductsGroupList, FiltersDrawer, Stories } from "@/shared/components/shared";
-import { Suspense } from "react";
 import { findPizzas, GetSearchParams } from "@/shared/lib/find-pizzas";
 
 export default async function Home({ searchParams }: { searchParams: GetSearchParams }) {

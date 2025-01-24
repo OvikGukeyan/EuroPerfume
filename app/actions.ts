@@ -13,7 +13,6 @@ import { cookies } from "next/headers";
 
 export async function createOrder(data: CheckoutFormValues) {
     try {
-
         const cookieStore = cookies();
         const cartToken = cookieStore.get('cartToken')?.value;
 

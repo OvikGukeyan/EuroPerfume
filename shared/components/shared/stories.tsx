@@ -34,7 +34,7 @@ export const Stories: FC<Props> = ({ className }) => {
   }
   return (
     <>
-      <Container  className={cn('flex items-center justify-between gap-2 my-10 overflow-x-scroll', className)}>
+      <Container   className={cn('flex items-center justify-between gap-2 my-10 overflow-x-scroll', className)}>
         {stories.length === 0 &&
           [...Array(6)].map((_, index) => (
             <div key={index} className="min-w-[200px] h-[250px] bg-gray-200 rounded-md animate-pulse" />
