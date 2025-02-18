@@ -7,3 +7,4 @@ export {RangeSlider} from './range-slider';
 export {Textarea} from './textarea';
 export {Skeleton} from './skeleton';
 export {Dialog} from './dialog';
+export {Separator} from './separator';

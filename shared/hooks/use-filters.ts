@@ -8,35 +8,45 @@ interface PriceProps {
 }
 
 export interface QueryFilters extends PriceProps {
-    pizzaTypes: string;
-    sizes: string;
-    ingredients: string;
+    concentration: string;
+    gender: string;
+    brands: string;
+    categories: string;
+    notes: string
 }
 
 export interface Filters {
-    sizes: Set<string>;
-    pizzaTypes: Set<string>;
-    selectedIngredients: Set<string>;
+    gender: Set<string>;
+    concentration: Set<string>;
+    brands: Set<string>;
+    categories: Set<string>;
+    notes: Set<string>;
     prices: PriceProps
 }
 
 interface ReturnProps extends Filters {
     setPrices: (name: keyof PriceProps, value: number) => void;
-    setPizzaTypes: (key: string) => void;
-    setSelectedIngredients: (key: string) => void;
-    setSizes: (key: string) => void;
+    setSelectedGender: (key: string) => void;
+    setSelectedConcentration: (key: string) => void;
+    setSelectedBrands: (key: string) => void;
+    setSelectedCategories: (key: string) => void;
+    setSelectedNotes: (key: string) => void;
 }
 
 export const useFilters = (): ReturnProps => {
     const searchParams = useSearchParams() as unknown as Map<keyof QueryFilters, string>;
 
-    const [selectedIngredients, { toggle: toggleIngredients }] = useSet(new Set<string>(searchParams.get('ingredients')?.split(',')));
+    const [brands, { toggle: toggleBrands }] = useSet(new Set<string>(searchParams.get('brands')?.split(',')));
+
+    const [gender, { toggle: toggleGender }] = useSet(new Set<string>(searchParams.get('gender')?.split(',')));
+
+    const [concentration, { toggle: toggleConcentration }] = useSet(new Set<string>(searchParams.get('concentration')?.split(',')));
+
+    const [categories, { toggle: toggleCategories }] = useSet(new Set<string>(searchParams.get('categories')?.split(',')));
+
+    const [notes, { toggle: toggleNotes }] = useSet(new Set<string>(searchParams.get('notes')?.split(',')));
 
 
-    const [sizes, { toggle: toggleSizes }] = useSet(new Set<string>(searchParams.get('sizes') ? searchParams.get('sizes')?.split(',') : []));
-
-
-    const [pizzaTypes, { toggle: togglePizzaTypes }] = useSet(new Set<string>(searchParams.get('pizzaTypes') ? searchParams.get('pizzaTypes')?.split(',') : []));
 
 
     const [prices, setPrices] = useState<PriceProps>({
@@ -49,18 +59,24 @@ export const useFilters = (): ReturnProps => {
       }
 
     return useMemo(() => ({
-        sizes,
-        pizzaTypes,
-        selectedIngredients,
+        gender,
+        concentration,
+        brands,
+        categories,
+        notes,
         prices,
-        setSelectedIngredients: toggleIngredients,
-        setSizes: toggleSizes,
-        setPizzaTypes: togglePizzaTypes,
+        setSelectedGender: toggleGender,
+        setSelectedConcentration: toggleConcentration,
+        setSelectedBrands: toggleBrands,
+        setSelectedCategories: toggleCategories,
+        setSelectedNotes: toggleNotes,
         setPrices: updatePrice,
     }), [
-        sizes,
-        pizzaTypes,
-        selectedIngredients,
+        gender,
+        concentration,
+        brands,
+        categories,
+        notes,
         prices,
        
     ]);

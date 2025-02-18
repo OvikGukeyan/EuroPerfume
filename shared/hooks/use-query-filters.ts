@@ -11,9 +11,13 @@ export const useQueryFilters = (filters: Filters) => {
     if (isMounted.current) {
       const params = {
         ...filters.prices,
-        sizes: Array.from(filters.sizes),
-        pizzaTypes: Array.from(filters.pizzaTypes),
-        ingredients: Array.from(filters.selectedIngredients)
+        brands: Array.from(filters.brands),
+        categories: Array.from(filters.categories),
+        concentration: Array.from(filters.concentration),
+        gender: Array.from(filters.gender),
+        notes: Array.from(filters.notes),
+
+
       }
       const query = qs.stringify(params, { arrayFormat: "comma" });
       router.push(`?${query}`, { scroll: false })

@@ -7,10 +7,10 @@ export default async function Home({ searchParams }: { searchParams: GetSearchPa
   return (
     <>
       <Container className="mt-10">
-        <Title size="lg" className="font-extrabold" text='All pizzas' />
+        <Title size="lg" className="font-extrabold" text='All perfumes' />
       </Container>
-      <TopBar categories={categoryes.filter((category) => category.products.length > 0)} />
-      <Stories />
+      {/* <TopBar categories={categoryes.filter((category) => category.products.length > 0)} /> */}
+      {/* <Stories /> */}
       <Container className="mt-10 pb-14">
         <div className='flex flex-col xl:flex-row gap-[60px]'>
           <FiltersDrawer />

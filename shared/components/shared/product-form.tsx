@@ -34,18 +34,18 @@ export const ProductForm: FC<Props> = ({ product, className, onSubmit: _onSubmit
         _onSubmit?.();
     }
 
-    if (isPizzaForm) {
-        return (
-            <ChoosePizzaForm
-                imageUrl={product.imageUrl}
-                name={product.name}
-                ingredients={product.ingredients}
-                items={product.items}
-                onSubmit={onSubmit}
-                loading={loading}
-            />
-        )
-    }
+    // if (isPizzaForm) {
+    //     return (
+    //         <ChoosePizzaForm
+    //             imageUrl={product.imageUrl}
+    //             name={product.name}
+    //             ingredients={product.ingredients}
+    //             items={product.items}
+    //             onSubmit={onSubmit}
+    //             loading={loading}
+    //         />
+    //     )
+    // }
 
     return (
         <ChooseProductForm

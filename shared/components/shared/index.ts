@@ -1,3 +1,4 @@
+import { VolumeSelection } from './volume-selection';
 export { Header } from './header';
 export { Container } from './container';
 export { Title } from './title';
@@ -36,6 +37,8 @@ export {ProfileButton} from './profile-button';
 export {InfoBlock} from './info-block';
 export {ProfileForm} from './profile-form';
 export {Stories} from './stories';
+export {VolumeSelection} from './volume-selection';
+export {Text} from './text';
 
 export * from './email-templates';
 export * from './form';

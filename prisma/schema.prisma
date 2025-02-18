@@ -42,39 +42,24 @@ model Product {
     name     String
     imageUrl String
 
+    description   String
+
+    price         Int
+
+    gender        Gender[]
+
+    concentration PerfumeConcentration
+
+    brand         String
+
+    notes         Notes[]
+
+    types         Types[]
+    
+    releaseYear   Int
+
+    category   Category? @relation(fields: [categoryId], references: [id])
     categoryId Int
-    category   Category @relation(fields: [categoryId], references: [id])
-
-    ingredients Ingredient[]
-    items       ProductItem[]
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
-
-model ProductItem {
-    id Int @id @default(autoincrement())
-
-    price     Int
-    size      Int?
-    pizzaType Int?
-
-    cartItems CartItem[]
-
-    product   Product @relation(fields: [productId], references: [id])
-    productId Int
-}
-
-model Ingredient {
-    id Int @id @default(autoincrement())
-
-    name String
-
-    price    Int
-    imageUrl String
-
-    products  Product[]
-    cartItems CartItem[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -99,15 +84,10 @@ model Cart {
 model CartItem {
     id Int @id @default(autoincrement())
 
-    productItem   ProductItem @relation(fields: [productItemId], references: [id])
-    productItemId Int
-
     cart   Cart @relation(fields: [cartId], references: [id])
     cartId Int
 
     quantity Int @default(1)
-
-    ingredients Ingredient[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -174,4 +154,38 @@ enum OrderStatus {
 enum UserRole {
     USER
     ADMIN
+}
+
+enum Gender {
+    MALE
+    FEMALE
+    UNISEX
+}
+
+enum PerfumeConcentration {
+    EXTRAIT
+    PERFUME
+    EAU_DE_PARFUM
+    EAU_DE_TOILETTE
+    EAU_DE_COLOGNE
+}
+
+enum Notes {
+    CITRUS
+    FLORAL
+    GREEN
+    FRUITY
+    SPICY
+    WOODY
+    ORIENTAL
+    MUSK
+    AQUATIC
+}
+
+enum Types {
+    NICHE
+    ARABIAN
+    DESIGNER
+    CELEBRITY
+    INDIE
 }
