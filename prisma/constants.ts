@@ -1,217 +1,130 @@
+import { Prisma } from "@prisma/client";
+
 export const categories = [
-    {
-      name: 'Pizzas',
-    },
-    {
-      name: 'Breakfast',
-    },
-    {
-      name: 'Snacks',
-    },
-    {
-      name: 'Cocktails',
-    },
-    {
-      name: 'Drinks',
-    },
-  ];
+  {
+    name: "Perfumes",
+  },
+];
 
-  export const ingredients = [
-    {
-      name: 'Cheese Stuffed Crust',
-      price: 2.50,
-      imageUrl:
-        'https://cdn.dodostatic.net/static/Img/Ingredients/99f5cb91225b4875bd06a26d2e842106.png',
-    },
-    {
-      name: 'Creamy Mozzarella',
-      price: 1.20,
-      imageUrl:
-        'https://cdn.dodostatic.net/static/Img/Ingredients/cdea869ef287426386ed634e6099a5ba.png',
-    },
-    {
-      name: 'Cheddar and Parmesan Cheeses',
-      price: 1.80,
-      imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA69C1FE796',
-    },
-    {
-      name: 'Spicy Jalapeño',
-      price: 1.00,
-      imageUrl:
-        'https://cdn.dodostatic.net/static/Img/Ingredients/11ee95b6bfdf98fb88a113db92d7b3df.png',
-    },
-    {
-      name: 'Tender Chicken',
-      price: 2.00,
-      imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A39D824A82E11E9AFA5B328D35A',
-    },
-    {
-      name: 'Mushrooms',
-      price: 1.00,
-      imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA67259A324',
-    },
-    {
-      name: 'Ham',
-      price: 1.70,
-      imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A39D824A82E11E9AFA61B9A8D61',
-    },
-    {
-      name: 'Spicy Pepperoni',
-      price: 1.70,
-      imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA6258199C3',
-    },
-    {
-      name: 'Spicy Chorizo',
-      price: 1.70,
-      imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA62D5D6027',
-    },
-    {
-      name: 'Pickled Cucumbers',
-      price: 1.80,
-      imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A21DA51A81211E9EA89958D782B',
-    },
-    {
-      name: 'Fresh Tomatoes',
-      price: 1.70,
-      imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A39D824A82E11E9AFA7AC1A1D67',
-    },
-    {
-      name: 'Red Onion',
-      price: 1.60,
-      imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA60AE6464C',
-    },
-    {
-      name: 'Juicy Pineapples',
-      price: 1.90,
-      imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A21DA51A81211E9AFA6795BA2A0',
-    },
-    {
-      name: 'Italian Herbs',
-      price: 1.50,
-      imageUrl:
-        'https://cdn.dodostatic.net/static/Img/Ingredients/370dac9ed21e4bffaf9bc2618d258734.png',
-    },
-    {
-      name: 'Sweet Pepper',
-      price: 1.80,
-      imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A22FA54A81411E9AFA63F774C1B',
-    },
-    {
-      name: 'Feta Cubes',
-      price: 1.70,
-      imageUrl: 'https://cdn.dodostatic.net/static/Img/Ingredients/000D3A39D824A82E11E9AFA6B0FFC349',
-    },
-    {
-      name: 'Meatballs',
-      price: 2.00,
-      imageUrl:
-        'https://cdn.dodostatic.net/static/Img/Ingredients/b2f3a5d5afe44516a93cfc0d2ee60088.png',
-    },
-  ].map((obj, index) => ({ id: index + 1, ...obj }));
-
-  
-  export const products = [
-    {
-      name: 'Omelette with Ham and Mushrooms',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE7970321044479C1D1085457A36EB.webp',
-      categoryId: 2,
-    },
-    {
-      name: 'Omelette with Pepperoni',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE94ECF33B0C46BA410DEC1B1DD6F8.webp',
-      categoryId: 2,
-    },
-    {
-      name: 'Caffe Latte',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE7D61B0C26A3F85D97A78FEEE00AD.webp',
-      categoryId: 2,
-    },
-    {
-      name: 'Denwich with Ham and Cheese',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE796FF0059B799A17F57A9E64C725.webp',
-      categoryId: 3,
-    },
-    {
-      name: 'Chicken Nuggets',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE7D618B5C7EC29350069AE9532C6E.webp',
-      categoryId: 3,
-    },
-    {
-      name: 'Baked Potatoes with Sauce 🌱',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EED646A9CD324C962C6BEA78124F19.webp',
-      categoryId: 3,
-    },
-    {
-      name: 'Dodster',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE796F96D11392A2F6DD73599921B9.webp',
-      categoryId: 3,
-    },
-    {
-      name: 'Spicy Dodster 🌶️🌶️',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE796FD3B594068F7A752DF8161D04.webp',
-      categoryId: 3,
-    },
-    {
-      name: 'Banana Milkshake',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EEE20B8772A72A9B60CFB20012C185.webp',
-      categoryId: 4,
-    },
-    {
-      name: 'Caramel Apple Milkshake',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE79702E2A22E693D96133906FB1B8.webp',
-      categoryId: 4,
-    },
-    {
-      name: 'Milkshake with Oreo Cookies',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE796FA1F50F8F8111A399E4C1A1E3.webp',
-      categoryId: 4,
-    },
-    {
-      name: 'Classic Milkshake 👶',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE796F93FB126693F96CB1D3E403FB.webp',
-      categoryId: 4,
-    },
-    {
-      name: 'Irish Cappuccino',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE7D61999EBDA59C10E216430A6093.webp',
-      categoryId: 5,
-    },
-    {
-      name: 'Caramel Cappuccino',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE7D61AED6B6D4BFDAD4E58D76CF56.webp',
-      categoryId: 5,
-    },
-    {
-      name: 'Coconut Latte',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE7D61B19FA07090EE88B0ED347F42.webp',
-      categoryId: 5,
-    },
-    {
-      name: 'Americano',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE7D61B044583596548A59078BBD33.webp',
-      categoryId: 5,
-    },
-    {
-      name: 'Caffe Latte',
-      imageUrl:
-        'https://media.dodostatic.net/image/r:292x292/11EE7D61B0C26A3F85D97A78FEEE00AD.webp',
-      categoryId: 5,
-    },
-  ];
-  
+export const products: Prisma.ProductCreateManyInput[] = [
+  {
+    name: "Chanel No. 5",
+    imageUrl:
+      "https://media.douglas.de/medias/zUsfEz1217085-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3w4Mzg1NnxpbWFnZS9qcGVnfGFHUXdMMmhsTmk4Mk16QTNNelEyT1RnNU1EVTVNQzk2VlhObVJYb3hNakUzTURnMVh6QmZaR2RzTFVSRkxtcHdad3wyYmMxMGVhZGQ5ZjdiNWRjZDMyZDU1Y2QwMTQ4MWY4MzE4NjhkYTJiZjNkODU0MGE3ZTQxOTk4NzA0YWUyYzE4&grid=true&imPolicy=grayScaled&imdensity=1&imwidth=775",
+    description: "Classic perfume by Chanel.",
+    price: 150,
+    stoke: 100,
+    gender: ["FEMALE"],
+    concentration: "EAU_DE_PARFUM",
+    brand: "CHANEL", 
+    notes: ["CITRUS", "GREEN"],
+    types: ["DESIGNER"],
+    releaseYear: 1921,
+    categoryId: 1,
+  },
+  {
+    name: "Dior Sauvage",
+    imageUrl:
+      "https://media.douglas.de/medias/teTvKF1217080-0-dgl-DE.png?context=bWFzdGVyfGltYWdlc3w3OTYzMjN8aW1hZ2UvcG5nfGFHTTRMMmhrWVM4Mk1qQTJNamMxTURRek16TXhNQzkwWlZSMlMwWXhNakUzTURnd1h6QmZaR2RzTFVSRkxuQnVad3w4NTlmNDNkOWI2ODAyODZhOGI1Mjc1ZTFkMDlhNGE1ZmFiNGZmYzU1YThlOWI0ZmQ1MmFlMTRhNjczMjhhNzRm&grid=true&imPolicy=grayScaled&imdensity=1&imwidth=775",
+    description: "Fresh and spicy fragrance for men by Dior.",
+    price: 160,
+    stoke: 80,
+    gender: ["MALE"],
+    concentration: "EAU_DE_TOILETTE",
+    brand: "DIOR", 
+    notes: ["CITRUS", "SPICY"],
+    types: ["DESIGNER"],
+    releaseYear: 2015,
+    categoryId: 1,
+  },
+  {
+    name: "Gucci Bloom",
+    imageUrl:
+      "https://media.douglas.de/medias/1W3Iiz1206949-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3w3MjQwNHxpbWFnZS9qcGVnfGFETmhMMmczTUM4Mk1qZzJNell4TkRBeE56VTJOaTh4VnpOSmFYb3hNakEyT1RRNVh6QmZaR2RzTFVSRkxtcHdad3w2ZTFjNjA1ZGE1OGY2NjQ4Zjk5NmI5OGUxYWE3NTE2ZmRiYWNmMjcyYjA5NGY5OGU5MjM1ZTgyZTUxY2Y5OGIy&grid=true&imPolicy=grayScaled&imdensity=1&imwidth=775",
+    description: "A rich white floral scent from Gucci.",
+    price: 140,
+    stoke: 70,
+    gender: ["FEMALE"],
+    concentration: "PERFUME",
+    brand: "GUCCI", 
+    notes: ["FLORAL", "MUSK"],
+    types: ["CELEBRITY"],
+    releaseYear: 2017,
+    categoryId: 1,
+  },
+  {
+    name: "Tom Ford Black Orchid",
+    imageUrl:
+      "https://media.douglas.de/medias/fX36ww289690-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3w4NTg3MHxpbWFnZS9qcGVnfGFEQTVMMmhrTXk4ek5EWTNNVEV5TXpreU1qazNOQzltV0RNMmQzY3lPRGsyT1RCZk1GOWtaMnd0UkVVdWFuQm58OTA0MDJmM2NkYTRmYWY2M2Y4MDAyZTdiNDZkZGY3MmY2OTU2ZmUzODgyZWQ5OWRjYjFjM2I5MTQzYmRiODU0OQ&grid=true&imPolicy=grayScaled&imdensity=1&imwidth=775",
+    description: "Opulent and luxurious fragrance by Tom Ford.",
+    price: 200,
+    stoke: 50,
+    gender: ["UNISEX"],
+    concentration: "EXTRAIT",
+    brand: "TOM_FORD", 
+    notes: ["ORIENTAL", "MUSK"],
+    types: ["NICHE"],
+    releaseYear: 2006,
+    categoryId: 1,
+  },
+  {
+    name: "YSL Libre",
+    imageUrl:
+      "https://media.douglas.de/medias/https-media-prod-eu-1.mirakl.net-SOURCE-c25f678b853d40cf8426baeffbc0051a.jpg?context=bWFzdGVyfGltYWdlc3wxMTI5NzB8aW1hZ2UvanBlZ3xhRFV4TDJneFlpODJNekF6TlRrd01qazFNVFExTkM5b2RIUndjem92TDIxbFpHbGhMWEJ5YjJRdFpYVXRNUzV0YVhKaGEyd3VibVYwTDFOUFZWSkRSUzlqTWpWbU5qYzRZamcxTTJRME1HTm1PRFF5Tm1KaFpXWm1ZbU13TURVeFlRfDAzYTIxNjFkYTMzNjg0NTAyZjkxYTIwNmM2MTkyZjM3OGVjMmFmMzg4MjI2MjQ1MjViNGVhNTBlZDhlZDQwMjY&grid=true&imPolicy=grayScaled&imdensity=1&imwidth=775",
+    description: "Bold and floral scent by Yves Saint Laurent.",
+    price: 155,
+    stoke: 90,
+    gender: ["FEMALE"],
+    concentration: "EAU_DE_PARFUM",
+    brand: "YSL",  
+    notes: ["FLORAL", "CITRUS"],
+    types: ["DESIGNER"],
+    releaseYear: 2019,
+    categoryId: 1,
+  },
+  {
+    name: "Versace Eros",
+    imageUrl:
+      "https://media.douglas.de/medias/Bt0apQ818762-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3wyMjQ5MzJ8aW1hZ2UvanBlZ3xhREEyTDJnNU1TODBPVEF4T1RJeU9UWTJOek0xT0M5Q2REQmhjRkU0TVRnM05qSmZNRjlrWjJ3dFJFVXVhbkJufDE2MzZhOThhNmY0NDU5NzZmODcxNGUzOGJkODNiMTI5YjQ2ZTU4ZGY1NmI0YmQ3MzNjNWEwZTczZjIxZmYzZGU&grid=true&imPolicy=grayScaled&imdensity=1&imwidth=775",
+    description: "Intense and fresh scent by Versace.",
+    price: 145,
+    stoke: 75,
+    gender: ["MALE"],
+    concentration: "EAU_DE_TOILETTE",
+    brand: "VERSACE", 
+    notes: ["CITRUS", "WOODY"],
+    types: ["CELEBRITY"],
+    releaseYear: 2012,
+    categoryId: 1,
+  },
+  {
+    name: "Armani Code",
+    imageUrl:
+      "https://media.douglas.de/medias/VQ1jvL242838-0-global.jpg?context=bWFzdGVyfGltYWdlc3w0ODE3Njl8aW1hZ2UvanBlZ3xhRGd6TDJoaE1DODJNamM0TWpReU9URTJOelkwTmk5V1VURnFka3d5TkRJNE16aGZNRjluYkc5aVlXd3VhbkJufDI1MGFjMDMwNjhjNTFlZjQxY2Q1Yjg4M2VmOTVlYjdmNGFjNzM5ZTk2MWY0YWNkMzE0MTI2MTk3NTU3NzRkMWQ&grid=true&imPolicy=grayScaled&imdensity=1&imwidth=775",
+    description: "Elegant and sensual fragrance by Armani.",
+    price: 165,
+    stoke: 85,
+    gender: ["MALE"],
+    concentration: "EAU_DE_PARFUM",
+    brand: "ARMANI", 
+    notes: ["SPICY", "MUSK"],
+    types: ["DESIGNER"],
+    releaseYear: 2004,
+    categoryId: 1,
+  },
+  {
+    name: "Givenchy Dahlia Divin",
+    imageUrl:
+      "https://media.douglas.de/medias/83hfnR695892-0-global.jpg?context=bWFzdGVyfGltYWdlc3wyNDA1MTR8aW1hZ2UvanBlZ3xhRE5qTDJnd05DODJNelkwTXpVeE56WXhOakUxT0M4NE0yaG1ibEkyT1RVNE9USmZNRjluYkc5aVlXd3VhbkJufDY2ZmQwNjk5MTI0NGMzNjY5NWUzMzBkMjc1NzViZWJmY2UzYjYyMmZiMTI2YjY2OWY3MTQzNWIzMDFhZjAwN2Q",
+    description: "Feminine and radiant scent by Givenchy.",
+    price: 150,
+    stoke: 60,
+    gender: ["FEMALE"],
+    concentration: "PERFUME",
+    brand: "GIVENCHY", 
+    notes: ["FLORAL", "AQUATIC"],
+    types: ["CELEBRITY"],
+    releaseYear: 2015,
+    categoryId: 1,
+  },
+];

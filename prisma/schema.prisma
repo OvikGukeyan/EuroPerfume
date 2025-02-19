@@ -4,8 +4,8 @@ generator client {
 
 datasource db {
     provider  = "postgresql"
-    url       = env("POSTGRES_URL")
-    directUrl = env("POSTGRES_URL_NON_POOLING")
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -46,17 +46,16 @@ model Product {
 
     price         Int
 
+    stoke         Int
+
     gender        Gender[]
-
     concentration PerfumeConcentration
-
-    brand         String
-
+    brand         Brand
     notes         Notes[]
-
     types         Types[]
-    
     releaseYear   Int
+
+    cartItems CartItem[]
 
     category   Category? @relation(fields: [categoryId], references: [id])
     categoryId Int
@@ -86,6 +85,9 @@ model CartItem {
 
     cart   Cart @relation(fields: [cartId], references: [id])
     cartId Int
+
+    product   Product? @relation(fields: [productId], references: [id])
+    productId Int
 
     quantity Int @default(1)
 
@@ -188,4 +190,28 @@ enum Types {
     DESIGNER
     CELEBRITY
     INDIE
+}
+
+enum Brand {
+  CHANEL
+  DIOR
+  GUCCI
+  TOM_FORD
+  YSL
+  VERSACE
+  ARMANI
+  GIVENCHY
+  PRADA
+  BURBERRY
+  CALVIN_KLEIN
+  LACOSTE
+  HUGO_BOSS
+  RALPH_LAUREN
+  VALENTINO
+  BOTTEGA_VENETA
+  FENDI
+  LOUIS_VUITTON
+  SALVATORE_FERRAGAMO
+  MICHAEL_KORS
+  VICTORIA_SECRET
 }

@@ -1,8 +1,8 @@
 import { Container, Title, TopBar, ProductsGroupList, FiltersDrawer, Stories } from "@/shared/components/shared";
-import { findPizzas, GetSearchParams } from "@/shared/lib/find-pizzas";
+import { findProducts, GetSearchParams } from "@/shared/lib/find-products";
 
 export default async function Home({ searchParams }: { searchParams: GetSearchParams }) {
-  const categoryes = await findPizzas(searchParams)
+  const categoryes = await findProducts(searchParams)
 
   return (
     <>
