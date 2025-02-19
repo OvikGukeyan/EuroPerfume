@@ -5,6 +5,7 @@ import React, { FC } from "react";
 import { Title, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
 import { useFilters, useIngredients, useQueryFilters } from "@/shared/hooks";
+import { Brand, Gender } from "@prisma/client";
 
 interface Props {
   className?: string;
@@ -37,13 +38,13 @@ export const Filters: FC<Props> = () => {
         onClickCheckbox={filters.setSelectedBrands}
         selected={filters.brands}
         items={[
-          { text: "Chanel", value: "chanel" },
-          { text: "Dior", value: "dior" },
-          { text: "Gucci", value: "gucci" },
-          { text: "Yves Saint Laurent", value: "ysl" },
-          { text: "Versace", value: "versace" },
-          { text: "Calvin Klein", value: "calvin_klein" },
-          { text: "Tom Ford", value: "tom_ford" },
+          { text: "Chanel", value: Brand.CHANEL },
+          { text: "Dior", value: Brand.DIOR },
+          { text: "Gucci", value: Brand.GUCCI },
+          { text: "Yves Saint Laurent", value: Brand.YSL },
+          { text: "Versace", value: Brand.VERSACE },
+          { text: "Calvin Klein", value: Brand.CALVIN_KLEIN },
+          { text: "Tom Ford", value: Brand.TOM_FORD },
         ]}
       />
 
@@ -54,9 +55,9 @@ export const Filters: FC<Props> = () => {
         onClickCheckbox={filters.setSelectedGender}
         selected={filters.gender}
         items={[
-          { text: "Women", value: "women" },
-          { text: "Men", value: "men" },
-          { text: "Unisex", value: "unisex" },
+          { text: "Women", value: Gender.FEMALE },
+          { text: "Men", value: Gender.MALE },
+          { text: "Unisex", value: Gender.UNISEX },
         ]}
       />
 
