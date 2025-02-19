@@ -4,11 +4,11 @@ import { Dialog, DialogContent } from '@/shared/components/ui/dialog'
 import { cn } from '@/shared/lib/utils'
 import { useRouter } from 'next/navigation'
 import React, { FC } from 'react'
-import { ProductWithRelations } from '@/@types/prisma'
 import { ProductForm } from '..'
+import { Product } from '@prisma/client'
 
 interface Props {
-    product: ProductWithRelations
+    product: Product
     className?: string
 
 }

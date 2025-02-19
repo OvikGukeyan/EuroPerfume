@@ -24,14 +24,14 @@ export async function createOrder(data: CheckoutFormValues) {
             include: {
                 user: true,
                 items: {
-                    include: {
-                        ingredients: true,
-                        productItem: {
-                            include: {
-                                product: true
-                            }
-                        }
-                    }
+                    // include: {
+                    //     ingredients: true,
+                    //     productItem: {
+                    //         include: {
+                    //             product: true
+                    //         }
+                    //     }
+                    // }
                 }
             },
             where: {

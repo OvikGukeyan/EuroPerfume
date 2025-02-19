@@ -1,60 +1,62 @@
-'use client'
+"use client";
 
-import { ProductWithRelations } from '@/@types/prisma';
-import { useCartStore } from '@/shared/store';
-import React, { FC } from 'react'
-import toast from 'react-hot-toast';
-import { ChoosePizzaForm } from './choose-pizza-form';
-import { ChooseProductForm } from './choose-product-form';
+import { useCartStore } from "@/shared/store";
+import React, { FC } from "react";
+import toast from "react-hot-toast";
+import { ChoosePizzaForm } from "./choose-pizza-form";
+import { ChooseProductForm } from "./choose-product-form";
+import { Product } from "@prisma/client";
 
 interface Props {
-    product: ProductWithRelations;
-    onSubmit?: VoidFunction;
-    className?: string
+  product: Product;
+  onSubmit?: VoidFunction;
+  className?: string;
 }
-export const ProductForm: FC<Props> = ({ product, className, onSubmit: _onSubmit }) => {
-    const [addCartItem, loading] = useCartStore(state => [state.addCartItem, state.loading]);
+export const ProductForm: FC<Props> = ({
+  product,
+  className,
+  onSubmit: _onSubmit,
+}) => {
+  const [addCartItem, loading] = useCartStore((state) => [
+    state.addCartItem,
+    state.loading,
+  ]);
 
-
-    const firstItem = product.items[0]
-    const isPizzaForm = Boolean(firstItem.pizzaType);
-
-    const onSubmit = async (productItemId?: number, ingredients?: number[]) => {
-        try {
-            const itemId = productItemId ?? firstItem.id
-            await addCartItem({
-                productItemId: itemId,
-                ingredients
-            })
-            toast.success(product.name + ' added to cart');
-        } catch (error) {
-            console.error(error)
-            toast.error('Something went wrong')
-        }
-        _onSubmit?.();
+  const onSubmit = async (productId: number) => {
+    try {
+      await addCartItem({
+        productId,
+      });
+      toast.success(product.name + " added to cart");
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
     }
+    _onSubmit?.();
+  };
 
-    // if (isPizzaForm) {
-    //     return (
-    //         <ChoosePizzaForm
-    //             imageUrl={product.imageUrl}
-    //             name={product.name}
-    //             ingredients={product.ingredients}
-    //             items={product.items}
-    //             onSubmit={onSubmit}
-    //             loading={loading}
-    //         />
-    //     )
-    // }
+  // if (isPizzaForm) {
+  //     return (
+  //         <ChoosePizzaForm
+  //             imageUrl={product.imageUrl}
+  //             name={product.name}
+  //             ingredients={product.ingredients}
+  //             items={product.items}
+  //             onSubmit={onSubmit}
+  //             loading={loading}
+  //         />
+  //     )
+  // }
 
-    return (
-        <ChooseProductForm
-            imageUrl={product.imageUrl}
-            name={product.name}
-            onSubmit={onSubmit}
-            price={firstItem.price}
-            loading={loading}
-
-        />
-    )
-}
+  return (
+    <ChooseProductForm
+      id={product.id}
+      imageUrl={product.imageUrl}
+      name={product.name}
+      description={product.description}
+      onSubmit={onSubmit}
+      price={product.price}
+      loading={loading}
+    />
+  );
+};
