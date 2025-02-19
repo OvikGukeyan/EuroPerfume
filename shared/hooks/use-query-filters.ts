@@ -12,7 +12,7 @@ export const useQueryFilters = (filters: Filters) => {
       const params = {
         ...filters.prices,
         brands: Array.from(filters.brands),
-        categories: Array.from(filters.categories),
+        types: Array.from(filters.types),
         concentration: Array.from(filters.concentration),
         gender: Array.from(filters.gender),
         notes: Array.from(filters.notes),

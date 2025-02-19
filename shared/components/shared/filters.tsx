@@ -5,21 +5,16 @@ import React, { FC } from "react";
 import { Title, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
 import { useFilters, useIngredients, useQueryFilters } from "@/shared/hooks";
-import { Brand, Gender } from "@prisma/client";
+import { Brand, Gender, Notes, PerfumeConcentration, Types } from "@prisma/client";
 
 interface Props {
   className?: string;
 }
 
 export const Filters: FC<Props> = () => {
-  const { loading, ingredients } = useIngredients();
   const filters = useFilters();
 
-  const items = ingredients.map((item) => ({
-    value: String(item.id),
-    text: item.name,
-  }));
-
+ 
   useQueryFilters(filters);
 
   const updatePreces = (prices: number[]) => {
@@ -68,11 +63,11 @@ export const Filters: FC<Props> = () => {
         onClickCheckbox={filters.setSelectedConcentration}
         selected={filters.concentration}
         items={[
-          { text: "Extrait de Parfum", value: "extrait_de_parfum" },
-          { text: "Perfume", value: "perfume" },
-          { text: "Eau de Parfum", value: "eau_de_parfum" },
-          { text: "Eau de Toilette", value: "eau_de_toilette" },
-          { text: "Eau de Cologne", value: "eau_de_cologne" },
+          { text: "Extrait de Parfum", value: PerfumeConcentration.EXTRAIT },
+          { text: "Perfume", value: PerfumeConcentration.PERFUME},
+          { text: "Eau de Parfum", value: PerfumeConcentration.EAU_DE_PARFUM },
+          { text: "Eau de Toilette", value: PerfumeConcentration.EAU_DE_TOILETTE },
+          { text: "Eau de Cologne", value: PerfumeConcentration.EAU_DE_COLOGNE },
         ]}
       />
 
@@ -80,14 +75,14 @@ export const Filters: FC<Props> = () => {
         title="Perfume Categories"
         name="categories"
         className="mb-5"
-        onClickCheckbox={filters.setSelectedCategories}
-        selected={filters.categories}
+        onClickCheckbox={filters.setSelectedTypes}
+        selected={filters.types}
         items={[
-          { text: "Niche", value: "niche" },
-          { text: "Arabian", value: "arabian" },
-          { text: "Designer", value: "designer" },
-          { text: "Celebrity", value: "celebrity" },
-          { text: "Indie", value: "indie" },
+          { text: "Niche", value: Types.NICHE },
+          { text: "Arabian", value: Types.ARABIAN },
+          { text: "Designer", value: Types.DESIGNER },
+          { text: "Celebrity", value: Types.CELEBRITY },
+          { text: "Indie", value: Types.INDIE },
         ]}
       />
 
@@ -98,7 +93,7 @@ export const Filters: FC<Props> = () => {
             type="number"
             placeholder="0"
             min={0}
-            max={50}
+            max={500}
             value={String(filters.prices.priceFrom)}
             onChange={(e) =>
               filters.setPrices("priceFrom", Number(e.target.value))
@@ -107,8 +102,8 @@ export const Filters: FC<Props> = () => {
           <Input
             type="number"
             min={0}
-            max={50}
-            placeholder="50"
+            max={500}
+            placeholder="500"
             value={String(filters.prices.priceTo)}
             onChange={(e) =>
               filters.setPrices("priceTo", Number(e.target.value))
@@ -117,9 +112,9 @@ export const Filters: FC<Props> = () => {
         </div>
         <RangeSlider
           min={0}
-          max={50}
+          max={500}
           step={1}
-          value={[filters.prices.priceFrom || 0, filters.prices.priceTo || 50]}
+          value={[filters.prices.priceFrom || 0, filters.prices.priceTo || 500]}
           onValueChange={updatePreces}
         />
       </div>
@@ -131,20 +126,18 @@ export const Filters: FC<Props> = () => {
         limit={6}
         // defaultItems={items.slice(0, 6)}
         items={[
-          { text: "Citrus", value: "citrus" },
-          { text: "Floral", value: "floral" },
-          { text: "Green", value: "green" },
-          { text: "Fruity", value: "fruity" },
-          { text: "Spicy", value: "spicy" },
-          { text: "Woody", value: "woody" },
-          { text: "Oriental", value: "oriental" },
-          { text: "Musk", value: "musk" },
-          { text: "Aquatic", value: "aquatic" },
+          { text: "Citrus", value: Notes.CITRUS },
+          { text: "Floral", value: Notes.FLORAL },
+          { text: "Green", value: Notes.GREEN },
+          { text: "Fruity", value: Notes.FRUITY },
+          { text: "Spicy", value: Notes.SPICY },
+          { text: "Woody", value: Notes.WOODY },
+          { text: "Oriental", value: Notes.ORIENTAL },
+          { text: "Musk", value: Notes.MUSK },
+          { text: "Aquatic", value: Notes.AQUATIC },
         ]}
-        // loading={loading}
         onClickCheckbox={filters.setSelectedNotes}
         selected={filters.notes}
-        
       />
     </div>
   );
