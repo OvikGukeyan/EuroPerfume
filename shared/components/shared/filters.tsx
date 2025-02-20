@@ -12,6 +12,7 @@ interface Props {
 }
 
 export const Filters: FC<Props> = () => {
+
   const filters = useFilters();
 
  

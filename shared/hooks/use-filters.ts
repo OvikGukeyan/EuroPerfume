@@ -12,7 +12,8 @@ export interface QueryFilters extends PriceProps {
     gender: string;
     brands: string;
     types: string;
-    notes: string
+    notes: string;
+    page: string
 }
 
 export interface Filters {
@@ -22,6 +23,7 @@ export interface Filters {
     types: Set<string>;
     notes: Set<string>;
     prices: PriceProps
+    currentPage: number
 }
 
 interface ReturnProps extends Filters {
@@ -31,6 +33,7 @@ interface ReturnProps extends Filters {
     setSelectedBrands: (key: string) => void;
     setSelectedTypes: (key: string) => void;
     setSelectedNotes: (key: string) => void;
+    setCurrentPage: (page: number) => void
 }
 
 export const useFilters = (): ReturnProps => {
@@ -42,11 +45,12 @@ export const useFilters = (): ReturnProps => {
 
     const [concentration, { toggle: toggleConcentration }] = useSet(new Set<string>(searchParams.get('concentration')?.split(',')));
 
+
     const [types, { toggle: toggleTypes }] = useSet(new Set<string>(searchParams.get('types')?.split(',')));
 
     const [notes, { toggle: toggleNotes }] = useSet(new Set<string>(searchParams.get('notes')?.split(',')));
 
-
+    const [currentPage, setCurrentPage] = useState( Number(searchParams.get('page')) || 1);
 
 
     const [prices, setPrices] = useState<PriceProps>({
@@ -65,6 +69,8 @@ export const useFilters = (): ReturnProps => {
         types,
         notes,
         prices,
+        currentPage,
+        setCurrentPage,
         setSelectedGender: toggleGender,
         setSelectedConcentration: toggleConcentration,
         setSelectedBrands: toggleBrands,
@@ -78,6 +84,7 @@ export const useFilters = (): ReturnProps => {
         types,
         notes,
         prices,
+        currentPage
        
     ]);
 

@@ -2,25 +2,26 @@
 import React, { FC } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui";
+import { Volume, volumes } from "@/shared/constants/perfume";
 
 type Props = {
   className?: string;
-  setVolume: React.Dispatch<React.SetStateAction<number>>;
+  setVolume: React.Dispatch<React.SetStateAction<Volume>>;
   volume: number;
 };
 
 export const VolumeSelection: FC<Props> = ({ className, volume, setVolume }) => {
   return (
-    <div className={cn("w-full flex items-center gap-2", className)}>
-      {[...Array(6)].map((_, index) => (
+    <div className={cn("w-full flex justify-between  items-center gap-1 flex-wrap", className)}>
+      {volumes.map((item, index) => (
         <Button
-          onClick={() => setVolume(index + 1)}
-          disabled={volume === index + 1}
+          onClick={() => setVolume(item)}
+          disabled={volume === item}
           className="w-10 h-10 rounded-md disabled:bg-slate-300"
-          key={index}
+          key={item}
           variant={"outline"}
         >
-          {index + 1}ml
+          {item}ml
         </Button>
       ))}
     </div>

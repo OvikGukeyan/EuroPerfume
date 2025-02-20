@@ -8,6 +8,7 @@ import { Button } from "../ui";
 import { Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import { useCartStore } from "@/shared/store";
+import { Volume } from "@/shared/constants/perfume";
 
 interface Props {
   id: number;
@@ -24,7 +25,7 @@ export const ProductCard: React.FC<Props> = ({
   price,
   id,
 }) => {
-  const [volume, setVolume] = useState(1);
+  const [volume, setVolume] = useState<Volume>(1);
 
   const [addCartItem, loading] = useCartStore((state) => [
     state.addCartItem,

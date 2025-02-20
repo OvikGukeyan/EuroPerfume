@@ -17,6 +17,7 @@ export interface GetSearchParams {
   concentration?: string;
   priceFrom?: string;
   priceTo?: string;
+  page?: string;
 }
 
 const DEFAULT_MIN_PRICE = 0;
@@ -34,13 +35,16 @@ export const findProducts = async (params: GetSearchParams) => {
   const concentration = params.concentration
     ?.split(",")
     .map((item) => item.trim().toUpperCase());
+  const page = Number(params.page) || 1;
 
   const priceFrom = Number(params.priceFrom) || DEFAULT_MIN_PRICE;
   const priceTo = Number(params.priceTo) || DEFAULT_MAX_PRICE;
-  
+
   const categoryes = await prisma.category.findMany({
     include: {
       products: {
+        skip: (page - 1) * 3 ,
+        take: 3,
         orderBy: {
           id: "desc",
         },
@@ -51,11 +55,14 @@ export const findProducts = async (params: GetSearchParams) => {
           types: types.length > 0 ? { hasSome: types as Types[] } : undefined,
           concentration: { in: concentration as PerfumeConcentration[] },
           notes: notes.length > 0 ? { hasSome: notes as Notes[] } : undefined,
-          price: { gte: priceFrom, lte: priceTo },
+          price:
+            priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
         },
       },
     },
   });
 
-  return categoryes;
+  const totalCount = await prisma.product.count();
+  const totalPages = Math.ceil(totalCount / 3);
+  return { categoryes, totalPages };
 };
