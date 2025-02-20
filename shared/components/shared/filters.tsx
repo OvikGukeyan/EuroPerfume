@@ -4,18 +4,24 @@ import { cn } from "@/shared/lib/utils";
 import React, { FC } from "react";
 import { Title, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
-import { useFilters, useIngredients, useQueryFilters } from "@/shared/hooks";
-import { Brand, Gender, Notes, PerfumeConcentration, Types } from "@prisma/client";
+import { useQueryFilters } from "@/shared/hooks";
+import {
+  Brand,
+  Gender,
+  Notes,
+  PerfumeConcentration,
+  Types,
+} from "@prisma/client";
+import { useFiltersStore } from "@/shared/store/filters";
 
 interface Props {
   className?: string;
 }
 
 export const Filters: FC<Props> = () => {
+  // const filters = useFilters();
+  const filters = useFiltersStore();
 
-  const filters = useFilters();
-
- 
   useQueryFilters(filters);
 
   const updatePreces = (prices: number[]) => {
@@ -65,10 +71,16 @@ export const Filters: FC<Props> = () => {
         selected={filters.concentration}
         items={[
           { text: "Extrait de Parfum", value: PerfumeConcentration.EXTRAIT },
-          { text: "Perfume", value: PerfumeConcentration.PERFUME},
+          { text: "Perfume", value: PerfumeConcentration.PERFUME },
           { text: "Eau de Parfum", value: PerfumeConcentration.EAU_DE_PARFUM },
-          { text: "Eau de Toilette", value: PerfumeConcentration.EAU_DE_TOILETTE },
-          { text: "Eau de Cologne", value: PerfumeConcentration.EAU_DE_COLOGNE },
+          {
+            text: "Eau de Toilette",
+            value: PerfumeConcentration.EAU_DE_TOILETTE,
+          },
+          {
+            text: "Eau de Cologne",
+            value: PerfumeConcentration.EAU_DE_COLOGNE,
+          },
         ]}
       />
 

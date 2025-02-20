@@ -11,7 +11,8 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/shared/components/ui/pagination";
-import { useFilters, useQueryFilters } from "@/shared/hooks";
+import { useQueryFilters } from "@/shared/hooks";
+import { useFiltersStore } from "@/shared/store/filters";
 
 type Props = {
   className?: string;
@@ -27,7 +28,7 @@ export const PaginationComponent: FC<Props> = ({
  
 
 
-  const filters = useFilters();
+  const filters = useFiltersStore();
 
   useQueryFilters(filters);
   const onPageChange = (page: number) => {

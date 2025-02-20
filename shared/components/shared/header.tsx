@@ -13,9 +13,9 @@ import {
 } from "@/shared/components/shared";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { useSession } from "next-auth/react";
 import { Truck } from "lucide-react";
 import { Separator } from "../ui";
+import { useInitFiltersFromUrl } from "@/shared/hooks";
 interface Props {
   hasSearch?: boolean;
   hasCart?: boolean;
@@ -30,7 +30,7 @@ export const Header: React.FC<Props> = ({
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
-
+  useInitFiltersFromUrl();
   useEffect(() => {
     const paid = searchParams.has("paid");
     const failed = searchParams.has("faild");
