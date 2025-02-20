@@ -18,7 +18,6 @@ export default function HomeLayout({
   modal: React.ReactNode
 }>) {
   return (
-    <html lang="en">
       <main className="min-h-screen">
         <Suspense fallback={<div>Loading...</div>}>
           <Header />
@@ -26,6 +25,5 @@ export default function HomeLayout({
         {children}
         {modal}
       </main>
-    </html>
   );
 }

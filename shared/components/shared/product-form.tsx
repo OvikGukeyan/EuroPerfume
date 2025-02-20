@@ -3,7 +3,6 @@
 import { useCartStore } from "@/shared/store";
 import React, { FC } from "react";
 import toast from "react-hot-toast";
-import { ChoosePizzaForm } from "./choose-pizza-form";
 import { ChooseProductForm } from "./choose-product-form";
 import { Product } from "@prisma/client";
 
@@ -22,10 +21,11 @@ export const ProductForm: FC<Props> = ({
     state.loading,
   ]);
 
-  const onSubmit = async (productId: number) => {
+  const onSubmit = async (productId: number, volume: number) => {
     try {
       await addCartItem({
         productId,
+        volume
       });
       toast.success(product.name + " added to cart");
     } catch (error) {
@@ -57,6 +57,7 @@ export const ProductForm: FC<Props> = ({
       onSubmit={onSubmit}
       price={product.price}
       loading={loading}
+      
     />
   );
 };

@@ -1,5 +1,7 @@
+'use client'
+
 import { cn } from "@/shared/lib/utils";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { GroupVariants } from "./group-variants";
 import { Button, Separator } from "../ui";
 import Image from "next/image";
@@ -12,7 +14,7 @@ interface Props {
   price: number;
   description: string;
   loading: boolean;
-  onSubmit?: (productId: number) => Promise<void>;
+  onSubmit?: (productId: number, volume: number) => Promise<void>;
   className?: string;
 }
 export const ChooseProductForm: FC<Props> = ({
@@ -25,6 +27,8 @@ export const ChooseProductForm: FC<Props> = ({
   onSubmit,
   className,
 }) => {
+  const [volume, setVolume] = useState(1)
+
   return (
     <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
       <div className="flex  items-center justify-center flex-1 relative w-2/5">
@@ -44,16 +48,16 @@ export const ChooseProductForm: FC<Props> = ({
 
         <Text className="my-4">{description}</Text>
 
-        <VolumeSelection className="mb-4" />
+        <VolumeSelection volume={volume} setVolume={setVolume} className="mb-4" />
 
         <Separator />
 
         <Button
           loading={loading}
-          onClick={() => onSubmit?.(id)}
+          onClick={() => onSubmit?.(id, volume)}
           className="h-[55px] px-10 text-base rounded-[18px] w-full mt-6"
         >
-          Add too cart for {price} €
+          Add too cart for {price * volume} €
         </Button>
         <GroupVariants items={[]} />
       </div>

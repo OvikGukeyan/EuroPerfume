@@ -5,10 +5,11 @@ import { Button } from "../ui";
 
 type Props = {
   className?: string;
+  setVolume: React.Dispatch<React.SetStateAction<number>>;
+  volume: number;
 };
 
-export const VolumeSelection: FC<Props> = ({ className }) => {
-  const [volume, setVolume] = React.useState(1);
+export const VolumeSelection: FC<Props> = ({ className, volume, setVolume }) => {
   return (
     <div className={cn("w-full flex items-center gap-2", className)}>
       {[...Array(6)].map((_, index) => (
