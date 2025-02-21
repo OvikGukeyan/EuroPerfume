@@ -18,7 +18,6 @@ export const CartDrawerItem: FC<Props> = ({
     name,
     price,
     quantity,
-    details,
     disabled,
     onClickCountButton,
     onClickRemove,

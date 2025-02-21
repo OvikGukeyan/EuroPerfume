@@ -26,18 +26,7 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
                 {type === 'login' ? <LoginForm onClose={handleClose}/> : 
                 <RegisterForm onClose={handleClose}/>}
                 <hr />
-                <div className='flex gap-2'>
-                    <Button variant='secondary' className='gap-2 h-12 p-2 flex-1' type='button'
-                        onClick={() => {
-                            signIn('github'), {
-                                callbackUrl: process.env.NEXT_PUBLIC_BASE_URL,
-                                redirect: true
-                            }
-                        }}
-                    >
-                        <Image src="https://github.githubassets.com/favicons/favicon.svg" alt="GitHub" width={24} height={24} />
-                        GitHub
-                    </Button>
+                  
 
                     <Button variant='secondary' className='gap-2 h-12 p-2 flex-1' type='button'
                         onClick={() => {
@@ -51,7 +40,6 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
                         Google
                     </Button>
 
-                </div>
                 <Button onClick={onSwitchType} variant='outline' type='button' className='h-12'>
                     {type === 'login' ? 'Sign Up' : 'Sign In'}
                 </Button>

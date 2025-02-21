@@ -30,6 +30,18 @@ export const PaginationComponent: FC<Props> = ({
 
   const filters = useFiltersStore();
 
+  const handleNextPageClick = () => {
+    if(filters.currentPage === countOfPages) return
+    filters.setCurrentPage(filters.currentPage + 1);
+    window.scrollTo(0, 0);
+  };
+
+  const handlePreviousPageClick = () => {
+    if(filters.currentPage === 1) return
+    filters.setCurrentPage(filters.currentPage - 1);
+    window.scrollTo(0, 0);
+  };
+
   useQueryFilters(filters);
   const onPageChange = (page: number) => {
     filters.setCurrentPage(page);
@@ -40,7 +52,7 @@ export const PaginationComponent: FC<Props> = ({
       <Pagination>
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious href="#" />
+            <PaginationPrevious href="#" onClick={handlePreviousPageClick}/>
           </PaginationItem>
           {[...Array(countOfPages)].map((_, index) => (
             <PaginationItem key={index}>
@@ -54,7 +66,7 @@ export const PaginationComponent: FC<Props> = ({
             </PaginationItem>
           ))}
           <PaginationItem>
-            <PaginationNext href="#" />
+            <PaginationNext href="#" onClick={handleNextPageClick} />
           </PaginationItem>
         </PaginationContent>
       </Pagination>
