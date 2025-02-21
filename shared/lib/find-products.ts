@@ -39,30 +39,30 @@ export const findProducts = async (params: GetSearchParams) => {
 
   const priceFrom = Number(params.priceFrom) || DEFAULT_MIN_PRICE;
   const priceTo = Number(params.priceTo) || DEFAULT_MAX_PRICE;
-
-  const categoryes = await prisma.category.findMany({
-    include: {
-      products: {
-        skip: (page - 1) * 3 ,
-        take: 3,
-        orderBy: {
-          id: "desc",
-        },
-        where: {
-          brand: { in: brands as Brand[] },
-          gender:
-            genders.length > 0 ? { hasSome: genders as Gender[] } : undefined,
-          types: types.length > 0 ? { hasSome: types as Types[] } : undefined,
-          concentration: { in: concentration as PerfumeConcentration[] },
-          notes: notes.length > 0 ? { hasSome: notes as Notes[] } : undefined,
-          price:
-            priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
+  const whereClause = {
+    brand: { in: brands as Brand[] },
+    gender: genders.length > 0 ? { hasSome: genders as Gender[] } : undefined,
+    types: types.length > 0 ? { hasSome: types as Types[] } : undefined,
+    concentration: { in: concentration as PerfumeConcentration[] },
+    notes: notes.length > 0 ? { hasSome: notes as Notes[] } : undefined,
+    price: priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
+  };
+  const [categoryes, totalCount] = await prisma.$transaction([
+    prisma.category.findMany({
+      include: {
+        products: {
+          skip: (page - 1) * 3,
+          take: 3,
+          orderBy: { id: "desc" },
+          where: whereClause,
         },
       },
-    },
-  });
-
-  const totalCount = await prisma.product.count();
+    }),
+    prisma.product.count({
+      where: whereClause,
+    }),
+  ]);
+  
   const totalPages = Math.ceil(totalCount / 3);
   return { categoryes, totalPages };
 };
