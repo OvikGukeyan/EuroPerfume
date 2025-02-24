@@ -10,7 +10,10 @@ import {
 export const CreateProductSchema = z.object({
   productName: z.string().min(1, { message: "Name is required" }),
   imageUrl: z.string().url({ message: "Invalid URL" }),
-  description: z
+  descriptionRu: z
+    .string()
+    .min(10, { message: "Description should be at least 10 characters" }),
+  descriptionDe: z
     .string()
     .min(10, { message: "Description should be at least 10 characters" }),
   price: z.number().int().positive({ message: "Price must be positive" }),

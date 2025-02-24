@@ -10,7 +10,12 @@ import {
   yers,
 } from "@/prisma/constants";
 import { Checkbox, Input, Select, Textarea } from "@/shared/components";
-import { Container, Title } from "@/shared/components/shared";
+import {
+  Container,
+  FormInput,
+  FormTextarea,
+  Title,
+} from "@/shared/components/shared";
 import {
   Form,
   FormControl,
@@ -40,7 +45,8 @@ export default function Create() {
     defaultValues: {
       productName: "",
       imageUrl: "",
-      description: "",
+      descriptionRu: "",
+      descriptionDe: "",
       price: 0,
       gender: Gender.UNISEX,
       concentration: "EAU_DE_COLOGNE",
@@ -66,7 +72,11 @@ export default function Create() {
               <FormItem>
                 <FormLabel>Name</FormLabel>
                 <FormControl>
-                  <Input {...field} placeholder="Product Name" />
+                  <FormInput
+                    label={"Product Name"}
+                    {...field}
+                    placeholder="Product Name"
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -88,13 +98,31 @@ export default function Create() {
 
           {/* Description */}
           <FormField
-            name="description"
+            name="descriptionRu"
             control={form.control as Control<CreateProductFormValues>}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea {...field} placeholder="Description" />
+                  <FormTextarea
+                    label="Description Ru"
+                    {...field}
+                    placeholder="Description"
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+          <FormField
+            name="descriptionDe"
+            control={form.control as Control<CreateProductFormValues>}
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <FormTextarea
+                    label="Description De"
+                    {...field}
+                    placeholder="Description"
+                  />
                 </FormControl>
               </FormItem>
             )}
@@ -106,9 +134,8 @@ export default function Create() {
             control={form.control as Control<CreateProductFormValues>}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Price</FormLabel>
                 <FormControl>
-                  <Input type="number" {...field} placeholder="Price" />
+                  <FormInput label="Price" type="number" {...field} placeholder="Price" />
                 </FormControl>
               </FormItem>
             )}
@@ -203,47 +230,46 @@ export default function Create() {
             name="notes"
             control={form.control as Control<CreateProductFormValues>}
             render={() => (
-                <FormItem>
-                  <div className="mb-4">
-                    <FormLabel className="text-base">Notes</FormLabel>
-                    
-                  </div>
-                  {notes.map((item) => (
-                    <FormField
-                      key={item.name}
-                      control={form.control}
-                      name="notes"
-                      render={({ field }) => {
-                        return (
-                          <FormItem
-                            key={item.name}
-                            className="flex flex-row items-start space-x-3 space-y-0"
-                          >
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(item.value)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([...field.value, item.value])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== item.value
-                                        )
+              <FormItem>
+                <div className="mb-4">
+                  <FormLabel className="text-base">Notes</FormLabel>
+                </div>
+                {notes.map((item) => (
+                  <FormField
+                    key={item.name}
+                    control={form.control}
+                    name="notes"
+                    render={({ field }) => {
+                      return (
+                        <FormItem
+                          key={item.name}
+                          className="flex flex-row items-start space-x-3 space-y-0"
+                        >
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value?.includes(item.value)}
+                              onCheckedChange={(checked) => {
+                                return checked
+                                  ? field.onChange([...field.value, item.value])
+                                  : field.onChange(
+                                      field.value?.filter(
+                                        (value) => value !== item.value
                                       )
-                                }}
-                              />
-                            </FormControl>
-                            <FormLabel className="text-sm font-normal">
-                              {item.name}
-                            </FormLabel>
-                          </FormItem>
-                        )
-                      }}
-                    />
-                  ))}
-                  <FormMessage />
-                </FormItem>
-              )}
+                                    );
+                              }}
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-normal">
+                            {item.name}
+                          </FormLabel>
+                        </FormItem>
+                      );
+                    }}
+                  />
+                ))}
+                <FormMessage />
+              </FormItem>
+            )}
           />
 
           {/* Types */}
@@ -251,47 +277,46 @@ export default function Create() {
             name="types"
             control={form.control as Control<CreateProductFormValues>}
             render={() => (
-                <FormItem>
-                  <div className="mb-4">
-                    <FormLabel className="text-base">Types</FormLabel>
-                    
-                  </div>
-                  {perfumeTypes.map((item) => (
-                    <FormField
-                      key={item.name}
-                      control={form.control}
-                      name="types"
-                      render={({ field }) => {
-                        return (
-                          <FormItem
-                            key={item.name}
-                            className="flex flex-row items-start space-x-3 space-y-0"
-                          >
-                            <FormControl>
-                              <Checkbox
-                                checked={field.value?.includes(item.value)}
-                                onCheckedChange={(checked) => {
-                                  return checked
-                                    ? field.onChange([...field.value, item.value])
-                                    : field.onChange(
-                                        field.value?.filter(
-                                          (value) => value !== item.value
-                                        )
+              <FormItem>
+                <div className="mb-4">
+                  <FormLabel className="text-base">Types</FormLabel>
+                </div>
+                {perfumeTypes.map((item) => (
+                  <FormField
+                    key={item.name}
+                    control={form.control}
+                    name="types"
+                    render={({ field }) => {
+                      return (
+                        <FormItem
+                          key={item.name}
+                          className="flex flex-row items-start space-x-3 space-y-0"
+                        >
+                          <FormControl>
+                            <Checkbox
+                              checked={field.value?.includes(item.value)}
+                              onCheckedChange={(checked) => {
+                                return checked
+                                  ? field.onChange([...field.value, item.value])
+                                  : field.onChange(
+                                      field.value?.filter(
+                                        (value) => value !== item.value
                                       )
-                                }}
-                              />
-                            </FormControl>
-                            <FormLabel className="text-sm font-normal">
-                              {item.name}
-                            </FormLabel>
-                          </FormItem>
-                        )
-                      }}
-                    />
-                  ))}
-                  <FormMessage />
-                </FormItem>
-              )}
+                                    );
+                              }}
+                            />
+                          </FormControl>
+                          <FormLabel className="text-sm font-normal">
+                            {item.name}
+                          </FormLabel>
+                        </FormItem>
+                      );
+                    }}
+                  />
+                ))}
+                <FormMessage />
+              </FormItem>
+            )}
           />
 
           {/* Release Year */}
