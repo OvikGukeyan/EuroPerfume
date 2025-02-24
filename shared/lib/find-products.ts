@@ -1,6 +1,7 @@
+import { productTranslations } from "./../../prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
 import {
-  Brand,
+  Brands,
   Gender,
   Notes,
   PerfumeConcentration,
@@ -40,7 +41,7 @@ export const findProducts = async (params: GetSearchParams) => {
   const priceFrom = Number(params.priceFrom) || DEFAULT_MIN_PRICE;
   const priceTo = Number(params.priceTo) || DEFAULT_MAX_PRICE;
   const whereClause = {
-    brand: { in: brands as Brand[] },
+    brand: { in: brands as Brands[] },
     gender: genders.length > 0 ? { hasSome: genders as Gender[] } : undefined,
     types: types.length > 0 ? { hasSome: types as Types[] } : undefined,
     concentration: { in: concentration as PerfumeConcentration[] },
@@ -55,6 +56,10 @@ export const findProducts = async (params: GetSearchParams) => {
           take: 3,
           orderBy: { id: "desc" },
           where: whereClause,
+
+          include: {
+            translations: true,
+          },
         },
       },
     }),
@@ -62,7 +67,7 @@ export const findProducts = async (params: GetSearchParams) => {
       where: whereClause,
     }),
   ]);
-  
+
   const totalPages = Math.ceil(totalCount / 3);
   return { categoryes, totalPages };
 };

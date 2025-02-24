@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { Truck } from "lucide-react";
 import { Separator } from "../ui";
 import { useInitFiltersFromUrl } from "@/shared/hooks";
+import { createProduct } from "@/app/actions";
 interface Props {
   hasSearch?: boolean;
   hasCart?: boolean;
@@ -32,6 +33,25 @@ export const Header: React.FC<Props> = ({
   const router = useRouter();
   useInitFiltersFromUrl();
   useEffect(() => {
+    createProduct( {
+    name: "Chanel No. 6",
+    imageUrl:
+      "https://media.douglas.de/medias/zUsfEz1217085-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3w4Mzg1NnxpbWFnZS9qcGVnfGFHUXdMMmhsTmk4Mk16QTNNelEyT1RnNU1EVTVNQzk2VlhObVJYb3hNakUzTURnMVh6QmZaR2RzTFVSRkxtcHdad3wyYmMxMGVhZGQ5ZjdiNWRjZDMyZDU1Y2QwMTQ4MWY4MzE4NjhkYTJiZjNkODU0MGE3ZTQxOTk4NzA0YWUyYzE4&grid=true&imPolicy=grayScaled&imdensity=1&imwidth=775",
+    description: "Classic perfume by Chanel.",
+    price: 150,
+    stoke: 100,
+    gender: ["FEMALE"],
+    concentration: "EAU_DE_PARFUM",
+    brand: "CHANEL", 
+    notes: ["CITRUS", "GREEN"],
+    types: ["DESIGNER"],
+    releaseYear: 1921,
+    category: {
+      connect: {
+        id: 1
+      }
+    },
+  },)
     const paid = searchParams.has("paid");
     const failed = searchParams.has("faild");
     const verified = searchParams.has("verified");

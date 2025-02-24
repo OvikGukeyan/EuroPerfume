@@ -39,6 +39,7 @@ export {Stories} from './stories';
 export {VolumeSelection} from './volume-selection';
 export {Text} from './text';
 export {PaginationComponent} from './pagination-component';
+export {AppSidebar} from './app-sidebar';
 
 export * from './email-templates';
 export * from './form';

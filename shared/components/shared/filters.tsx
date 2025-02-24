@@ -6,7 +6,7 @@ import { Title, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
 import { useQueryFilters } from "@/shared/hooks";
 import {
-  Brand,
+  Brands,
   Gender,
   Notes,
   PerfumeConcentration,
@@ -40,13 +40,13 @@ export const Filters: FC<Props> = () => {
         onClickCheckbox={filters.setSelectedBrands}
         selected={filters.brands}
         items={[
-          { text: "Chanel", value: Brand.CHANEL },
-          { text: "Dior", value: Brand.DIOR },
-          { text: "Gucci", value: Brand.GUCCI },
-          { text: "Yves Saint Laurent", value: Brand.YSL },
-          { text: "Versace", value: Brand.VERSACE },
-          { text: "Calvin Klein", value: Brand.CALVIN_KLEIN },
-          { text: "Tom Ford", value: Brand.TOM_FORD },
+          { text: "Chanel", value: Brands.CHANEL },
+          { text: "Dior", value: Brands.DIOR },
+          { text: "Gucci", value: Brands.GUCCI },
+          { text: "Yves Saint Laurent", value: Brands.YSL },
+          { text: "Versace", value: Brands.VERSACE },
+          { text: "Calvin Klein", value: Brands.CALVIN_KLEIN },
+          { text: "Tom Ford", value: Brands.TOM_FORD },
         ]}
       />
 
