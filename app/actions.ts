@@ -1,15 +1,27 @@
 "use server";
 
+import { supabase } from "@/lib/supabase";
 import { prisma } from "@/prisma/prisma-client";
 import {
   PayOrderTemplate,
   UserVerificationTemplate,
 } from "@/shared/components";
 import { CheckoutFormValues } from "@/shared/constants";
+import { CreateProductFormValues } from "@/shared/constants/create-product-schema";
 import { createPayment } from "@/shared/lib/create-payment";
 import { getUserSession } from "@/shared/lib/get-user-session";
 import { sendEmail } from "@/shared/lib/send-email";
-import { OrderStatus, Prisma, UserRole } from "@prisma/client";
+import {
+  Brands,
+  Gender,
+  Languages,
+  Notes,
+  OrderStatus,
+  PerfumeConcentration,
+  Prisma,
+  Types,
+  UserRole,
+} from "@prisma/client";
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
 
@@ -208,17 +220,62 @@ export async function updateUser(id: number, data: Prisma.UserUpdateInput) {
   }
 }
 
-export async function createProduct(data: Prisma.ProductCreateInput) {
+export async function createProduct(
+  formData: FormData & CreateProductFormValues
+) {
   try {
-    const user = await getUserSession();
+    // const user = await getUserSession();
 
-    if (!user || user.role !== UserRole.ADMIN) {
-      throw new Error("Access denied");
-    }
-
+    // if (!user || user.role !== UserRole.ADMIN) {
+    //   throw new Error("Access denied");
+    // }
+    const image = formData.get("image") as File;
+    const name = formData.get("productName") as string;
+    const descriptionRu = formData.get("descriptionRu") as string;
+    const descriptionDe = formData.get("descriptionDe") as string;
+    const price = formData.get("price");
+    const gender = formData.get("gender") as Gender;
+    const concentration = formData.get("concentration") as PerfumeConcentration;
+    const brand = formData.get("brand") as Brands;
+    const notes = JSON.parse(formData.get("notes") as string) as Notes[];
+    const types = JSON.parse(formData.get("types") as string) as Types[];
+    const releaseYear = formData.get("releaseYear") as string;
+    const categoryId = formData.get("categoryId") as string;
+    
+    const { data: imageData } = await supabase.storage
+      .from("images")
+      .upload(`${image.name}--${new Date()}`, image, {
+        contentType: image.type,
+      });
+    
+      const { data: publicUrlData } = supabase.storage
+      .from("images")
+      .getPublicUrl(imageData?.path || "");
+    
+      const imageUrl = publicUrlData.publicUrl;
+    
     await prisma.product.create({
       data: {
-        ...data,
+        name: name,
+        imageUrl: imageUrl,
+        price: Number(price),
+        gender: gender,
+        concentration: concentration,
+        brand: brand,
+        notes: notes,
+        types: types,
+        releaseYear: Number(releaseYear),
+        category: { connect: { id: Number(categoryId) } },
+        description: descriptionRu,
+        available: true,
+        translations: {
+          create: [
+            {
+              language: Languages.DE,
+              description: descriptionDe,
+            },
+          ],
+        },
       },
     });
   } catch (error) {
