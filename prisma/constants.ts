@@ -245,6 +245,8 @@ export const genders = [
   },
 ];
 
+export type GendersType = typeof genders;
+
 export const concentrations = [
   {
     name: "Perfume",
@@ -367,6 +369,10 @@ export const perfumeTypes = [
   { name: "Indie", value: Types.INDIE },
 ];
 
-export const yers = [...Array(new Date().getFullYear() - 1990)].map(
-  (_, index) => index + 1991
+export const yers = Array.from(
+  { length: new Date().getFullYear() - 1990 },
+  (_, index) => {
+    const year = (index + 1991).toString();
+    return { name: year, value: year };
+  }
 );

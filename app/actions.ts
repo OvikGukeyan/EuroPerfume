@@ -224,11 +224,11 @@ export async function createProduct(
   formData: FormData & CreateProductFormValues
 ) {
   try {
-    // const user = await getUserSession();
+    const user = await getUserSession();
 
-    // if (!user || user.role !== UserRole.ADMIN) {
-    //   throw new Error("Access denied");
-    // }
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
     const image = formData.get("image") as File;
     const name = formData.get("productName") as string;
     const descriptionRu = formData.get("descriptionRu") as string;
@@ -241,23 +241,22 @@ export async function createProduct(
     const types = JSON.parse(formData.get("types") as string) as Types[];
     const releaseYear = formData.get("releaseYear") as string;
     const categoryId = formData.get("categoryId") as string;
-    
+
     const { data: imageData } = await supabase.storage
       .from("images")
       .upload(`${image.name}--${new Date()}`, image, {
         contentType: image.type,
       });
-    
-      const { data: publicUrlData } = supabase.storage
+
+    const { data: publicUrlData } = supabase.storage
       .from("images")
       .getPublicUrl(imageData?.path || "");
-    
-      const imageUrl = publicUrlData.publicUrl;
-    
+
+
     await prisma.product.create({
       data: {
         name: name,
-        imageUrl: imageUrl,
+        imageUrl: publicUrlData.publicUrl,
         price: Number(price),
         gender: gender,
         concentration: concentration,
