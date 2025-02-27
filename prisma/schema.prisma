@@ -44,8 +44,8 @@ model Product {
   notes         Notes[]
   price         Int
   releaseYear   Int
-  available     Boolean
   types         Types[]
+  available     Boolean
   cartItems     CartItem[]
   category      Category             @relation(fields: [categoryId], references: [id])
   translations  ProductTranslation[]
@@ -56,9 +56,9 @@ model ProductTranslation {
   language    Languages
   description String
   productId   Int
-  product     Product   @relation(fields: [productId], references: [id])
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
 
-  @@unique([language, productId])
+  @@unique([language, productId], name: "translation_unique")
 }
 
 model Cart {

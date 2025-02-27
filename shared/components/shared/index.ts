@@ -40,6 +40,7 @@ export {VolumeSelection} from './volume-selection';
 export {Text} from './text';
 export {PaginationComponent} from './pagination-component';
 export {AppSidebar} from './app-sidebar';
+export {CreateProductForm} from './create-product-form';
 
 export * from './email-templates';
 export * from './form';

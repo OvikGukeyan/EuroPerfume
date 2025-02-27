@@ -42,7 +42,7 @@ export const findProducts = async (params: GetSearchParams) => {
   const priceTo = Number(params.priceTo) || DEFAULT_MAX_PRICE;
   const whereClause = {
     brand: { in: brands as Brands[] },
-    gender: genders.length > 0 ? { hasSome: genders as Gender[] } : undefined,
+    gender: genders.length > 0 ? { in: genders as Gender[] } : undefined,
     types: types.length > 0 ? { hasSome: types as Types[] } : undefined,
     concentration: { in: concentration as PerfumeConcentration[] },
     notes: notes.length > 0 ? { hasSome: notes as Notes[] } : undefined,

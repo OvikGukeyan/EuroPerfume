@@ -24,6 +24,8 @@ import {
 } from "@prisma/client";
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { NextResponse } from "next/server";
 
 export async function createOrder(data: CheckoutFormValues) {
   try {
@@ -252,7 +254,6 @@ export async function createProduct(
       .from("images")
       .getPublicUrl(imageData?.path || "");
 
-
     await prisma.product.create({
       data: {
         name: name,
@@ -279,5 +280,121 @@ export async function createProduct(
     });
   } catch (error) {
     console.error("Error [CREATE_PRODUCT]", error);
+  }
+}
+
+export async function updateProduct(
+  formData: FormData & CreateProductFormValues,
+  id: number
+) {
+  // console.log("TEST !!!!!");
+
+  try {
+    // Проверка прав доступа
+    const user = await getUserSession();
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
+    // Проверка существования продукта
+    const product = await prisma.product.findUnique({
+      where: { id },
+    });
+    if (!product) {
+      throw new Error("Product not found");
+    }
+
+    // Извлечение данных из formData
+    const image = formData.get("image") as File;
+    const name = formData.get("productName") as string;
+    const descriptionRu = formData.get("descriptionRu") as string;
+    const descriptionDe = formData.get("descriptionDe") as string;
+    const price = formData.get("price");
+    const gender = formData.get("gender") as Gender;
+    const concentration = formData.get("concentration") as PerfumeConcentration;
+    const brand = formData.get("brand") as Brands;
+    const notes = JSON.parse(formData.get("notes") as string) as Notes[];
+    const types = JSON.parse(formData.get("types") as string) as Types[];
+    const releaseYear = formData.get("releaseYear") as string;
+    const categoryId = formData.get("categoryId") as string;
+
+    // Если файл передан, загружаем его в Supabase Storage
+    let publicUrl = product.imageUrl;
+    if (image) {
+      const fileName = `${image.name}--${new Date().toISOString()}`;
+      const { data: imageData, error: uploadError } = await supabase.storage
+        .from("images")
+        .upload(fileName, image, {
+          contentType: image.type,
+        });
+      if (uploadError) {
+        throw uploadError;
+      }
+      const { data: publicUrlData } = supabase.storage
+        .from("images")
+        .getPublicUrl(imageData?.path || "");
+      publicUrl = publicUrlData.publicUrl;
+    }
+
+    // Обновление продукта с использованием upsert для перевода
+    await prisma.product.update({
+      where: { id },
+      data: {
+        name: name,
+        imageUrl: publicUrl,
+        price: Number(price),
+        gender: gender,
+        concentration: concentration,
+        brand: brand,
+        notes: notes,
+        types: types,
+        releaseYear: Number(releaseYear),
+        category: { connect: { id: Number(categoryId) } },
+        description: descriptionRu,
+        available: true,
+        translations: {
+          upsert: {
+            where: {
+              translation_unique: {
+                productId: id,
+                language: Languages.DE,
+              },
+            },
+            update: {
+              description: descriptionDe,
+            },
+            create: {
+              language: Languages.DE,
+              description: descriptionDe,
+            },
+          },
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error [UPDATE_PRODUCT]", error);
+    throw error;
+  } 
+}
+
+export async function deleteProduct(id: number) {
+  try {
+    const user = await getUserSession();
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
+
+    const product = await prisma.product.findUnique({
+      where: { id },
+    })
+
+    if (!product) {
+      throw new Error("Product not found");
+    }
+    await prisma.product.delete({
+      where: { id },
+      
+    });
+  } catch (error) {
+    console.error("Error [DELETE_PRODUCT]", error);
   }
 }

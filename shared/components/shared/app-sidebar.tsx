@@ -24,7 +24,6 @@ type Props = {
 
 export const AppSidebar: FC<Props> = ({ className }) => {
     const pathName = usePathname();
-    console.log(pathName);
   const tools = [
     {
       name: "Create New Product",

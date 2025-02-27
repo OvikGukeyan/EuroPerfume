@@ -1,7 +1,6 @@
 import {
   Container,
   Title,
-  TopBar,
   ProductsGroupList,
   FiltersDrawer,
   Stories,

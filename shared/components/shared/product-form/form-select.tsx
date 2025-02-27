@@ -1,4 +1,3 @@
-import { cn } from "@/lib/utils";
 import React, { FC } from "react";
 import { FormControl, FormField, FormItem, FormLabel } from "../../ui/form";
 import { Select } from "../..";
@@ -21,13 +20,17 @@ export const FormSelect: FC<Props> = ({ control, items, name }) => {
     <FormField
       name={name}
       control={control}
-      render={({ field }) => (
+      render={({ field }) => {
+        return (
         <FormItem className="mb-5">
           <FormLabel>{`Select a ${name}`}</FormLabel>
-          <Select onValueChange={field.onChange} defaultValue={field.value as string }>
+          <Select
+            onValueChange={field.onChange}
+            value={field.value.toString()} 
+          >
             <FormControl>
               <SelectTrigger>
-                <SelectValue placeholder={`Select a ${name}`} />
+                <SelectValue  placeholder={`Select a ${name}`} />
               </SelectTrigger>
             </FormControl>
             <SelectContent>
@@ -39,7 +42,7 @@ export const FormSelect: FC<Props> = ({ control, items, name }) => {
             </SelectContent>
           </Select>
         </FormItem>
-      )}
+      )}}
     />
   );
 };
