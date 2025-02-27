@@ -53,7 +53,7 @@ export const findProducts = async (params: GetSearchParams) => {
       include: {
         products: {
           skip: (page - 1) * 3,
-          take: 3,
+          take: 6,
           orderBy: { id: "desc" },
           where: whereClause,
 
