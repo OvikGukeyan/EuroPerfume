@@ -1,4 +1,3 @@
-import { productTranslations } from "./../../prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
 import {
   Brands,

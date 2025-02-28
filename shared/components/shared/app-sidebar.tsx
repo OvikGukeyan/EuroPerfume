@@ -30,7 +30,7 @@ export const AppSidebar: FC<Props> = ({ className }) => {
       icon: <Plus />,
       href: "/create",
     },
-    { name: "Update Product", icon: <Settings2 />, href: "/update" },
+    { name: "Products", icon: <Settings2 />, href: "/products" },
     {
       name: "Orders",
       icon: <Folders />,

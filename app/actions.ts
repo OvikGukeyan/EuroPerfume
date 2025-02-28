@@ -398,3 +398,29 @@ export async function deleteProduct(id: number) {
     console.error("Error [DELETE_PRODUCT]", error);
   }
 }
+
+export async function toggleProductAvailability(id: number, available: boolean) {
+  try {
+    const user = await getUserSession();
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
+
+    const product = await prisma.product.findUnique({
+      where: { id },
+    });
+
+    if (!product) {
+      throw new Error("Product not found");
+    }
+
+    await prisma.product.update({
+      where: { id },
+      data: {
+        available: available,
+      },
+    });
+  } catch (error) {
+    console.error("Error [TOGGLE_PRODUCT_AVAILABILITY]", error);
+  }
+} 

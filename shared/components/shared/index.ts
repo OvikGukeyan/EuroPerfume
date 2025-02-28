@@ -41,6 +41,7 @@ export {Text} from './text';
 export {PaginationComponent} from './pagination-component';
 export {AppSidebar} from './app-sidebar';
 export {CreateProductForm} from './create-product-form';
+export {DashboardProduct} from './dashboard-product';
 
 export * from './email-templates';
 export * from './form';
