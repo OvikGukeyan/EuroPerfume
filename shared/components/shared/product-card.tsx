@@ -4,14 +4,11 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { Title, VolumeSelection } from ".";
-import { Button, Switch } from "../ui";
-import { Plus, Settings2, Trash2 } from "lucide-react";
+import { Button } from "../ui";
+import { Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import { useCartStore } from "@/shared/store";
 import { Volume } from "@/shared/constants/perfume";
-import { getMe } from "@/shared/services/auth";
-import { useRouter } from "next/navigation";
-import { toggleProductAvailability } from "@/app/actions";
 
 interface Props {
   id: number;
@@ -28,7 +25,6 @@ export const ProductCard: React.FC<Props> = ({
   name,
   price,
   id,
-  available
   
 }) => {
   const [volume, setVolume] = useState<Volume>(1);
@@ -38,8 +34,8 @@ export const ProductCard: React.FC<Props> = ({
     state.loading,
   ]);
 
-  const router = useRouter();
 
+  const finalPrice = volume <= 10 && price * volume + 1 || volume === 20 && price * volume + 2 || volume === 30 && price * volume + 3;
   
   const onSubmit = async () => {
     try {
@@ -76,7 +72,7 @@ export const ProductCard: React.FC<Props> = ({
 
       <div className="flex justify-between items-center mt-4">
         <span className="text-[20px]">
-          price <b>{price * volume} €</b>
+          price <b>{finalPrice} €</b>
         </span>
 
         <Button

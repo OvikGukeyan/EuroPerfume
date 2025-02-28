@@ -24,7 +24,6 @@ export const useProductStore = create<ProductState>((set, get) => ({
       try{
           set({loading: true})
           const data = await Api.products.getAll();
-          console.log(data)
           set({items: data})
       }catch(error){
           console.error(error);

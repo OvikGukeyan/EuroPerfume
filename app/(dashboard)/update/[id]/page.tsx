@@ -27,7 +27,7 @@ export default async function Update({
     'use server';
 
     await updateProduct(data, Number(id));
-    redirect('/')
+    redirect('/products')
   };
 
   if (!product) {

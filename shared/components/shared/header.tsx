@@ -13,10 +13,9 @@ import {
 } from "@/shared/components/shared";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { Truck } from "lucide-react";
-import { Separator } from "../ui";
+import { Heart, Truck } from "lucide-react";
+import { Button, Separator } from "../ui";
 import { useInitFiltersFromUrl } from "@/shared/hooks";
-import { createProduct } from "@/app/actions";
 interface Props {
   hasSearch?: boolean;
   hasCart?: boolean;
@@ -33,25 +32,6 @@ export const Header: React.FC<Props> = ({
   const router = useRouter();
   useInitFiltersFromUrl();
   useEffect(() => {
-    createProduct( {
-    name: "Chanel No. 6",
-    imageUrl:
-      "https://media.douglas.de/medias/zUsfEz1217085-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3w4Mzg1NnxpbWFnZS9qcGVnfGFHUXdMMmhsTmk4Mk16QTNNelEyT1RnNU1EVTVNQzk2VlhObVJYb3hNakUzTURnMVh6QmZaR2RzTFVSRkxtcHdad3wyYmMxMGVhZGQ5ZjdiNWRjZDMyZDU1Y2QwMTQ4MWY4MzE4NjhkYTJiZjNkODU0MGE3ZTQxOTk4NzA0YWUyYzE4&grid=true&imPolicy=grayScaled&imdensity=1&imwidth=775",
-    description: "Classic perfume by Chanel.",
-    price: 150,
-    stoke: 100,
-    gender: ["FEMALE"],
-    concentration: "EAU_DE_PARFUM",
-    brand: "CHANEL", 
-    notes: ["CITRUS", "GREEN"],
-    types: ["DESIGNER"],
-    releaseYear: 1921,
-    category: {
-      connect: {
-        id: 1
-      }
-    },
-  },)
     const paid = searchParams.has("paid");
     const failed = searchParams.has("faild");
     const verified = searchParams.has("verified");
@@ -72,11 +52,13 @@ export const Header: React.FC<Props> = ({
       }, 500);
     }
   }, [router, searchParams]);
+
+
   return (
     <header className={cn("", className)}>
       <Container className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Truck/>
+          <Truck />
           <h3>Free shipping available for orders above $100</h3>
         </div>
       </Container>
@@ -84,7 +66,12 @@ export const Header: React.FC<Props> = ({
       <Container className="flex items-center justify-between py-8">
         <Link href={"/"}>
           <div className="flex items-center gap-4 ">
-            <Image src={"/assets/Logo.png"} width={120} height={40} alt="logo" />
+            <Image
+              src={"/assets/Logo.png"}
+              width={120}
+              height={40}
+              alt="logo"
+            />
           </div>
         </Link>
 
@@ -95,6 +82,9 @@ export const Header: React.FC<Props> = ({
         )}
 
         <div className="flex  items-center gap-3">
+          <Button onClick={() => router.push('/favorites')} variant={'secondary'}>
+            <Heart />
+          </Button>
           <AuthModal
             open={openAuthModal}
             onClose={() => setOpenAuthModal(false)}

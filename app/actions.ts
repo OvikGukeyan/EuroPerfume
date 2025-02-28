@@ -250,14 +250,12 @@ export async function createProduct(
         contentType: image.type,
       });
 
-    const { data: publicUrlData } = supabase.storage
-      .from("images")
-      .getPublicUrl(imageData?.path || "");
+    
 
     await prisma.product.create({
       data: {
         name: name,
-        imageUrl: publicUrlData.publicUrl,
+        imageUrl: imageData?.path || "",
         price: Number(price),
         gender: gender,
         concentration: concentration,
@@ -318,7 +316,7 @@ export async function updateProduct(
     const categoryId = formData.get("categoryId") as string;
 
     // Если файл передан, загружаем его в Supabase Storage
-    let publicUrl = product.imageUrl;
+    let imagePath = product.imageUrl;
     if (image) {
       const fileName = `${image.name}--${new Date().toISOString()}`;
       const { data: imageData, error: uploadError } = await supabase.storage
@@ -329,10 +327,8 @@ export async function updateProduct(
       if (uploadError) {
         throw uploadError;
       }
-      const { data: publicUrlData } = supabase.storage
-        .from("images")
-        .getPublicUrl(imageData?.path || "");
-      publicUrl = publicUrlData.publicUrl;
+
+      imagePath = imageData?.path;
     }
 
     // Обновление продукта с использованием upsert для перевода
@@ -340,7 +336,7 @@ export async function updateProduct(
       where: { id },
       data: {
         name: name,
-        imageUrl: publicUrl,
+        imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${imagePath}`,
         price: Number(price),
         gender: gender,
         concentration: concentration,
@@ -373,7 +369,7 @@ export async function updateProduct(
   } catch (error) {
     console.error("Error [UPDATE_PRODUCT]", error);
     throw error;
-  } 
+  }
 }
 
 export async function deleteProduct(id: number) {
@@ -385,21 +381,37 @@ export async function deleteProduct(id: number) {
 
     const product = await prisma.product.findUnique({
       where: { id },
-    })
+    });
 
     if (!product) {
       throw new Error("Product not found");
     }
+
+    // if (product.imageUrl) {
+    //   const fileUrl = '/3s9Ccf1027978-0-dgl-DE.avif--2025-02-28T11:54:47.039Z';
+    //   const { error: removeError } = await supabase.storage
+    //     .from("images")
+    //     .remove([fileUrl]);
+    //   if (removeError) {
+    //     console.error("Error removing image from storage", removeError);
+    //     throw removeError;
+    //   } else {
+    //     console.log("Image successfully removed from storage");
+    //   }
+    // }
+
     await prisma.product.delete({
       where: { id },
-      
     });
   } catch (error) {
     console.error("Error [DELETE_PRODUCT]", error);
   }
 }
 
-export async function toggleProductAvailability(id: number, available: boolean) {
+export async function toggleProductAvailability(
+  id: number,
+  available: boolean
+) {
   try {
     const user = await getUserSession();
     if (!user || user.role !== UserRole.ADMIN) {
@@ -423,4 +435,4 @@ export async function toggleProductAvailability(id: number, available: boolean) 
   } catch (error) {
     console.error("Error [TOGGLE_PRODUCT_AVAILABILITY]", error);
   }
-} 
+}
