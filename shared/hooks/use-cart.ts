@@ -1,4 +1,3 @@
-import { addCartItem } from './../services/cart';
 import { useEffect } from "react";
 import { useCartStore } from "../store";
 import { CartStateItem } from "../lib/get-cart-details";

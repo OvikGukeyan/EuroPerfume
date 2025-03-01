@@ -285,7 +285,6 @@ export async function updateProduct(
   formData: FormData & CreateProductFormValues,
   id: number
 ) {
-  // console.log("TEST !!!!!");
 
   try {
     // Проверка прав доступа

@@ -4,10 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { Title, VolumeSelection } from ".";
-import { Button } from "../ui";
-import { Plus } from "lucide-react";
+import { Button, Toggle } from "../ui";
+import { Heart, Plus } from "lucide-react";
 import toast from "react-hot-toast";
-import { useCartStore } from "@/shared/store";
+import { useCartStore, useFavoritesStore } from "@/shared/store";
 import { Volume } from "@/shared/constants/perfume";
 
 interface Props {
@@ -25,18 +25,24 @@ export const ProductCard: React.FC<Props> = ({
   name,
   price,
   id,
-  
 }) => {
   const [volume, setVolume] = useState<Volume>(1);
 
+  const [addFavoritesItem, items] = useFavoritesStore((state) => [
+    state.addFavoritesItem,
+    state.items,
+    state.itemLoading,
+  ]);
   const [addCartItem, loading] = useCartStore((state) => [
     state.addCartItem,
     state.loading,
   ]);
 
+  const finalPrice =
+    (volume <= 10 && price * volume + 1) ||
+    (volume === 20 && price * volume + 2) ||
+    (volume === 30 && price * volume + 3);
 
-  const finalPrice = volume <= 10 && price * volume + 1 || volume === 20 && price * volume + 2 || volume === 30 && price * volume + 3;
-  
   const onSubmit = async () => {
     try {
       await addCartItem({
@@ -53,7 +59,7 @@ export const ProductCard: React.FC<Props> = ({
   return (
     <div className={className}>
       <Link href={`/product/${id}`}>
-        <div className="flex justify-center bg-secondary rounded-lg h-[260px] ">
+        <div className="flex justify-center bg-secondary rounded-lg h-[260px]">
           <Image
             width={300}
             height={280}
@@ -66,15 +72,18 @@ export const ProductCard: React.FC<Props> = ({
 
       <Title text={name} size="sm" className="mb-1 mt-3 font-bold" />
 
-      
       <VolumeSelection volume={volume} setVolume={setVolume} />
-      
 
       <div className="flex justify-between items-center mt-4">
         <span className="text-[20px]">
           price <b>{finalPrice} €</b>
         </span>
-
+        <Toggle
+          onClick={() => addFavoritesItem(id)}
+          pressed={items.some((item) => item.productId === id)}
+        >
+          <Heart />
+        </Toggle>
         <Button
           loading={loading}
           onClick={onSubmit}
