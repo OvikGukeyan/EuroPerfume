@@ -23,6 +23,7 @@ model User {
   favorites        Favorites?
   orders           Order[]
   verificationCode VerificationCode?
+  Review           Review[]
 }
 
 model Category {
@@ -51,6 +52,7 @@ model Product {
   favoritesItems FavoritesItem[]
   category       Category             @relation(fields: [categoryId], references: [id])
   translations   ProductTranslation[]
+  reviews        Review[]
 }
 
 model ProductTranslation {
@@ -103,6 +105,28 @@ model FavoritesItem {
   productId   Int
   favorites   Favorites @relation(fields: [favoritesId], references: [id])
   product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  text      String
+  rating    Int
+  replye    Reply?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Reply {
+  id        Int      @id @default(autoincrement())
+  reviewId  Int      @unique
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Order {
