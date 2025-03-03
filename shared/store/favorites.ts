@@ -12,8 +12,7 @@ export type FavoritesStateItem = {
     disabled: boolean;
 };
 export interface FavoritesState {
-  loading: boolean;
-  itemLoading: boolean;
+  favoritesLoading: boolean;
   error: boolean;
   items: FavoritesStateItem[];
 
@@ -23,14 +22,13 @@ export interface FavoritesState {
 
 export const useFavoritesStore = create<FavoritesState>((set, get) => ({
   items: [],
-  loading: true,
-  itemLoading: false,
+  favoritesLoading: true,
   error: false,
 
 
   fetchFavoritesItems: async () => {
     try {
-      set({ loading: true, error: false });
+      set({ favoritesLoading: true, error: false });
       const data = await Api.favorites.getFavorites();
       set({ items: data .items.map((item) => ({
         id: item.id,
@@ -44,13 +42,13 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       console.error(error);
       set({ error: true });
     } finally {
-      set({ loading: false });
+      set({ favoritesLoading: false });
     }
   },
   
   addFavoritesItem: async (productId: number) => {
     try {
-      set({ loading: true, error: false });
+      set({ favoritesLoading: true, error: false });
       const {items} = await Api.favorites.addFavoritesItem(productId);
       set({ items: items.map((item) => ({
         id: item.id,
@@ -60,11 +58,12 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
         price: item.product.price,
         disabled: false
       }))});
+      
     } catch (error) {
       console.error(error);
       set({ error: true });
     } finally {
-      set({ loading: false });
+      set({ favoritesLoading: false });
     }
   },
 

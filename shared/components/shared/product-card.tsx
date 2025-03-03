@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useOptimistic, useState } from "react";
 import { Title, VolumeSelection } from ".";
 import { Button, Toggle } from "../ui";
-import { Heart, Plus } from "lucide-react";
+import { Heart, HeartOff, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import { useCartStore, useFavoritesStore } from "@/shared/store";
 import { Volume } from "@/shared/constants/perfume";
@@ -27,11 +27,16 @@ export const ProductCard: React.FC<Props> = ({
   id,
 }) => {
   const [volume, setVolume] = useState<Volume>(1);
+  const [isFavorite, toggleIsFavorite] = useState(false);
 
-  const [addFavoritesItem, items] = useFavoritesStore((state) => [
-    state.addFavoritesItem,
-    state.items,
-  ]);
+  const onToggleFavorite = () => {
+    toggleIsFavorite(!isFavorite);
+
+    addFavoritesItem(id);
+  };
+  const [addFavoritesItem, items, favoritesLoading] = useFavoritesStore(
+    (state) => [state.addFavoritesItem, state.items, state.favoritesLoading]
+  );
   const [addCartItem, loading] = useCartStore((state) => [
     state.addCartItem,
     state.loading,
@@ -77,12 +82,19 @@ export const ProductCard: React.FC<Props> = ({
         <span className="text-[20px]">
           price <b>{finalPrice} €</b>
         </span>
-        <Toggle
-          onClick={() => addFavoritesItem(id)}
-          pressed={items.some((item) => item.productId === id)}
+        <Button
+          onClick={onToggleFavorite}
+          variant={
+            items.some((item) => item.productId === id) ? "secondary" : "ghost"
+          }
+          loading={favoritesLoading}
         >
-          <Heart />
-        </Toggle>
+          {items.some((item) => item.productId === id) ? (
+            <HeartOff />
+          ) : (
+            <Heart />
+          )}
+        </Button>
         <Button
           loading={loading}
           onClick={onSubmit}
