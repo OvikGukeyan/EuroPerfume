@@ -15,7 +15,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { Heart, Truck } from "lucide-react";
 import { Button, Separator } from "../ui";
-import { useInitFiltersFromUrl } from "@/shared/hooks";
+import { useFavorites, useInitFiltersFromUrl } from "@/shared/hooks";
 interface Props {
   hasSearch?: boolean;
   hasCart?: boolean;
@@ -52,18 +52,16 @@ export const Header: React.FC<Props> = ({
       }, 500);
     }
   }, [router, searchParams]);
-
+  const { loading } = useFavorites();
 
   return (
     <header className={cn("", className)}>
-      <Container className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 h-10  px-5">
           <Truck />
           <h3>Free shipping available for orders above $100</h3>
         </div>
-      </Container>
       <Separator />
-      <Container className="flex items-center justify-between py-8">
+      <div className="flex items-center justify-between py-10 px-5">
         <Link href={"/"}>
           <div className="flex items-center gap-4 ">
             <Image
@@ -82,7 +80,11 @@ export const Header: React.FC<Props> = ({
         )}
 
         <div className="flex  items-center gap-3">
-          <Button onClick={() => router.push('/favorites')} variant={'secondary'}>
+          <Button
+            onClick={() => router.push("/favorites")}
+            variant={"secondary"}
+            loading={loading}
+          >
             <Heart />
           </Button>
           <AuthModal
@@ -93,7 +95,7 @@ export const Header: React.FC<Props> = ({
 
           {hasCart && <CartButton />}
         </div>
-      </Container>
+      </div>
     </header>
   );
 };

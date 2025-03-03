@@ -6,6 +6,7 @@ import { GroupVariants } from "./group-variants";
 import { Button, Separator } from "../ui";
 import Image from "next/image";
 import { Title, Text, VolumeSelection } from ".";
+import { Volume } from "@/shared/constants/perfume";
 
 interface Props {
   id: number,
@@ -14,7 +15,7 @@ interface Props {
   price: number;
   description: string;
   loading: boolean;
-  onSubmit?: (productId: number, volume: number) => Promise<void>;
+  onSubmit?: (productId: number, volume: Volume) => Promise<void>;
   className?: string;
 }
 export const ChooseProductForm: FC<Props> = ({
@@ -27,7 +28,7 @@ export const ChooseProductForm: FC<Props> = ({
   onSubmit,
   className,
 }) => {
-  const [volume, setVolume] = useState(1)
+  const [volume, setVolume] = useState<Volume>(1)
 
   return (
     <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
@@ -37,7 +38,7 @@ export const ChooseProductForm: FC<Props> = ({
           height={350}
           src={imageUrl}
           alt="product"
-          className="relative left-2 top-2 tranzition-all z-10 duration-300 w-[350px] h-[350px] "
+          className="z-10 duration-300 w-[350px] h-[350px] "
         />
       </div>
 
@@ -57,7 +58,7 @@ export const ChooseProductForm: FC<Props> = ({
           onClick={() => onSubmit?.(id, volume)}
           className="h-[55px] px-10 text-base rounded-[18px] w-full mt-6"
         >
-          Add too cart for {price * volume} €
+          Add too cart for {price * (volume as number)} €
         </Button>
         <GroupVariants items={[]} />
       </div>

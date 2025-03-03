@@ -31,7 +31,6 @@ export const ProductCard: React.FC<Props> = ({
   const [addFavoritesItem, items] = useFavoritesStore((state) => [
     state.addFavoritesItem,
     state.items,
-    state.itemLoading,
   ]);
   const [addCartItem, loading] = useCartStore((state) => [
     state.addCartItem,

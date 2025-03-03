@@ -5,6 +5,7 @@ import React, { FC } from "react";
 import toast from "react-hot-toast";
 import { ChooseProductForm } from "./choose-product-form";
 import { Product } from "@prisma/client";
+import { Volume } from "@/shared/constants/perfume";
 
 interface Props {
   product: Product;
@@ -21,7 +22,7 @@ export const ProductForm: FC<Props> = ({
     state.loading,
   ]);
 
-  const onSubmit = async (productId: number, volume: number) => {
+  const onSubmit = async (productId: number, volume: Volume) => {
     try {
       await addCartItem({
         productId,

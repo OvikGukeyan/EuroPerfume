@@ -42,6 +42,7 @@ export {PaginationComponent} from './pagination-component';
 export {AppSidebar} from './app-sidebar';
 export {CreateProductForm} from './create-product-form';
 export {DashboardProduct} from './dashboard-product';
+export {Carusel} from './carusel';
 
 export * from './email-templates';
 export * from './form';

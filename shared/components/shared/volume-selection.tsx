@@ -7,7 +7,7 @@ import { Volume, volumes } from "@/shared/constants/perfume";
 type Props = {
   className?: string;
   setVolume: React.Dispatch<React.SetStateAction<Volume>>;
-  volume: number;
+  volume: React.SetStateAction<1 | 2 | 3 | 5 | 10 | 20 | 30>;
 };
 
 export const VolumeSelection: FC<Props> = ({ className, volume, setVolume }) => {

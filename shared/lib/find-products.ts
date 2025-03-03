@@ -51,7 +51,7 @@ export const findProducts = async (params: GetSearchParams) => {
     prisma.category.findMany({
       include: {
         products: {
-          skip: (page - 1) * 3,
+          skip: (page - 1) * 6,
           take: 6,
           orderBy: { id: "desc" },
           where: whereClause,
@@ -67,6 +67,6 @@ export const findProducts = async (params: GetSearchParams) => {
     }),
   ]);
 
-  const totalPages = Math.ceil(totalCount / 3);
+  const totalPages = Math.ceil(totalCount / 6);
   return { categoryes, totalPages };
 };

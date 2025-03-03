@@ -1,4 +1,4 @@
-export {Button} from './button';
+
 export {Checkbox} from './checkbox';
 export {Input} from './input';
 export {Popover} from './popover';
@@ -10,3 +10,4 @@ export {Dialog} from './dialog';
 export {Separator} from './separator';
 export {Switch} from './switch';
 export {Toggle} from './toggle';
+export {Button} from './button';

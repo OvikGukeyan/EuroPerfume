@@ -5,6 +5,7 @@ import {
   FiltersDrawer,
   Stories,
   PaginationComponent,
+  Carusel,
 } from "@/shared/components/shared";
 
 import { findProducts, GetSearchParams } from "@/shared/lib/find-products";
@@ -18,11 +19,12 @@ export default async function Home({
 
   return (
     <>
+      
+      {/* <TopBar categories={categoryes.filter((category) => category.products.length > 0)} /> */}
+      <Carusel />
       <Container className="mt-10">
         <Title size="lg" className="font-extrabold" text="All perfumes" />
       </Container>
-      {/* <TopBar categories={categoryes.filter((category) => category.products.length > 0)} /> */}
-      {/* <Stories /> */}
       <Container className="mt-10 pb-14">
         <div className="flex flex-col xl:flex-row gap-[50px]">
           <FiltersDrawer />
