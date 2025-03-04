@@ -20,7 +20,7 @@ export const products: Prisma.ProductCreateManyInput[] = [
     name: "Chanel No. 5",
     imageUrl:
       "https://media.douglas.de/medias/zUsfEz1217085-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3w4Mzg1NnxpbWFnZS9qcGVnfGFHUXdMMmhsTmk4Mk16QTNNelEyT1RnNU1EVTVNQzk2VlhObVJYb3hNakUzTURnMVh6QmZaR2RzTFVSRkxtcHdad3wyYmMxMGVhZGQ5ZjdiNWRjZDMyZDU1Y2QwMTQ4MWY4MzE4NjhkYTJiZjNkODU0MGE3ZTQxOTk4NzA0YWUyYzE4&grid=true&imPolicy=grayScaled&imdensity=1&imwidth=775",
-    description: "Classic perfume by Chanel.",
+    description: "Das Eau de Parfum Born In Roma Donna von Valentino ist eine florientale Haute-Couture-Komposition von höchster Eleganz. Der Duft besticht durch die luxuriöse Kombination dreier femininer Jasmin-Noten, veredelt durch kostbare Bourbon-Vanille. Ein Trio aus warmen Hölzern verleiht dem Duft eine raffinierte Note, die noch lange nachhallt und inspiriert ist von der römischen Kultur. Als Hommage an die Architektur der Ewigen Stadt wurde der Flakon mit der legendären Valentino-Niete verziert – denn wie der Duft wurde auch das italienische Modehaus in Rom geboren.",
     price: 150,
     available: true,
     gender: Gender.FEMALE,
@@ -142,7 +142,8 @@ export const productTranslations: Prisma.ProductTranslationCreateManyInput[] = [
   // Chanel No. 5 (productId: 1)
   {
     language: Languages.DE,
-    description: "Ein klassischer Duft von Chanel No. 5.",
+    description:
+      "Das Eau de Parfum Born In Roma Donna von Valentino ist eine florientale Haute-Couture-Komposition von höchster Eleganz. Der Duft besticht durch die luxuriöse Kombination dreier femininer Jasmin-Noten, veredelt durch kostbare Bourbon-Vanille. Ein Trio aus warmen Hölzern verleiht dem Duft eine raffinierte Note, die noch lange nachhallt und inspiriert ist von der römischen Kultur. Als Hommage an die Architektur der Ewigen Stadt wurde der Flakon mit der legendären Valentino-Niete verziert – denn wie der Duft wurde auch das italienische Modehaus in Rom geboren.",
     productId: 1,
   },
   {

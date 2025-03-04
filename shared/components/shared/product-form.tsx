@@ -57,6 +57,8 @@ export const ProductForm: FC<Props> = ({
       description={product.description}
       onSubmit={onSubmit}
       price={product.price}
+      itemNotes={product.notes}
+      gender={product.gender}
       loading={loading}
       
     />

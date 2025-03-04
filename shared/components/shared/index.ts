@@ -43,6 +43,11 @@ export {AppSidebar} from './app-sidebar';
 export {CreateProductForm} from './create-product-form';
 export {DashboardProduct} from './dashboard-product';
 export {Carusel} from './carusel';
+export {Review} from './review';
+export {ReviewForm} from './review-form';
+export {ReviewsList} from './reviews-list';
+export {RatingSelect} from './rating-select';
+export {SubmitButtonBar} from './SubmitButtonBar';
 
 export * from './email-templates';
 export * from './form';

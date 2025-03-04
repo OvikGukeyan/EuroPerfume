@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { useCartStore, useFavoritesStore } from "@/shared/store";
 import { Volume } from "@/shared/constants/perfume";
 import { Rating } from "./rating";
+import { calcPrice } from "@/shared/lib";
 
 interface Props {
   id: number;
@@ -43,11 +44,6 @@ export const ProductCard: React.FC<Props> = ({
     state.loading,
   ]);
 
-  const finalPrice =
-    (volume <= 10 && price * volume + 1) ||
-    (volume === 20 && price * volume + 2) ||
-    (volume === 30 && price * volume + 3);
-
   const onSubmit = async () => {
     try {
       await addCartItem({
@@ -60,7 +56,7 @@ export const ProductCard: React.FC<Props> = ({
       toast.error("Something went wrong");
     }
   };
-
+  const finalPrice = calcPrice(volume, price);
   return (
     <div className={className}>
       <Link href={`/product/${id}`}>
@@ -78,7 +74,7 @@ export const ProductCard: React.FC<Props> = ({
       <Title text={name} size="sm" className="mb-1 mt-3 font-bold" />
 
       <VolumeSelection volume={volume} setVolume={setVolume} />
-      <Rating className="mt-5"/>
+      <Rating className="mt-5" />
 
       <div className="flex justify-between items-center mt-4">
         <span className="text-[20px]">

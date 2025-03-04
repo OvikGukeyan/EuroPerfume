@@ -7,6 +7,10 @@ import { Button, Separator } from "../ui";
 import Image from "next/image";
 import { Title, Text, VolumeSelection } from ".";
 import { Volume } from "@/shared/constants/perfume";
+import { Gender, Notes } from "@prisma/client";
+import { genders, notes } from "@/prisma/constants";
+import { calcPrice } from "@/shared/lib";
+
 
 interface Props {
   id: number,
@@ -14,6 +18,8 @@ interface Props {
   name: string;
   price: number;
   description: string;
+  itemNotes: Notes[];
+  gender: Gender;
   loading: boolean;
   onSubmit?: (productId: number, volume: Volume) => Promise<void>;
   className?: string;
@@ -26,10 +32,13 @@ export const ChooseProductForm: FC<Props> = ({
   description,
   loading,
   onSubmit,
+  itemNotes,
+  gender,
   className,
 }) => {
   const [volume, setVolume] = useState<Volume>(1)
-
+  const currentNotes = notes.filter((note) => itemNotes.includes(note.value));
+  const finalPrice = calcPrice(volume, price)
   return (
     <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
       <div className="flex  items-center justify-center flex-1 relative w-2/5">
@@ -49,6 +58,14 @@ export const ChooseProductForm: FC<Props> = ({
 
         <Text className="my-4">{description}</Text>
 
+        <div className="mb-4">
+          <Title text='Characteristics' size='sm' className="" />
+          <ul>
+            <li>Notes: {currentNotes.map((note) => note.name).join(", ")}</li>
+            <li>Gender: {genders.find((item) => item.value === gender)?.name}</li>
+          </ul>
+        </div>
+
         <VolumeSelection volume={volume} setVolume={setVolume} className="mb-4" />
 
         <Separator />
@@ -58,7 +75,7 @@ export const ChooseProductForm: FC<Props> = ({
           onClick={() => onSubmit?.(id, volume)}
           className="h-[55px] px-10 text-base rounded-[18px] w-full mt-6"
         >
-          Add too cart for {price * (volume as number)} €
+          Add too cart for {finalPrice} €
         </Button>
         <GroupVariants items={[]} />
       </div>

@@ -30,7 +30,7 @@ import { NextResponse } from "next/server";
 export async function createOrder(data: CheckoutFormValues) {
   try {
     const cookieStore = cookies();
-    const cartToken = cookieStore.get("cartToken")?.value;
+    const cartToken = (await cookieStore).get("cartToken")?.value;
 
     if (!cartToken) {
       throw new Error("Cart token not found!");
@@ -433,5 +433,40 @@ export async function toggleProductAvailability(
     });
   } catch (error) {
     console.error("Error [TOGGLE_PRODUCT_AVAILABILITY]", error);
+  }
+}
+
+export async function createReview(formData: FormData) {
+  "use server"
+  await new Promise(resolve => setTimeout(resolve, 1000))
+  try {
+    const user = await getUserSession();
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const text = formData.get("comment") as string;
+    const rating = Number(formData.get("rating"));
+    const productId = Number(formData.get("productId"));
+    console.log(text, rating), productId;
+    await prisma.review.create({
+      data: {
+        text: text,
+        rating: rating,
+        user: {
+          connect: {
+            id: Number(user.id),
+          },
+        },
+        product: {
+          connect: {
+            id: productId,
+          },
+        },
+      }
+    })
+  } catch (error) {
+    
   }
 }
