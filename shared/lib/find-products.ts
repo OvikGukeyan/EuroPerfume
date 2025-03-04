@@ -23,22 +23,26 @@ export interface GetSearchParams {
 const DEFAULT_MIN_PRICE = 0;
 const DEFAULT_MAX_PRICE = 50;
 export const findProducts = async (params: GetSearchParams) => {
-  const brands = params.brands
+  const brands = (await params).brands
     ?.split(",")
     .map((item) => item.trim().toUpperCase());
   const genders =
-    params.gender?.split(",").map((item) => item.trim().toUpperCase()) ?? [];
+    (await params).gender
+      ?.split(",")
+      .map((item) => item.trim().toUpperCase()) ?? [];
   const notes =
-    params.notes?.split(",").map((item) => item.trim().toUpperCase()) ?? [];
+    (await params).notes?.split(",").map((item) => item.trim().toUpperCase()) ??
+    [];
   const types =
-    params.types?.split(",").map((item) => item.trim().toUpperCase()) ?? [];
-  const concentration = params.concentration
+    (await params).types?.split(",").map((item) => item.trim().toUpperCase()) ??
+    [];
+  const concentration = (await params).concentration
     ?.split(",")
     .map((item) => item.trim().toUpperCase());
-  const page = Number(params.page) || 1;
+  const page = Number((await params).page) || 1;
 
-  const priceFrom = Number(params.priceFrom) || DEFAULT_MIN_PRICE;
-  const priceTo = Number(params.priceTo) || DEFAULT_MAX_PRICE;
+  const priceFrom = Number((await params).priceFrom) || DEFAULT_MIN_PRICE;
+  const priceTo = Number((await params).priceTo) || DEFAULT_MAX_PRICE;
   const whereClause = {
     brand: { in: brands as Brands[] },
     gender: genders.length > 0 ? { in: genders as Gender[] } : undefined,
@@ -58,6 +62,7 @@ export const findProducts = async (params: GetSearchParams) => {
 
           include: {
             translations: true,
+            reviews: true,
           },
         },
       },

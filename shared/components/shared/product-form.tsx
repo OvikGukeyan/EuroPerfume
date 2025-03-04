@@ -4,11 +4,11 @@ import { useCartStore } from "@/shared/store";
 import React, { FC } from "react";
 import toast from "react-hot-toast";
 import { ChooseProductForm } from "./choose-product-form";
-import { Product } from "@prisma/client";
+import { Product, Review } from "@prisma/client";
 import { Volume } from "@/shared/constants/perfume";
 
 interface Props {
-  product: Product;
+  product: Product & { reviews: Review[] };
   onSubmit?: VoidFunction;
   className?: string;
 }
@@ -58,7 +58,9 @@ export const ProductForm: FC<Props> = ({
       onSubmit={onSubmit}
       price={product.price}
       itemNotes={product.notes}
+      releaseYear={product.releaseYear}
       gender={product.gender}
+      reviews={product.reviews}
       loading={loading}
       
     />

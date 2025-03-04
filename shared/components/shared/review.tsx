@@ -5,26 +5,23 @@ import { cn } from "@/lib/utils";
 import { Title } from ".";
 import ReactStars from "react-stars";
 import { Separator } from "../ui";
+import { Rating } from "./rating";
 
 type Props = {
   className?: string;
+  text: string;
+  userName: string;
+  rating: number;
 };
 
-export const Review: FC<Props> = ({ className }) => {
+export const ReviewComponent: FC<Props> = ({ className, text, userName, rating }) => {
   return (
     <div className={cn("", className)}>
       <div className="flex items-center justify-between mb-5">
-        <Title text="Vitaliy Sayan" size="xs" className="font-bold" />
-        <ReactStars
-          count={5}
-          value={3.5}
-          size={18}
-          color2={"#111111"}
-          color1={"#d8d8d8"}
-        //   onChange={(newRating: any) => newRating}
-        />
+        <Title text={userName} size="xs" className="font-bold mb-5" />
+        <Rating value={rating} withNumber/>
       </div>
-      <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ex consequuntur non, iusto unde ducimus impedit vel reprehenderit iure minus nostrum veniam obcaecati quis, quaerat pariatur asperiores dolor. Natus, veritatis itaque.</p>
+      <p> {text}</p>
       <Separator className="my-5" />
     </div>
   );

@@ -1,25 +1,27 @@
-'use client'
+"use client";
 
 import { cn } from "@/shared/lib/utils";
 import React, { FC, useState } from "react";
-import { GroupVariants } from "./group-variants";
 import { Button, Separator } from "../ui";
 import Image from "next/image";
 import { Title, Text, VolumeSelection } from ".";
 import { Volume } from "@/shared/constants/perfume";
-import { Gender, Notes } from "@prisma/client";
+import { Gender, Notes, Review } from "@prisma/client";
 import { genders, notes } from "@/prisma/constants";
-import { calcPrice } from "@/shared/lib";
-
+import { calcAverageRating, calcPrice } from "@/shared/lib";
+import { Rating } from "./rating";
+import Link from "next/link";
 
 interface Props {
-  id: number,
+  id: number;
   imageUrl: string;
   name: string;
   price: number;
   description: string;
   itemNotes: Notes[];
   gender: Gender;
+  releaseYear: number;
+  reviews: Review[];
   loading: boolean;
   onSubmit?: (productId: number, volume: Volume) => Promise<void>;
   className?: string;
@@ -30,15 +32,19 @@ export const ChooseProductForm: FC<Props> = ({
   imageUrl,
   price,
   description,
+  releaseYear,
   loading,
   onSubmit,
   itemNotes,
   gender,
+  reviews,
   className,
 }) => {
-  const [volume, setVolume] = useState<Volume>(1)
+  const [volume, setVolume] = useState<Volume>(1);
   const currentNotes = notes.filter((note) => itemNotes.includes(note.value));
-  const finalPrice = calcPrice(volume, price)
+  const finalPrice = calcPrice(volume, price);
+  const { averageRating, count } = calcAverageRating(reviews);
+
   return (
     <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
       <div className="flex  items-center justify-center flex-1 relative w-2/5">
@@ -56,17 +62,35 @@ export const ChooseProductForm: FC<Props> = ({
 
         <Separator />
 
-        <Text className="my-4">{description}</Text>
+        <Text size="md" className="my-4">
+          {description}
+        </Text>
 
         <div className="mb-4">
-          <Title text='Characteristics' size='sm' className="" />
+          <Title text="Characteristics:" size="xs" className="font-bold" />
           <ul>
             <li>Notes: {currentNotes.map((note) => note.name).join(", ")}</li>
-            <li>Gender: {genders.find((item) => item.value === gender)?.name}</li>
+            <li>
+              Gender: {genders.find((item) => item.value === gender)?.name}
+            </li>
+            <li>Release year: {releaseYear}</li>
           </ul>
         </div>
 
-        <VolumeSelection volume={volume} setVolume={setVolume} className="mb-4" />
+        {/* <a href={`product/${id}/#reviews`}> */}
+          <Rating
+            className="mt-5"
+            value={averageRating}
+            withNumber
+            reviewsCount={count}
+          />
+        {/* </a> */}
+
+        <VolumeSelection
+          volume={volume}
+          setVolume={setVolume}
+          className="my-4"
+        />
 
         <Separator />
 
@@ -77,7 +101,6 @@ export const ChooseProductForm: FC<Props> = ({
         >
           Add too cart for {finalPrice} €
         </Button>
-        <GroupVariants items={[]} />
       </div>
     </div>
   );

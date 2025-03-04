@@ -1,7 +1,6 @@
 import {
   Container,
   ProductForm,
-  Review,
   ReviewForm,
   ReviewsList,
   Title,
@@ -19,6 +18,13 @@ export default async function Product({
   const productId = Number((await params).id);
   const product = await prisma.product.findFirst({
     where: { id: productId },
+    include: {
+      reviews: {
+        include: {
+          user: true,
+        },
+      },
+    },
   });
 
   if (!product) {
@@ -30,9 +36,19 @@ export default async function Product({
       <div className="h-[calc(100vh-248px)]">
         <ProductForm product={product} />
       </div>
-      <Title text="Reviews" size="lg" className="font-extrabold my-10" />
+      {product.reviews.length > 0 ? (
+        <>
+          <Title text="Reviews" size="lg" className="font-extrabold my-10" />
+          <ReviewsList reviews={product.reviews} className="mb-10" />
+        </>
+      ) : (
+        <Title
+          text="No reviews yet"
+          size="lg"
+          className="font-extrabold my-10"
+        />
+      )}
 
-      <ReviewsList className="mb-10" />
       <ReviewForm productId={product.id} />
     </Container>
   );

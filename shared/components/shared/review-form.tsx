@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "../ui/card";
 import { createReview } from "@/app/actions";
+import { Review } from "@prisma/client";
 // import { useFormStatus } from "react-dom";
 
 type Props = {
