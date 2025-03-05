@@ -3,8 +3,6 @@
 import React, { FC } from 'react'
 import { CheckoutItem, CheckoutItemSkeleton, WhiteBlock } from '..'
 import { Trash2 } from 'lucide-react'
-import { PizzaSize, PizzaType } from '@/shared/constants/pizza'
-import { getCartItemDetails } from '@/shared/lib'
 import { CartStateItem } from '@/shared/lib/get-cart-details'
 
 interface Props {
@@ -41,7 +39,6 @@ export const CheckoutCart: FC<Props> = ({ className, items, totalAmount, removeC
                             <CheckoutItem
                                 key={item.id}
                                 id={item.id}
-                                details={getCartItemDetails(item.pizzaType as PizzaType, item.pizzaSize as PizzaSize, item.ingredients)}
                                 imageUrl={item.imageUrl}
                                 name={item.name}
                                 price={item.price}

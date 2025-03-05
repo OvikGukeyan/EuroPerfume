@@ -6,10 +6,11 @@ import { updateProduct } from "@/app/actions";
 import { redirect } from "next/navigation";
 
 export default async function Update({
-  params: { id },
+  params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = await params;
   const product = await prisma.product.findFirst({
     where: {
       id: Number(id),

@@ -18,7 +18,7 @@ export const CheckoutItem: React.FC<Props> = ({
   price,
   imageUrl,
   quantity,
-  details,
+  // details,
   className,
   disabled,
   onClickCountButton,
@@ -28,7 +28,7 @@ export const CheckoutItem: React.FC<Props> = ({
     <div className={cn('flex items-center w-full justify-between', { 'opacity-50 pointer-events-none': disabled }, className)}>
       <div className="flex items-center gap-5 flex-1">
         <CartItemDetails.Image src={imageUrl} />
-        <CartItemDetails.Info name={name} details={details} clssName='w-1/2' />
+        {/* <CartItemDetails.Info name={name} details={details} clssName='w-1/2' /> */}
       </div>
 
       <CartItemDetails.Price value={price} />

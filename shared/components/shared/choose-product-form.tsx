@@ -11,6 +11,7 @@ import { genders, notes } from "@/prisma/constants";
 import { calcAverageRating, calcPrice } from "@/shared/lib";
 import { Rating } from "./rating";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Props {
   id: number;
@@ -44,6 +45,16 @@ export const ChooseProductForm: FC<Props> = ({
   const currentNotes = notes.filter((note) => itemNotes.includes(note.value));
   const finalPrice = calcPrice(volume, price);
   const { averageRating, count } = calcAverageRating(reviews);
+  const router = useRouter();
+
+  const scrollToReviews = () => {
+    const reviewsSection = document.getElementById("reviews");
+    if (reviewsSection) {
+      reviewsSection.scrollIntoView({ behavior: "smooth" });
+    }else{
+      router.push(`/product/${id}#reviews`);
+    }
+  };
 
   return (
     <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
@@ -76,15 +87,15 @@ export const ChooseProductForm: FC<Props> = ({
             <li>Release year: {releaseYear}</li>
           </ul>
         </div>
-
-        {/* <a href={`product/${id}/#reviews`}> */}
-          <Rating
+         <div onClick={scrollToReviews} className="cursor-pointer">
+         <Rating
             className="mt-5"
             value={averageRating}
             withNumber
             reviewsCount={count}
           />
-        {/* </a> */}
+        </div>
+       
 
         <VolumeSelection
           volume={volume}

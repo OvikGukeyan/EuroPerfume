@@ -52,7 +52,7 @@ export const Header: React.FC<Props> = ({
       }, 500);
     }
   }, [router, searchParams]);
-  const { loading } = useFavorites();
+  const { favoritesLoading: loading } = useFavorites();
 
   return (
     <header className={cn("", className)}>

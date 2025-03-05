@@ -4,14 +4,9 @@ import { FavoritesState, FavoritesStateItem, useCartStore, useFavoritesStore } f
 import { CartStateItem } from "../lib/get-cart-details";
 import { CreateCartItemValues } from '../services/dto/cart.dto';
 
-type ReturnPeops = {
-    items: FavoritesStateItem[];
-    loading: boolean;
-    itemLoading: boolean;
-    addFavoritesItem: (productId: number) => Promise<void>;
-}
 
-export const useFavorites = (): ReturnPeops => {
+
+export const useFavorites = (): FavoritesState => {
     
     const favoritesState = useFavoritesStore((state) => state);
     

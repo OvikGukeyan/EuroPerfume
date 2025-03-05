@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useOptimistic, useState } from "react";
+import React, { useState } from "react";
 import { Title, VolumeSelection } from ".";
-import { Button, Toggle } from "../ui";
+import { Button } from "../ui";
 import { Heart, HeartOff, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import { useCartStore, useFavoritesStore } from "@/shared/store";
@@ -33,9 +33,7 @@ export const ProductCard: React.FC<Props> = ({
 }) => {
   const [volume, setVolume] = useState<Volume>(1);
   const [isFavorite, toggleIsFavorite] = useState(false);
-  const {averageRating, count} = calcAverageRating(reviews)
-    
-  
+  const { averageRating, count } = calcAverageRating(reviews);
 
   const onToggleFavorite = () => {
     toggleIsFavorite(!isFavorite);
@@ -80,7 +78,13 @@ export const ProductCard: React.FC<Props> = ({
       <Title text={name} size="sm" className="mb-1 mt-3 font-bold" />
 
       <VolumeSelection volume={volume} setVolume={setVolume} />
-      <Rating className="mt-5" value={averageRating} withNumber reviewsCount={count}/>
+
+        <Rating
+          className="mt-5"
+          value={averageRating}
+          withNumber
+          reviewsCount={count}
+        />
 
       <div className="flex justify-between items-center mt-4">
         <span className="text-[20px]">

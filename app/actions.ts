@@ -39,16 +39,7 @@ export async function createOrder(data: CheckoutFormValues) {
     const userCart = await prisma.cart.findFirst({
       include: {
         user: true,
-        items: {
-          // include: {
-          //     ingredients: true,
-          //     productItem: {
-          //         include: {
-          //             product: true
-          //         }
-          //     }
-          // }
-        },
+        items: {},
       },
       where: {
         token: cartToken,

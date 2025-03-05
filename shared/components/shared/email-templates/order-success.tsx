@@ -19,7 +19,7 @@ export const OrderSuccessTemplate: React.FC<Props> = ({
 
     <ul>
         {items.map((item) => (
-            <li key={item.id}>{item.productItem.product.name} | {item.productItem.price} € * {item.quantity} = {item.productItem.price * item.quantity} €</li>
+            <li key={item.id}>{item.product.name} | {item.product.name} € * {item.quantity} = {item.product.price * item.quantity} €</li>
         ))}
     </ul>
 

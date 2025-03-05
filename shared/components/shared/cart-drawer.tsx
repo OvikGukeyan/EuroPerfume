@@ -1,6 +1,6 @@
 'use client'
 
-import React, { FC, useEffect } from 'react'
+import React, { FC } from 'react'
 import Image from 'next/image';
 import {
     Sheet,
@@ -15,8 +15,6 @@ import Link from 'next/link';
 import { Button } from '../ui';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { CartDrawerItem, Title } from '.';
-import { getCartItemDetails } from '@/shared/lib';
-import { PizzaSize, PizzaType } from '@/shared/constants/pizza';
 import { useCart } from '@/shared/hooks';
 
 export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
@@ -64,7 +62,6 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                                 <div key={item.id} className='mb-2'>
                                     <CartDrawerItem
                                         id={item.id}
-                                        // details={getCartItemDetails(item.pizzaType as PizzaType, item.pizzaSize as PizzaSize, item.ingredients)}
                                         imageUrl={item.imageUrl}
                                         name={item.name}
                                         price={item.price}

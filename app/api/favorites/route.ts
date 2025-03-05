@@ -20,7 +20,11 @@ export async function GET(req: NextRequest) {
             createdAt: "desc",
           },
           include: {
-            product: true,
+            product: {
+              include: {
+                reviews: true,
+              }
+            },
           },
         },
       },

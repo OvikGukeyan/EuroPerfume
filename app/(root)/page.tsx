@@ -13,9 +13,10 @@ import { findProducts, GetSearchParams } from "@/shared/lib/find-products";
 export default async function Home({
   searchParams,
 }: {
-  searchParams: GetSearchParams;
+  searchParams: Promise<GetSearchParams>;
 }) {
-  const {categoryes, totalPages} = await findProducts(searchParams);
+  const params = await searchParams;
+  const {categoryes, totalPages} = await findProducts(params);
 
   return (
     <>

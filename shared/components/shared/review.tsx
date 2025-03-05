@@ -3,7 +3,6 @@
 import React, { FC } from "react";
 import { cn } from "@/lib/utils";
 import { Title } from ".";
-import ReactStars from "react-stars";
 import { Separator } from "../ui";
 import { Rating } from "./rating";
 
@@ -12,9 +11,10 @@ type Props = {
   text: string;
   userName: string;
   rating: number;
+  createdAt: Date
 };
 
-export const ReviewComponent: FC<Props> = ({ className, text, userName, rating }) => {
+export const ReviewComponent: FC<Props> = ({ className, text, userName, rating, createdAt }) => {
   return (
     <div className={cn("", className)}>
       <div className="flex items-center justify-between mb-5">
@@ -22,7 +22,9 @@ export const ReviewComponent: FC<Props> = ({ className, text, userName, rating }
         <Rating value={rating} withNumber/>
       </div>
       <p> {text}</p>
-      <Separator className="my-5" />
+      <p className="text-sm text-neutral-500 tracking-widest mt-4">{createdAt.toLocaleDateString()}</p>
+
+      <Separator className="mb-5" />
     </div>
   );
 };

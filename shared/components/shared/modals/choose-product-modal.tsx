@@ -5,10 +5,10 @@ import { cn } from '@/shared/lib/utils'
 import { useRouter } from 'next/navigation'
 import React, { FC } from 'react'
 import { ProductForm } from '..'
-import { Product } from '@prisma/client'
+import { Product, Review } from '@prisma/client'
 
 interface Props {
-    product: Product
+    product: Product & { reviews: Review[] }
     className?: string
 
 }

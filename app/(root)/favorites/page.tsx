@@ -18,6 +18,7 @@ export default function Favorites() {
               id={item.productId}
               name={item.name}
               imageUrl={item.imageUrl}
+              reviews={[]}  
               price={item.price}
             />
           ))}
