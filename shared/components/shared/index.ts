@@ -10,7 +10,6 @@ export { CheckboxFiltersGroup } from './checkbox-filters-group';
 export { ProductCard } from './product-card';
 export { ProductsGroupList } from './products-group-list';
 export { SearchInput } from './search-input';
-export { PizzaImage } from './pizza-image';
 export { GroupVariants } from './group-variants';
 export { ChooseProductForm } from './choose-product-form';
 export { CartButton } from './cart-button';
