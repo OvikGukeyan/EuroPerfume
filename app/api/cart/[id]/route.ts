@@ -2,7 +2,7 @@ import { prisma } from "@/prisma/prisma-client";
 import { updateCartTotalAmount } from "@/shared/lib/update-cart-total-amount";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function PATCH(req: NextRequest, res: NextResponse, { params }: { params: { id: string } }) {
+export async function PATCH(req: NextRequest,  { params }: { params: { id: string } }) {
     try {
         const id = Number(params.id);
         if (isNaN(id)) {
@@ -43,7 +43,7 @@ export async function PATCH(req: NextRequest, res: NextResponse, { params }: { p
     }
 }
 
-export async function DELETE(req: NextRequest, res: NextResponse, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest,  { params }: { params: { id: string } }) {
     try {
         const id = Number(params.id);
         if (isNaN(id)) {

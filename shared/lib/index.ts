@@ -5,3 +5,4 @@ export {findOrCreateCart} from './find-or-create-cart';
 export {calcPrice} from './calc-price';
 export {calcAverageRating} from './calc-average-rating';
 export {ModalContext, useModalContext} from './modal-context';
+export {getSlides} from './get-slides';

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { FC } from "react";
 import { cn } from "@/lib/utils";
@@ -14,7 +14,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "../ui/sidebar";
-import { Folders, Plus, Settings2 } from "lucide-react";
+import { Folders, GalleryHorizontalEnd, Plus, Settings2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -23,7 +23,7 @@ type Props = {
 };
 
 export const AppSidebar: FC<Props> = ({ className }) => {
-    const pathName = usePathname();
+  const pathName = usePathname();
   const tools = [
     {
       name: "Create New Product",
@@ -35,6 +35,11 @@ export const AppSidebar: FC<Props> = ({ className }) => {
       name: "Create New Slde",
       icon: <Plus />,
       href: "/create-slide",
+    },
+    {
+      name: "Slides",
+      icon: <GalleryHorizontalEnd />,
+      href: "/slides",
     },
     {
       name: "Orders",
@@ -53,7 +58,10 @@ export const AppSidebar: FC<Props> = ({ className }) => {
               {tools.map((tool) => (
                 <Link key={tool.name} href={tool.href}>
                   <SidebarMenuItem>
-                    <SidebarMenuButton isActive={pathName === tool.href}  asChild>
+                    <SidebarMenuButton
+                      isActive={pathName === tool.href}
+                      asChild
+                    >
                       <a href={"#"}>
                         {tool.icon}
                         <span>{tool.name}</span>

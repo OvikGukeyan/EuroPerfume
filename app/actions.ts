@@ -24,6 +24,7 @@ import {
 } from "@prisma/client";
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export async function createOrder(data: CheckoutFormValues) {
   try {
@@ -242,7 +243,7 @@ export async function createProduct(
     await prisma.product.create({
       data: {
         name: name,
-        imageUrl: imageData?.path || "",
+        imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${imageData?.path || ""}`,
         price: Number(price),
         gender: gender,
         concentration: concentration,
@@ -423,7 +424,6 @@ export async function toggleProductAvailability(
 }
 
 export async function createReview(formData: FormData) {
-  "use server";
   try {
     const user = await getUserSession();
 
@@ -455,7 +455,6 @@ export async function createReview(formData: FormData) {
 }
 
 export async function createSlider(formData: FormData) {
-  "use server";
 
   try {
     console.log(11111);
@@ -464,10 +463,7 @@ export async function createSlider(formData: FormData) {
       throw new Error("Access denied");
     }
 
-    // const name = formData.get("name") as string;
-    // const desctopImage = formData.get("desctopImage") as File;
-    // const tabletImage = formData.get("tabletImage") as File;
-    // const mobileImage = formData.get("mobileImage") as File;
+  
 
     const {name, desctopImg, tabletImg, mobileImg} = Object.fromEntries(formData.entries()) as {
       name: string;
@@ -504,12 +500,30 @@ export async function createSlider(formData: FormData) {
     await prisma.slide.create({
       data: {
         name: name,
-        desctopImg: uploadResults[0].data?.path as string,
-        tabletImg: uploadResults[1].data?.path as string,
-        mobileImg: uploadResults[2].data?.path as string,
+        desctopImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[0].data?.path}`,
+        tabletImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[1].data?.path}`,
+        mobileImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[2].data?.path}`,
+
       },
     });
   } catch (error) {
     console.error("Error [CREATE_SLIDER]", error);
+  }finally {
+    redirect("/slides");
+  }
+}
+
+
+export async function deleteSlide(id: number) {
+  
+  try {
+    await prisma.slide.delete({
+      where: { id },
+    });
+    
+  } catch (error) {
+    console.error("Error [DELETE_SLIDER]", error);
+  } finally {
+    redirect("/create-slide");
   }
 }
