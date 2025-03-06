@@ -3,7 +3,6 @@ import {
   Title,
   ProductsGroupList,
   FiltersDrawer,
-  Stories,
   PaginationComponent,
   Carusel,
 } from "@/shared/components/shared";

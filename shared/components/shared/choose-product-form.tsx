@@ -1,16 +1,15 @@
 "use client";
 
 import { cn } from "@/shared/lib/utils";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Button, Separator } from "../ui";
 import Image from "next/image";
 import { Title, Text, VolumeSelection } from ".";
 import { Volume } from "@/shared/constants/perfume";
 import { Gender, Notes, Review } from "@prisma/client";
 import { genders, notes } from "@/prisma/constants";
-import { calcAverageRating, calcPrice } from "@/shared/lib";
+import { calcAverageRating, calcPrice, useModalContext } from "@/shared/lib";
 import { Rating } from "./rating";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 interface Props {
@@ -46,15 +45,25 @@ export const ChooseProductForm: FC<Props> = ({
   const finalPrice = calcPrice(volume, price);
   const { averageRating, count } = calcAverageRating(reviews);
   const router = useRouter();
+  const { isModal } = useModalContext();
 
+  
+
+  useEffect(() => {
+    if (!isModal) {
+      scrollToReviews();
+    }
+  },[isModal])
   const scrollToReviews = () => {
     const reviewsSection = document.getElementById("reviews");
     if (reviewsSection) {
       reviewsSection.scrollIntoView({ behavior: "smooth" });
-    }else{
+    } else {
       router.push(`/product/${id}#reviews`);
     }
   };
+
+
 
   return (
     <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
@@ -87,14 +96,28 @@ export const ChooseProductForm: FC<Props> = ({
             <li>Release year: {releaseYear}</li>
           </ul>
         </div>
-         <div onClick={scrollToReviews} className="cursor-pointer">
-         <Rating
-            className="mt-5"
-            value={averageRating}
-            withNumber
-            reviewsCount={count}
-          />
-        </div>
+
+        {!isModal ? (
+          <div onClick={scrollToReviews} className="cursor-pointer">
+
+            <Rating
+              className="mt-5"
+              value={averageRating}
+              withNumber
+              reviewsCount={count}
+            />
+
+          </div>
+        ) : (
+          <a href={`/product/${id}`}>
+            <Rating
+              className="mt-5"
+              value={averageRating}
+              withNumber
+              reviewsCount={count}
+            />
+          </a>
+        )}
        
 
         <VolumeSelection

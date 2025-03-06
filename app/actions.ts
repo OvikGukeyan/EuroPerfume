@@ -24,8 +24,6 @@ import {
 } from "@prisma/client";
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { NextResponse } from "next/server";
 
 export async function createOrder(data: CheckoutFormValues) {
   try {
@@ -241,8 +239,6 @@ export async function createProduct(
         contentType: image.type,
       });
 
-    
-
     await prisma.product.create({
       data: {
         name: name,
@@ -276,7 +272,6 @@ export async function updateProduct(
   formData: FormData & CreateProductFormValues,
   id: number
 ) {
-
   try {
     // Проверка прав доступа
     const user = await getUserSession();
@@ -428,8 +423,7 @@ export async function toggleProductAvailability(
 }
 
 export async function createReview(formData: FormData) {
-  "use server"
-  await new Promise(resolve => setTimeout(resolve, 1000))
+  "use server";
   try {
     const user = await getUserSession();
 
@@ -455,9 +449,67 @@ export async function createReview(formData: FormData) {
             id: productId,
           },
         },
-      }
-    })
-  } catch (error) {
+      },
+    });
+  } catch (error) {}
+}
+
+export async function createSlider(formData: FormData) {
+  "use server";
+
+  try {
+    console.log(11111);
+    const user = await getUserSession();
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
+
+    // const name = formData.get("name") as string;
+    // const desctopImage = formData.get("desctopImage") as File;
+    // const tabletImage = formData.get("tabletImage") as File;
+    // const mobileImage = formData.get("mobileImage") as File;
+
+    const {name, desctopImg, tabletImg, mobileImg} = Object.fromEntries(formData.entries()) as {
+      name: string;
+      desctopImg: File;
+      tabletImg: File;
+      mobileImg: File;
+    };
     
+    const images: File[] = [desctopImg, tabletImg, mobileImg];
+    console.log(2222, images, name);
+
+    const uploadPromises = images.map((image) => {
+      const fileName = `${image.name}--${new Date().toISOString()}`;
+      return supabase.storage
+        .from("images")
+        .upload(fileName, image, { contentType: image.type });
+    });
+
+    const uploadResults = await Promise.all(uploadPromises);
+
+    console.log(3333, uploadResults);
+
+    uploadResults.forEach((result, index) => {
+      if (result.error) {
+        console.error(`Error uploading ${images[index].name}:`, result.error);
+      } else {
+        console.log(
+          `File ${images[index].name} uploaded successfully :`,
+          result.data?.path
+        );
+      }
+    });
+
+    await prisma.slide.create({
+      data: {
+        name: name,
+        desctopImg: uploadResults[0].data?.path as string,
+        tabletImg: uploadResults[1].data?.path as string,
+        mobileImg: uploadResults[2].data?.path as string,
+      },
+    });
+  } catch (error) {
+    console.error("Error [CREATE_SLIDER]", error);
   }
 }

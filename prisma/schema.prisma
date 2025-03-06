@@ -157,19 +157,12 @@ model VerificationCode {
   @@unique([userId, code])
 }
 
-model Story {
-  id              Int         @id @default(autoincrement())
-  previewImageUrl String
-  createdAt       DateTime    @default(now())
-  items           StoryItem[]
-}
-
-model StoryItem {
-  id        Int      @id @default(autoincrement())
-  storyId   Int
-  sourceUrl String
-  createdAt DateTime @default(now())
-  story     Story    @relation(fields: [storyId], references: [id])
+model Slide {
+  id         Int    @id @default(autoincrement())
+  name       String
+  desctopImg String
+  tabletImg  String
+  mobileImg  String
 }
 
 enum OrderStatus {

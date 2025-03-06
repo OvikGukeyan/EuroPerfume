@@ -32,7 +32,6 @@ export {Providers} from './providers';
 export {ProfileButton} from './profile-button';
 export {InfoBlock} from './info-block';
 export {ProfileForm} from './profile-form';
-export {Stories} from './stories';
 export {VolumeSelection} from './volume-selection';
 export {Text} from './text';
 export {PaginationComponent} from './pagination-component';

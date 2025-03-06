@@ -8,7 +8,6 @@ import {
 import { prisma } from "@/prisma/prisma-client";
 import { notFound } from "next/navigation";
 import React from "react";
-import { Rating } from "@/shared/components/shared/rating";
 
 export default async function Product({
   params,

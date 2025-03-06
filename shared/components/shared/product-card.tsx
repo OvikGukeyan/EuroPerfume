@@ -9,16 +9,13 @@ import { Heart, HeartOff, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import { useCartStore, useFavoritesStore } from "@/shared/store";
 import { Volume } from "@/shared/constants/perfume";
-import { Rating } from "./rating";
-import { calcAverageRating, calcPrice } from "@/shared/lib";
-import { Review } from "@prisma/client";
+import { calcPrice } from "@/shared/lib";
 
 interface Props {
   id: number;
   name: string;
   price: number;
   imageUrl: string;
-  reviews: Review[];
   available?: boolean;
   className?: string;
 }
@@ -27,13 +24,11 @@ export const ProductCard: React.FC<Props> = ({
   imageUrl,
   className,
   name,
-  reviews,
   price,
   id,
 }) => {
   const [volume, setVolume] = useState<Volume>(1);
   const [isFavorite, toggleIsFavorite] = useState(false);
-  const { averageRating, count } = calcAverageRating(reviews);
 
   const onToggleFavorite = () => {
     toggleIsFavorite(!isFavorite);
@@ -75,16 +70,11 @@ export const ProductCard: React.FC<Props> = ({
         </div>
       </Link>
 
-      <Title text={name} size="sm" className="mb-1 mt-3 font-bold" />
+      <Title text={name} size="sm" className=" my-5 font-bold" />
 
       <VolumeSelection volume={volume} setVolume={setVolume} />
 
-        <Rating
-          className="mt-5"
-          value={averageRating}
-          withNumber
-          reviewsCount={count}
-        />
+       
 
       <div className="flex justify-between items-center mt-4">
         <span className="text-[20px]">

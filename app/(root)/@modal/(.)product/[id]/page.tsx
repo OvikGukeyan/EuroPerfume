@@ -2,6 +2,7 @@ import { ChooseProductModal } from "@/shared/components/shared";
 import { prisma } from "@/prisma/prisma-client";
 import { notFound } from "next/navigation";
 import React from "react";
+import { Product, Review } from "@prisma/client";
 
 export default async function ProductModalPage({
   params,
@@ -10,19 +11,19 @@ export default async function ProductModalPage({
 }) {
   const { id } = await params;
   const product = await prisma.product.findFirst({
-      where: { id: Number(id) },
-      include: {
-        reviews: {
-          include: {
-            user: true,
-          },
+    where: { id: Number(id) },
+    include: {
+      reviews: {
+        include: {
+          user: true,
         },
       },
-    });
+    },
+  });
 
   if (!product) {
     return notFound();
   }
 
-  return <ChooseProductModal product={product} />;
+  return <ChooseProductModal product={product as Product & { reviews: Review[] }} />
 }

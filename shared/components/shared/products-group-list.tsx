@@ -2,14 +2,14 @@
 
 import React, { useEffect, useRef } from 'react';
 import {useIntersection} from 'react-use';
-import { ProductCard, Title } from '.';
+import { ProductCard } from '.';
 import { cn } from '@/shared/lib/utils';
 import { useCategoryStore } from '@/shared/store';
-import { Product, Review } from '@prisma/client';
+import { Product } from '@prisma/client';
 
 interface Props {
     title: string;
-    items: (Product & {reviews: Review[]})[];
+    items: Product[];
     className?: string;
     listClassName?: string;
     categoryId: number;
@@ -46,7 +46,6 @@ export const ProductsGroupList: React.FC<Props> = ({
                             name={product.name}
                             imageUrl={product.imageUrl}
                             price={product.price}
-                            reviews={product.reviews}
                             available={product.available}
                         />
                     ))}
