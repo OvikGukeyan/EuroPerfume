@@ -1,7 +1,7 @@
 import { Favorites, FavoritesItem, Product, Review } from "@prisma/client";
 
 export type FavoritesItemDTO = FavoritesItem & {
-  product: Product[];
+  product: Product;
 };
 
 export interface FavoritesDTO extends Favorites {

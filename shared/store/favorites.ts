@@ -10,7 +10,6 @@ export type FavoritesStateItem = {
     name: string;
     imageUrl: string;
     price: number;
-    reviews: Review[]
     disabled: boolean;
 };
 export interface FavoritesState {
@@ -38,7 +37,6 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
         name: item.product.name,
         imageUrl: item.product.imageUrl,
         price: item.product.price,
-        reviews: item.product.reviews,
         disabled: false
       }))});
     } catch (error) {
@@ -59,7 +57,6 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
         name: item.product.name,
         imageUrl: item.product.imageUrl,
         price: item.product.price,
-        reviews: item.product.reviews,
         disabled: false
       }))});
       
