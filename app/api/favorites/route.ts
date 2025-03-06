@@ -1,6 +1,5 @@
 import { prisma } from "@/prisma/prisma-client";
 import { findOrCreateFavorites } from "@/shared/lib";
-import { CreateFavoritesItemValues } from "@/shared/services/dto/favorites.dto";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
