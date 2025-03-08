@@ -47,7 +47,7 @@ export default async function Home({
             </div>
           </div>
         </div>
-       <PaginationComponent  countOfPages={totalPages}/>
+       <PaginationComponent className="mt-10"  countOfPages={totalPages}/>
       </Container>
     </>
   );

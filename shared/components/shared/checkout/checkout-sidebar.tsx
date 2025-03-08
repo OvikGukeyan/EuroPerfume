@@ -2,7 +2,6 @@ import React, { FC } from 'react'
 import { ArrowRight, Package, Percent, Truck } from 'lucide-react'
 import { OrderDetails, WhiteBlock } from '..';
 import { Button, Skeleton } from '../..';
-import { it } from 'node:test';
 
 interface Props {
     className?: string;
@@ -73,7 +72,7 @@ export const CheckoutSidebar: FC<Props> = ({ className, loading, totalAmount, it
                 type="submit"
                 // disabled={!totalAmount || submitting}
                 className="w-full h-14 rounded-2xl mt-6 text-base font-bold">
-                Move to payment
+                Submit
                 <ArrowRight className="w-5 ml-2" />
             </Button>
         </WhiteBlock>

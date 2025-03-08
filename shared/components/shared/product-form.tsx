@@ -62,6 +62,7 @@ export const ProductForm: FC<Props> = ({
       gender={product.gender}
       reviews={product.reviews}
       loading={loading}
+      className={className}
       
     />
   );

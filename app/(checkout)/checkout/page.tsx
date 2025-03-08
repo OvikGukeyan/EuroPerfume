@@ -10,12 +10,14 @@ import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Api } from "@/shared/services/api-client";
+import { useRouter } from "next/navigation";
 
 
 export default function Checkout() {
     const [submitting, setSubmitting] = useState(false);
     const { totalAmount, items, updateItemQuantity, removeCartItem, loading, itemLoading } = useCart()
     const {data: session} = useSession();
+    const router = useRouter();
     
     const form = useForm<CheckoutFormValues>({
         resolver: zodResolver(checkoutFormSchema),
@@ -47,15 +49,13 @@ export default function Checkout() {
     const onSubmit = async (data: CheckoutFormValues) => {
         try {
             setSubmitting(true);
-            const url = await createOrder(data);
-
-            toast.success('Order created successfully! Redirecting to payment...', {
+            const order = await createOrder(data);
+            console.log(order);
+            toast.success('Order created successfully! ', {
                 icon: '✅',
             })
 
-            if(url) {
-                location.href = url
-            }
+            router.push(`/`);
 
         } catch (error) {
             setSubmitting(false);

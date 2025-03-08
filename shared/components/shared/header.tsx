@@ -55,47 +55,50 @@ export const Header: React.FC<Props> = ({
   const { favoritesLoading: loading } = useFavorites();
 
   return (
-    <header className={cn("", className)}>
-        <div className="flex items-center gap-4 h-10  px-5">
-          <Truck />
-          <h3>Free shipping available for orders above $100</h3>
-        </div>
-      <Separator />
-      <div className="flex items-center justify-between py-10 px-5">
-        <Link href={"/"}>
-          <div className="flex items-center gap-4 ">
-            <Image
-              src={"/assets/Logo.png"}
-              width={120}
-              height={40}
-              alt="logo"
-            />
-          </div>
-        </Link>
-
-        {hasSearch && (
-          <div className="mx-10 flex-1 hidden md:flex">
-            <SearchInput />
-          </div>
-        )}
-
-        <div className="flex  items-center gap-3">
-          <Button
-            onClick={() => router.push("/favorites")}
-            variant={"secondary"}
-            loading={loading}
-          >
-            <Heart />
-          </Button>
-          <AuthModal
-            open={openAuthModal}
-            onClose={() => setOpenAuthModal(false)}
-          />
-          <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />
-
-          {hasCart && <CartButton />}
-        </div>
+    <>
+      <div className="flex items-center gap-4 h-10  px-3 md:px-5">
+        <Truck />
+        <h3 className="text-sm md:text-base">Free shipping available for orders above $100</h3>
       </div>
-    </header>
+      <header className={cn("", className)}>
+        <Separator />
+        <div className="flex items-center justify-between py-5 md:py-10 px-3 md:px-5 ">
+          <Link href={"/"}>
+            <div className="flex items-center gap-4 ">
+              <Image
+                src={"/assets/Logo.png"}
+                width={120}
+                height={40}
+                alt="logo"
+                className="mr-3"
+              />
+            </div>
+          </Link>
+
+          {hasSearch && (
+            <div className="mx-10 flex-1 hidden md:flex">
+              <SearchInput />
+            </div>
+          )}
+
+          <div className="flex  items-center gap-3">
+            <Button
+              onClick={() => router.push("/favorites")}
+              variant={"secondary"}
+              loading={loading}
+            >
+              <Heart />
+            </Button>
+            <AuthModal
+              open={openAuthModal}
+              onClose={() => setOpenAuthModal(false)}
+            />
+            <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />
+
+            {hasCart && <CartButton />}
+          </div>
+        </div>
+      </header>
+    </>
   );
 };

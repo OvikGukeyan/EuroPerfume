@@ -67,7 +67,7 @@ export const ChooseProductForm: FC<Props> = ({
 
   return (
     <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
-      <div className="flex  items-center justify-center flex-1 relative w-2/5">
+      <div className="flex  items-center justify-center flex-1 relative w-full lg:w-2/5">
         <Image
           width={350}
           height={350}
@@ -77,7 +77,7 @@ export const ChooseProductForm: FC<Props> = ({
         />
       </div>
 
-      <div className="w-3/5 bg-[#f2f2f2] p-7">
+      <div className="w-full lg:w-3/5  bg-[#f2f2f2] p-7">
         <Title text={name} size="md" className="font-extrabold mb-2" />
 
         <Separator />

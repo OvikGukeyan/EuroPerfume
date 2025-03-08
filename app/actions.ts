@@ -81,24 +81,24 @@ export async function createOrder(data: CheckoutFormValues) {
         cartId: userCart.id,
       },
     });
-    const paymentData = await createPayment({
-      orderId: order.id,
-      amount: order.totalAmount,
-      description: "Order #" + order.id,
-    });
+    // const paymentData = await createPayment({
+    //   orderId: order.id,
+    //   amount: order.totalAmount,
+    //   description: "Order #" + order.id,
+    // });
 
-    if (!paymentData) {
-      throw new Error("Failed to create payment");
-    }
+    // if (!paymentData) {
+    //   throw new Error("Failed to create payment");
+    // }
 
-    await prisma.order.update({
-      where: {
-        id: order.id,
-      },
-      data: {
-        peymentId: paymentData.id,
-      },
-    });
+    // await prisma.order.update({
+    //   where: {
+    //     id: order.id,
+    //   },
+    //   data: {
+    //     peymentId: paymentData.id,
+    //   },
+    // });
 
     await sendEmail(
       data.email,
@@ -106,14 +106,13 @@ export async function createOrder(data: CheckoutFormValues) {
       PayOrderTemplate({
         orderId: order.id,
         totalAmount: order.totalAmount,
-        paymentUrl: paymentData?.url || "",
+        paymentUrl: "",
       })
     );
 
-    return paymentData.url;
   } catch (error) {
     console.error("[createOrder] Server error", error);
-  }
+  } 
 }
 
 export async function updateUserInfo(body: Prisma.UserUpdateInput) {
@@ -243,7 +242,9 @@ export async function createProduct(
     await prisma.product.create({
       data: {
         name: name,
-        imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${imageData?.path || ""}`,
+        imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${
+          imageData?.path || ""
+        }`,
         price: Number(price),
         gender: gender,
         concentration: concentration,
@@ -455,7 +456,6 @@ export async function createReview(formData: FormData) {
 }
 
 export async function createSlider(formData: FormData) {
-
   try {
     console.log(11111);
     const user = await getUserSession();
@@ -463,15 +463,15 @@ export async function createSlider(formData: FormData) {
       throw new Error("Access denied");
     }
 
-  
-
-    const {name, desctopImg, tabletImg, mobileImg} = Object.fromEntries(formData.entries()) as {
+    const { name, desctopImg, tabletImg, mobileImg } = Object.fromEntries(
+      formData.entries()
+    ) as {
       name: string;
       desctopImg: File;
       tabletImg: File;
       mobileImg: File;
     };
-    
+
     const images: File[] = [desctopImg, tabletImg, mobileImg];
     console.log(2222, images, name);
 
@@ -503,24 +503,20 @@ export async function createSlider(formData: FormData) {
         desctopImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[0].data?.path}`,
         tabletImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[1].data?.path}`,
         mobileImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[2].data?.path}`,
-
       },
     });
   } catch (error) {
     console.error("Error [CREATE_SLIDER]", error);
-  }finally {
+  } finally {
     redirect("/slides");
   }
 }
 
-
 export async function deleteSlide(id: number) {
-  
   try {
     await prisma.slide.delete({
       where: { id },
     });
-    
   } catch (error) {
     console.error("Error [DELETE_SLIDER]", error);
   } finally {

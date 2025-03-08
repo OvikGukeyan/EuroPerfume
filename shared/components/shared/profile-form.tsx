@@ -57,7 +57,7 @@ export const ProfileForm: FC<Props> = ({ data, className }) => {
                 <Title text='Personal info' size="md" className="font-bold" />
 
                 <FormProvider {...form}>
-                    <form className="flex flex-col gap-5 w-96 mt-10" onSubmit={form.handleSubmit(onSubmit)}>
+                    <form className="flex flex-col gap-5 w-72 md:w-96 mt-10" onSubmit={form.handleSubmit(onSubmit)}>
                         <FormInput name="email" label="E-Mail" required />
                         <FormInput name="fullName" label="Полное имя" required />
 
