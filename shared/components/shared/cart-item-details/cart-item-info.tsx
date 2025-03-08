@@ -1,7 +1,7 @@
 
 interface Props {
   name: string;
-  clssName?: string
+  clssName?: string;
 }
 
 export const CartItemInfo: React.FC<Props> = ({ name, clssName }) => {
