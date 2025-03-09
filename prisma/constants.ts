@@ -375,15 +375,18 @@ export const deliveryTypes = [
   {
     name: 'Großbrief',
     value: DeliveryTypes.GB,
+    price: 3
   },
 
   {
     name: 'Einschreiben',
-    value: DeliveryTypes.ES
+    value: DeliveryTypes.ES,
+    price: 5
   },
   {
     name: 'Paket bis Haftung',
-    value: DeliveryTypes.PBH
+    value: DeliveryTypes.PBH,
+    price: 6.2
   }
 ]
 

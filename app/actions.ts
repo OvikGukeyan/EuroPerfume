@@ -1,6 +1,7 @@
 "use server";
 
 import { supabase } from "@/lib/supabase";
+import { deliveryTypes } from "@/prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
 import {
   PayOrderTemplate,
@@ -53,6 +54,10 @@ export async function createOrder(data: CheckoutFormValues) {
       throw new Error("Cart is empty!");
     }
 
+    const deliveryType = deliveryTypes.find(
+      (type) => type.value === data.deliveryType
+    );
+
     const order = await prisma.order.create({
       data: {
         fullName: data.firstName + " " + data.lastName,
@@ -61,7 +66,8 @@ export async function createOrder(data: CheckoutFormValues) {
         address: data.address,
         comment: data.comment,
         token: cartToken,
-        totalAmount: userCart.totalAmount,
+        totalAmount: userCart.totalAmount + deliveryType!.price,
+        deliveryType: data.deliveryType,
         status: OrderStatus.PENDING,
         items: JSON.stringify(userCart.items),
       },

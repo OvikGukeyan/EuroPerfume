@@ -45,6 +45,7 @@ export {ReviewsList} from './reviews-list';
 export {RatingSelect} from './rating-select';
 export {SubmitButtonBar} from './SubmitButtonBar';
 export {DeshboardSlide} from './dashboard-slide';
+export {MyPopover} from './my-popover';
 
 export * from './email-templates';
 export * from './form';

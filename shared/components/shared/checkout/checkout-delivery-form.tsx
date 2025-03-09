@@ -5,7 +5,9 @@ import {
   AdressInput,
   ErrorText,
   FormTextarea,
+  MyPopover,
   RadioInput,
+  Title,
   WhiteBlock,
 } from "..";
 import { cn } from "@/shared/lib/utils";
@@ -28,13 +30,13 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
       contentClassName="p-8"
     >
       <div className="flex flex-col gap-5">
-        <Controller
-          control={control}
-          name="deliveryType"
-          render={({ field, fieldState: { error } }) => (
-            <RadioInput value={field.value} onChange={field.onChange} name="Delivery Type" items={deliveryTypes} />
-          )}
-        />
+        <Title text="Delivery Type" size="sm" className="font-bold" />
+
+        <div className="flex justify-between">
+          <RadioInput items={deliveryTypes} />
+
+          <MyPopover />
+        </div>
 
         <Controller
           control={control}
