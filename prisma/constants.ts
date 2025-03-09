@@ -6,6 +6,7 @@ import {
   Brands,
   Notes,
   Types,
+  DeliveryTypes,
 } from "@prisma/client";
 
 export const categories = [
@@ -369,6 +370,24 @@ export const perfumeTypes = [
   { name: "Celebrity", value: Types.CELEBRITY },
   { name: "Indie", value: Types.INDIE },
 ];
+
+export const deliveryTypes = [
+  {
+    name: 'Großbrief',
+    value: DeliveryTypes.GB,
+  },
+
+  {
+    name: 'Einschreiben',
+    value: DeliveryTypes.ES
+  },
+  {
+    name: 'Paket bis Haftung',
+    value: DeliveryTypes.PBH
+  }
+]
+
+export type DeliveryTypesType = typeof deliveryTypes
 
 export const yers = Array.from(
   { length: new Date().getFullYear() - 1990 },

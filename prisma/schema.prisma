@@ -130,21 +130,22 @@ model Reply {
 }
 
 model Order {
-  id          Int         @id @default(autoincrement())
-  userId      Int?
-  token       String
-  totalAmount Int
-  status      OrderStatus
-  peymentId   String?
-  items       Json
-  fullName    String
-  address     String
-  email       String
-  phone       String
-  comment     String?
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  user        User?       @relation(fields: [userId], references: [id])
+  id           Int           @id @default(autoincrement())
+  userId       Int?
+  token        String
+  totalAmount  Int
+  status       OrderStatus
+  peymentId    String?
+  items        Json
+  fullName     String
+  address      String
+  email        String
+  phone        String
+  comment      String?
+  deliveryType DeliveryTypes
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  user         User?         @relation(fields: [userId], references: [id])
 }
 
 model VerificationCode {
@@ -237,4 +238,10 @@ enum Brands {
 enum Languages {
   RU
   DE
+}
+
+enum DeliveryTypes {
+  GB
+  ES
+  PBH
 }

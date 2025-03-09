@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Api } from "@/shared/services/api-client";
 import { useRouter } from "next/navigation";
+import { DeliveryTypes } from "@prisma/client";
 
 
 export default function Checkout() {
@@ -28,8 +29,12 @@ export default function Checkout() {
             phone: '',
             address: '',
             comment: '',
+            deliveryType: DeliveryTypes.GB
         },
     });
+
+    const delivery = form.watch('deliveryType');
+    console.log(delivery);
 
     useEffect(() => {
         async function fetchUserInfo() {
