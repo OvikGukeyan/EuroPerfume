@@ -2,23 +2,24 @@
 import React, { FC } from "react";
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "../../ui/radio-group";
-import { DeliveryTypesType } from "@/prisma/constants";
+import { ContactFormsType, DeliveryTypesType } from "@/prisma/constants";
 import { Label } from "../../ui/label";
 import { Controller, useFormContext } from "react-hook-form";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
-  items: DeliveryTypesType;
+  items: DeliveryTypesType | ContactFormsType;
+  name: string;
 }
 
-export const RadioInput: FC<Props> = ({ className, items }) => {
+export const RadioInput: FC<Props> = ({ className, items, name }) => {
   const { control } = useFormContext();
 
   return (
     <>
       <Controller
         control={control}
-        name="deliveryType"
+        name={name}
         render={({ field, fieldState: { error } }) => (
           <RadioGroup
             className={cn("flex flex-col md:flex-row gap-3 ", className)}

@@ -1,4 +1,4 @@
-import { DeliveryTypes } from '@prisma/client';
+import { ContactForms, DeliveryTypes } from '@prisma/client';
 import { z } from 'zod';
 
 export const checkoutFormSchema = z.object({
@@ -9,6 +9,7 @@ export const checkoutFormSchema = z.object({
     address: z.string().min(5, { message: 'Invalid address' }),
     comment: z.string().optional(),
     deliveryType: z.nativeEnum(DeliveryTypes),
+    contactForm: z.nativeEnum(ContactForms),
 });
 
 

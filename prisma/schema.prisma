@@ -143,6 +143,7 @@ model Order {
   phone        String
   comment      String?
   deliveryType DeliveryTypes
+  contactForm  ContactForms
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   user         User?         @relation(fields: [userId], references: [id])
@@ -244,4 +245,10 @@ enum DeliveryTypes {
   GB
   ES
   PBH
+}
+
+enum ContactForms {
+  WA
+  VB
+  TG
 }

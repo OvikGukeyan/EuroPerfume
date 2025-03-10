@@ -8,16 +8,13 @@ interface Props {
     loading?: boolean;
     itemLoading?: boolean;
     totalAmount: number;
+    deliveryPrice: number
 }
 
-const VAT = 15;
-const DELIVERY_PRICE = 5;
 
-export const CheckoutSidebar: FC<Props> = ({ className, loading, totalAmount, itemLoading }) => {
+export const CheckoutSidebar: FC<Props> = ({ className, loading, totalAmount, itemLoading, deliveryPrice }) => {
 
-    const vatPrice = totalAmount * VAT / 100;
-    const deliveryPrice = totalAmount > 0 ? DELIVERY_PRICE : 0;
-    const totalPrice = totalAmount + vatPrice + deliveryPrice;
+    const totalPrice = totalAmount + deliveryPrice;
 
     return (
         <WhiteBlock className='p-6 sticky top-4'>
@@ -41,18 +38,7 @@ export const CheckoutSidebar: FC<Props> = ({ className, loading, totalAmount, it
                         totalAmount + ' €'
                 } />
 
-            <OrderDetails
-
-                title={
-                    <div className="flex items-center">
-                        <Percent size={18} className="mr-2 text-gray-400" />
-                        Fees
-                    </div>
-                } value={
-                    loading ?
-                        <Skeleton className="h-6 w-16" /> :
-                        vatPrice + ' €'
-                } />
+            
 
             <OrderDetails
 
@@ -70,7 +56,7 @@ export const CheckoutSidebar: FC<Props> = ({ className, loading, totalAmount, it
             <Button
                 loading={loading || itemLoading}
                 type="submit"
-                // disabled={!totalAmount || submitting}
+                disabled={!totalAmount}
                 className="w-full h-14 rounded-2xl mt-6 text-base font-bold">
                 Submit
                 <ArrowRight className="w-5 ml-2" />

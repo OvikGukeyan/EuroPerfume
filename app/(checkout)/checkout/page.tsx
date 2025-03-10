@@ -11,7 +11,9 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { Api } from "@/shared/services/api-client";
 import { useRouter } from "next/navigation";
-import { DeliveryTypes } from "@prisma/client";
+import { ContactForms, DeliveryTypes } from "@prisma/client";
+import { deliveryTypes } from "@/prisma/constants";
+import { calcTotlalAmountWithDelivery } from "@/shared/lib";
 
 
 export default function Checkout() {
@@ -28,13 +30,14 @@ export default function Checkout() {
             lastName: '',
             phone: '',
             address: '',
+            contactForm: ContactForms.WA,
             comment: '',
             deliveryType: DeliveryTypes.GB
         },
     });
 
     const delivery = form.watch('deliveryType');
-    console.log(delivery);
+    const {totalAmountWithDelivery, deliveryPrice} = calcTotlalAmountWithDelivery(totalAmount, delivery);
 
     useEffect(() => {
         async function fetchUserInfo() {
@@ -55,7 +58,6 @@ export default function Checkout() {
         try {
             setSubmitting(true);
             const order = await createOrder(data);
-            console.log(order);
             toast.success('Order created successfully! ', {
                 icon: '✅',
             })
@@ -101,6 +103,7 @@ export default function Checkout() {
                                 itemLoading={itemLoading}
                                 loading={loading || submitting}
                                 totalAmount={totalAmount}
+                                deliveryPrice={deliveryPrice}
                             />
 
 

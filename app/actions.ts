@@ -1,7 +1,6 @@
 "use server";
 
 import { supabase } from "@/lib/supabase";
-import { deliveryTypes } from "@/prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
 import {
   PayOrderTemplate,
@@ -9,6 +8,7 @@ import {
 } from "@/shared/components";
 import { CheckoutFormValues } from "@/shared/constants";
 import { CreateProductFormValues } from "@/shared/constants/create-product-schema";
+import { calcTotlalAmountWithDelivery } from "@/shared/lib";
 import { createPayment } from "@/shared/lib/create-payment";
 import { getUserSession } from "@/shared/lib/get-user-session";
 import { sendEmail } from "@/shared/lib/send-email";
@@ -54,9 +54,8 @@ export async function createOrder(data: CheckoutFormValues) {
       throw new Error("Cart is empty!");
     }
 
-    const deliveryType = deliveryTypes.find(
-      (type) => type.value === data.deliveryType
-    );
+    
+    const {deliveryPrice} = calcTotlalAmountWithDelivery(userCart.totalAmount, data.deliveryType);
 
     const order = await prisma.order.create({
       data: {
@@ -66,8 +65,9 @@ export async function createOrder(data: CheckoutFormValues) {
         address: data.address,
         comment: data.comment,
         token: cartToken,
-        totalAmount: userCart.totalAmount + deliveryType!.price,
+        totalAmount: userCart.totalAmount + deliveryPrice,
         deliveryType: data.deliveryType,
+        contactForm: data.contactForm,
         status: OrderStatus.PENDING,
         items: JSON.stringify(userCart.items),
       },
@@ -441,7 +441,6 @@ export async function createReview(formData: FormData) {
     const text = formData.get("comment") as string;
     const rating = Number(formData.get("rating"));
     const productId = Number(formData.get("productId"));
-    console.log(text, rating), productId;
     await prisma.review.create({
       data: {
         text: text,
@@ -463,7 +462,6 @@ export async function createReview(formData: FormData) {
 
 export async function createSlider(formData: FormData) {
   try {
-    console.log(11111);
     const user = await getUserSession();
     if (!user || user.role !== UserRole.ADMIN) {
       throw new Error("Access denied");
@@ -479,7 +477,6 @@ export async function createSlider(formData: FormData) {
     };
 
     const images: File[] = [desctopImg, tabletImg, mobileImg];
-    console.log(2222, images, name);
 
     const uploadPromises = images.map((image) => {
       const fileName = `${image.name}--${new Date().toISOString()}`;
@@ -490,7 +487,6 @@ export async function createSlider(formData: FormData) {
 
     const uploadResults = await Promise.all(uploadPromises);
 
-    console.log(3333, uploadResults);
 
     uploadResults.forEach((result, index) => {
       if (result.error) {

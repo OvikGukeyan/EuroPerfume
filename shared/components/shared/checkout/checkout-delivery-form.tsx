@@ -30,10 +30,10 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
       contentClassName="p-8"
     >
       <div className="flex flex-col gap-5">
-        <Title text="Delivery Type" size="sm" className="font-bold" />
+        <Title text="Delivery Type" size="xs"  />
 
         <div className="flex justify-between">
-          <RadioInput items={deliveryTypes} />
+          <RadioInput name='deliveryType' items={deliveryTypes} />
 
           <MyPopover />
         </div>

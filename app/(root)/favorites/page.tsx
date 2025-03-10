@@ -7,7 +7,6 @@ import Link from "next/link";
 
 export default function Favorites() {
   const { items } = useFavorites();
-  console.log(items, "items");
   return (
     <Container>
       {items.length > 0 ? (

@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
-import { FormInput, WhiteBlock } from '..'
-import { Input } from '../../ui'
+import { FormInput, RadioInput, Title, WhiteBlock } from '..'
 import { cn } from '@/shared/lib/utils';
+import { contactForms } from '@/prisma/constants';
 
 interface Props {
     totalAmount: number;
@@ -18,6 +18,10 @@ export const CheckoutPersonalForm: FC<Props> = ({ className, totalAmount }) => {
                 <FormInput name="lastName" className="text-base" placeholder="Last Name" />
                 <FormInput name="email" className="text-base" placeholder="E-Mail" />
                 <FormInput name="phone" className="text-base" placeholder="Phone" />
+                <div>
+                    <Title text="Contact form" size="xs" className="mb-3" />
+                <RadioInput name="contactForm" items={contactForms}/>
+                </div>
             </div>
         </WhiteBlock>
     )
