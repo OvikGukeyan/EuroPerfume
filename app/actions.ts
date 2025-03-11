@@ -17,6 +17,7 @@ import {
   Gender,
   Languages,
   Notes,
+  OrderItem,
   OrderStatus,
   PerfumeConcentration,
   Prisma,
@@ -39,7 +40,11 @@ export async function createOrder(data: CheckoutFormValues) {
     const userCart = await prisma.cart.findFirst({
       include: {
         user: true,
-        items: {},
+        items: {
+          include: {
+            product: true,
+          },
+        },
       },
       where: {
         token: cartToken,
@@ -59,6 +64,8 @@ export async function createOrder(data: CheckoutFormValues) {
       data.deliveryType
     );
 
+    
+
     const order = await prisma.order.create({
       data: {
         fullName: data.firstName + " " + data.lastName,
@@ -71,7 +78,12 @@ export async function createOrder(data: CheckoutFormValues) {
         deliveryType: data.deliveryType,
         contactForm: data.contactForm,
         status: OrderStatus.PENDING,
-        items: JSON.stringify(userCart.items),
+        items: {
+          create: userCart.items.map((item) => ({
+            name: item.product.name,
+            quantity: item.quantity,
+          })),
+        },
       },
     });
 

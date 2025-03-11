@@ -3,8 +3,6 @@ import { Filters } from ".";
 import {
   Sheet,
   SheetContent,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
 import { Button } from "../ui";
@@ -12,15 +10,15 @@ import { Filter } from "lucide-react";
 
 export const FiltersDrawer = () => {
   return (
-    <div>
+    <div className="sticky top-52" >
       <Suspense>
         <div className="w-[250px] hidden xl:block">
           <Filters />
         </div>
 
-        <Sheet>
-          <SheetTrigger  asChild>
-            <Button className="xl:hidden flex items-center gap-2">
+        <Sheet >
+          <SheetTrigger  asChild >
+            <Button className="xl:hidden flex items-center gap-2 ">
               Filters
               <Filter />
             </Button>

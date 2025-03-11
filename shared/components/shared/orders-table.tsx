@@ -9,16 +9,15 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-import { Order } from "@prisma/client";
+import { Order, OrderItem } from "@prisma/client";
 
 type Props = {
   className?: string;
-  orders: Order[]
+  orders: (Order & {items: OrderItem[]})[]
 };
 
 export const OrdersTable: FC<Props> = ({ className, orders }) => {
-    // const items = JSON.parse(orders[0].items)
-    // console.log(items)
+  
   return (
     <div className={cn("", className)}>
       <Table>
@@ -39,7 +38,13 @@ export const OrdersTable: FC<Props> = ({ className, orders }) => {
             {orders.map((order) => (
               <TableRow key={order.id}>
                 <TableCell className="font-medium">{order.id}</TableCell>
-                <TableCell>{}</TableCell>
+                <TableCell>{
+                 order.items.map((item) => (
+                     <div key={item.id}>
+                         {item.name} : {item.quantity}
+                     </div>
+                 ))
+                  }</TableCell>
                 <TableCell>{order.totalAmount}</TableCell>
                 <TableCell>{order.fullName}</TableCell>
                 <TableCell>{order.email}</TableCell>

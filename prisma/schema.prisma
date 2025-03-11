@@ -49,7 +49,7 @@ model Product {
   price                Int
   releaseYear          Int
   types                Types[]
-  aromas                Aromas[]
+  aromas               Aromas[]
   brandCountry         String
   manufacturingCountry String
   perfumer             String
@@ -109,7 +109,7 @@ model FavoritesItem {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   productId   Int
-  favorites   Favorites @relation(fields: [favoritesId], references: [id])
+  favorites   Favorites @relation(fields: [favoritesId], references: [id], onDelete: Cascade)
   product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
@@ -142,7 +142,7 @@ model Order {
   totalAmount  Int
   status       OrderStatus
   peymentId    String?
-  items        Json
+  items        OrderItem[]
   fullName     String
   address      String
   email        String
@@ -152,7 +152,15 @@ model Order {
   contactForm  ContactForms
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  user         User?         @relation(fields: [userId], references: [id])
+  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model OrderItem {
+  id       Int    @id @default(autoincrement())
+  name     String
+  quantity Int
+  orderId Int
+  order   Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model VerificationCode {
@@ -160,7 +168,7 @@ model VerificationCode {
   userId    Int      @unique
   code      String
   createdAt DateTime @default(now())
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, code])
 }

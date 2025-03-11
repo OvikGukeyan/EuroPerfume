@@ -47,6 +47,7 @@ export {SubmitButtonBar} from './SubmitButtonBar';
 export {DeshboardSlide} from './dashboard-slide';
 export {MyPopover} from './my-popover';
 export {OrdersTable} from './orders-table';
+export {Footer} from './footer';
 
 export * from './email-templates';
 export * from './form';
