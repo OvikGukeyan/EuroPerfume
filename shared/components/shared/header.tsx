@@ -66,7 +66,7 @@ export const Header: React.FC<Props> = ({
           <Link href={"/"}>
             <div className="flex items-center gap-4 ">
               <Image
-                src={"/assets/Logo.jpg"}
+                src={"/assets/logo.jpg"}
                 width={120}
                 height={40}
                 alt="logo"
