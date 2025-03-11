@@ -6,6 +6,7 @@ import {
   concentrations,
   genders,
   notes,
+  perfumeAromas,
   perfumeTypes,
   yers,
 } from "@/prisma/constants";
@@ -41,7 +42,6 @@ interface Props {
 }
 
 export const CreateProductForm: FC<Props> = ({ submitFunction, product }) => {
-  
   const form = useForm<CreateProductFormValues>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
@@ -53,14 +53,20 @@ export const CreateProductForm: FC<Props> = ({ submitFunction, product }) => {
       gender: product?.gender || Gender.UNISEX,
       concentration: product?.concentration || "EAU_DE_COLOGNE",
       brand: product?.brand || "CHANEL",
-      notes: product?.notes || [],
+      brandCountry: product?.brandCountry || "",
+      manufacturingCountry: product?.manufacturingCountry || "",
+      perfumer: product?.perfumer || "",
+      aromas: product?.aromas || [],
+      topNotes: product?.topNotes || [],
+      heartNotes: product?.heartNotes || [],
+      baseNotes: product?.baseNotes || [],
       types: product?.types || [],
       releaseYear: product?.releaseYear || 2000,
       categoryId: product?.categoryId || 1,
     },
   });
 
-  const onSubmit =  async (data: CreateProductFormValues) => {
+  const onSubmit = async (data: CreateProductFormValues) => {
     try {
       const formData = new FormData();
 
@@ -71,7 +77,13 @@ export const CreateProductForm: FC<Props> = ({ submitFunction, product }) => {
       formData.append("gender", data.gender);
       formData.append("concentration", data.concentration);
       formData.append("brand", data.brand);
-      formData.append("notes", JSON.stringify(data.notes));
+      formData.append("brandCountry", data.brandCountry);
+      formData.append("manufacturingCountry", data.manufacturingCountry);
+      formData.append("perfumer", data.perfumer);
+      formData.append("aromas", JSON.stringify(data.aromas));
+      formData.append("topNotes", JSON.stringify(data.topNotes));
+      formData.append("heartNotes", JSON.stringify(data.heartNotes));
+      formData.append("baseNotes", JSON.stringify(data.baseNotes));
       formData.append("types", JSON.stringify(data.types));
       formData.append("releaseYear", data.releaseYear.toString());
       formData.append("categoryId", data.categoryId.toString());
@@ -93,6 +105,8 @@ export const CreateProductForm: FC<Props> = ({ submitFunction, product }) => {
     }
   };
 
+  
+
   return (
     <div>
       <Form {...form}>
@@ -109,6 +123,54 @@ export const CreateProductForm: FC<Props> = ({ submitFunction, product }) => {
                         label={"Product Name"}
                         {...field}
                         placeholder="Product Name"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="brandCountry"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormControl>
+                      <FormInput
+                        label={"Brand Country"}
+                        {...field}
+                        placeholder="Brand Country"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="manufacturingCountry"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormControl>
+                      <FormInput
+                        label={"Manufacturing Country"}
+                        {...field}
+                        placeholder="Manufacturing Country"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="perfumer"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormControl>
+                      <FormInput
+                        label={"Perfumer"}
+                        {...field}
+                        placeholder="Perfumer"
                       />
                     </FormControl>
                   </FormItem>
@@ -190,12 +252,31 @@ export const CreateProductForm: FC<Props> = ({ submitFunction, product }) => {
                 control={form.control}
                 items={concentrations}
               />
+              <FormSelect name="brand" control={form.control} items={brands} />
+
+              <FormCheckbox
+                name="aromas"
+                control={form.control}
+                items={perfumeAromas}
+              />
             </div>
 
             <div className="w-1/2">
-              <FormSelect name="brand" control={form.control} items={brands} />
-
-              <FormCheckbox name="notes" control={form.control} items={notes} />
+              <FormCheckbox
+                name="topNotes"
+                control={form.control}
+                items={notes}
+              />
+              <FormCheckbox
+                name="heartNotes"
+                control={form.control}
+                items={notes}
+              />
+              <FormCheckbox
+                name="baseNotes"
+                control={form.control}
+                items={notes}
+              />
 
               <FormCheckbox
                 name="types"
@@ -204,6 +285,7 @@ export const CreateProductForm: FC<Props> = ({ submitFunction, product }) => {
               />
 
               <FormSelect
+              
                 name="releaseYear"
                 control={form.control}
                 items={yers}

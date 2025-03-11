@@ -24,7 +24,7 @@ export const CountButton: FC<CountButtonProps> = ({
         type="minus"
       />
 
-      <b className={size === 'sm' ? 'text-sm' : 'text-md'}>{value}</b>
+      <b className={size === 'sm' ? 'text-sm' : 'text-md'}>{value}ml</b>
 
       <CountIconButton onClick={() => onClick?.('plus')} size={size} type="plus" />
     </div>

@@ -62,10 +62,15 @@ export const findProducts = async (
       gender: genders.length > 0 ? { in: genders as Gender[] } : undefined,
       types: types.length > 0 ? { hasSome: types as Types[] } : undefined,
       concentration: { in: concentration as PerfumeConcentration[] },
-      notes: notes.length > 0 ? { hasSome: notes as Notes[] } : undefined,
-      price:
-        priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
+      price: priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
       available: true,
+      ...(notes.length > 0 && {
+        OR: [
+          { topNotes: { hasSome: notes as Notes[] } },
+          { heartNotes: { hasSome: notes as Notes[] } },
+          { baseNotes: { hasSome: notes as Notes[] } },
+        ],
+      }),
     };
     const [categoryes, totalCount] = await prisma.$transaction([
       prisma.category.findMany({

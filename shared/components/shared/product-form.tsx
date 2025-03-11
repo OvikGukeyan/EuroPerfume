@@ -26,7 +26,7 @@ export const ProductForm: FC<Props> = ({
     try {
       await addCartItem({
         productId,
-        volume
+        volume,
       });
       toast.success(product.name + " added to cart");
     } catch (error) {
@@ -57,13 +57,21 @@ export const ProductForm: FC<Props> = ({
       description={product.description}
       onSubmit={onSubmit}
       price={product.price}
-      itemNotes={product.notes}
+      topNotes={product.topNotes}
+      heartNotes={product.heartNotes}
+      baseNotes={product.baseNotes}
+      perfumer={product.perfumer}
+      brandCountry={product.brandCountry}
+      manufacturingCountry={product.manufacturingCountry}
+      aromas={product.aromas}
+      types={product.types}
+      brand={product.brand}
+      concentration={product.concentration}
       releaseYear={product.releaseYear}
       gender={product.gender}
       reviews={product.reviews}
       loading={loading}
       className={className}
-      
     />
   );
 };

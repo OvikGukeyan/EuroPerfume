@@ -9,10 +9,10 @@ import {
 import { CheckoutFormValues } from "@/shared/constants";
 import { CreateProductFormValues } from "@/shared/constants/create-product-schema";
 import { calcTotlalAmountWithDelivery } from "@/shared/lib";
-import { createPayment } from "@/shared/lib/create-payment";
 import { getUserSession } from "@/shared/lib/get-user-session";
 import { sendEmail } from "@/shared/lib/send-email";
 import {
+  Aromas,
   Brands,
   Gender,
   Languages,
@@ -54,8 +54,10 @@ export async function createOrder(data: CheckoutFormValues) {
       throw new Error("Cart is empty!");
     }
 
-    
-    const {deliveryPrice} = calcTotlalAmountWithDelivery(userCart.totalAmount, data.deliveryType);
+    const { deliveryPrice } = calcTotlalAmountWithDelivery(
+      userCart.totalAmount,
+      data.deliveryType
+    );
 
     const order = await prisma.order.create({
       data: {
@@ -115,10 +117,9 @@ export async function createOrder(data: CheckoutFormValues) {
         paymentUrl: "",
       })
     );
-
   } catch (error) {
     console.error("[createOrder] Server error", error);
-  } 
+  }
 }
 
 export async function updateUserInfo(body: Prisma.UserUpdateInput) {
@@ -234,7 +235,13 @@ export async function createProduct(
     const gender = formData.get("gender") as Gender;
     const concentration = formData.get("concentration") as PerfumeConcentration;
     const brand = formData.get("brand") as Brands;
-    const notes = JSON.parse(formData.get("notes") as string) as Notes[];
+    const topNotes = JSON.parse(formData.get("topNotes") as string) as Notes[];
+    const heartNotes = JSON.parse(formData.get("heartNotes") as string) as Notes[];
+    const baseNotes = JSON.parse(formData.get("baseNotes") as string) as Notes[];
+    const aromas = JSON.parse(formData.get("aromas") as string) as Aromas[];
+    const brandCountry = formData.get("brandCountry") as string;
+    const manufacturingCountry = formData.get("manufacturingCountry") as string;
+    const perfumer = formData.get("perfumer") as string;
     const types = JSON.parse(formData.get("types") as string) as Types[];
     const releaseYear = formData.get("releaseYear") as string;
     const categoryId = formData.get("categoryId") as string;
@@ -255,7 +262,13 @@ export async function createProduct(
         gender: gender,
         concentration: concentration,
         brand: brand,
-        notes: notes,
+        topNotes: topNotes,
+        heartNotes: heartNotes,
+        baseNotes: baseNotes,
+        aromas: aromas,
+        brandCountry: brandCountry,
+        manufacturingCountry: manufacturingCountry,
+        perfumer: perfumer,
         types: types,
         releaseYear: Number(releaseYear),
         category: { connect: { id: Number(categoryId) } },
@@ -303,7 +316,13 @@ export async function updateProduct(
     const gender = formData.get("gender") as Gender;
     const concentration = formData.get("concentration") as PerfumeConcentration;
     const brand = formData.get("brand") as Brands;
-    const notes = JSON.parse(formData.get("notes") as string) as Notes[];
+    const topNotes = JSON.parse(formData.get("topNotes") as string) as Notes[];
+    const heartNotes = JSON.parse(formData.get("heartNotes") as string) as Notes[];
+    const baseNotes = JSON.parse(formData.get("baseNotes") as string) as Notes[];
+    const aromas = JSON.parse(formData.get("aromas") as string) as Aromas[];
+    const brandCountry = formData.get("brandCountry") as string;
+    const manufacturingCountry = formData.get("manufacturingCountry") as string;
+    const perfumer = formData.get("perfumer") as string;
     const types = JSON.parse(formData.get("types") as string) as Types[];
     const releaseYear = formData.get("releaseYear") as string;
     const categoryId = formData.get("categoryId") as string;
@@ -334,8 +353,14 @@ export async function updateProduct(
         gender: gender,
         concentration: concentration,
         brand: brand,
-        notes: notes,
+        topNotes: topNotes,
+        heartNotes: heartNotes,
+        baseNotes: baseNotes,
         types: types,
+        aromas: aromas,
+        brandCountry: brandCountry,
+        manufacturingCountry: manufacturingCountry,
+        perfumer: perfumer,
         releaseYear: Number(releaseYear),
         category: { connect: { id: Number(categoryId) } },
         description: descriptionRu,
@@ -486,7 +511,6 @@ export async function createSlider(formData: FormData) {
     });
 
     const uploadResults = await Promise.all(uploadPromises);
-
 
     uploadResults.forEach((result, index) => {
       if (result.error) {

@@ -33,26 +33,32 @@ model Category {
 }
 
 model Product {
-  id             Int                  @id @default(autoincrement())
-  name           String
-  imageUrl       String
-  categoryId     Int
-  createdAt      DateTime             @default(now())
-  updatedAt      DateTime             @updatedAt
-  brand          Brands
-  concentration  PerfumeConcentration
-  description    String
-  gender         Gender
-  notes          Notes[]
-  price          Int
-  releaseYear    Int
-  types          Types[]
-  available      Boolean
-  cartItems      CartItem[]
-  favoritesItems FavoritesItem[]
-  category       Category             @relation(fields: [categoryId], references: [id])
-  translations   ProductTranslation[]
-  reviews        Review[]
+  id                   Int                  @id @default(autoincrement())
+  name                 String
+  imageUrl             String
+  categoryId           Int
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  brand                Brands
+  concentration        PerfumeConcentration
+  description          String
+  gender               Gender
+  topNotes             Notes[]
+  heartNotes           Notes[]
+  baseNotes            Notes[]
+  price                Int
+  releaseYear          Int
+  types                Types[]
+  aromas                Aromas[]
+  brandCountry         String
+  manufacturingCountry String
+  perfumer             String
+  available            Boolean
+  cartItems            CartItem[]
+  favoritesItems       FavoritesItem[]
+  category             Category             @relation(fields: [categoryId], references: [id])
+  translations         ProductTranslation[]
+  reviews              Review[]
 }
 
 model ProductTranslation {
@@ -251,4 +257,17 @@ enum ContactForms {
   WA
   VB
   TG
+}
+
+enum Aromas {
+  FOUGERE
+  WOODY
+  ORIENTAL
+  FLORAL
+  CITRUS
+  CHYPRE
+  LEATHER
+  AQUATIC
+  GREEN
+  GOURMAND
 }

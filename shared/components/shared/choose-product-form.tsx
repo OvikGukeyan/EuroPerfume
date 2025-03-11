@@ -6,8 +6,8 @@ import { Button, Separator } from "../ui";
 import Image from "next/image";
 import { Title, Text, VolumeSelection } from ".";
 import { Volume } from "@/shared/constants/perfume";
-import { Gender, Notes, Review } from "@prisma/client";
-import { genders, notes } from "@/prisma/constants";
+import { Aromas, Brands, Gender, Notes, PerfumeConcentration, Review, Types } from "@prisma/client";
+import { brands, concentrations, genders, notes, perfumeAromas, perfumeTypes } from "@/prisma/constants";
 import { calcAverageRating, calcPrice, useModalContext } from "@/shared/lib";
 import { Rating } from "./rating";
 import { useRouter } from "next/navigation";
@@ -18,7 +18,16 @@ interface Props {
   name: string;
   price: number;
   description: string;
-  itemNotes: Notes[];
+  topNotes: Notes[];
+  heartNotes: Notes[];
+  baseNotes: Notes[];
+  aromas: Aromas[];
+  types: Types[];
+  concentration: PerfumeConcentration;
+  brandCountry: string;
+  brand: Brands;
+  manufacturingCountry: string;
+  perfumer: string;
   gender: Gender;
   releaseYear: number;
   reviews: Review[];
@@ -35,25 +44,42 @@ export const ChooseProductForm: FC<Props> = ({
   releaseYear,
   loading,
   onSubmit,
-  itemNotes,
+  topNotes,
+  heartNotes,
+  baseNotes,
+  types,
+  brand,
+  concentration,
+  aromas,
+  brandCountry,
+  manufacturingCountry,
+  perfumer,
   gender,
   reviews,
   className,
 }) => {
   const [volume, setVolume] = useState<Volume>(1);
-  const currentNotes = notes.filter((note) => itemNotes.includes(note.value));
+  const currentTopNotes = notes.filter((note) => topNotes.includes(note.value));
+  const currentHeartNotes = notes.filter((note) =>
+    heartNotes.includes(note.value)
+  );
+  const currentBaseNotes = notes.filter((note) =>
+    baseNotes.includes(note.value)
+  );
+  const currentAroma = perfumeAromas.filter((aroma) => aromas.includes(aroma.value));
+  const currentTypes = perfumeTypes.filter((type) => types.includes(type.value)); 
+  const currentConcentration = concentrations.find(item => item.value === concentration)?.name;
+  const currentBrand = brands.find(item => item.value === brand)?.name;
   const finalPrice = calcPrice(volume, price);
   const { averageRating, count } = calcAverageRating(reviews);
   const router = useRouter();
   const { isModal } = useModalContext();
 
-  
-
   useEffect(() => {
     if (!isModal) {
       scrollToReviews();
     }
-  },[isModal])
+  }, [isModal]);
   const scrollToReviews = () => {
     const reviewsSection = document.getElementById("reviews");
     if (reviewsSection) {
@@ -62,8 +88,6 @@ export const ChooseProductForm: FC<Props> = ({
       router.push(`/product/${id}#reviews`);
     }
   };
-
-
 
   return (
     <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
@@ -87,26 +111,42 @@ export const ChooseProductForm: FC<Props> = ({
         </Text>
 
         <div className="mb-4">
-          <Title text="Characteristics:" size="xs" className="font-bold" />
+          <Title text="Characteristics:" size="sm" className="font-bold" />
           <ul>
-            <li>Notes: {currentNotes.map((note) => note.name).join(", ")}</li>
-            <li>
-              Gender: {genders.find((item) => item.value === gender)?.name}
+            <li><span className="font-bold mr-2">Brand: </span> {currentBrand}</li>
+            <li><span className="font-bold mr-2">Classification:</span> {currentTypes.map((type) => type.name).join(", ")}</li>
+            <li><span className="font-bold mr-2">Concentration:</span> {currentConcentration}</li>
+            <li><span className="font-bold mr-2">Aroma:</span> {currentAroma.map((aroma) => aroma.name).join(", ")}</li>
+            <li><span className="font-bold mr-2">Top Notes:</span>
+               {currentTopNotes.map((note) => note.name).join(", ")}
             </li>
-            <li>Release year: {releaseYear}</li>
+            <li><span className="font-bold mr-2">Heart Notes:</span>
+              {" "}
+              {currentHeartNotes.map((note) => note.name).join(", ")}
+            </li>
+            <li><span className="font-bold mr-2">Base Notes:</span>
+               {currentBaseNotes.map((note) => note.name).join(", ")}
+            </li>
+
+            <li><span className="font-bold mr-2">Brand Country:</span> {brandCountry}</li>
+            <li><span className="font-bold mr-2">Manufacturing Country:</span> {manufacturingCountry}</li>
+            <li><span className="font-bold mr-2">Perfumer:</span> {perfumer}</li>
+
+            <li><span className="font-bold mr-2">Gender:</span>
+               {genders.find((item) => item.value === gender)?.name}
+            </li>
+            <li><span className="font-bold mr-2">Release year:</span> {releaseYear}</li>
           </ul>
         </div>
 
         {!isModal ? (
           <div onClick={scrollToReviews} className="cursor-pointer">
-
             <Rating
               className="mt-5"
               value={averageRating}
               withNumber
               reviewsCount={count}
             />
-
           </div>
         ) : (
           <a href={`/product/${id}`}>
@@ -118,7 +158,6 @@ export const ChooseProductForm: FC<Props> = ({
             />
           </a>
         )}
-       
 
         <VolumeSelection
           volume={volume}
