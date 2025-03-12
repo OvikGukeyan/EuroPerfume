@@ -17,7 +17,6 @@ import {
   Gender,
   Languages,
   Notes,
-  OrderItem,
   OrderStatus,
   PerfumeConcentration,
   Prisma,

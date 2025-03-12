@@ -6,8 +6,23 @@ import { Button, Separator } from "../ui";
 import Image from "next/image";
 import { Title, Text, VolumeSelection } from ".";
 import { Volume } from "@/shared/constants/perfume";
-import { Aromas, Brands, Gender, Notes, PerfumeConcentration, Review, Types } from "@prisma/client";
-import { brands, concentrations, genders, notes, perfumeAromas, perfumeTypes } from "@/prisma/constants";
+import {
+  Aromas,
+  Brands,
+  Gender,
+  Notes,
+  PerfumeConcentration,
+  Review,
+  Types,
+} from "@prisma/client";
+import {
+  brands,
+  concentrations,
+  genders,
+  notes,
+  perfumeAromas,
+  perfumeTypes,
+} from "@/prisma/constants";
 import { calcAverageRating, calcPrice, useModalContext } from "@/shared/lib";
 import { Rating } from "./rating";
 import { useRouter } from "next/navigation";
@@ -66,10 +81,16 @@ export const ChooseProductForm: FC<Props> = ({
   const currentBaseNotes = notes.filter((note) =>
     baseNotes.includes(note.value)
   );
-  const currentAroma = perfumeAromas.filter((aroma) => aromas.includes(aroma.value));
-  const currentTypes = perfumeTypes.filter((type) => types.includes(type.value)); 
-  const currentConcentration = concentrations.find(item => item.value === concentration)?.name;
-  const currentBrand = brands.find(item => item.value === brand)?.name;
+  const currentAroma = perfumeAromas.filter((aroma) =>
+    aromas.includes(aroma.value)
+  );
+  const currentTypes = perfumeTypes.filter((type) =>
+    types.includes(type.value)
+  );
+  const currentConcentration = concentrations.find(
+    (item) => item.value === concentration
+  )?.name;
+  const currentBrand = brands.find((item) => item.value === brand)?.name;
   const finalPrice = calcPrice(volume, price);
   const { averageRating, count } = calcAverageRating(reviews);
   const router = useRouter();
@@ -110,32 +131,60 @@ export const ChooseProductForm: FC<Props> = ({
           {description}
         </Text>
 
-        <div className="mb-4">
-          <Title text="Characteristics:" size="sm" className="font-bold" />
+        <Title text="Characteristics:" size="sm" className="font-bold" />
+
+        <div className="flex justify-between mb-4">
           <ul>
-            <li><span className="font-bold mr-2">Brand: </span> {currentBrand}</li>
-            <li><span className="font-bold mr-2">Classification:</span> {currentTypes.map((type) => type.name).join(", ")}</li>
-            <li><span className="font-bold mr-2">Concentration:</span> {currentConcentration}</li>
-            <li><span className="font-bold mr-2">Aroma:</span> {currentAroma.map((aroma) => aroma.name).join(", ")}</li>
-            <li><span className="font-bold mr-2">Top Notes:</span>
-               {currentTopNotes.map((note) => note.name).join(", ")}
+            <li>
+              <span className="font-bold mr-2">Brand: </span> {currentBrand}
             </li>
-            <li><span className="font-bold mr-2">Heart Notes:</span>
-              {" "}
+            <li>
+              <span className="font-bold mr-2">Classification:</span>{" "}
+              {currentTypes.map((type) => type.name).join(", ")}
+            </li>
+            <li>
+              <span className="font-bold mr-2">Concentration:</span>{" "}
+              {currentConcentration}
+            </li>
+            <li>
+              <span className="font-bold mr-2">Aroma:</span>{" "}
+              {currentAroma.map((aroma) => aroma.name).join(", ")}
+            </li>
+            <li>
+              <span className="font-bold mr-2">Top Notes:</span>
+              {currentTopNotes.map((note) => note.name).join(", ")}
+            </li>
+            <li>
+              <span className="font-bold mr-2">Heart Notes:</span>{" "}
               {currentHeartNotes.map((note) => note.name).join(", ")}
             </li>
-            <li><span className="font-bold mr-2">Base Notes:</span>
-               {currentBaseNotes.map((note) => note.name).join(", ")}
+          </ul>
+          <ul>
+            <li>
+              <span className="font-bold mr-2">Base Notes:</span>
+              {currentBaseNotes.map((note) => note.name).join(", ")}
             </li>
 
-            <li><span className="font-bold mr-2">Brand Country:</span> {brandCountry}</li>
-            <li><span className="font-bold mr-2">Manufacturing Country:</span> {manufacturingCountry}</li>
-            <li><span className="font-bold mr-2">Perfumer:</span> {perfumer}</li>
-
-            <li><span className="font-bold mr-2">Gender:</span>
-               {genders.find((item) => item.value === gender)?.name}
+            <li>
+              <span className="font-bold mr-2">Brand Country:</span>{" "}
+              {brandCountry}
             </li>
-            <li><span className="font-bold mr-2">Release year:</span> {releaseYear}</li>
+            <li>
+              <span className="font-bold mr-2">Manufacturing Country:</span>{" "}
+              {manufacturingCountry}
+            </li>
+            <li>
+              <span className="font-bold mr-2">Perfumer:</span> {perfumer}
+            </li>
+
+            <li>
+              <span className="font-bold mr-2">Gender:</span>
+              {genders.find((item) => item.value === gender)?.name}
+            </li>
+            <li>
+              <span className="font-bold mr-2">Release year:</span>{" "}
+              {releaseYear}
+            </li>
           </ul>
         </div>
 

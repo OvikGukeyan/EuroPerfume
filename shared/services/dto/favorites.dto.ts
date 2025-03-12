@@ -1,4 +1,4 @@
-import { Favorites, FavoritesItem, Product, Review } from "@prisma/client";
+import { Favorites, FavoritesItem, Product } from "@prisma/client";
 
 export type FavoritesItemDTO = FavoritesItem & {
   product: Product;
