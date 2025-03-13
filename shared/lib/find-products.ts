@@ -19,6 +19,7 @@ export interface GetSearchParams {
   concentration?: string;
   priceFrom?: string;
   priceTo?: string;
+  orderBy?: string;
   page?: string;
 }
 
@@ -57,12 +58,14 @@ export const findProducts = async (
 
     const priceFrom = Number((await params).priceFrom) || DEFAULT_MIN_PRICE;
     const priceTo = Number((await params).priceTo) || DEFAULT_MAX_PRICE;
+    const orderBy = JSON.parse((await params).orderBy || "{}"); 
     const whereClause = {
       brand: { in: brands as Brands[] },
       gender: genders.length > 0 ? { in: genders as Gender[] } : undefined,
       types: types.length > 0 ? { hasSome: types as Types[] } : undefined,
       concentration: { in: concentration as PerfumeConcentration[] },
-      price: priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
+      price:
+        priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
       available: true,
       ...(notes.length > 0 && {
         OR: [
@@ -78,7 +81,7 @@ export const findProducts = async (
           products: {
             skip: (page - 1) * 6,
             take: 6,
-            orderBy: { id: "desc" },
+            orderBy: orderBy,
             where: whereClause,
 
             include: {

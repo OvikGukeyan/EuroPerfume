@@ -26,8 +26,7 @@ type Props = {
 };
 
 export const OrdersTable: FC<Props> = ({ className }) => {
-  const { items, removeOrder } = useOrders();
-  console.log(items[0])
+  const { items, removeOrder, changeOrderStatus, loading } = useOrders();
 
   return (
     <div className={cn("", className)}>
@@ -73,7 +72,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
               <TableCell>{order.phone}</TableCell>
               <TableCell>{order.contactForm}</TableCell>
               <TableCell>
-                <Select>
+                <Select onValueChange={(value) => {changeOrderStatus(order.id, value as OrderStatus)}}>
                   <SelectTrigger>
                     <SelectValue placeholder={order.status} />
                   </SelectTrigger>
@@ -92,7 +91,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
               <TableCell>{order.address}</TableCell>
               <TableCell>{order.deliveryType}</TableCell>
               <TableCell>
-                <Button onClick={() => {removeOrder(order.id)}} variant="outline">
+                <Button loading={loading} onClick={() => {removeOrder(order.id)}} variant="outline">
                   <Trash2 size={17} />
                 </Button>
               </TableCell>

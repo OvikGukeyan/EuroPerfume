@@ -5,6 +5,7 @@ import {
   FiltersDrawer,
   PaginationComponent,
   Carusel,
+  TopBar,
 } from "@/shared/components/shared";
 import { getSlides } from "@/shared/lib";
 
@@ -16,14 +17,18 @@ export default async function Home({
   searchParams: Promise<GetSearchParams>;
 }) {
   const params = await searchParams;
-  const {categoryes, totalPages} = await findProducts(params);
+  const { categoryes, totalPages } = await findProducts(params);
   const slides = await getSlides();
 
   return (
     <>
-      
-      {/* <TopBar categories={categoryes.filter((category) => category.products.length > 0)} /> */}
-      <Carusel slides={slides}/>
+      <Carusel slides={slides} />
+      <TopBar
+        categories={categoryes.filter(
+          (category) => category.products.length > 0
+        )}
+      />
+
       <Container className="mt-10">
         <Title size="lg" className="font-extrabold" text="All perfumes" />
       </Container>
@@ -47,7 +52,7 @@ export default async function Home({
             </div>
           </div>
         </div>
-       <PaginationComponent className="mt-10"  countOfPages={totalPages}/>
+        <PaginationComponent className="mt-10" countOfPages={totalPages} />
       </Container>
     </>
   );

@@ -2,21 +2,21 @@ import { removeOrder } from './../services/orders';
 import { Api } from "../services/api-client";
 import { create } from "zustand";
 import { OrderDTO } from "../services/dto/orders.dto";
+import { OrderStatus } from '@prisma/client';
 
 export interface OrdersState {
   loading: boolean;
-  itemLoading: boolean;
   error: boolean;
   items: OrderDTO[];
 
   fetchOrders: () => Promise<void>;
   removeOrder: (id: number) => Promise<void>;
+  changeOrderStatus: (id: number, status: OrderStatus) => Promise<void>;
 }
 
 export const useOrdersStore = create<OrdersState>((set, get) => ({
   items: [],
   loading: true,
-  itemLoading: false,
   error: false,
 
   fetchOrders: async () => {
@@ -35,7 +35,7 @@ export const useOrdersStore = create<OrdersState>((set, get) => ({
     try {
       set({ loading: true, error: false });
       const data = await Api.orders.removeOrder(id);
-      // set({items: data});
+      set({items: get().items.filter(item => item.id !== data.id)});
     } catch (error) {
       set({ error: true });
       console.error(error);
@@ -44,4 +44,17 @@ export const useOrdersStore = create<OrdersState>((set, get) => ({
 
     }
   },
+
+  changeOrderStatus: async (itemId: number, status: OrderStatus) => {
+    try {
+      set({ loading: true, error: false });
+      const data = await Api.orders.updateOrderStatus(itemId, status);
+      set({items: get().items.map(item => item.id === itemId ? { ...item, status: data.status } : item)});
+    } catch (error) {
+      set({ error: true });
+      console.error(error);
+    } finally {
+      set({ loading: false });
+    }
+  }
 }));

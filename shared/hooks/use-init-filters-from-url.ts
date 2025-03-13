@@ -15,6 +15,7 @@ export const useInitFiltersFromUrl = () => {
       types: new Set<string>(searchParams.get("types")?.split(",").filter(Boolean) || []),
       notes: new Set<string>(searchParams.get("notes")?.split(",").filter(Boolean) || []),
       currentPage: Number(searchParams.get("page")) || 1,
+      orderBy: JSON.parse(searchParams.get("orderBy") || "{}"),
       prices: {
         priceFrom: searchParams.get("priceFrom") ? Number(searchParams.get("priceFrom")) : undefined,
         priceTo: searchParams.get("priceTo") ? Number(searchParams.get("priceTo")) : undefined,

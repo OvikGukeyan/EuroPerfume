@@ -1,8 +1,12 @@
-import {create} from "zustand";
+import { create } from "zustand";
 
 interface PriceProps {
   priceFrom?: number;
   priceTo?: number;
+}
+
+interface OrderByType {
+  [key: string]: string;
 }
 
 export interface Filters {
@@ -12,6 +16,7 @@ export interface Filters {
   types: Set<string>;
   notes: Set<string>;
   prices: PriceProps;
+  orderBy: OrderByType;
   currentPage: number;
 }
 
@@ -24,6 +29,7 @@ interface FiltersStore extends Filters {
   setSelectedNotes: (key: string) => void;
   setCurrentPage: (page: number) => void;
   setFilters: (filters: Filters) => void;
+  setOrderBy: (value: string) => void;
   resetFilters: () => void;
 }
 
@@ -35,6 +41,7 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
   types: new Set<string>(),
   notes: new Set<string>(),
   prices: {},
+  orderBy: {},
   currentPage: 1,
 
   setPrices: (name, value) =>
@@ -77,6 +84,24 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
       return { notes: newSet };
     }),
 
+  setOrderBy: (value: string) => {
+    const orderBy = ((): OrderByType => {
+      switch (value) {
+        case "nameAsc":
+          return { name: "asc" };
+        case "nameDesc":
+          return { name: "desc" };
+        case "priceAsc":
+          return { price: "asc" };
+        case "priceDesc":
+          return { price: "desc" };
+        default:
+          return {};
+      }
+    })();
+    set({ orderBy: orderBy });
+  },
+
   setCurrentPage: (page) => set(() => ({ currentPage: page })),
 
   // Метод для установки всех фильтров сразу
@@ -90,6 +115,7 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
       types: new Set<string>(),
       notes: new Set<string>(),
       prices: {},
+      orderBy: {},
       currentPage: 1,
     }),
 }));
