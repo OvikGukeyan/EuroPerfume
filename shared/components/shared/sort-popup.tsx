@@ -5,6 +5,7 @@ import React, { FC } from "react";
 import { Select } from "..";
 import { SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { useFiltersStore } from "@/shared/store/filters";
+import { set } from "react-hook-form";
 
 interface Props {
   className?: string;
@@ -14,23 +15,45 @@ export const SortPopup: FC<Props> = ({ className }) => {
     state.setOrderBy,
     state.orderBy,
   ]);
-
+  const [currentValue, setCurrentValue] = React.useState("nameAsc");
+  const sortItems = [
+    {
+      name: "Name: a - z",
+      value: "nameAsc",
+    },
+    {
+      name: "Name: z - a",
+      value: "nameDesc",
+    },
+    {
+      name: "Price: low to high",
+      value: "priceAsc",
+    },
+    {
+      name: "Price: high to low",
+      value: "priceDesc",
+    },
+  ];
+  const onChange = (value: string) => {
+    setOrderBy(value)
+    setCurrentValue(value)
+  };
   return (
     <div className={cn("", className)}>
-      <Select onValueChange={(value) => setOrderBy(value)}>
+      <Select onValueChange={(value) => onChange(value)}>
         <SelectTrigger className="inline-flex items-center gap-1 bg-gray-50 px-5 h-[52px] rounded-2xl cursor-pointer">
           <ArrowUpDown size={16} />
           <b>Sort:</b>
-          <b className="text-primary"> 
-            {`${Object.keys(orderBy)[0]} ${orderBy[Object.keys(orderBy)[0]]}`}
-           
+          <b className="text-primary">
+            {sortItems.find((item) => item.value === currentValue)?.name}
           </b>
         </SelectTrigger>
         <SelectContent>
-          <SelectItem value={"nameAsc"}>Name: a - z</SelectItem>
-          <SelectItem value={"nameDesc"}>Name: z - a</SelectItem>
-          <SelectItem value={"priceAsc"}>Price: low to high</SelectItem>
-          <SelectItem value={"priceDesc"}>Price: high to low</SelectItem>
+          {sortItems.map((item) => (
+            <SelectItem key={item.value} value={item.value}>
+              {item.name}
+            </SelectItem>
+          ))}
         </SelectContent>
       </Select>
     </div>
