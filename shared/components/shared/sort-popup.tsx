@@ -5,7 +5,6 @@ import React, { FC } from "react";
 import { Select } from "..";
 import { SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { useFiltersStore } from "@/shared/store/filters";
-import { set } from "react-hook-form";
 
 interface Props {
   className?: string;
@@ -35,6 +34,7 @@ export const SortPopup: FC<Props> = ({ className }) => {
     },
   ];
   const onChange = (value: string) => {
+
     setOrderBy(value)
     setCurrentValue(value)
   };
