@@ -119,7 +119,7 @@ export async function createOrder(data: CheckoutFormValues) {
     //   },
     // });
 
-    await sendEmail(
+    const res = await sendEmail(
       data.email,
       "Pay order #" + order.id,
       PayOrderTemplate({
@@ -128,6 +128,7 @@ export async function createOrder(data: CheckoutFormValues) {
         paymentUrl: "",
       })
     );
+    console.log(res);
   } catch (error) {
     console.error("[createOrder] Server error", error);
   }
