@@ -14,8 +14,6 @@ export const Footer: FC<Props> = ({ className }) => {
       <div className="flex items-center justify-between">
         <Image src={"/assets/logo.jpg"} width={120} height={40} alt="logo" />
         <div className="flex flex-col gap-5">
-          <div className="flex items-center gap-5">
-            <p>Follow our social networks</p>
             <div className="flex justify-end gap-3 ">
               <Image
                 src={"/assets/images/instagram.png"}
@@ -36,9 +34,6 @@ export const Footer: FC<Props> = ({ className }) => {
                 alt={"tiktok"}
               />
             </div>
-          </div>
-          <div className="flex justify-end gap-5">
-            <p>Contact us</p>
             <div className="flex items-center gap-3 ">
               <Image
                 src={"/assets/images/whatsapp.png"}
@@ -53,7 +48,6 @@ export const Footer: FC<Props> = ({ className }) => {
                 alt={"youtube"}
               />
             </div>
-          </div>
         </div>
       </div>
       <Separator className="my-5" />

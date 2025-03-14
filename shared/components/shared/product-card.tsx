@@ -30,7 +30,9 @@ export const ProductCard: React.FC<Props> = ({
   const [volume, setVolume] = useState<Volume>(1);
   const [isFavorite, toggleIsFavorite] = useState(false);
 
-  const onToggleFavorite = () => {
+  const onToggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault(); 
     toggleIsFavorite(!isFavorite);
 
     addFavoritesItem(id);
@@ -42,6 +44,7 @@ export const ProductCard: React.FC<Props> = ({
     state.addCartItem,
     state.loading,
   ]);
+
 
   const onSubmit = async () => {
     try {
@@ -59,7 +62,7 @@ export const ProductCard: React.FC<Props> = ({
   return (
     <div className={className}>
       <Link href={`/product/${id}`}>
-        <div className="flex justify-center bg-secondary rounded-lg h-[260px]">
+        <div className="flex justify-center bg-secondary rounded-lg h-[260px] relative">
           <Image
             width={300}
             height={280}
@@ -67,6 +70,19 @@ export const ProductCard: React.FC<Props> = ({
             src={imageUrl}
             alt={name}
           />
+
+          <Button
+            className="absolute top-3 right-1 md:right-5 hover:bg-transparent p-2"
+            onClick={e => onToggleFavorite(e)}
+            variant='ghost'
+            loading={favoritesLoading}
+          >
+            {items.some((item) => item.productId === id) ? (
+              <HeartOff />
+            ) : (
+              <Heart />
+            )}
+          </Button>
         </div>
       </Link>
 
@@ -74,25 +90,11 @@ export const ProductCard: React.FC<Props> = ({
 
       <VolumeSelection volume={volume} setVolume={setVolume} />
 
-       
-
       <div className="flex justify-between items-center mt-4">
         <span className="text-[20px]">
           price <b>{finalPrice} €</b>
         </span>
-        <Button
-          onClick={onToggleFavorite}
-          variant={
-            items.some((item) => item.productId === id) ? "secondary" : "ghost"
-          }
-          loading={favoritesLoading}
-        >
-          {items.some((item) => item.productId === id) ? (
-            <HeartOff />
-          ) : (
-            <Heart />
-          )}
-        </Button>
+
         <Button
           loading={loading}
           onClick={onSubmit}
