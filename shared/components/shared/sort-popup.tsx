@@ -41,9 +41,8 @@ export const SortPopup: FC<Props> = ({ className }) => {
   return (
     <div className={cn("", className)}>
       <Select onValueChange={(value) => onChange(value)}>
-        <SelectTrigger className="inline-flex items-center gap-1 bg-gray-50 px-5 h-[52px] rounded-2xl cursor-pointer">
+        <SelectTrigger className="inline-flex items-center gap-1 bg-gray-50 px-3 h-[48px] rounded-md cursor-pointer">
           <ArrowUpDown size={16} />
-          <b>Sort:</b>
           <b className="text-primary">
             {sortItems.find((item) => item.value === currentValue)?.name}
           </b>

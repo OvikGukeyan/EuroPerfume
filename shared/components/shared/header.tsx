@@ -62,7 +62,7 @@ export const Header: React.FC<Props> = ({
       </div>
       <header className={cn("", className)}>
         <Separator />
-        <div className="flex items-center justify-between py-5 md:py-10 px-3 md:px-5 ">
+        <div className="flex items-center justify-between py-2 md:py-10 px-3 md:px-5 ">
           <Link href={"/"}>
             <div className="flex items-center gap-4 ">
               <Image

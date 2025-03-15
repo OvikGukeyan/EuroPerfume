@@ -32,7 +32,7 @@ export const ProductCard: React.FC<Props> = ({
 
   const onToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
-    e.preventDefault(); 
+    e.preventDefault();
     toggleIsFavorite(!isFavorite);
 
     addFavoritesItem(id);
@@ -44,7 +44,6 @@ export const ProductCard: React.FC<Props> = ({
     state.addCartItem,
     state.loading,
   ]);
-
 
   const onSubmit = async () => {
     try {
@@ -62,19 +61,19 @@ export const ProductCard: React.FC<Props> = ({
   return (
     <div className={className}>
       <Link href={`/product/${id}`}>
-        <div className="flex justify-center bg-secondary rounded-lg h-[260px] relative">
+        <div className="flex justify-center bg-secondary rounded-lg w-full h-[300px] relative">
           <Image
-            width={300}
-            height={280}
-            className="object-cover"
+            layout="fill"
+            objectFit="cover"
+            // className="object-cover"
             src={imageUrl}
             alt={name}
           />
 
           <Button
             className="absolute top-3 right-1 md:right-5 hover:bg-transparent p-2"
-            onClick={e => onToggleFavorite(e)}
-            variant='ghost'
+            onClick={(e) => onToggleFavorite(e)}
+            variant="ghost"
             loading={favoritesLoading}
           >
             {items.some((item) => item.productId === id) ? (
@@ -91,9 +90,9 @@ export const ProductCard: React.FC<Props> = ({
       <VolumeSelection volume={volume} setVolume={setVolume} />
 
       <div className="flex justify-between items-center mt-4">
-        <span className="text-[20px]">
-          price <b>{finalPrice} €</b>
-        </span>
+        <p className="text-[20px] ">
+          <span className="hidden md:inline">price</span>  <b>{finalPrice} €</b>
+        </p>
 
         <Button
           loading={loading}
