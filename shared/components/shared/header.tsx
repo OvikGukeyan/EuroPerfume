@@ -85,6 +85,7 @@ export const Header: React.FC<Props> = ({
             <Button
               onClick={() => router.push("/favorites")}
               variant={"secondary"}
+              size={"icon"}
               loading={loading}
             >
               <Heart />

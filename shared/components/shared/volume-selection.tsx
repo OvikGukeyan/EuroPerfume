@@ -10,14 +10,23 @@ type Props = {
   volume: React.SetStateAction<1 | 2 | 3 | 5 | 10 | 20 | 30>;
 };
 
-export const VolumeSelection: FC<Props> = ({ className, volume, setVolume }) => {
+export const VolumeSelection: FC<Props> = ({
+  className,
+  volume,
+  setVolume,
+}) => {
   return (
-    <div className={cn("w-full flex justify-between  items-center gap-1 flex-wrap", className)}>
+    <div
+      className={cn(
+        "w-full grid grid-cols-3 gap-2 md:grid-cols-4 lg:grid-cols-5 ",
+        className
+      )}
+    >
       {volumes.map((item, index) => (
         <Button
           onClick={() => setVolume(item)}
           disabled={volume === item}
-          className="w-10 h-10 rounded-md disabled:bg-slate-300"
+          className=" h-8 rounded-none  disabled:bg-slate-300"
           key={item}
           variant={"outline"}
         >
