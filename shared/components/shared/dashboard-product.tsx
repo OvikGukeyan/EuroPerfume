@@ -56,7 +56,7 @@ export const DashboardProduct: React.FC<Props> = ({
 
       <Title text={name} size="sm" className="mb-1 mt-3 font-bold" />
 
-      <div className="flex items-center gap-5 mt-4">
+      <div className="flex items-center gap-2 md:gap-5 mt-4">
         <Button loading={loading} onClick={() => deleteProduct(id)}>
           <Trash2 size={20} />
         </Button>

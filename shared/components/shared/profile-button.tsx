@@ -22,12 +22,23 @@ export const ProfileButton: FC<Props> = ({ className, onClickSignIn }) => {
           <span className="hidden md:block">Sign-In</span>
         </Button>
       ) : (
-        <Link href={"/profile"}>
-          <Button variant="secondary" className="flex items-center gap-2">
-            <CircleUser size={18} />
-            <span className="hidden md:block">Profile</span>
-          </Button>
-        </Link>
+        <>
+          {session.user.role === "ADMIN" ? (
+            <Link href={"/create"}>
+              <Button variant="secondary" className="flex items-center gap-2">
+                <CircleUser size={18} />
+                <span className="hidden md:block">Dashboard</span>
+              </Button>
+            </Link>
+          ) : (
+            <Link href={"/profile"}>
+              <Button variant="secondary" className="flex items-center gap-2">
+                <CircleUser size={18} />
+                <span className="hidden md:block">Profile</span>
+              </Button>
+            </Link>
+          )}
+        </>
       )}
     </div>
   );

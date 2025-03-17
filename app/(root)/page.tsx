@@ -18,11 +18,11 @@ export default async function Home({
 }) {
   const params = await searchParams;
   const { categoryes, totalPages } = await findProducts(params);
-  // const slides = await getSlides();
+  const slides = await getSlides();
 
   return (
     <>
-      {/* <Carusel slides={slides} /> */}
+      <Carusel slides={slides} />
       <TopBar
         categories={categoryes.filter(
           (category) => category.products.length > 0
