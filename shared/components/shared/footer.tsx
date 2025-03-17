@@ -12,7 +12,7 @@ export const Footer: FC<Props> = ({ className }) => {
   return (
     <div className={cn("flex flex-col p-3 md:p-5 border-t", className)}>
       <div className="flex items-center justify-between">
-        <Image src={"/assets/logo.jpg"} width={120} height={40} alt="logo" />
+        <Image src={"/assets/logo.png"} width={120} height={40} alt="logo" />
         <div className="flex flex-col gap-5">
             <div className="flex justify-end gap-3 ">
               <Image

@@ -58,20 +58,29 @@ export const Header: React.FC<Props> = ({
     <>
       <div className="flex items-center gap-4 h-10  px-3 md:px-5">
         <Truck />
-        <h3 className="text-sm md:text-base">Free shipping available for orders above $100</h3>
+        <h3 className="text-sm md:text-base">
+          Free shipping available for orders above $100
+        </h3>
       </div>
       <header className={cn("", className)}>
         <Separator />
-        <div className="flex items-center justify-between py-2 md:py-10 px-3 md:px-5 ">
+        <div className="flex items-center justify-between py-3 md:py-10 px-3 md:px-5 ">
           <Link href={"/"}>
-            <div className="flex items-center gap-4 ">
-              <Image
-                src={"/assets/logo.jpg"}
-                width={120}
-                height={40}
-                alt="logo"
-                className="mr-3"
-              />
+            <div className="flex items-center gap-4 h-10 w-10 md:w-44 relative">
+              <picture>
+                <source
+                  media="(max-width: 640px)"
+                  srcSet="/assets/logo-mobile.png"
+                />
+                <source media="(min-width: 641px)" srcSet="/assets/logo.png" />
+                <Image
+                  src={"/assets/logo.png"}
+                  layout="fill"
+                  objectFit="contain"
+                  alt="logo"
+                  className="mr-3 "
+                />
+              </picture>
             </div>
           </Link>
 
