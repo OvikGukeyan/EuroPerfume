@@ -97,7 +97,7 @@ export const ProductCard: React.FC<Props> = ({
         <Button
           loading={loading}
           onClick={onSubmit}
-          variant="secondary"
+          variant="outline"
           className="text-base font-bold"
         >
           <Plus size={20} className="mr-1" />

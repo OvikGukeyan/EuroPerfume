@@ -51,7 +51,7 @@ export const Footer: FC<Props> = ({ className }) => {
         </div>
       </div>
       <Separator className="my-5" />
-      <div className="flex items-center justify-between  ">
+      <div className="flex items-center justify-between gap-5 ">
         <h5>EuroPerfume 2024. All rights reserved.</h5>
         <div className="flex gap-3">
           <p>Datenschutz</p>

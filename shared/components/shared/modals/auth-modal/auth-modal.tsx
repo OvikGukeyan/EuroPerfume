@@ -22,7 +22,7 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
     }
     return (
         <Dialog open={open} onOpenChange={handleClose}>
-            <DialogContent className='w-[95vw] md:w-[450px] bg-white p-5 md:p-10 h-[95vh] overflow-scroll '>
+            <DialogContent className='w-full md:w-[450px] bg-white p-5 md:p-10 h-full md:h-auto overflow-scroll '>
                 {type === 'login' ? <LoginForm onClose={handleClose}/> : 
                 <RegisterForm onClose={handleClose}/>}
                 <hr />

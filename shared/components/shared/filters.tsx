@@ -99,7 +99,7 @@ export const Filters: FC<Props> = () => {
         ]}
       />
 
-      <div className="mt-10 pb-7">
+      <div className="mt-10 pb-7 pr-5">
         <p className="font-bold mb-3">Price from to:</p>
         <div className="flex gap-3 mb-5">
           <Input
