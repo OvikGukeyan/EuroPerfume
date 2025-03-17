@@ -10,7 +10,7 @@ import { Filter } from "lucide-react";
 
 export const FiltersDrawer = () => {
   return (
-    <div className="sticky top-52 z-50"  >
+    <div className="sticky top-56 z-20"  >
       <Suspense>
         <div className="w-[250px] hidden xl:block">
           <Filters />

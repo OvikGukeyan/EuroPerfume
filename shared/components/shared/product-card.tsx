@@ -63,8 +63,8 @@ export const ProductCard: React.FC<Props> = ({
       <Link href={`/product/${id}`}>
         <div className="flex justify-center bg-secondary rounded-lg w-full h-[300px] relative">
           <Image
-            layout="fill"
-            objectFit="cover"
+            layout='fill'
+            objectFit='cover'
             // className="object-cover"
             src={imageUrl}
             alt={name}

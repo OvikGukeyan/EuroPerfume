@@ -84,7 +84,7 @@ export default function Checkout() {
 
 
     return (
-        <Container className="mt-10">
+        <div className="mt-10">
             <Title text="Checkout" size="xl" className="font-extrabold mb-8" />
             <FormProvider {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -115,6 +115,6 @@ export default function Checkout() {
             </FormProvider>
 
 
-        </Container>
+        </div>
     )
 }

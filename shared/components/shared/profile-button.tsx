@@ -19,7 +19,7 @@ export const ProfileButton: FC<Props> = ({ className, onClickSignIn }) => {
           className="flex items-center gap-1"
         >
           <User size={16} />
-          Sign-In
+          <span className="hidden md:block">Sign-In</span>
         </Button>
       ) : (
         <Link href={"/profile"}>
