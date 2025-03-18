@@ -3,6 +3,7 @@
 import { supabase } from "@/lib/supabase";
 import { prisma } from "@/prisma/prisma-client";
 import {
+  PasswordResetTemplate,
   PayOrderTemplate,
   UserVerificationTemplate,
 } from "@/shared/components";
@@ -62,8 +63,6 @@ export async function createOrder(data: CheckoutFormValues) {
       userCart.totalAmount,
       data.deliveryType
     );
-
-    
 
     const order = await prisma.order.create({
       data: {
@@ -196,6 +195,7 @@ export async function registerUser(body: Prisma.UserCreateInput) {
       data: {
         code,
         userId: createdUser.id,
+        expiresAt: new Date(Date.now() + 5 * 60 * 1000),
       },
     });
 
@@ -212,6 +212,50 @@ export async function registerUser(body: Prisma.UserCreateInput) {
   }
 }
 
+export async function resetPassword(code: string, password: string) {
+  try {
+    const verificationCode = await prisma.verificationCode.findFirst({
+      where: {
+        code,
+      },
+    });
+
+    if (!verificationCode || verificationCode.expiresAt < new Date()) {
+      throw new Error("Verification code not found or expired");
+    }
+
+    const user = await prisma.user.findFirst({
+      where: {
+        id: verificationCode.userId,
+      },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    await prisma.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        password: hashSync(password, 10),
+        verified: new Date(),
+      },
+    });
+
+    await prisma.verificationCode.delete({
+      where: {
+        id: verificationCode.id,
+      },
+    });
+
+  } catch (error) {
+    console.error("Error [RESET_PASSWORD]", error);
+    throw error;
+  } 
+}
+
 export async function updateUser(id: number, data: Prisma.UserUpdateInput) {
   try {
     await prisma.user.update({
@@ -226,6 +270,44 @@ export async function updateUser(id: number, data: Prisma.UserUpdateInput) {
     });
   } catch (error) {
     console.log("Error [UPDATE_USER]", error);
+    throw error;
+  }
+}
+
+export async function getRecoveringEmail(email: string) {
+  console.log(email);
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const code = Math.floor(
+      Math.random() * (9999 - 1000 + 1) + 1000
+    ).toString();
+
+    await prisma.verificationCode.create({
+      data: {
+        code,
+        userId: user.id,
+        expiresAt: new Date(Date.now() + 60 * 60 * 1000),
+      },
+    });
+
+    await sendEmail(
+      user.email,
+      "Recover password",
+      PasswordResetTemplate({
+        code,
+      })
+    );
+  } catch (error) {
+    console.error("Error [RECOVER_PASSWORD]", error);
     throw error;
   }
 }
@@ -248,8 +330,12 @@ export async function createProduct(
     const concentration = formData.get("concentration") as PerfumeConcentration;
     const brand = formData.get("brand") as Brands;
     const topNotes = JSON.parse(formData.get("topNotes") as string) as Notes[];
-    const heartNotes = JSON.parse(formData.get("heartNotes") as string) as Notes[];
-    const baseNotes = JSON.parse(formData.get("baseNotes") as string) as Notes[];
+    const heartNotes = JSON.parse(
+      formData.get("heartNotes") as string
+    ) as Notes[];
+    const baseNotes = JSON.parse(
+      formData.get("baseNotes") as string
+    ) as Notes[];
     const aromas = JSON.parse(formData.get("aromas") as string) as Aromas[];
     const brandCountry = formData.get("brandCountry") as string;
     const manufacturingCountry = formData.get("manufacturingCountry") as string;
@@ -329,8 +415,12 @@ export async function updateProduct(
     const concentration = formData.get("concentration") as PerfumeConcentration;
     const brand = formData.get("brand") as Brands;
     const topNotes = JSON.parse(formData.get("topNotes") as string) as Notes[];
-    const heartNotes = JSON.parse(formData.get("heartNotes") as string) as Notes[];
-    const baseNotes = JSON.parse(formData.get("baseNotes") as string) as Notes[];
+    const heartNotes = JSON.parse(
+      formData.get("heartNotes") as string
+    ) as Notes[];
+    const baseNotes = JSON.parse(
+      formData.get("baseNotes") as string
+    ) as Notes[];
     const aromas = JSON.parse(formData.get("aromas") as string) as Aromas[];
     const brandCountry = formData.get("brandCountry") as string;
     const manufacturingCountry = formData.get("manufacturingCountry") as string;

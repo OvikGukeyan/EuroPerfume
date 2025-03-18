@@ -48,6 +48,7 @@ export {DeshboardSlide} from './dashboard-slide';
 export {MyPopover} from './my-popover';
 export {OrdersTable} from './orders-table';
 export {Footer} from './footer';
+export {ResetForm} from './reset-form';
 
 export * from './email-templates';
 export * from './form';

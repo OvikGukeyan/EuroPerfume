@@ -167,6 +167,7 @@ model VerificationCode {
   id        Int      @id @default(autoincrement())
   userId    Int      @unique
   code      String
+  expiresAt DateTime
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
