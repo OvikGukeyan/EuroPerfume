@@ -12,7 +12,7 @@ export const TopBar: FC<Props> = ({ className, categories }) => {
   return (
     <div
       className={cn(
-        "sticky top-16 bg-white md:py-5 shadow-lg shadow-black/5 z-40 "
+        "sticky top-16 md:top-24 bg-white md:py-5 shadow-lg shadow-black/5 z-40 "
       )}
     >
       <Container className="flex flex-col gap-2 md:gap-5 items-center justify-between md:flex-row ">

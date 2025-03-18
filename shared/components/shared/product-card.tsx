@@ -63,8 +63,8 @@ export const ProductCard: React.FC<Props> = ({
       <Link href={`/product/${id}`}>
         <div className="flex justify-center bg-secondary rounded-lg w-full h-[300px] relative">
           <Image
-            layout='fill'
-            objectFit='cover'
+            layout="fill"
+            objectFit="cover"
             // className="object-cover"
             src={imageUrl}
             alt={name}
@@ -84,14 +84,15 @@ export const ProductCard: React.FC<Props> = ({
           </Button>
         </div>
       </Link>
-
-      <Title text={name} size="sm" className=" my-5 font-bold" />
+      <div className="h-16">
+        <Title text={name} size="xs" className="md:text-lg my-3 font-bold" />
+      </div>
 
       <VolumeSelection volume={volume} setVolume={setVolume} />
 
       <div className="flex justify-between items-center mt-4">
         <p className="text-[20px] ">
-          <span className="hidden md:inline">price</span>  <b>{finalPrice} €</b>
+          <span className="hidden md:inline">price</span> <b>{finalPrice} €</b>
         </p>
 
         <Button

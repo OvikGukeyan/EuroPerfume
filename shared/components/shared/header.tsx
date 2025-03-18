@@ -69,10 +69,10 @@ export const Header: React.FC<Props> = ({
             <div className="flex items-center gap-4 h-10 w-10 md:w-44 relative">
               <picture>
                 <source
-                  media="(max-width: 640px)"
+                  media="(max-width: 767px)"
                   srcSet="/assets/logo-mobile.png"
                 />
-                <source media="(min-width: 641px)" srcSet="/assets/logo.png" />
+                <source media="(min-width: 767px)" srcSet="/assets/logo.png" />
                 <Image
                   src={"/assets/logo.png"}
                   layout="fill"

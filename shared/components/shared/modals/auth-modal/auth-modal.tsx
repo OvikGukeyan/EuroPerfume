@@ -75,7 +75,7 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
         >
           {type === "login" ? "Sign Up" : "Sign In"}
         </Button>
-        <Button onClick={onClickForgot} variant="link">Forgot Password?</Button>
+        <Button onClick={onClickForgot} variant="link">Forgot your Password?</Button>
       </DialogContent>
     </Dialog>
   );
