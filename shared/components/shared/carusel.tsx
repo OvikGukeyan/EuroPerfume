@@ -5,8 +5,6 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "../ui/carousel";
 import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
@@ -18,7 +16,6 @@ interface Props {
   className?: string    
 }
 export const Carusel: FC<Props> = ({ slides }) => {
-  // Мемоизируем плагин, чтобы он создавался один раз
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 4000 }), []);
 
   return (
@@ -38,9 +35,7 @@ export const Carusel: FC<Props> = ({ slides }) => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        {/* Если нужны стрелки, раскомментируйте их */}
-        {/* <CarouselPrevious /> */}
-        {/* <CarouselNext /> */}
+        
       </Carousel>
   );
 };
