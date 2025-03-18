@@ -19,7 +19,7 @@ export const FiltersDrawer = () => {
         <Sheet >
           <SheetTrigger  asChild >
             <Button className="xl:hidden flex items-center gap-2 ">
-              Filters
+              <span className="hidden md:block">Filters</span> 
               <Filter />
             </Button>
           </SheetTrigger>

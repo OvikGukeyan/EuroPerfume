@@ -20,7 +20,9 @@ export default function HomeLayout({
   return (
       <main className="min-h-screen">
         <Suspense fallback={<div>Loading...</div>}>
-          <Header className="sticky top-0 z-50 bg-white"/>
+          <Header 
+          className="sticky top-0 z-50 bg-white"
+          />
         </Suspense>
         {children}
         {modal}

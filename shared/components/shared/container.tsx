@@ -6,5 +6,5 @@ interface Props {
 }
 
 export const Container: React.FC<React.PropsWithChildren<Props>> = ({ className, children }) => {
-  return <div style={{scrollbarWidth: 'none'}} className={cn('mx-auto max-w-[1280px] p-4', className)}>{children}</div>;
+  return <div style={{scrollbarWidth: 'none'}} className={cn('mx-auto max-w-[1440px] p-4', className)}>{children}</div>;
 };
