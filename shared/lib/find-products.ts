@@ -2,11 +2,11 @@ import { prisma } from "@/prisma/prisma-client";
 import {
   Brands,
   Category,
+  Classifications,
   Gender,
   Notes,
   PerfumeConcentration,
   Product,
-  Types,
 } from "@prisma/client";
 
 export interface GetSearchParams {
@@ -15,7 +15,7 @@ export interface GetSearchParams {
   brands?: string;
   gender?: string;
   notes?: string;
-  types?: string;
+  classification?: string;
   concentration?: string;
   priceFrom?: string;
   priceTo?: string;
@@ -47,8 +47,8 @@ export const findProducts = async (
       (await params).notes
         ?.split(",")
         .map((item) => item.trim().toUpperCase()) ?? [];
-    const types =
-      (await params).types
+    const classification =
+      (await params).classification
         ?.split(",")
         .map((item) => item.trim().toUpperCase()) ?? [];
     const concentration = (await params).concentration
@@ -62,7 +62,7 @@ export const findProducts = async (
     const whereClause = {
       brand: { in: brands as Brands[] },
       gender: genders.length > 0 ? { in: genders as Gender[] } : undefined,
-      types: types.length > 0 ? { hasSome: types as Types[] } : undefined,
+      classification: classification.length > 0 ? { hasSome: classification as Classifications[] } : undefined,
       concentration: { in: concentration as PerfumeConcentration[] },
       price:
         priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,

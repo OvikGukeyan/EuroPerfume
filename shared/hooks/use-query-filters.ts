@@ -12,7 +12,7 @@ export const useQueryFilters = (filters: Filters) => {
         ...filters.prices,
         orderBy: JSON.stringify(filters.orderBy),
         brands: Array.from(filters.brands),
-        types: Array.from(filters.types),
+        classification: Array.from(filters.classification),
         concentration: Array.from(filters.concentration),
         gender: Array.from(filters.gender),
         notes: Array.from(filters.notes),

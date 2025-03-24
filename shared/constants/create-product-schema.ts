@@ -4,8 +4,8 @@ import {
   PerfumeConcentration,
   Brands,
   Notes,
-  Types,
   Aromas,
+  Classifications,
 } from "@prisma/client";
 
 export const CreateProductSchema = z.object({
@@ -30,7 +30,7 @@ export const CreateProductSchema = z.object({
   topNotes: z.array(z.nativeEnum(Notes)),
   heartNotes: z.array(z.nativeEnum(Notes)),
   baseNotes: z.array(z.nativeEnum(Notes)),
-  types: z.array(z.nativeEnum(Types)),
+  classification: z.array(z.nativeEnum(Classifications)),
   releaseYear: z.preprocess(
     (val) => (typeof val === "string" ? Number(val) : val),
     z.number()

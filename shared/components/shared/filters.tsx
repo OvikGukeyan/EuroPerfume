@@ -7,10 +7,10 @@ import { Input, RangeSlider } from "../ui";
 import { useQueryFilters } from "@/shared/hooks";
 import {
   Brands,
+  Classifications,
   Gender,
   Notes,
   PerfumeConcentration,
-  Types,
 } from "@prisma/client";
 import { useFiltersStore } from "@/shared/store/filters";
 
@@ -85,17 +85,17 @@ export const Filters: FC<Props> = () => {
       />
 
       <CheckboxFiltersGroup
-        title="Perfume Categories"
+        title="Classification"
         name="categories"
         className="mb-5"
-        onClickCheckbox={filters.setSelectedTypes}
-        selected={filters.types}
+        onClickCheckbox={filters.setSelectedClassification}
+        selected={filters.classification}
         items={[
-          { text: "Niche", value: Types.NICHE },
-          { text: "Arabian", value: Types.ARABIAN },
-          { text: "Designer", value: Types.DESIGNER },
-          { text: "Celebrity", value: Types.CELEBRITY },
-          { text: "Indie", value: Types.INDIE },
+          { text: "Niche", value: Classifications.NICHE },
+          { text: "Arabian", value: Classifications.ARABIAN },
+          { text: "Designer", value: Classifications.DESIGNER },
+          { text: "Celebrity", value: Classifications.CELEBRITY },
+          { text: "Indie", value: Classifications.INDIE },
         ]}
       />
 

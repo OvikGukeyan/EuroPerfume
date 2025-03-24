@@ -3,11 +3,11 @@
 import {
   brands,
   categories,
+  classifications,
   concentrations,
   genders,
   notes,
   perfumeAromas,
-  perfumeTypes,
   yers,
 } from "@/prisma/constants";
 import { Button, Input } from "@/shared/components";
@@ -30,6 +30,8 @@ import { FC } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
+import { createProduct } from "@/app/actions";
+
 
 type ProductWithTranslations = Product & {
   translations: {
@@ -37,11 +39,10 @@ type ProductWithTranslations = Product & {
   }[];
 };
 interface Props {
-  submitFunction: (data: FormData & CreateProductFormValues) => void;
   product?: ProductWithTranslations;
 }
 
-export const CreateProductForm: FC<Props> = ({ submitFunction, product }) => {
+export const CreateProductForm: FC<Props> = ({ product }) => {
   const form = useForm<CreateProductFormValues>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
@@ -60,12 +61,13 @@ export const CreateProductForm: FC<Props> = ({ submitFunction, product }) => {
       topNotes: product?.topNotes || [],
       heartNotes: product?.heartNotes || [],
       baseNotes: product?.baseNotes || [],
-      types: product?.types || [],
+      classification: product?.classification || [],
       releaseYear: product?.releaseYear || 2000,
       categoryId: product?.categoryId || 1,
     },
   });
-
+const res = form.watch('classification')
+console.log(res)
   const onSubmit = async (data: CreateProductFormValues) => {
     try {
       const formData = new FormData();
@@ -84,14 +86,14 @@ export const CreateProductForm: FC<Props> = ({ submitFunction, product }) => {
       formData.append("topNotes", JSON.stringify(data.topNotes));
       formData.append("heartNotes", JSON.stringify(data.heartNotes));
       formData.append("baseNotes", JSON.stringify(data.baseNotes));
-      formData.append("types", JSON.stringify(data.types));
+      formData.append("classification", JSON.stringify(data.classification));
       formData.append("releaseYear", data.releaseYear.toString());
       formData.append("categoryId", data.categoryId.toString());
 
       if (data.image) {
         formData.append("image", data.image);
       }
-      await submitFunction(formData as FormData & CreateProductFormValues);
+      await createProduct(formData as FormData & CreateProductFormValues);
 
       form.reset();
       toast.error("Product created 📝", {
@@ -279,9 +281,9 @@ export const CreateProductForm: FC<Props> = ({ submitFunction, product }) => {
               />
 
               <FormCheckbox
-                name="types"
+                name="classification"
                 control={form.control}
-                items={perfumeTypes}
+                items={classifications}
               />
 
               <FormSelect
@@ -295,7 +297,7 @@ export const CreateProductForm: FC<Props> = ({ submitFunction, product }) => {
                 name="categoryId"
                 control={form.control}
                 items={categories.map((item) => ({
-                  name: item.name,
+                  name: item.name as string,
                   value: item.id.toString(),
                 }))}
               />

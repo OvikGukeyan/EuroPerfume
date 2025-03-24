@@ -5,7 +5,7 @@ import {
   PerfumeConcentration,
   Brands,
   Notes,
-  Types,
+  Classifications,
   DeliveryTypes,
   ContactForms,
   Aromas,
@@ -16,6 +16,14 @@ export const categories = [
     name: "Perfumes",
     id: 1,
   },
+  {
+    name: "Makeup",
+    id: 2,
+  },
+  {
+    name: "Accessories",
+    id: 3,
+  }
 ];
 
 export const products: Prisma.ProductCreateManyInput[] = [
@@ -34,7 +42,7 @@ export const products: Prisma.ProductCreateManyInput[] = [
     heartNotes: ["GREEN"],
     baseNotes: ["MUSK"],
     releaseYear: 1921,
-    types: ["DESIGNER"],
+    classification: ["DESIGNER"],
     aromas: [Aromas.FLORAL],
     brandCountry: "France",
     manufacturingCountry: "France",
@@ -56,7 +64,7 @@ export const products: Prisma.ProductCreateManyInput[] = [
     heartNotes: ["SPICY"],
     baseNotes: ["WOODY"],
     releaseYear: 2015,
-    types: ["DESIGNER"],
+    classification: ["DESIGNER"],
     aromas: [Aromas.ORIENTAL],
     brandCountry: "France",
     manufacturingCountry: "France",
@@ -78,7 +86,7 @@ export const products: Prisma.ProductCreateManyInput[] = [
     heartNotes: ["MUSK"],
     baseNotes: ["AQUATIC"],
     releaseYear: 2017,
-    types: ["CELEBRITY"],
+    classification: ["CELEBRITY"],
     aromas: [Aromas.FLORAL],
     brandCountry: "Italy",
     manufacturingCountry: "Italy",
@@ -100,7 +108,7 @@ export const products: Prisma.ProductCreateManyInput[] = [
     heartNotes: ["MUSK"],
     baseNotes: ["FLORAL"],
     releaseYear: 2006,
-    types: ["NICHE"],
+    classification: ["NICHE"],
     aromas: [Aromas.ORIENTAL],
     brandCountry: "USA",
     manufacturingCountry: "USA",
@@ -122,7 +130,7 @@ export const products: Prisma.ProductCreateManyInput[] = [
     heartNotes: ["CITRUS"],
     baseNotes: ["FLORAL"],
     releaseYear: 2019,
-    types: ["DESIGNER"],
+    classification: ["DESIGNER"],
     aromas: [Aromas.FLORAL],
     brandCountry: "France",
     manufacturingCountry: "France",
@@ -144,7 +152,7 @@ export const products: Prisma.ProductCreateManyInput[] = [
     heartNotes: ["WOODY"],
     baseNotes: ["SPICY"],
     releaseYear: 2012,
-    types: ["CELEBRITY"],
+    classification: ["CELEBRITY"],
     aromas: [Aromas.ORIENTAL],
     brandCountry: "Italy",
     manufacturingCountry: "Italy",
@@ -166,7 +174,7 @@ export const products: Prisma.ProductCreateManyInput[] = [
     heartNotes: ["SPICY"],
     baseNotes: ["MUSK"],
     releaseYear: 2004,
-    types: ["DESIGNER"],
+    classification: ["DESIGNER"],
     aromas: [Aromas.ORIENTAL],
     brandCountry: "Italy",
     manufacturingCountry: "Italy",
@@ -188,7 +196,7 @@ export const products: Prisma.ProductCreateManyInput[] = [
     heartNotes: ["AQUATIC"],
     baseNotes: ["FLORAL"],
     releaseYear: 2015,
-    types: ["CELEBRITY"],
+    classification: ["CELEBRITY"],
     aromas: [Aromas.ORIENTAL],
     brandCountry: "France",
     manufacturingCountry: "France",
@@ -412,21 +420,21 @@ export const notes: { name: string; value: Notes }[] = [
   },
 ];
 
-export const perfumeTypes = [
+export const classifications = [
   {
     name: "Niche",
-    value: Types.NICHE,
+    value: Classifications.NICHE,
   },
   {
     name: "Arabian",
-    value: Types.ARABIAN,
+    value: Classifications.ARABIAN,
   },
   {
     name: "Designer",
-    value: Types.DESIGNER,
+    value: Classifications.DESIGNER,
   },
-  { name: "Celebrity", value: Types.CELEBRITY },
-  { name: "Indie", value: Types.INDIE },
+  { name: "Celebrity", value: Classifications.CELEBRITY },
+  { name: "Indie", value: Classifications.INDIE },
 ];
 
 export const deliveryTypes = [

@@ -10,6 +10,7 @@ import toast from "react-hot-toast";
 import { useCartStore, useFavoritesStore } from "@/shared/store";
 import { Volume } from "@/shared/constants/perfume";
 import { calcPrice } from "@/shared/lib";
+import { HeartBlack } from "@/shared/icons";
 
 interface Props {
   id: number;
@@ -20,7 +21,7 @@ interface Props {
   className?: string;
 }
 
-export const ProductCard: React.FC<Props> = ({
+export const PerfumeCard: React.FC<Props> = ({
   imageUrl,
   className,
   name,
@@ -37,7 +38,7 @@ export const ProductCard: React.FC<Props> = ({
 
     addFavoritesItem(id);
   };
-  const [addFavoritesItem, items, favoritesLoading] = useFavoritesStore(
+  const [addFavoritesItem, items] = useFavoritesStore(
     (state) => [state.addFavoritesItem, state.items, state.favoritesLoading]
   );
   const [addCartItem, loading] = useCartStore((state) => [
@@ -74,12 +75,11 @@ export const ProductCard: React.FC<Props> = ({
             className="absolute top-3 right-1 md:right-5 hover:bg-transparent p-2"
             onClick={(e) => onToggleFavorite(e)}
             variant="ghost"
-            loading={favoritesLoading}
           >
             {items.some((item) => item.productId === id) ? (
-              <HeartOff />
+              <HeartBlack />
             ) : (
-              <Heart />
+              <Heart className=""/>
             )}
           </Button>
         </div>

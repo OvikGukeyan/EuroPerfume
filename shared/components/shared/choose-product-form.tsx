@@ -9,11 +9,11 @@ import { Volume } from "@/shared/constants/perfume";
 import {
   Aromas,
   Brands,
+  Classifications,
   Gender,
   Notes,
   PerfumeConcentration,
   Review,
-  Types,
 } from "@prisma/client";
 import {
   brands,
@@ -21,7 +21,7 @@ import {
   genders,
   notes,
   perfumeAromas,
-  perfumeTypes,
+  classifications,
 } from "@/prisma/constants";
 import { calcAverageRating, calcPrice, useModalContext } from "@/shared/lib";
 import { Rating } from "./rating";
@@ -37,7 +37,7 @@ interface Props {
   heartNotes: Notes[];
   baseNotes: Notes[];
   aromas: Aromas[];
-  types: Types[];
+  classification: Classifications[];
   concentration: PerfumeConcentration;
   brandCountry: string;
   brand: Brands;
@@ -62,7 +62,7 @@ export const ChooseProductForm: FC<Props> = ({
   topNotes,
   heartNotes,
   baseNotes,
-  types,
+  classification,
   brand,
   concentration,
   aromas,
@@ -84,8 +84,8 @@ export const ChooseProductForm: FC<Props> = ({
   const currentAroma = perfumeAromas.filter((aroma) =>
     aromas.includes(aroma.value)
   );
-  const currentTypes = perfumeTypes.filter((type) =>
-    types.includes(type.value)
+  const currentClassification = classifications.filter((item) =>
+    classification.includes(item.value)
   );
   const currentConcentration = concentrations.find(
     (item) => item.value === concentration
@@ -140,7 +140,7 @@ export const ChooseProductForm: FC<Props> = ({
             </li>
             <li>
               <span className="font-bold mr-2">Classification:</span>{" "}
-              {currentTypes.map((type) => type.name).join(", ")}
+              {currentClassification.map((classification) => classification.name).join(", ")}
             </li>
             <li>
               <span className="font-bold mr-2">Concentration:</span>{" "}

@@ -21,7 +21,7 @@ import {
   OrderStatus,
   PerfumeConcentration,
   Prisma,
-  Types,
+  Classifications,
   UserRole,
 } from "@prisma/client";
 import { hashSync } from "bcrypt";
@@ -340,10 +340,9 @@ export async function createProduct(
     const brandCountry = formData.get("brandCountry") as string;
     const manufacturingCountry = formData.get("manufacturingCountry") as string;
     const perfumer = formData.get("perfumer") as string;
-    const types = JSON.parse(formData.get("types") as string) as Types[];
+    const classification = JSON.parse(formData.get("classification") as string) as Classifications[];
     const releaseYear = formData.get("releaseYear") as string;
     const categoryId = formData.get("categoryId") as string;
-
     const { data: imageData } = await supabase.storage
       .from("images")
       .upload(`${image.name}--${new Date()}`, image, {
@@ -367,7 +366,7 @@ export async function createProduct(
         brandCountry: brandCountry,
         manufacturingCountry: manufacturingCountry,
         perfumer: perfumer,
-        types: types,
+        classification: classification,
         releaseYear: Number(releaseYear),
         category: { connect: { id: Number(categoryId) } },
         description: descriptionRu,
@@ -425,7 +424,7 @@ export async function updateProduct(
     const brandCountry = formData.get("brandCountry") as string;
     const manufacturingCountry = formData.get("manufacturingCountry") as string;
     const perfumer = formData.get("perfumer") as string;
-    const types = JSON.parse(formData.get("types") as string) as Types[];
+    const clasification = JSON.parse(formData.get("classification") as string) as Classifications[];
     const releaseYear = formData.get("releaseYear") as string;
     const categoryId = formData.get("categoryId") as string;
 
@@ -458,7 +457,7 @@ export async function updateProduct(
         topNotes: topNotes,
         heartNotes: heartNotes,
         baseNotes: baseNotes,
-        types: types,
+        classification: clasification,
         aromas: aromas,
         brandCountry: brandCountry,
         manufacturingCountry: manufacturingCountry,

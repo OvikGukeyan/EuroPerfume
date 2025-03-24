@@ -9,7 +9,7 @@ import {
   FormMessage,
 } from "../../ui/form";
 import { Checkbox } from "../..";
-import { Aromas, Notes, Types } from "@prisma/client";
+import { Aromas, Classifications, Notes } from "@prisma/client";
 
 interface Props {
   control: Control<CreateProductFormValues>;
@@ -23,7 +23,7 @@ export const FormCheckbox: FC<Props> = ({ control, name, items }) => {
       name={name}
       control={control}
       render={({ field }) => {
-        const currentValues: (Notes | Types | Aromas)[] = Array.isArray(field.value)
+        const currentValues: (Notes | Classifications | Aromas)[] = Array.isArray(field.value)
           ? field.value
           : [];
         return (
@@ -39,7 +39,7 @@ export const FormCheckbox: FC<Props> = ({ control, name, items }) => {
                 <FormControl>
                   <Checkbox
                     checked={currentValues.includes(
-                      item.value as Notes | Types
+                      item.value as Notes | Classifications
                     )}
                     onCheckedChange={(checked) => {
                       if (checked) {

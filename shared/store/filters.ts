@@ -13,7 +13,7 @@ export interface Filters {
   gender: Set<string>;
   concentration: Set<string>;
   brands: Set<string>;
-  types: Set<string>;
+  classification: Set<string>;
   notes: Set<string>;
   prices: PriceProps;
   orderBy: OrderByType;
@@ -25,7 +25,7 @@ interface FiltersStore extends Filters {
   setSelectedGender: (key: string) => void;
   setSelectedConcentration: (key: string) => void;
   setSelectedBrands: (key: string) => void;
-  setSelectedTypes: (key: string) => void;
+  setSelectedClassification: (key: string) => void;
   setSelectedNotes: (key: string) => void;
   setCurrentPage: (page: number) => void;
   setFilters: (filters: Filters) => void;
@@ -38,7 +38,7 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
   gender: new Set<string>(),
   concentration: new Set<string>(),
   brands: new Set<string>(),
-  types: new Set<string>(),
+  classification: new Set<string>(),
   notes: new Set<string>(),
   prices: {},
   orderBy: {},
@@ -70,11 +70,11 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
       return { brands: newSet };
     }),
 
-  setSelectedTypes: (key) =>
+  setSelectedClassification: (key) =>
     set((state) => {
-      const newSet = new Set(state.types);
+      const newSet = new Set(state.classification);
       newSet.has(key) ? newSet.delete(key) : newSet.add(key);
-      return { types: newSet };
+      return { classification: newSet };
     }),
 
   setSelectedNotes: (key) =>
@@ -112,7 +112,7 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
       gender: new Set<string>(),
       concentration: new Set<string>(),
       brands: new Set<string>(),
-      types: new Set<string>(),
+      classification: new Set<string>(),
       notes: new Set<string>(),
       prices: {},
       orderBy: {},

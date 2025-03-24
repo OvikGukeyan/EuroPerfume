@@ -13,10 +13,17 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
 } from "../ui/sidebar";
 import { Folders, GalleryHorizontalEnd, Plus, Settings2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "../ui/collapsible";
 
 type Props = {
   className?: string;
@@ -25,11 +32,11 @@ type Props = {
 export const AppSidebar: FC<Props> = ({ className }) => {
   const pathName = usePathname();
   const tools = [
-    {
-      name: "Create New Product",
-      icon: <Plus />,
-      href: "/create",
-    },
+    // {
+    //   name: "Create New Product",
+    //   icon: <Plus />,
+    //   href: "/create",
+    // },
     { name: "Products", icon: <Settings2 />, href: "/products" },
     {
       name: "Create New Slde",
@@ -55,6 +62,39 @@ export const AppSidebar: FC<Props> = ({ className }) => {
           <SidebarGroupLabel>Tools</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
+              <Collapsible className="group/collapsible">
+                <SidebarMenuItem>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton>
+                      <Plus /> Create
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      
+                      <Link href={"/create/1"}>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuButton>Perfume</SidebarMenuButton>
+                        </SidebarMenuSubItem>
+                      </Link>
+
+                      <Link href={"/create/2"}>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuButton>Makeup</SidebarMenuButton>
+                        </SidebarMenuSubItem>
+                      </Link>
+
+                      <Link href={"/create/3"}>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuButton>Other</SidebarMenuButton>
+                        </SidebarMenuSubItem>
+                      </Link>
+
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </SidebarMenuItem>
+              </Collapsible>
+
               {tools.map((tool) => (
                 <Link key={tool.name} href={tool.href}>
                   <SidebarMenuItem>

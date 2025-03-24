@@ -1,5 +1,5 @@
 "use client";
-import { Button, Container, ProductCard, Title } from "@/shared/components";
+import { Button, Container, PerfumeCard, Title } from "@/shared/components";
 import { useFavorites } from "@/shared/hooks";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
@@ -12,7 +12,7 @@ export default function Favorites() {
       {items.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[50px] p-10">
           {items.map((item) => (
-            <ProductCard
+            <PerfumeCard
               key={item.id}
               id={item.productId}
               name={item.name}

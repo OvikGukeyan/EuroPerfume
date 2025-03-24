@@ -32,23 +32,50 @@ model Category {
   products Product[]
 }
 
+model ProductGroup {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  products Product[]
+}
+
 model Product {
-  id                   Int                  @id @default(autoincrement())
-  name                 String
-  imageUrl             String
-  categoryId           Int
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime             @updatedAt
-  brand                Brands
-  concentration        PerfumeConcentration
-  description          String
-  gender               Gender
+  id             Int                  @id @default(autoincrement())
+  name           String
+  imageUrl       String
+  categoryId     Int
+  productGroupId Int?
+  brand          Brands
+  concentration  PerfumeConcentration
+  description    String
+  gender         Gender
+
+  // Новые поля для косметики
+  age                 Int?
+  series              String? // Название серии или коллекции
+  productGroup        String? // Группа товара (например: помада, тушь, тональный крем и т.д.)
+  purpose             Purpose? // Назначение (для лица / для глаз / для губ / для тела)
+  colorPalette        String? // Цветовая палитра (основные оттенки)
+  finish              Finish? // Финиш (матовый / глянцевый / сатиновый / металлик / сияющий / шиммер)
+  texture             Texture? // Текстура (кремовая / гелевая / пудровая / жидкая)
+  formula             Formula? // Формула средства (стойкая / увлажняющая / легкая / водостойкая / некомедогенная)
+  compositionFeatures String? // Особенности состава (веганская / без парабенов / без спирта / без силиконов / без сульфатов)
+  activeIngredients   String? // Активные ингредиенты (например: витамин Е, масло ши, гиалуроновая кислота, алоэ вера)
+  effect              Effects? // Эффект (увлажняет, придаёт объём, выравнивает тон и т.д.)
+  effectDuration      Int? // Длительность эффекта (например: до 8 часов, до 16 часов, до 24 часов)
+  hypoallergenic      Boolean? // Гипоаллергенно (Да/Нет)
+  certificates        String? // Сертификаты (Cruelty free, Leaping Bunny, EcoCert, Vegan и т.д.)
+  ethics              String? // Этика (не тестировалось на животных, экологичный бренд)
+  applicationMethod   ApplicationMethod? // Способ нанесения (кисть, аппликатор, пальцами, из флакона, формат карандаша)
+  packagingFormat     PackagingFormat? // Формат упаковки (стик, карандаш, тюбик, флакон, баночка)
+  volume              String? // Объём (в граммах или миллилитрах)
+  skinType            SkinType? // Тип кожи (для всех типов, для сухой, жирной, чувствительной)
+  classification      Classifications[] // Классификация (профессиональная, люкс, масс-маркет)
+
   topNotes             Notes[]
   heartNotes           Notes[]
   baseNotes            Notes[]
   price                Int
   releaseYear          Int
-  types                Types[]
   aromas               Aromas[]
   brandCountry         String
   manufacturingCountry String
@@ -59,6 +86,9 @@ model Product {
   category             Category             @relation(fields: [categoryId], references: [id])
   translations         ProductTranslation[]
   reviews              Review[]
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
+  ProductGroup         ProductGroup?        @relation(fields: [productGroupId], references: [id])
 }
 
 model ProductTranslation {
@@ -159,8 +189,8 @@ model OrderItem {
   id       Int    @id @default(autoincrement())
   name     String
   quantity Int
-  orderId Int
-  order   Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId  Int
+  order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model VerificationCode {
@@ -219,7 +249,7 @@ enum Notes {
   AQUATIC
 }
 
-enum Types {
+enum Classifications {
   NICHE
   ARABIAN
   DESIGNER
@@ -251,6 +281,70 @@ enum Brands {
   VICTORIA_SECRET
 }
 
+enum Purpose {
+  FACE
+  EYES
+  LIPS
+  BODY
+}
+
+enum Finish {
+  MATTE
+  GLOSSY
+  SATIN
+  METALLIC
+  SHIMMER
+}
+
+enum Texture {
+  CREAMY
+  GEL
+  POWDERY
+  LIQUID
+}
+
+enum Formula {
+  LONG_LASTING
+  HYDRATING
+  LIGHT
+  WATERPROOF
+  NON_COMEDOGENIC
+}
+
+enum Effects {
+  HYDRATING
+  VOLUMIZING
+  TONE_BALANCING
+  DEFINING
+  SMOOTHING
+  MATIFYING
+  ILLUMINATING
+  ANTIAGING
+}
+
+enum ApplicationMethod {
+  BRUSH
+  APPLICATOR
+  FINGERS
+  BOTTLE
+  PENCIL
+}
+
+enum PackagingFormat {
+  STICK
+  PENCIL
+  TUBE
+  BOTTLE
+  JAR
+}
+
+enum SkinType {
+  ALL
+  DRY
+  OILY
+  SENSITIVE
+}
+
 enum Languages {
   RU
   DE
@@ -280,5 +374,3 @@ enum Aromas {
   GREEN
   GOURMAND
 }
-
-

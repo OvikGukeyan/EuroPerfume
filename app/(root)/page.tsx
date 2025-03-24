@@ -24,9 +24,10 @@ export default async function Home({
     <>
       <Carusel slides={slides} />
       <TopBar
-        categories={categoryes.filter(
-          (category) => category.products.length > 0
-        )}
+        // categories={categoryes.filter(
+        //   (category) => category.products.length > 0
+        // )}
+        categories={categoryes}
       />
 
       <Container className="mt-10">
