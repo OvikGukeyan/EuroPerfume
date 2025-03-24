@@ -40,7 +40,7 @@ export default async function Update({
     <div className=" px-10 mb-10">
       <Title className="mb-5" text="Update product" />
 
-      <CreateProductForm submitFunction={onSubmit} product={product}/>
+      <CreateProductForm  product={product}/>
     </div>
   );
 }
