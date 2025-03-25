@@ -39,58 +39,56 @@ model ProductGroup {
 }
 
 model Product {
-  id             Int                  @id @default(autoincrement())
-  name           String
-  imageUrl       String
-  categoryId     Int
-  productGroupId Int
-  brand          Brands
-  concentration  PerfumeConcentration
-  description    String
-  gender         Gender
-  classification Classifications[] 
+  id                   Int                  @id @default(autoincrement())
+  name                 String
+  imageUrl             String
+  categoryId           Int
+  productGroupId       Int
+  brand                Brands
+  description          String
+  gender               Gender
+  classification       Classifications[]
 
-  // Общие поля для косметики
-  age                 Int?
-  series              String? // Серия или коллекция
-  purpose             Purpose? // Назначение (для лица, глаз, губ, тела)
-  colorPalette        String? // Цветовая палитра
-  finish              Finish? // Финиш (матовый, глянцевый и т.д.)
-  texture             Texture? // Текстура
-  formula             Formula? // Формула средства
-  compositionFeatures String? // Особенности состава
-  activeIngredients   String? // Активные ингредиенты
-  effect              Effects? // Эффект
-  effectDuration      Int? // Длительность эффекта в часах
-  hypoallergenic      Boolean? // Гипоаллергенно
-  certificates        String? // Сертификаты
-  ethics              String? // Этика
-  applicationMethod   ApplicationMethod? // Способ нанесения
-  packagingFormat     PackagingFormat? // Формат упаковки
-  volume              String? // Объём
-  skinType            SkinType? // Тип кожи
+  age                  Int?
+  series               String?
+  purpose              Purpose?
+  colorPalette         String?
+  finish               Finish?
+  texture              Texture?
+  formula              Formula?
+  compositionFeatures  String?
+  activeIngredients    String?
+  effect               Effects?
+  effectDuration       Int?
+  hypoallergenic       Boolean?
+  certificates         String?
+  ethics               String?
+  applicationMethod    ApplicationMethod?
+  packagingFormat      PackagingFormat?
+  volume               String?
+  skinType             SkinType?
 
-  // Специфичные для парфюмерии поля
-  topNotes   Notes[]
-  heartNotes Notes[]
-  baseNotes  Notes[]
-  aromas     Aromas[]
-  perfumer   String? // Парфюмер (только для парфюмов)
+  topNotes             Notes[] @default([])
+  heartNotes           Notes[] @default([])
+  baseNotes            Notes[] @default([])
+  aromas               Aromas[] @default([])
+  concentration        PerfumeConcentration?
+  perfumer             String?
 
   price                Int
   releaseYear          Int
   brandCountry         String
   manufacturingCountry String
 
-  available      Boolean
-  cartItems      CartItem[]
-  favoritesItems FavoritesItem[]
-  category       Category             @relation(fields: [categoryId], references: [id])
-  productGroup   ProductGroup         @relation(fields: [productGroupId], references: [id])
-  translations   ProductTranslation[]
-  reviews        Review[]
-  createdAt      DateTime             @default(now())
-  updatedAt      DateTime             @updatedAt
+  available            Boolean
+  cartItems            CartItem[]
+  favoritesItems       FavoritesItem[]
+  category             Category             @relation(fields: [categoryId], references: [id])
+  productGroup         ProductGroup         @relation(fields: [productGroupId], references: [id])
+  translations         ProductTranslation[]
+  reviews              Review[]
+  createdAt            DateTime             @default(now())
+  updatedAt            DateTime             @updatedAt
 }
 
 model ProductTranslation {

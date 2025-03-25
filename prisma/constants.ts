@@ -34,6 +34,25 @@ export const categories = [
   }
 ];
 
+export const productGroups = [
+  {
+    name: 'Sets',
+    id: 1
+  },
+  {
+    name: 'Unisex',
+    id: 2
+  },
+  {
+    name: 'Women',
+    id: 3
+  },
+  {
+    name: 'Men',
+    id: 4
+  }
+]
+
 export const products: Prisma.ProductCreateManyInput[] = [
   {
     name: "Chanel No. 5",

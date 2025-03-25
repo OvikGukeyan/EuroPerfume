@@ -50,7 +50,7 @@ export const CreatePerfumeForm: FC<Props> = ({ product }) => {
       image: undefined,
       descriptionRu: product?.description || "",
       descriptionDe: product?.translations[0]?.description || "",
-      price: product?.price || 0,
+      price: product?.price || undefined,
       gender: product?.gender || Gender.UNISEX,
       concentration: product?.concentration || "EAU_DE_COLOGNE",
       brand: product?.brand || "CHANEL",
@@ -64,8 +64,11 @@ export const CreatePerfumeForm: FC<Props> = ({ product }) => {
       classification: product?.classification || [],
       releaseYear: product?.releaseYear || 2000,
       categoryId: product?.categoryId || 1,
+      productGroupId: product?.productGroupId || 1,
     },
   });
+
+ 
   const onSubmit = async (data: CreateProductFormValues) => {
     try {
       const formData = new FormData();
@@ -87,6 +90,7 @@ export const CreatePerfumeForm: FC<Props> = ({ product }) => {
       formData.append("classification", JSON.stringify(data.classification));
       formData.append("releaseYear", data.releaseYear.toString());
       formData.append("categoryId", data.categoryId.toString());
+      formData.append("productGroupId", data.productGroupId.toString());
 
       if (data.image) {
         formData.append("image", data.image);

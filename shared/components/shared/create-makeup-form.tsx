@@ -8,6 +8,7 @@ import {
   concentrations,
   effects,
   finishes,
+  formulas,
   genders,
   notes,
   packagingFormats,
@@ -222,9 +223,9 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
                   <FormItem className="mb-5">
                     <FormControl>
                       <FormInput
-                        label={"Perfumer"}
+                        label={"age"}
                         {...field}
-                        placeholder="Perfumer"
+                        placeholder="age"
                       />
                     </FormControl>
                   </FormItem>
@@ -341,20 +342,10 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
                 )}
               />
 
-              <FormField
+               <FormSelect
                 name="formula"
-                control={form.control as Control<CreateProductFormValues>}
-                render={({ field }) => (
-                  <FormItem className="mb-5">
-                    <FormControl>
-                      <FormInput
-                        label={"Formula"}
-                        {...field}
-                        placeholder="Formula"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
+                control={form.control}
+                items={formulas}
               />
 
               <FormField

@@ -9,7 +9,10 @@ import {
 } from "@/shared/components";
 import { CheckoutFormValues } from "@/shared/constants";
 import { CreateProductFormValues } from "@/shared/constants/create-product-schema";
-import { calcTotlalAmountWithDelivery } from "@/shared/lib";
+import {
+  calcTotlalAmountWithDelivery,
+  parseProductFormData,
+} from "@/shared/lib";
 import { getUserSession } from "@/shared/lib/get-user-session";
 import { sendEmail } from "@/shared/lib/send-email";
 import {
@@ -23,6 +26,14 @@ import {
   Prisma,
   Classifications,
   UserRole,
+  Purpose,
+  Finish,
+  Texture,
+  Formula,
+  Effects,
+  ApplicationMethod,
+  PackagingFormat,
+  SkinType,
 } from "@prisma/client";
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
@@ -248,11 +259,10 @@ export async function resetPassword(code: string, password: string) {
         id: verificationCode.id,
       },
     });
-
   } catch (error) {
     console.error("Error [RESET_PASSWORD]", error);
     throw error;
-  } 
+  }
 }
 
 export async function updateUser(id: number, data: Prisma.UserUpdateInput) {
@@ -315,67 +325,69 @@ export async function createProduct(
 ) {
   try {
     const user = await getUserSession();
-
     if (!user || user.role !== UserRole.ADMIN) {
       throw new Error("Access denied");
     }
-    const image = formData.get("image") as File;
-    const name = formData.get("productName") as string;
-    const descriptionRu = formData.get("descriptionRu") as string;
-    const descriptionDe = formData.get("descriptionDe") as string;
-    const price = formData.get("price");
-    const gender = formData.get("gender") as Gender;
-    const concentration = formData.get("concentration") as PerfumeConcentration;
-    const brand = formData.get("brand") as Brands;
-    const topNotes = JSON.parse(formData.get("topNotes") as string) as Notes[];
-    const heartNotes = JSON.parse(
-      formData.get("heartNotes") as string
-    ) as Notes[];
-    const baseNotes = JSON.parse(
-      formData.get("baseNotes") as string
-    ) as Notes[];
-    const aromas = JSON.parse(formData.get("aromas") as string) as Aromas[];
-    const brandCountry = formData.get("brandCountry") as string;
-    const manufacturingCountry = formData.get("manufacturingCountry") as string;
-    const perfumer = formData.get("perfumer") as string;
-    const classification = JSON.parse(formData.get("classification") as string) as Classifications[];
-    const releaseYear = formData.get("releaseYear") as string;
-    const categoryId = formData.get("categoryId") as string;
-    const productGroupId = formData.get("productGroup") as string;
-    const { data: imageData } = await supabase.storage
+
+    const parsedData = parseProductFormData(formData);
+
+    const { data: imageData, error: uploadError } = await supabase.storage
       .from("images")
-      .upload(`${image.name}--${new Date()}`, image, {
-        contentType: image.type,
-      });
+      .upload(
+        `${parsedData.image.name}--${new Date().toISOString()}`,
+        parsedData.image,
+        {
+          contentType: parsedData.image.type,
+        }
+      );
+    if (uploadError) throw uploadError;
 
     await prisma.product.create({
       data: {
-        name: name,
+        name: parsedData.productName,
         imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${
           imageData?.path || ""
         }`,
-        price: Number(price),
-        gender: gender,
-        concentration: concentration,
-        brand: brand,
-        topNotes: topNotes,
-        heartNotes: heartNotes,
-        baseNotes: baseNotes,
-        aromas: aromas,
-        brandCountry: brandCountry,
-        manufacturingCountry: manufacturingCountry,
-        perfumer: perfumer,
-        classification: classification,
-        releaseYear: Number(releaseYear),
-        category: { connect: { id: Number(categoryId) } },
-        productGroup: { connect: { id: Number(productGroupId) } },
-        description: descriptionRu,
+        price: parsedData.price,
+        gender: parsedData.gender,
+        concentration: parsedData.concentration || undefined,
+        brand: parsedData.brand,
+        topNotes: parsedData.topNotes,
+        heartNotes: parsedData.heartNotes,
+        baseNotes: parsedData.baseNotes,
+        aromas: parsedData.aromas,
+        brandCountry: parsedData.brandCountry,
+        manufacturingCountry: parsedData.manufacturingCountry,
+        perfumer: parsedData.perfumer || undefined,
+        classification: parsedData.classification,
+        releaseYear: parsedData.releaseYear,
+        category: { connect: { id: parsedData.categoryId } },
+        productGroup: { connect: { id: parsedData.productGroupId } },
+        description: parsedData.descriptionRu,
         available: true,
+        age: parsedData.age,
+        series: parsedData.series || undefined,
+        purpose: parsedData.purpose || undefined,
+        colorPalette: parsedData.colorPalette || undefined,
+        finish: parsedData.finish || undefined,
+        texture: parsedData.texture || undefined,
+        formula: parsedData.formula || undefined,
+        compositionFeatures: parsedData.compositionFeatures || undefined,
+        activeIngredients: parsedData.activeIngredients || undefined,
+        effect: parsedData.effect || undefined,
+        effectDuration: parsedData.effectDuration,
+        hypoallergenic: parsedData.hypoallergenic,
+        certificates: parsedData.certificates || undefined,
+        ethics: parsedData.ethics || undefined,
+        applicationMethod: parsedData.applicationMethod || undefined,
+        packagingFormat: parsedData.packagingFormat || undefined,
+        volume: parsedData.volume || undefined,
+        skinType: parsedData.skinType || undefined,
         translations: {
           create: [
             {
               language: Languages.DE,
-              description: descriptionDe,
+              description: parsedData.descriptionDe,
             },
           ],
         },
@@ -383,6 +395,7 @@ export async function createProduct(
     });
   } catch (error) {
     console.error("Error [CREATE_PRODUCT]", error);
+    throw error;
   }
 }
 
@@ -424,7 +437,9 @@ export async function updateProduct(
     const brandCountry = formData.get("brandCountry") as string;
     const manufacturingCountry = formData.get("manufacturingCountry") as string;
     const perfumer = formData.get("perfumer") as string;
-    const clasification = JSON.parse(formData.get("classification") as string) as Classifications[];
+    const clasification = JSON.parse(
+      formData.get("classification") as string
+    ) as Classifications[];
     const releaseYear = formData.get("releaseYear") as string;
     const categoryId = formData.get("categoryId") as string;
 
