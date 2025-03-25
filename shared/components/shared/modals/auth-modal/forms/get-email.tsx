@@ -23,7 +23,6 @@ export const GetEmail: FC<Props> = ({ className, onClose }) => {
   });
 
   const onSubmit = async (data: TFormGetEmailValues) => {
-    console.log(data.email);
     try {
       await getRecoveringEmail(data.email);
       

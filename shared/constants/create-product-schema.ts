@@ -1,47 +1,62 @@
 import { z } from "zod";
 import {
   Gender,
-  PerfumeConcentration,
   Brands,
+  PerfumeConcentration,
   Notes,
   Aromas,
   Classifications,
+  Purpose,
+  Finish,
+  Texture,
+  Formula,
+  Effects,
+  ApplicationMethod,
+  PackagingFormat,
+  SkinType,
 } from "@prisma/client";
 
 export const CreateProductSchema = z.object({
   productName: z.string().min(1, { message: "Name is required" }),
   image: z.instanceof(File, { message: "Image must be a valid file" }),
-  descriptionRu: z
-    .string()
-    .min(10, { message: "Description should be at least 10 characters" }),
-  descriptionDe: z
-    .string()
-    .min(10, { message: "Description should be at least 10 characters" }),
+  descriptionRu: z.string().min(10, { message: "Description should be at least 10 characters" }),
+  descriptionDe: z.string().min(10, { message: "Description should be at least 10 characters" }),
   price: z.coerce.number().int().positive({ message: "Price must be positive" }),
-
   gender: z.nativeEnum(Gender),
-
-  concentration: z.nativeEnum(PerfumeConcentration),
   brand: z.nativeEnum(Brands),
   brandCountry: z.string(),
   manufacturingCountry: z.string(),
-  perfumer: z.string(),
-  aromas: z.array(z.nativeEnum(Aromas)),
-  topNotes: z.array(z.nativeEnum(Notes)),
-  heartNotes: z.array(z.nativeEnum(Notes)),
-  baseNotes: z.array(z.nativeEnum(Notes)),
-  classification: z.array(z.nativeEnum(Classifications)),
   releaseYear: z.preprocess(
     (val) => (typeof val === "string" ? Number(val) : val),
-    z.number()
-      .int()
-      .min(1900, { message: "Release year must be 1900 or later" })
-      .max(new Date().getFullYear(), {
-        message: "Release year cannot be in the future",
-      })
+    z.number().int().min(1900, { message: "Release year must be 1900 or later" }).max(new Date().getFullYear(), { message: "Release year cannot be in the future" })
   ),
-  categoryId: z.number().int(),
+  categoryId: z.coerce.number().int(),
+  age: z.coerce.number().int().optional(),
+  series: z.string().optional(),
+  productGroupId: z.coerce.number().int(),
+  purpose: z.nativeEnum(Purpose).optional(),
+  colorPalette: z.string().optional(),
+  finish: z.nativeEnum(Finish).optional(),
+  texture: z.nativeEnum(Texture).optional(),
+  formula: z.nativeEnum(Formula).optional(),
+  compositionFeatures: z.string().optional(),
+  activeIngredients: z.string().optional(),
+  effect: z.nativeEnum(Effects).optional(),
+  effectDuration: z.coerce.number().int().optional(),
+  hypoallergenic: z.boolean().optional(),
+  certificates: z.string().optional(),
+  ethics: z.string().optional(),
+  applicationMethod: z.nativeEnum(ApplicationMethod).optional(),
+  packagingFormat: z.nativeEnum(PackagingFormat).optional(),
+  volume: z.string().optional(),
+  skinType: z.nativeEnum(SkinType).optional(),
+  classification: z.array(z.nativeEnum(Classifications)).optional(),
+  concentration: z.nativeEnum(PerfumeConcentration).optional(),
+  perfumer: z.string().optional(),
+  aromas: z.array(z.nativeEnum(Aromas)).optional(),
+  topNotes: z.array(z.nativeEnum(Notes)).optional(),
+  heartNotes: z.array(z.nativeEnum(Notes)).optional(),
+  baseNotes: z.array(z.nativeEnum(Notes)).optional(),
 });
 
 export type CreateProductFormValues = z.infer<typeof CreateProductSchema>;
-

@@ -43,52 +43,54 @@ model Product {
   name           String
   imageUrl       String
   categoryId     Int
-  productGroupId Int?
+  productGroupId Int
   brand          Brands
   concentration  PerfumeConcentration
   description    String
   gender         Gender
+  classification Classifications[] 
 
-  // Новые поля для косметики
+  // Общие поля для косметики
   age                 Int?
-  series              String? // Название серии или коллекции
-  productGroup        String? // Группа товара (например: помада, тушь, тональный крем и т.д.)
-  purpose             Purpose? // Назначение (для лица / для глаз / для губ / для тела)
-  colorPalette        String? // Цветовая палитра (основные оттенки)
-  finish              Finish? // Финиш (матовый / глянцевый / сатиновый / металлик / сияющий / шиммер)
-  texture             Texture? // Текстура (кремовая / гелевая / пудровая / жидкая)
-  formula             Formula? // Формула средства (стойкая / увлажняющая / легкая / водостойкая / некомедогенная)
-  compositionFeatures String? // Особенности состава (веганская / без парабенов / без спирта / без силиконов / без сульфатов)
-  activeIngredients   String? // Активные ингредиенты (например: витамин Е, масло ши, гиалуроновая кислота, алоэ вера)
-  effect              Effects? // Эффект (увлажняет, придаёт объём, выравнивает тон и т.д.)
-  effectDuration      Int? // Длительность эффекта (например: до 8 часов, до 16 часов, до 24 часов)
-  hypoallergenic      Boolean? // Гипоаллергенно (Да/Нет)
-  certificates        String? // Сертификаты (Cruelty free, Leaping Bunny, EcoCert, Vegan и т.д.)
-  ethics              String? // Этика (не тестировалось на животных, экологичный бренд)
-  applicationMethod   ApplicationMethod? // Способ нанесения (кисть, аппликатор, пальцами, из флакона, формат карандаша)
-  packagingFormat     PackagingFormat? // Формат упаковки (стик, карандаш, тюбик, флакон, баночка)
-  volume              String? // Объём (в граммах или миллилитрах)
-  skinType            SkinType? // Тип кожи (для всех типов, для сухой, жирной, чувствительной)
-  classification      Classifications[] // Классификация (профессиональная, люкс, масс-маркет)
+  series              String? // Серия или коллекция
+  purpose             Purpose? // Назначение (для лица, глаз, губ, тела)
+  colorPalette        String? // Цветовая палитра
+  finish              Finish? // Финиш (матовый, глянцевый и т.д.)
+  texture             Texture? // Текстура
+  formula             Formula? // Формула средства
+  compositionFeatures String? // Особенности состава
+  activeIngredients   String? // Активные ингредиенты
+  effect              Effects? // Эффект
+  effectDuration      Int? // Длительность эффекта в часах
+  hypoallergenic      Boolean? // Гипоаллергенно
+  certificates        String? // Сертификаты
+  ethics              String? // Этика
+  applicationMethod   ApplicationMethod? // Способ нанесения
+  packagingFormat     PackagingFormat? // Формат упаковки
+  volume              String? // Объём
+  skinType            SkinType? // Тип кожи
 
-  topNotes             Notes[]
-  heartNotes           Notes[]
-  baseNotes            Notes[]
+  // Специфичные для парфюмерии поля
+  topNotes   Notes[]
+  heartNotes Notes[]
+  baseNotes  Notes[]
+  aromas     Aromas[]
+  perfumer   String? // Парфюмер (только для парфюмов)
+
   price                Int
   releaseYear          Int
-  aromas               Aromas[]
   brandCountry         String
   manufacturingCountry String
-  perfumer             String
-  available            Boolean
-  cartItems            CartItem[]
-  favoritesItems       FavoritesItem[]
-  category             Category             @relation(fields: [categoryId], references: [id])
-  translations         ProductTranslation[]
-  reviews              Review[]
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime             @updatedAt
-  ProductGroup         ProductGroup?        @relation(fields: [productGroupId], references: [id])
+
+  available      Boolean
+  cartItems      CartItem[]
+  favoritesItems FavoritesItem[]
+  category       Category             @relation(fields: [categoryId], references: [id])
+  productGroup   ProductGroup         @relation(fields: [productGroupId], references: [id])
+  translations   ProductTranslation[]
+  reviews        Review[]
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
 }
 
 model ProductTranslation {
@@ -255,6 +257,9 @@ enum Classifications {
   DESIGNER
   CELEBRITY
   INDIE
+  PROFESSIONAL
+  LUXURY
+  MASS_MARKET
 }
 
 enum Brands {

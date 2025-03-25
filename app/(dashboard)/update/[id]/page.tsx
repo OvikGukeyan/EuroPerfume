@@ -1,9 +1,6 @@
-import { CreateProductForm, Title } from "@/shared/components";
+import { CreateMakeupForm, CreatePerfumeForm, Title } from "@/shared/components";
 
 import { prisma } from "@/prisma/prisma-client";
-import { CreateProductFormValues } from "@/shared/constants/create-product-schema";
-import { updateProduct } from "@/app/actions";
-import { redirect } from "next/navigation";
 
 export default async function Update({
   params,
@@ -24,12 +21,7 @@ export default async function Update({
     }
   });
 
-  const onSubmit = async (data: FormData & CreateProductFormValues) => {
-    'use server';
-
-    await updateProduct(data, Number(id));
-    redirect('/products')
-  };
+  
 
   if (!product) {
     return 
@@ -40,7 +32,9 @@ export default async function Update({
     <div className=" px-10 mb-10">
       <Title className="mb-5" text="Update product" />
 
-      <CreateProductForm  product={product}/>
+      {id === '1' && <CreatePerfumeForm />}
+      {id === '2' && <CreateMakeupForm />}
+
     </div>
   );
 }

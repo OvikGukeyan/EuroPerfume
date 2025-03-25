@@ -127,7 +127,6 @@ export async function createOrder(data: CheckoutFormValues) {
         paymentUrl: "",
       })
     );
-    console.log(res);
   } catch (error) {
     console.error("[createOrder] Server error", error);
   }
@@ -275,7 +274,6 @@ export async function updateUser(id: number, data: Prisma.UserUpdateInput) {
 }
 
 export async function getRecoveringEmail(email: string) {
-  console.log(email);
   try {
     const user = await prisma.user.findFirst({
       where: {
@@ -343,6 +341,7 @@ export async function createProduct(
     const classification = JSON.parse(formData.get("classification") as string) as Classifications[];
     const releaseYear = formData.get("releaseYear") as string;
     const categoryId = formData.get("categoryId") as string;
+    const productGroupId = formData.get("productGroup") as string;
     const { data: imageData } = await supabase.storage
       .from("images")
       .upload(`${image.name}--${new Date()}`, image, {
@@ -369,6 +368,7 @@ export async function createProduct(
         classification: classification,
         releaseYear: Number(releaseYear),
         category: { connect: { id: Number(categoryId) } },
+        productGroup: { connect: { id: Number(productGroupId) } },
         description: descriptionRu,
         available: true,
         translations: {

@@ -13,7 +13,7 @@ import { Aromas, Classifications, Notes } from "@prisma/client";
 
 interface Props {
   control: Control<CreateProductFormValues>;
-  items: { name: string; value: string }[];
+  items: { label: { ru: string; de: string }, value: string }[];
   name: keyof CreateProductFormValues;
 }
 
@@ -33,7 +33,7 @@ export const FormCheckbox: FC<Props> = ({ control, name, items }) => {
             </div>
             {items.map((item) => (
               <div
-                key={item.name}
+                key={item.label.ru}
                 className="flex flex-row items-start space-x-3 space-y-0"
               >
                 <FormControl>
@@ -53,7 +53,7 @@ export const FormCheckbox: FC<Props> = ({ control, name, items }) => {
                   />
                 </FormControl>
                 <FormLabel className="text-sm font-normal">
-                  {item.name}
+                  {item.label.ru}
                 </FormLabel>
               </div>
             ))}

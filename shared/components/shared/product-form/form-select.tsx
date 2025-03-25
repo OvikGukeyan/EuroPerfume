@@ -12,7 +12,9 @@ import { CreateProductFormValues } from "@/shared/constants/create-product-schem
 
 interface Props {
   control: Control<CreateProductFormValues>;
-  items: { name: string; value: string }[];
+  items:
+    | { name: string; value: string }[]
+    | { label: { ru: string; de: string }; value: string }[];
   name: keyof CreateProductFormValues;
 }
 export const FormSelect: FC<Props> = ({ control, items, name }) => {
@@ -22,27 +24,38 @@ export const FormSelect: FC<Props> = ({ control, items, name }) => {
       control={control}
       render={({ field }) => {
         return (
-        <FormItem className="mb-5">
-          <FormLabel>{`Select a ${name}`}</FormLabel>
-          <Select
-            onValueChange={field.onChange}
-            value={field.value.toString()} 
-          >
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue  placeholder={`Select a ${name}`} />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {items.map((item) => (
-                <SelectItem key={item.value} value={item.value}>
-                  {item.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </FormItem>
-      )}}
+          <FormItem className="mb-5">
+            <FormLabel>{`Select a ${name}`}</FormLabel>
+            <Select
+              onValueChange={field.onChange}
+              value={field.value ? field.value.toString() : ""}
+            >
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder={`Select a ${name}`} />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {items.map((item) => {
+                  if ("name" in item) {
+                    return (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.name}
+                      </SelectItem>
+                    );
+                  } else {
+                    return (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label.ru}
+                      </SelectItem>
+                    );
+                  }
+                })}
+              </SelectContent>
+            </Select>
+          </FormItem>
+        );
+      }}
     />
   );
 };

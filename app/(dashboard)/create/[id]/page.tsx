@@ -1,4 +1,4 @@
-import { CreateProductForm, Title } from "@/shared/components/shared";
+import { CreateMakeupForm, CreatePerfumeForm, Title } from "@/shared/components/shared";
 
 export default async function Create({
   params,
@@ -12,7 +12,9 @@ export default async function Create({
     <div className=" px-10 mb-10">
       <Title className="mb-5" text="Create new Product" />
 
-      {id === '1' && <CreateProductForm />}
+      {id === '1' && <CreatePerfumeForm />}
+      {id === '2' && <CreateMakeupForm />}
+
     </div>
   );
 }

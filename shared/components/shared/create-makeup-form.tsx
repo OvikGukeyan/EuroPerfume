@@ -1,13 +1,20 @@
 "use client";
 
 import {
+  applicationMethods,
   brands,
   categories,
   classifications,
   concentrations,
+  effects,
+  finishes,
   genders,
   notes,
+  packagingFormats,
   perfumeAromas,
+  purposes,
+  skinTypes,
+  textures,
   yers,
 } from "@/prisma/constants";
 import { Button, Input } from "@/shared/components";
@@ -21,17 +28,17 @@ import {
   FormItem,
   FormLabel,
 } from "@/shared/components/ui/form";
-import {
-  CreateProductFormValues,
-  CreateProductSchema,
-} from "@/shared/constants/create-product-schema";
+
 import { Gender, Product } from "@prisma/client";
 import { FC } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { createProduct } from "@/app/actions";
-
+import {
+  CreateProductFormValues,
+  CreateProductSchema,
+} from "@/shared/constants/create-product-schema";
 
 type ProductWithTranslations = Product & {
   translations: {
@@ -42,32 +49,45 @@ interface Props {
   product?: ProductWithTranslations;
 }
 
-export const CreateProductForm: FC<Props> = ({ product }) => {
+export const CreateMakeupForm: FC<Props> = ({ product }) => {
   const form = useForm<CreateProductFormValues>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
       productName: product?.name || "",
       image: undefined,
       descriptionRu: product?.description || "",
-      descriptionDe: product?.translations[0]?.description || "",
-      price: product?.price || 0,
+      descriptionDe: product?.translations?.[0]?.description || "",
+      price: product?.price || undefined,
       gender: product?.gender || Gender.UNISEX,
-      concentration: product?.concentration || "EAU_DE_COLOGNE",
       brand: product?.brand || "CHANEL",
       brandCountry: product?.brandCountry || "",
       manufacturingCountry: product?.manufacturingCountry || "",
-      perfumer: product?.perfumer || "",
-      aromas: product?.aromas || [],
-      topNotes: product?.topNotes || [],
-      heartNotes: product?.heartNotes || [],
-      baseNotes: product?.baseNotes || [],
+      // Makeup-specific fields:
+      age: product?.age || undefined,
+      series: product?.series || "",
+      productGroupId: product?.productGroupId || 1,
+      purpose: product?.purpose || undefined,
+      colorPalette: product?.colorPalette || "",
+      finish: product?.finish || undefined,
+      texture: product?.texture || undefined,
+      formula: product?.formula || undefined,
+      compositionFeatures: product?.compositionFeatures || "",
+      activeIngredients: product?.activeIngredients || "",
+      effect: product?.effect || undefined,
+      effectDuration: product?.effectDuration || undefined,
+      hypoallergenic: product?.hypoallergenic || false,
+      certificates: product?.certificates || "",
+      ethics: product?.ethics || "",
+      applicationMethod: product?.applicationMethod || undefined,
+      packagingFormat: product?.packagingFormat || undefined,
+      volume: product?.volume || "",
+      skinType: product?.skinType || undefined,
       classification: product?.classification || [],
       releaseYear: product?.releaseYear || 2000,
       categoryId: product?.categoryId || 1,
     },
   });
-const res = form.watch('classification')
-console.log(res)
+
   const onSubmit = async (data: CreateProductFormValues) => {
     try {
       const formData = new FormData();
@@ -77,37 +97,53 @@ console.log(res)
       formData.append("descriptionDe", data.descriptionDe);
       formData.append("price", data.price.toString());
       formData.append("gender", data.gender);
-      formData.append("concentration", data.concentration);
       formData.append("brand", data.brand);
       formData.append("brandCountry", data.brandCountry);
       formData.append("manufacturingCountry", data.manufacturingCountry);
-      formData.append("perfumer", data.perfumer);
-      formData.append("aromas", JSON.stringify(data.aromas));
-      formData.append("topNotes", JSON.stringify(data.topNotes));
-      formData.append("heartNotes", JSON.stringify(data.heartNotes));
-      formData.append("baseNotes", JSON.stringify(data.baseNotes));
+
+      // Makeup-specific fields
+      if (data.age !== undefined) formData.append("age", data.age.toString());
+      formData.append("series", data.series || "");
+      formData.append(
+        "productGroupId",
+        data.productGroupId ? data.productGroupId.toString() : "1"
+      );
+      if (data.purpose) formData.append("purpose", data.purpose);
+      formData.append("colorPalette", data.colorPalette || "");
+      if (data.finish) formData.append("finish", data.finish);
+      if (data.texture) formData.append("texture", data.texture);
+      if (data.formula) formData.append("formula", data.formula);
+      formData.append("compositionFeatures", data.compositionFeatures || "");
+      formData.append("activeIngredients", data.activeIngredients || "");
+      if (data.effect) formData.append("effect", data.effect);
+      if (data.effectDuration !== undefined)
+        formData.append("effectDuration", data.effectDuration.toString());
+      formData.append("hypoallergenic", String(data.hypoallergenic));
+      formData.append("certificates", data.certificates || "");
+      formData.append("ethics", data.ethics || "");
+      if (data.applicationMethod)
+        formData.append("applicationMethod", data.applicationMethod);
+      if (data.packagingFormat)
+        formData.append("packagingFormat", data.packagingFormat);
+      formData.append("volume", data.volume || "");
+      if (data.skinType) formData.append("skinType", data.skinType);
       formData.append("classification", JSON.stringify(data.classification));
+
       formData.append("releaseYear", data.releaseYear.toString());
       formData.append("categoryId", data.categoryId.toString());
 
       if (data.image) {
         formData.append("image", data.image);
       }
-      await createProduct(formData as FormData & CreateProductFormValues);
+      // await createProduct(formData as FormData & CreateProductFormValues);
 
       form.reset();
-      toast.error("Product created 📝", {
-        icon: "✅",
-      });
+      toast.success("Product created 📝", { icon: "✅" });
     } catch (error) {
       console.error(error);
-      return toast.error("Something went wrong", {
-        icon: "❌",
-      });
+      toast.error("Something went wrong", { icon: "❌" });
     }
   };
-
-  
 
   return (
     <div>
@@ -148,6 +184,22 @@ console.log(res)
               />
 
               <FormField
+                name="series"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormControl>
+                      <FormInput
+                        label={"Series"}
+                        {...field}
+                        placeholder="Product Series"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
                 name="manufacturingCountry"
                 control={form.control as Control<CreateProductFormValues>}
                 render={({ field }) => (
@@ -164,7 +216,7 @@ console.log(res)
               />
 
               <FormField
-                name="perfumer"
+                name="age"
                 control={form.control as Control<CreateProductFormValues>}
                 render={({ field }) => (
                   <FormItem className="mb-5">
@@ -250,34 +302,165 @@ console.log(res)
               />
 
               <FormSelect
-                name="concentration"
+                name="purpose"
                 control={form.control}
-                items={concentrations}
+                items={purposes}
               />
               <FormSelect name="brand" control={form.control} items={brands} />
 
-              <FormCheckbox
-                name="aromas"
+              <FormSelect
+                name="finish"
                 control={form.control}
-                items={perfumeAromas}
+                items={finishes}
+              />
+
+              <FormSelect
+                name="hypoallergenic"
+                control={form.control}
+                items={[
+                  {name: "Yes", value: 'true'},
+                  {name: "No", value: 'false'}
+                ]}
               />
             </div>
 
             <div className="w-1/2">
-              <FormCheckbox
-                name="topNotes"
-                control={form.control}
-                items={notes}
+              <FormField
+                name="colorPalette"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormControl>
+                      <FormInput
+                        label={"Color Palette"}
+                        {...field}
+                        placeholder="Color Palette"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
               />
-              <FormCheckbox
-                name="heartNotes"
-                control={form.control}
-                items={notes}
+
+              <FormField
+                name="formula"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormControl>
+                      <FormInput
+                        label={"Formula"}
+                        {...field}
+                        placeholder="Formula"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
               />
-              <FormCheckbox
-                name="baseNotes"
+
+              <FormField
+                name="compositionFeatures"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormControl>
+                      <FormInput
+                        label={"Composition Features"}
+                        {...field}
+                        placeholder="Composition Features"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="activeIngredients"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormControl>
+                      <FormInput
+                        label={"Active Ingredients"}
+                        {...field}
+                        placeholder="Active Ingredients"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="certificates"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormControl>
+                      <FormInput
+                        label={"Certificates"}
+                        {...field}
+                        placeholder="Certificates"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="ethics"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormControl>
+                      <FormInput
+                        label={"Ethics"}
+                        {...field}
+                        placeholder="Ethics"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="effectDuration"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormLabel>Effect Duration</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormSelect
+                name="texture"
                 control={form.control}
-                items={notes}
+                items={textures}
+              />
+
+              <FormSelect
+                name="skinType"
+                control={form.control}
+                items={skinTypes}
+              />
+
+              <FormSelect
+                name="packagingFormat"
+                control={form.control}
+                items={packagingFormats}
+              />
+
+              <FormSelect
+                name="effect"
+                control={form.control}
+                items={effects}
+              />
+              <FormSelect
+                name="applicationMethod"
+                control={form.control}
+                items={applicationMethods}
               />
 
               <FormCheckbox
@@ -287,7 +470,6 @@ console.log(res)
               />
 
               <FormSelect
-              
                 name="releaseYear"
                 control={form.control}
                 items={yers}
