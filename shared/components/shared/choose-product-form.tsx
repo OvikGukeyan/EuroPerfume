@@ -140,7 +140,7 @@ export const ChooseProductForm: FC<Props> = ({
             </li>
             <li>
               <span className="font-bold mr-2">Classification:</span>{" "}
-              {currentClassification.map((classification) => classification.name).join(", ")}
+              {currentClassification.map((classification) => classification.label.ru).join(", ")}
             </li>
             <li>
               <span className="font-bold mr-2">Concentration:</span>{" "}
@@ -148,21 +148,21 @@ export const ChooseProductForm: FC<Props> = ({
             </li>
             <li>
               <span className="font-bold mr-2">Aroma:</span>{" "}
-              {currentAroma.map((aroma) => aroma.name).join(", ")}
+              {currentAroma.map((aroma) => aroma.label.ru).join(", ")}
             </li>
             <li>
               <span className="font-bold mr-2">Top Notes:</span>
-              {currentTopNotes.map((note) => note.name).join(", ")}
+              {currentTopNotes.map((note) => note.label.ru).join(", ")}
             </li>
             <li>
               <span className="font-bold mr-2">Heart Notes:</span>{" "}
-              {currentHeartNotes.map((note) => note.name).join(", ")}
+              {currentHeartNotes.map((note) => note.label.ru).join(", ")}
             </li>
           </ul>
           <ul>
             <li>
               <span className="font-bold mr-2">Base Notes:</span>
-              {currentBaseNotes.map((note) => note.name).join(", ")}
+              {currentBaseNotes.map((note) => note.label.ru).join(", ")}
             </li>
 
             <li>
