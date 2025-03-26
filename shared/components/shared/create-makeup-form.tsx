@@ -76,7 +76,9 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
       activeIngredients: product?.activeIngredients || "",
       effect: product?.effect || undefined,
       effectDuration: product?.effectDuration || undefined,
-      hypoallergenic: product?.hypoallergenic || false,
+      hypoallergenic: product?.hypoallergenic
+        ? product?.hypoallergenic.toString()
+        : "false",
       certificates: product?.certificates || "",
       ethics: product?.ethics || "",
       applicationMethod: product?.applicationMethod || undefined,
@@ -85,7 +87,7 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
       skinType: product?.skinType || undefined,
       classification: product?.classification || [],
       releaseYear: product?.releaseYear || 2000,
-      categoryId: product?.categoryId || 1,
+      categoryId: product?.categoryId || 2,
     },
   });
 
@@ -136,7 +138,7 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
       if (data.image) {
         formData.append("image", data.image);
       }
-      // await createProduct(formData as FormData & CreateProductFormValues);
+      await createProduct(formData as FormData & CreateProductFormValues);
 
       form.reset();
       toast.success("Product created 📝", { icon: "✅" });
@@ -222,11 +224,7 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
                 render={({ field }) => (
                   <FormItem className="mb-5">
                     <FormControl>
-                      <FormInput
-                        label={"age"}
-                        {...field}
-                        placeholder="age"
-                      />
+                      <FormInput type="number" label={"age"} {...field} placeholder="age" />
                     </FormControl>
                   </FormItem>
                 )}
@@ -319,8 +317,8 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
                 name="hypoallergenic"
                 control={form.control}
                 items={[
-                  {name: "Yes", value: 'true'},
-                  {name: "No", value: 'false'}
+                  { name: "Yes", value: "true" },
+                  { name: "No", value: "false" },
                 ]}
               />
             </div>
@@ -342,7 +340,7 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
                 )}
               />
 
-               <FormSelect
+              <FormSelect
                 name="formula"
                 control={form.control}
                 items={formulas}
@@ -466,14 +464,7 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
                 items={yers}
               />
 
-              <FormSelect
-                name="categoryId"
-                control={form.control}
-                items={categories.map((item) => ({
-                  name: item.name as string,
-                  value: item.id.toString(),
-                }))}
-              />
+             
             </div>
           </div>
 

@@ -14,7 +14,8 @@ interface Props {
   control: Control<CreateProductFormValues>;
   items:
     | { name: string; value: string }[]
-    | { label: { ru: string; de: string }; value: string }[];
+    | { label: { ru: string; de: string }; value: string }[]
+
   name: keyof CreateProductFormValues;
 }
 export const FormSelect: FC<Props> = ({ control, items, name }) => {

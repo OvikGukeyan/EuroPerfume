@@ -18,15 +18,17 @@ interface Props {
   price: number;
   imageUrl: string;
   available?: boolean;
+  categoryId?: number;
   className?: string;
 }
 
-export const PerfumeCard: React.FC<Props> = ({
+export const ProductCard: React.FC<Props> = ({
   imageUrl,
   className,
   name,
   price,
   id,
+  categoryId
 }) => {
   const [volume, setVolume] = useState<Volume>(1);
   const [isFavorite, toggleIsFavorite] = useState(false);
@@ -88,9 +90,9 @@ export const PerfumeCard: React.FC<Props> = ({
         <Title text={name} size="xs" className="md:text-lg my-3 font-bold" />
       </div>
 
-      <VolumeSelection volume={volume} setVolume={setVolume} />
+      {categoryId === 1 && <VolumeSelection className="mb-4" volume={volume} setVolume={setVolume} />}
 
-      <div className="flex justify-between items-center mt-4">
+      <div className="flex justify-between items-center ">
         <p className="text-[20px] ">
           <span className="hidden md:inline">price</span> <b>{finalPrice} €</b>
         </p>

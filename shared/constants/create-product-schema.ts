@@ -43,7 +43,7 @@ export const CreateProductSchema = z.object({
   activeIngredients: z.string().optional(),
   effect: z.nativeEnum(Effects).optional(),
   effectDuration: z.coerce.number().int().optional(),
-  hypoallergenic: z.boolean().optional(),
+  hypoallergenic: z.string().optional(),
   certificates: z.string().optional(),
   ethics: z.string().optional(),
   applicationMethod: z.nativeEnum(ApplicationMethod).optional(),

@@ -51,27 +51,9 @@ export const ProductForm: FC<Props> = ({
 
   return (
     <ChooseProductForm
-      id={product.id}
-      imageUrl={product.imageUrl}
-      name={product.name}
-      description={product.description}
       onSubmit={onSubmit}
-      price={product.price}
-      topNotes={product.topNotes}
-      heartNotes={product.heartNotes}
-      baseNotes={product.baseNotes}
-      perfumer={product.perfumer || ""}
-      brandCountry={product.brandCountry}
-      manufacturingCountry={product.manufacturingCountry}
-      aromas={product.aromas}
-      classification={product.classification}
-      brand={product.brand}
-      concentration={product.concentration || "EAU_DE_COLOGNE"}
-      releaseYear={product.releaseYear}
-      gender={product.gender}
-      reviews={product.reviews}
       loading={loading}
-      className={className}
+      product={product}
     />
   );
 };

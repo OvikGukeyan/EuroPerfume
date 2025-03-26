@@ -295,14 +295,7 @@ export const CreatePerfumeForm: FC<Props> = ({ product }) => {
                 items={yers}
               />
 
-              <FormSelect
-                name="categoryId"
-                control={form.control}
-                items={categories.map((item) => ({
-                  name: item.name as string,
-                  value: item.id.toString(),
-                }))}
-              />
+             
             </div>
           </div>
 

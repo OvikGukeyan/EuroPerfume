@@ -8,3 +8,4 @@ export {ModalContext, useModalContext} from './modal-context';
 export {getSlides} from './get-slides';
 export {calcTotlalAmountWithDelivery} from './calc-total-amount-with-delivery';
 export {parseProductFormData} from './parse-product-form-data';
+export {createCharacteristicsArray} from './create-characteristics-array';

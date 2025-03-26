@@ -7,7 +7,7 @@ export { TopBar } from './top-bar';
 export { Filters } from './filters';
 export { FilterCheckbox } from './filter-checkbox';
 export { CheckboxFiltersGroup } from './checkbox-filters-group';
-export { PerfumeCard } from './perfume-card';
+export { ProductCard } from './product-card';
 export { ProductsGroupList } from './products-group-list';
 export { SearchInput } from './search-input';
 export { GroupVariants } from './group-variants';
@@ -50,6 +50,7 @@ export {OrdersTable} from './orders-table';
 export {Footer} from './footer';
 export {ResetForm} from './reset-form';
 export {CreateMakeupForm} from './create-makeup-form';
+export {ProductCharacteristics} from './product-characteristics';
 
 export * from './email-templates';
 export * from './form';

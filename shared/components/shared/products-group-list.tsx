@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import {useIntersection} from 'react-use';
-import { PerfumeCard } from '.';
+import { ProductCard } from '.';
 import { cn } from '@/shared/lib/utils';
 import { useCategoryStore } from '@/shared/store';
 import { Product } from '@prisma/client';
@@ -40,13 +40,14 @@ export const ProductsGroupList: React.FC<Props> = ({
             <div className={cn('grid grid-cols-2 gap-3  lg:grid-cols-4 md:gap-[20px]', listClassName)}>
                 {items
                     .map((product, i) => (
-                        <PerfumeCard
+                        <ProductCard
                             key={product.id}
                             id={product.id}
                             name={product.name}
                             imageUrl={product.imageUrl}
                             price={product.price}
                             available={product.available}
+                            categoryId={product.categoryId}
                         />
                     ))}
             </div>

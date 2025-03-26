@@ -11,7 +11,7 @@ export const ClearButton: React.FC<Props> = ({ onClick, className }) => {
   return (
     <button
       onClick={onClick}
-      className={cn(" -translate-y-1/2 opacity-30 hover:opacity-100 cursor-pointer", className)}>
+      className={cn("  -translate-y-1/2 opacity-30 hover:opacity-100 cursor-pointer", className)}>
       <X className="h-5 w-5" />
     </button>
   );
