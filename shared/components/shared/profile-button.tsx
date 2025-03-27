@@ -24,7 +24,7 @@ export const ProfileButton: FC<Props> = ({ className, onClickSignIn }) => {
       ) : (
         <>
           {session.user.role === "ADMIN" ? (
-            <Link href={"/create"}>
+            <Link href={"/create/1"}>
               <Button variant="secondary" className="flex items-center gap-2">
                 <CircleUser size={18} />
                 <span className="hidden md:block">Dashboard</span>

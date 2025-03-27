@@ -31,7 +31,7 @@ export default async function Home({
       />
 
       <Container className="mt-10">
-        <Title size="lg" className="font-extrabold" text="All perfumes" />
+        <Title size="lg" className="font-extrabold" text="All products" />
       </Container>
       <Container className="mt-10 pb-14">
         <div className="flex flex-col xl:flex-row gap-[50px]">

@@ -2,7 +2,7 @@
 
 import {
   brands,
-  categories,
+  productGroups,
   classifications,
   concentrations,
   genders,
@@ -31,7 +31,6 @@ import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { createProduct } from "@/app/actions";
-
 
 type ProductWithTranslations = Product & {
   translations: {
@@ -68,7 +67,6 @@ export const CreatePerfumeForm: FC<Props> = ({ product }) => {
     },
   });
 
- 
   const onSubmit = async (data: CreateProductFormValues) => {
     try {
       const formData = new FormData();
@@ -109,14 +107,17 @@ export const CreatePerfumeForm: FC<Props> = ({ product }) => {
     }
   };
 
-  
-
   return (
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex justify-between gap-10">
             <div className="w-1/2">
+              <FormSelect
+                name="productGroupId"
+                control={form.control}
+                items={productGroups}
+              />
               <FormField
                 name="productName"
                 control={form.control as Control<CreateProductFormValues>}
@@ -289,13 +290,10 @@ export const CreatePerfumeForm: FC<Props> = ({ product }) => {
               />
 
               <FormSelect
-              
                 name="releaseYear"
                 control={form.control}
                 items={yers}
               />
-
-             
             </div>
           </div>
 

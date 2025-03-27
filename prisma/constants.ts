@@ -31,27 +31,27 @@ export const categories = [
   {
     name: "Accessories",
     id: 3,
-  }
+  },
 ];
 
 export const productGroups = [
   {
-    name: 'Sets',
-    id: 1
+    name: "Unisex",
+    id: 1,
   },
   {
-    name: 'Unisex',
-    id: 2
+    name: "Women",
+    id: 2,
   },
   {
-    name: 'Women',
-    id: 3
+    name: "Men",
+    id: 3,
   },
   {
-    name: 'Men',
-    id: 4
-  }
-]
+    name: "Atomizers",
+    id: 4,
+  },
+];
 
 export const products: Prisma.ProductCreateManyInput[] = [
   {
@@ -416,88 +416,151 @@ export const brands = [
   },
 ];
 
-
-
-export const classifications: { value: Classifications; label: { ru: string; de: string } }[] = [
-  { value: Classifications.PROFESSIONAL, label: { ru: "Профессиональная", de: "Professionell" } },
+export const classifications: {
+  value: Classifications;
+  label: { ru: string; de: string };
+}[] = [
+  {
+    value: Classifications.PROFESSIONAL,
+    label: { ru: "Профессиональная", de: "Professionell" },
+  },
   { value: Classifications.LUXURY, label: { ru: "Люкс", de: "Luxus" } },
-  { value: Classifications.MASS_MARKET, label: { ru: "Масс-маркет", de: "Mass Market" } },
+  {
+    value: Classifications.MASS_MARKET,
+    label: { ru: "Масс-маркет", de: "Mass Market" },
+  },
   { value: Classifications.NICHE, label: { ru: "Ниша", de: "Nische" } },
   { value: Classifications.ARABIAN, label: { ru: "Арабский", de: "Arabisch" } },
-  { value: Classifications.DESIGNER, label: { ru: "Дизайнерский", de: "Designer" } },
-  { value: Classifications.CELEBRITY, label: { ru: "Селебрити", de: "Celebrity" } },
+  {
+    value: Classifications.DESIGNER,
+    label: { ru: "Дизайнерский", de: "Designer" },
+  },
+  {
+    value: Classifications.CELEBRITY,
+    label: { ru: "Селебрити", de: "Celebrity" },
+  },
   { value: Classifications.INDIE, label: { ru: "Инди", de: "Indie" } },
 ];
 
 export const deliveryTypes = [
   {
-    name: 'Großbrief',
+    name: "Großbrief",
     value: DeliveryTypes.GB,
-    price: 3
+    price: 3,
   },
 
   {
-    name: 'Einschreiben',
+    name: "Einschreiben",
     value: DeliveryTypes.ES,
-    price: 5
+    price: 5,
   },
   {
-    name: 'Paket bis Haftung',
+    name: "Paket bis Haftung",
     value: DeliveryTypes.PBH,
-    price: 6.2
-  }
-]
-
-export const purposes: { value: Purpose; label: { ru: string; de: string } }[] = [
-  { value: Purpose.FACE, label: { ru: "Для лица", de: "Für das Gesicht" } },
-  { value: Purpose.EYES, label: { ru: "Для глаз", de: "Für die Augen" } },
-  { value: Purpose.LIPS, label: { ru: "Для губ", de: "Für die Lippen" } },
-  { value: Purpose.BODY, label: { ru: "Для тела", de: "Für den Körper" } },
+    price: 6.2,
+  },
 ];
 
-export const finishes: { value: Finish; label: { ru: string; de: string } }[] = [
-  { value: Finish.MATTE, label: { ru: "Матовый", de: "Matt" } },
-  { value: Finish.GLOSSY, label: { ru: "Глянцевый", de: "Glänzend" } },
-  { value: Finish.SATIN, label: { ru: "Сатиновый", de: "Satin" } },
-  { value: Finish.METALLIC, label: { ru: "Металлик", de: "Metallic" } },
-  { value: Finish.SHIMMER, label: { ru: "Шиммер", de: "Schimmernd" } },
-];
+export const purposes: { value: Purpose; label: { ru: string; de: string } }[] =
+  [
+    { value: Purpose.FACE, label: { ru: "Для лица", de: "Für das Gesicht" } },
+    { value: Purpose.EYES, label: { ru: "Для глаз", de: "Für die Augen" } },
+    { value: Purpose.LIPS, label: { ru: "Для губ", de: "Für die Lippen" } },
+    { value: Purpose.BODY, label: { ru: "Для тела", de: "Für den Körper" } },
+  ];
 
-export const textures: { value: Texture; label: { ru: string; de: string } }[] = [
-  { value: Texture.CREAMY, label: { ru: "Кремовая", de: "Cremig" } },
-  { value: Texture.GEL, label: { ru: "Гелевая", de: "Gelartig" } },
-  { value: Texture.POWDERY, label: { ru: "Пудровая", de: "Pudrig" } },
-  { value: Texture.LIQUID, label: { ru: "Жидкая", de: "Flüssig" } },
-];
+export const finishes: { value: Finish; label: { ru: string; de: string } }[] =
+  [
+    { value: Finish.MATTE, label: { ru: "Матовый", de: "Matt" } },
+    { value: Finish.GLOSSY, label: { ru: "Глянцевый", de: "Glänzend" } },
+    { value: Finish.SATIN, label: { ru: "Сатиновый", de: "Satin" } },
+    { value: Finish.METALLIC, label: { ru: "Металлик", de: "Metallic" } },
+    { value: Finish.SHIMMER, label: { ru: "Шиммер", de: "Schimmernd" } },
+  ];
 
-export const formulas: { value: Formula; label: { ru: string; de: string } }[] = [
-  { value: Formula.LONG_LASTING, label: { ru: "Стойкая", de: "Langanhaltend" } },
-  { value: Formula.HYDRATING, label: { ru: "Увлажняющая", de: "Feuchtigkeitsspendend" } },
-  { value: Formula.LIGHT, label: { ru: "Легкая", de: "Leicht" } },
-  { value: Formula.WATERPROOF, label: { ru: "Водостойкая", de: "Wasserfest" } },
-  { value: Formula.NON_COMEDOGENIC, label: { ru: "Некомедогенная", de: "Nicht komedogen" } },
-];
+export const textures: { value: Texture; label: { ru: string; de: string } }[] =
+  [
+    { value: Texture.CREAMY, label: { ru: "Кремовая", de: "Cremig" } },
+    { value: Texture.GEL, label: { ru: "Гелевая", de: "Gelartig" } },
+    { value: Texture.POWDERY, label: { ru: "Пудровая", de: "Pudrig" } },
+    { value: Texture.LIQUID, label: { ru: "Жидкая", de: "Flüssig" } },
+  ];
 
-export const effects: { value: Effects; label: { ru: string; de: string } }[] = [
-  { value: Effects.HYDRATING, label: { ru: "Увлажняет", de: "Spendet Feuchtigkeit" } },
-  { value: Effects.VOLUMIZING, label: { ru: "Придаёт объём", de: "Verleiht Volumen" } },
-  { value: Effects.TONE_BALANCING, label: { ru: "Выравнивает тон", de: "Gleicht den Teint aus" } },
-  { value: Effects.DEFINING, label: { ru: "Подчеркивает форму", de: "Betont Konturen" } },
-  { value: Effects.SMOOTHING, label: { ru: "Сглаживает", de: "Glättet" } },
-  { value: Effects.MATIFYING, label: { ru: "Матирует", de: "Mattiert" } },
-  { value: Effects.ILLUMINATING, label: { ru: "Придаёт сияние", de: "Verleiht Strahlkraft" } },
-  { value: Effects.ANTIAGING, label: { ru: "Антивозрастной", de: "Anti-Aging" } },
-];
+export const formulas: { value: Formula; label: { ru: string; de: string } }[] =
+  [
+    {
+      value: Formula.LONG_LASTING,
+      label: { ru: "Стойкая", de: "Langanhaltend" },
+    },
+    {
+      value: Formula.HYDRATING,
+      label: { ru: "Увлажняющая", de: "Feuchtigkeitsspendend" },
+    },
+    { value: Formula.LIGHT, label: { ru: "Легкая", de: "Leicht" } },
+    {
+      value: Formula.WATERPROOF,
+      label: { ru: "Водостойкая", de: "Wasserfest" },
+    },
+    {
+      value: Formula.NON_COMEDOGENIC,
+      label: { ru: "Некомедогенная", de: "Nicht komedogen" },
+    },
+  ];
 
-export const applicationMethods: { value: ApplicationMethod; label: { ru: string; de: string } }[] = [
+export const effects: { value: Effects; label: { ru: string; de: string } }[] =
+  [
+    {
+      value: Effects.HYDRATING,
+      label: { ru: "Увлажняет", de: "Spendet Feuchtigkeit" },
+    },
+    {
+      value: Effects.VOLUMIZING,
+      label: { ru: "Придаёт объём", de: "Verleiht Volumen" },
+    },
+    {
+      value: Effects.TONE_BALANCING,
+      label: { ru: "Выравнивает тон", de: "Gleicht den Teint aus" },
+    },
+    {
+      value: Effects.DEFINING,
+      label: { ru: "Подчеркивает форму", de: "Betont Konturen" },
+    },
+    { value: Effects.SMOOTHING, label: { ru: "Сглаживает", de: "Glättet" } },
+    { value: Effects.MATIFYING, label: { ru: "Матирует", de: "Mattiert" } },
+    {
+      value: Effects.ILLUMINATING,
+      label: { ru: "Придаёт сияние", de: "Verleiht Strahlkraft" },
+    },
+    {
+      value: Effects.ANTIAGING,
+      label: { ru: "Антивозрастной", de: "Anti-Aging" },
+    },
+  ];
+
+export const applicationMethods: {
+  value: ApplicationMethod;
+  label: { ru: string; de: string };
+}[] = [
   { value: ApplicationMethod.BRUSH, label: { ru: "Кисть", de: "Pinsel" } },
-  { value: ApplicationMethod.APPLICATOR, label: { ru: "Аппликатор", de: "Applikator" } },
-  { value: ApplicationMethod.FINGERS, label: { ru: "Пальцами", de: "Mit den Fingern" } },
-  { value: ApplicationMethod.BOTTLE, label: { ru: "Из флакона", de: "Aus dem Flakon" } },
+  {
+    value: ApplicationMethod.APPLICATOR,
+    label: { ru: "Аппликатор", de: "Applikator" },
+  },
+  {
+    value: ApplicationMethod.FINGERS,
+    label: { ru: "Пальцами", de: "Mit den Fingern" },
+  },
+  {
+    value: ApplicationMethod.BOTTLE,
+    label: { ru: "Из флакона", de: "Aus dem Flakon" },
+  },
   { value: ApplicationMethod.PENCIL, label: { ru: "Карандаш", de: "Stift" } },
 ];
 
-export const packagingFormats: { value: PackagingFormat; label: { ru: string; de: string } }[] = [
+export const packagingFormats: {
+  value: PackagingFormat;
+  label: { ru: string; de: string };
+}[] = [
   { value: PackagingFormat.STICK, label: { ru: "Стик", de: "Stick" } },
   { value: PackagingFormat.PENCIL, label: { ru: "Карандаш", de: "Stift" } },
   { value: PackagingFormat.TUBE, label: { ru: "Тюбик", de: "Tube" } },
@@ -505,32 +568,38 @@ export const packagingFormats: { value: PackagingFormat; label: { ru: string; de
   { value: PackagingFormat.JAR, label: { ru: "Баночка", de: "Dose" } },
 ];
 
-export const skinTypes: { value: SkinType; label: { ru: string; de: string } }[] = [
-  { value: SkinType.ALL, label: { ru: "Для всех типов", de: "Für alle Hauttypen" } },
+export const skinTypes: {
+  value: SkinType;
+  label: { ru: string; de: string };
+}[] = [
+  {
+    value: SkinType.ALL,
+    label: { ru: "Для всех типов", de: "Für alle Hauttypen" },
+  },
   { value: SkinType.DRY, label: { ru: "Сухая", de: "Trocken" } },
   { value: SkinType.OILY, label: { ru: "Жирная", de: "Ölig" } },
-  { value: SkinType.SENSITIVE, label: { ru: "Чувствительная", de: "Empfindlich" } },
+  {
+    value: SkinType.SENSITIVE,
+    label: { ru: "Чувствительная", de: "Empfindlich" },
+  },
 ];
-
 
 export type DeliveryTypesType = typeof deliveryTypes;
 
 export const contactForms = [
-  { name: 'Whats App',
-    value: ContactForms.WA
+  { name: "Whats App", value: ContactForms.WA },
+  {
+    name: "Telegram",
+    value: ContactForms.TG,
   },
   {
-    name: 'Telegram',
-    value: ContactForms.TG
+    name: "Viber",
+    value: ContactForms.VB,
   },
-  {
-    name: 'Viber',
-    value: ContactForms.VB
-  }
-]
+];
 
-export type ContactFormsType = typeof contactForms
- 
+export type ContactFormsType = typeof contactForms;
+
 export const notes: { value: Notes; label: { ru: string; de: string } }[] = [
   {
     value: Notes.FLORAL,
@@ -570,7 +639,10 @@ export const notes: { value: Notes; label: { ru: string; de: string } }[] = [
   },
 ];
 
-export const perfumeAromas: { value: Aromas; label: { ru: string; de: string } }[] = [
+export const perfumeAromas: {
+  value: Aromas;
+  label: { ru: string; de: string };
+}[] = [
   {
     value: Aromas.FOUGERE,
     label: { ru: "Фужерный", de: "Fougère" },
@@ -612,8 +684,7 @@ export const perfumeAromas: { value: Aromas; label: { ru: string; de: string } }
     label: { ru: "Гурманский", de: "Gourmand" },
   },
 ];
-export type AromasType = typeof perfumeAromas
-
+export type AromasType = typeof perfumeAromas;
 
 export const yers = Array.from(
   { length: new Date().getFullYear() - 1990 },
@@ -622,5 +693,3 @@ export const yers = Array.from(
     return { name: year, value: year };
   }
 );
-
-
