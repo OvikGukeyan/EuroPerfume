@@ -1,3 +1,4 @@
+import { productGroups } from "./../../prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
 import {
   Brands,
@@ -7,6 +8,7 @@ import {
   Notes,
   PerfumeConcentration,
   Product,
+  ProductGroup,
 } from "@prisma/client";
 
 export interface GetSearchParams {
@@ -25,7 +27,9 @@ export interface GetSearchParams {
 
 export interface FindProductsResponse {
   categoryes: (Category & {
-    products: Product[];
+    productGroups: (ProductGroup & {
+      products: Product[];
+    })[];
   })[];
   totalPages: number;
 }
@@ -58,11 +62,14 @@ export const findProducts = async (
 
     const priceFrom = Number((await params).priceFrom) || DEFAULT_MIN_PRICE;
     const priceTo = Number((await params).priceTo) || DEFAULT_MAX_PRICE;
-    const orderBy = JSON.parse((await params).orderBy || "{}"); 
+    const orderBy = JSON.parse((await params).orderBy || "{}");
     const whereClause = {
       brand: { in: brands as Brands[] },
       gender: genders.length > 0 ? { in: genders as Gender[] } : undefined,
-      classification: classification.length > 0 ? { hasSome: classification as Classifications[] } : undefined,
+      classification:
+        classification.length > 0
+          ? { hasSome: classification as Classifications[] }
+          : undefined,
       concentration: { in: concentration as PerfumeConcentration[] },
       price:
         priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
@@ -78,14 +85,18 @@ export const findProducts = async (
     const [categoryes, totalCount] = await prisma.$transaction([
       prisma.category.findMany({
         include: {
-          products: {
-            skip: (page - 1) * 6,
-            take: 6,
-            orderBy: orderBy,
-            where: whereClause,
-
+          productGroups: {
             include: {
-              translations: true,
+              products: {
+                skip: (page - 1) * 6,
+                take: 6,
+                orderBy: orderBy,
+                where: whereClause,
+
+                include: {
+                  translations: true,
+                },
+              },
             },
           },
         },

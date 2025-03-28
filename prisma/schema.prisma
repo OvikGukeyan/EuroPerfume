@@ -27,68 +27,71 @@ model User {
 }
 
 model Category {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
-  products Product[]
+  id            Int            @id @default(autoincrement())
+  name          String         @unique
+  products      Product[]
+  productGroups ProductGroup[]
 }
 
 model ProductGroup {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
-  products Product[]
+  id         Int       @id @default(autoincrement())
+  name       String    @unique
+  products   Product[]
+  category   Category  @relation(fields: [categoryId], references: [id])
+  categoryId Int
 }
 
 model Product {
-  id                   Int                  @id @default(autoincrement())
-  name                 String
-  imageUrl             String
-  categoryId           Int
-  productGroupId       Int
-  brand                Brands
-  description          String
-  gender               Gender
-  classification       Classifications[]
+  id             Int               @id @default(autoincrement())
+  name           String
+  imageUrl       String
+  categoryId     Int
+  productGroupId Int
+  brand          Brands
+  description    String
+  gender         Gender
+  classification Classifications[]
 
-  age                  Int?
-  series               String?
-  purpose              Purpose?
-  colorPalette         String?
-  finish               Finish?
-  texture              Texture?
-  formula              Formula?
-  compositionFeatures  String?
-  activeIngredients    String?
-  effect               Effects?
-  effectDuration       Int?
-  hypoallergenic       Boolean?
-  certificates         String?
-  ethics               String?
-  applicationMethod    ApplicationMethod?
-  packagingFormat      PackagingFormat?
-  volume               String?
-  skinType             SkinType?
+  age                 Int?
+  series              String?
+  purpose             Purpose?
+  colorPalette        String?
+  finish              Finish?
+  texture             Texture?
+  formula             Formula?
+  compositionFeatures String?
+  activeIngredients   String?
+  effect              Effects?
+  effectDuration      Int?
+  hypoallergenic      Boolean?
+  certificates        String?
+  ethics              String?
+  applicationMethod   ApplicationMethod?
+  packagingFormat     PackagingFormat?
+  volume              String?
+  skinType            SkinType?
 
-  topNotes             Notes[] @default([])
-  heartNotes           Notes[] @default([])
-  baseNotes            Notes[] @default([])
-  aromas               Aromas[] @default([])
-  concentration        PerfumeConcentration?
-  perfumer             String?
+  topNotes      Notes[]               @default([])
+  heartNotes    Notes[]               @default([])
+  baseNotes     Notes[]               @default([])
+  aromas        Aromas[]              @default([])
+  concentration PerfumeConcentration?
+  perfumer      String?
 
   price                Int
   releaseYear          Int
   brandCountry         String
   manufacturingCountry String
 
-  available            Boolean
-  cartItems            CartItem[]
-  favoritesItems       FavoritesItem[]
-  category             Category             @relation(fields: [categoryId], references: [id])
-  productGroup         ProductGroup         @relation(fields: [productGroupId], references: [id])
-  translations         ProductTranslation[]
-  reviews              Review[]
-  createdAt            DateTime             @default(now())
-  updatedAt            DateTime             @updatedAt
+  available      Boolean
+  cartItems      CartItem[]
+  favoritesItems FavoritesItem[]
+  category       Category             @relation(fields: [categoryId], references: [id])
+  productGroup   ProductGroup         @relation(fields: [productGroupId], references: [id])
+  translations   ProductTranslation[]
+  reviews        Review[]
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
 }
 
 model ProductTranslation {

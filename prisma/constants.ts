@@ -38,18 +38,22 @@ export const productGroups = [
   {
     name: "Unisex",
     id: 1,
+    categoryId: 1,
   },
   {
     name: "Women",
     id: 2,
+    categoryId: 1,
   },
   {
     name: "Men",
     id: 3,
+    categoryId: 1,
   },
   {
     name: "Atomizers",
     id: 4,
+    categoryId: 1,
   },
 ];
 

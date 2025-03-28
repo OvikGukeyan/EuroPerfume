@@ -19,7 +19,6 @@ export default async function Home({
   const params = await searchParams;
   const { categoryes, totalPages } = await findProducts(params);
   const slides = await getSlides();
-
   return (
     <>
       <Carusel slides={slides} />
@@ -40,15 +39,13 @@ export default async function Home({
           <div className="flex-1">
             <div className="flex flex-col gap-16">
               {categoryes.map(
-                (categoryes) =>
-                  categoryes.products.length && (
+                (category) =>
                     <ProductsGroupList
-                      key={categoryes.id}
-                      title={categoryes.name}
-                      categoryId={categoryes.id}
-                      items={categoryes.products}
+                      key={category.id}
+                      title={category.name}
+                      categoryId={category.id}
+                      items={category.productGroups.flatMap((productGroup) => productGroup.products)}
                     />
-                  )
               )}
             </div>
           </div>

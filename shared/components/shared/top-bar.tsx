@@ -2,11 +2,11 @@
 import React, { FC, useEffect, useState } from "react";
 import { Categories, SortPopup, Container, SearchInput } from ".";
 import { cn } from "@/shared/lib/utils";
-import { Category } from "@prisma/client";
+import { Category, ProductGroup } from "@prisma/client";
 
 interface Props {
   className?: string;
-  categories: Category[];
+  categories: (Category & { productGroups: ProductGroup[] })[];
 }
 
 export const TopBar: FC<Props> = ({ className, categories }) => {
@@ -16,7 +16,7 @@ export const TopBar: FC<Props> = ({ className, categories }) => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 900) {
+      if (currentScrollY > lastScrollY && currentScrollY > 400) {
         setShow(false);
       } else {
         setShow(true);
@@ -38,12 +38,10 @@ export const TopBar: FC<Props> = ({ className, categories }) => {
       )}
     >
       <Container
-        className="flex flex-col gap-2 md:gap-5 items-center justify-between md:flex-row 
+        className="flex flex-col gap-4 md:gap-5 items-center justify-between md:flex-row-reverse 
       
       "
       >
-        <Categories items={categories} />
-
         <div className="flex w-full md:w-auto justify-between gap-5">
           <div className="md:hidden w-full">
             <SearchInput />
@@ -51,6 +49,9 @@ export const TopBar: FC<Props> = ({ className, categories }) => {
 
           <SortPopup />
         </div>
+
+        <Categories  items={categories} />
+
       </Container>
     </div>
   );
