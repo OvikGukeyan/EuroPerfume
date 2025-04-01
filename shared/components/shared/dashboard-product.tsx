@@ -2,22 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
-import { Title, VolumeSelection } from ".";
+import React from "react";
+import { Title } from ".";
 import { Button, Switch } from "../ui";
-import { Plus, Settings2, Trash2 } from "lucide-react";
-import toast from "react-hot-toast";
-import { useCartStore } from "@/shared/store";
-import { Volume } from "@/shared/constants/perfume";
-import { getMe } from "@/shared/services/auth";
+import { Settings2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import {toggleProductAvailability } from "@/app/actions";
 
 interface Props {
   id: number;
   name: string;
   price: number;
-  imageUrl: string;
+  imageUrl: string | null;
   available?: boolean;
   deleteProduct: (id: number) => void;
   loading?: boolean;
@@ -48,7 +43,7 @@ export const DashboardProduct: React.FC<Props> = ({
             width={300}
             height={280}
             className="object-cover"
-            src={imageUrl}
+            src={imageUrl || ""}
             alt={name}
           />
         </div>

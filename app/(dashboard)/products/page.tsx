@@ -1,7 +1,7 @@
 'use client'
 import { DashboardProduct } from "@/shared/components";
 import { useProductStore } from "@/shared/store/product";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 
 export default function Products() {
     const {items, fetchAllProducts, deleteProduct, loading, switchAvailability, error} = useProductStore((state) => state)
