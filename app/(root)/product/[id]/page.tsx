@@ -23,6 +23,7 @@ export default async function Product({
           user: true,
         },
       },
+      variations: true,
     },
   });
 
@@ -32,7 +33,7 @@ export default async function Product({
 
   return (
     <Container className="flex flex-col my-10">
-        <ProductForm  product={product} />
+        <ProductForm  product={product}  />
       {product.reviews.length > 0 ? (
         <>
           <Title text="Reviews" size="lg" className="font-extrabold my-10" />
