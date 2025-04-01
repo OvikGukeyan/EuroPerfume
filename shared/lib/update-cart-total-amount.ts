@@ -12,7 +12,11 @@ export const updateCartTotalAmount = async (token: string) => {
           createdAt: "desc",
         },
         include: {
-          product: true,
+          product: {
+            include: {
+              variations: true,
+            },
+          },
         },
       },
     },
