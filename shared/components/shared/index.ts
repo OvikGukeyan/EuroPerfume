@@ -51,6 +51,8 @@ export {Footer} from './footer';
 export {ResetForm} from './reset-form';
 export {CreateMakeupForm} from './create-makeup-form';
 export {ProductCharacteristics} from './product-characteristics';
+export {ChooseVariation} from './choose-variation';
+
 
 export * from './email-templates';
 export * from './form';

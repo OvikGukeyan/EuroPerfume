@@ -1,4 +1,4 @@
-import { Order, OrderItem, Product } from "@prisma/client";
+import { Order, OrderItem } from "@prisma/client";
 
 
 export interface OrderDTO extends Order {

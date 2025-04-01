@@ -2,7 +2,8 @@
 
 import { cn } from '@/shared/lib/utils'
 import { Api } from '@/shared/services/api-client'
-import { Product } from '@prisma/client'
+import { ProductDTO } from '@/shared/services/dto/product.dto'
+import { Product, ProductVariation } from '@prisma/client'
 import { Search } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -15,7 +16,7 @@ interface Props {
 export const SearchInput: React.FC<Props> = ({ className }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [focused, setFocused] = useState(false);
-    const [products, setProducts] = useState<Product[]>([]);
+    const [products, setProducts] = useState<ProductDTO[]>([]);
     const ref = useRef<HTMLInputElement>(null);
 
     useClickAway(ref, () => {
@@ -58,7 +59,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
 
                     {products.map((product) => (
                         <Link onClick={onItemClick} key={`product/${product.id}`} className="flex items-center gap-3 w-full px-3 py-2 hover:bg-primary/10 " href={`/product/${product.id}`}>
-                            <Image src={product.imageUrl || ''} width={25} height={25} alt={product.name} />
+                            <Image src={product.imageUrl || product.variations[0].imageUrl} width={25} height={25} alt={product.name} />
                             <span >
                                 {product.name}
                             </span>

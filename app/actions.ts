@@ -356,7 +356,7 @@ export async function createProduct(
         if (error) throw error;
         return {
           imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${data?.path}`,
-          name: file.name,
+          name: file.name.substring(0, file.name.lastIndexOf(".")) || file.name,
         };
       })
     );
@@ -364,9 +364,9 @@ export async function createProduct(
     await prisma.product.create({
       data: {
         name: parsedData.productName,
-        imageUrl: imageData ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}${
-          imageData?.path || ""
-        }`: undefined,
+        imageUrl: imageData
+          ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}${imageData?.path || ""}`
+          : undefined,
         price: parsedData.price,
         gender: parsedData.gender,
         concentration: parsedData.concentration || undefined,

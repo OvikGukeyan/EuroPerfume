@@ -1,7 +1,8 @@
-import { Cart, CartItem, Product } from "@prisma/client";
+import { Cart, CartItem } from "@prisma/client";
+import { ProductDTO } from "./product.dto";
 
 export type CartItemDTO = CartItem & {
-  product: Product;
+  product: ProductDTO;
 };
 
 export interface CartDTO extends Cart {

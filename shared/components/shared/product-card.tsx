@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
-import { Title, VolumeSelection } from ".";
+import { ChooseVariation, Title, VolumeSelection } from ".";
 import { Button } from "../ui";
 import { Heart, HeartOff, Plus } from "lucide-react";
 import toast from "react-hot-toast";
@@ -39,6 +39,7 @@ export const ProductCard: React.FC<Props> = ({
 
   const [volume, setVolume] = useState<Volume>(currentVolumesArray[0]);
   const [isFavorite, toggleIsFavorite] = useState(false);
+  const [activeVariation, setActiveVariation] = useState<ProductVariation>(variations[0]);
 
   const onToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -78,7 +79,7 @@ export const ProductCard: React.FC<Props> = ({
             layout="fill"
             objectFit="cover"
             // className="object-cover"
-            src={imageUrl || variations[0].imageUrl }
+            src={imageUrl || activeVariation?.imageUrl || variations[0].imageUrl }
             alt={name}
           />
 
@@ -106,6 +107,10 @@ export const ProductCard: React.FC<Props> = ({
           volume={volume}
           setVolume={setVolume}
         />
+      )}
+
+      {variations.length > 1 && (
+        <ChooseVariation setActiveVariation={setActiveVariation} activeVariation={activeVariation} className="mb-4" items={variations}/>
       )}
 
       <div className="flex justify-between items-center ">

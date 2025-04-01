@@ -11,6 +11,9 @@ export async function GET(req: NextRequest) {
                 mode: 'insensitive'
             }
         },
+        include: {
+            variations: true
+        },
         take: 5
     });
 

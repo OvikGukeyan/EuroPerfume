@@ -5,11 +5,11 @@ import { useIntersection } from "react-use";
 import { ProductCard, Title } from ".";
 import { cn } from "@/shared/lib/utils";
 import { useCategoryStore } from "@/shared/store";
-import { Product, ProductVariation } from "@prisma/client";
+import { ProductDTO } from "@/shared/services/dto/product.dto";
 
 interface Props {
   title: string;
-  items: (Product & { variations: ProductVariation[] })[];
+  items: ProductDTO[];
   className?: string;
   listClassName?: string;
   categoryId: number;

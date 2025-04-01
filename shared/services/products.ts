@@ -1,15 +1,18 @@
-import { Product } from '@prisma/client';
-import { ApiRouts } from './constants';
-import { axiosInstance } from "./instance"
+import { Product, ProductVariation } from "@prisma/client";
+import { ApiRouts } from "./constants";
+import { axiosInstance } from "./instance";
+import { ProductDTO } from "./dto/product.dto";
 
-export const search = async (query?: string): Promise<Product[]> => {
-    const {data} = await axiosInstance.get<Product[]>(ApiRouts.SEARCH_PRODUCTS, {params: {query}});
+export const search = async (query?: string): Promise<ProductDTO[]> => {
+  const { data } = await axiosInstance.get<ProductDTO[]>(
+    ApiRouts.SEARCH_PRODUCTS,
+    { params: { query } }
+  );
 
-    return data
-}
+  return data;
+};
 
-export const getAll = async (): Promise<Product[]> => {
-    const {data} = await axiosInstance.get<Product[]>(ApiRouts.PRODUCTS);
-    return data
-}
-
+export const getAll = async (): Promise<ProductDTO[]> => {
+  const { data } = await axiosInstance.get<ProductDTO[]>(ApiRouts.PRODUCTS);
+  return data;
+};
