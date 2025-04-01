@@ -41,7 +41,7 @@ export const FormCheckbox: FC<Props> = ({ control, name, items }) => {
                 <FormControl>
                   <Checkbox
                     checked={currentValues.includes(
-                      item.value as Notes | Classifications
+                      item.value as Notes | Classifications | Aromas
                     )}
                     onCheckedChange={(checked) => {
                       if (checked) {
