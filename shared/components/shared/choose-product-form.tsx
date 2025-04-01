@@ -5,20 +5,22 @@ import React, { FC, useEffect, useState } from "react";
 import { Button, Separator } from "../ui";
 import Image from "next/image";
 import { Title, Text, VolumeSelection, ProductCharacteristics } from ".";
-import { Volume } from "@/shared/constants/perfume";
+import { Volume, volumes } from "@/shared/constants/perfume";
+import { Product, ProductVariation, Review } from "@prisma/client";
 import {
-  Product,
-  Review,
-} from "@prisma/client";
-import { calcAverageRating, calcPrice, createCharacteristicsArray, useModalContext } from "@/shared/lib";
+  calcAverageRating,
+  calcPrice,
+  createCharacteristicsArray,
+  useModalContext,
+} from "@/shared/lib";
 import { Rating } from "./rating";
 import { useRouter } from "next/navigation";
 
 interface Props {
   product: Product & {
     reviews: Review[];
+    variations: ProductVariation[];
   };
-
   loading: boolean;
   onSubmit?: (productId: number, volume: Volume) => Promise<void>;
   className?: string;
@@ -29,7 +31,9 @@ export const ChooseProductForm: FC<Props> = ({
   onSubmit,
   className,
 }) => {
-  const [volume, setVolume] = useState<Volume>(1);
+  const currentVolumesArray =
+  product.price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
+  const [volume, setVolume] = useState<Volume>(currentVolumesArray[0]);
 
   const finalPrice = calcPrice(volume, product.price);
   const { averageRating, count } = calcAverageRating(product.reviews);
@@ -49,14 +53,14 @@ export const ChooseProductForm: FC<Props> = ({
       router.push(`/product/${product.id}#reviews`);
     }
   };
-const charactiristics = createCharacteristicsArray(product)
+  const charactiristics = createCharacteristicsArray(product);
   return (
     <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
       <div className="flex  items-center justify-center flex-1 relative w-full lg:w-2/5 bg-[#f2f2f2]">
         <Image
           width={350}
           height={350}
-          src={product.imageUrl}
+          src={product.imageUrl || product.variations[0].imageUrl}
           alt="product"
           className="z-10 duration-300 w-[350px] h-[350px] "
         />
@@ -97,6 +101,7 @@ const charactiristics = createCharacteristicsArray(product)
           <VolumeSelection
             volume={volume}
             setVolume={setVolume}
+            volumes={currentVolumesArray}
             className="my-4"
           />
         )}

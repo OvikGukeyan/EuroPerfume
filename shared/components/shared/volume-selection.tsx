@@ -2,19 +2,23 @@
 import React, { FC } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui";
-import { Volume, volumes } from "@/shared/constants/perfume";
+import { Volume } from "@/shared/constants/perfume";
 
 type Props = {
   className?: string;
   setVolume: React.Dispatch<React.SetStateAction<Volume>>;
   volume: React.SetStateAction<1 | 2 | 3 | 5 | 10 | 20 | 30>;
+  volumes: Volume[]
 };
 
 export const VolumeSelection: FC<Props> = ({
   className,
   volume,
   setVolume,
+  volumes
 }) => {
+
+  
   return (
     <div
       className={cn(

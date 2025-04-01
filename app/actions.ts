@@ -331,23 +331,42 @@ export async function createProduct(
 
     const parsedData = parseProductFormData(formData);
 
-    const { data: imageData, error: uploadError } = await supabase.storage
-      .from("images")
-      .upload(
-        `${parsedData.image.name}--${new Date().toISOString()}`,
-        parsedData.image,
-        {
-          contentType: parsedData.image.type,
-        }
-      );
-    if (uploadError) throw uploadError;
+    let imageData;
+    if (parsedData.image) {
+      const { data: newData, error: uploadError } = await supabase.storage
+        .from("images")
+        .upload(
+          `${parsedData.image.name}--${new Date().toISOString()}`,
+          parsedData.image,
+          {
+            contentType: parsedData.image.type,
+          }
+        );
+      imageData = newData;
+      if (uploadError) throw uploadError;
+    }
+    const variationUploads = await Promise.all(
+      parsedData.variations.map(async (file) => {
+        const fileName = `${file.name}--${new Date().toISOString()}`;
+        const { data, error } = await supabase.storage
+          .from("images")
+          .upload(fileName, file, {
+            contentType: file.type,
+          });
+        if (error) throw error;
+        return {
+          imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${data?.path}`,
+          name: file.name,
+        };
+      })
+    );
 
     await prisma.product.create({
       data: {
         name: parsedData.productName,
-        imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${
+        imageUrl: imageData ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}${
           imageData?.path || ""
-        }`,
+        }`: undefined,
         price: parsedData.price,
         gender: parsedData.gender,
         concentration: parsedData.concentration || undefined,
@@ -391,6 +410,9 @@ export async function createProduct(
             },
           ],
         },
+        variations: {
+          create: variationUploads,
+        },
       },
     });
   } catch (error) {
@@ -404,83 +426,89 @@ export async function updateProduct(
   id: number
 ) {
   try {
-    // Проверка прав доступа
     const user = await getUserSession();
     if (!user || user.role !== UserRole.ADMIN) {
       throw new Error("Access denied");
     }
-    // Проверка существования продукта
-    const product = await prisma.product.findUnique({
-      where: { id },
-    });
+    const product = await prisma.product.findUnique({ where: { id } });
     if (!product) {
       throw new Error("Product not found");
     }
 
-    // Извлечение данных из formData
-    const image = formData.get("image") as File;
-    const name = formData.get("productName") as string;
-    const descriptionRu = formData.get("descriptionRu") as string;
-    const descriptionDe = formData.get("descriptionDe") as string;
-    const price = formData.get("price");
-    const gender = formData.get("gender") as Gender;
-    const concentration = formData.get("concentration") as PerfumeConcentration;
-    const brand = formData.get("brand") as Brands;
-    const topNotes = JSON.parse(formData.get("topNotes") as string) as Notes[];
-    const heartNotes = JSON.parse(
-      formData.get("heartNotes") as string
-    ) as Notes[];
-    const baseNotes = JSON.parse(
-      formData.get("baseNotes") as string
-    ) as Notes[];
-    const aromas = JSON.parse(formData.get("aromas") as string) as Aromas[];
-    const brandCountry = formData.get("brandCountry") as string;
-    const manufacturingCountry = formData.get("manufacturingCountry") as string;
-    const perfumer = formData.get("perfumer") as string;
-    const clasification = JSON.parse(
-      formData.get("classification") as string
-    ) as Classifications[];
-    const releaseYear = formData.get("releaseYear") as string;
-    const categoryId = formData.get("categoryId") as string;
+    const parsedData = parseProductFormData(formData);
 
-    // Если файл передан, загружаем его в Supabase Storage
     let imagePath = product.imageUrl;
-    if (image) {
-      const fileName = `${image.name}--${new Date().toISOString()}`;
+    if (parsedData.image) {
+      const fileName = `${parsedData.image.name}--${new Date().toISOString()}`;
       const { data: imageData, error: uploadError } = await supabase.storage
         .from("images")
-        .upload(fileName, image, {
-          contentType: image.type,
+        .upload(fileName, parsedData.image, {
+          contentType: parsedData.image.type,
         });
-      if (uploadError) {
-        throw uploadError;
-      }
-
+      if (uploadError) throw uploadError;
       imagePath = imageData?.path;
     }
 
-    // Обновление продукта с использованием upsert для перевода
     await prisma.product.update({
       where: { id },
       data: {
-        name: name,
+        name: parsedData.productName,
         imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${imagePath}`,
-        price: Number(price),
-        gender: gender,
-        concentration: concentration,
-        brand: brand,
-        topNotes: topNotes,
-        heartNotes: heartNotes,
-        baseNotes: baseNotes,
-        classification: clasification,
-        aromas: aromas,
-        brandCountry: brandCountry,
-        manufacturingCountry: manufacturingCountry,
-        perfumer: perfumer,
-        releaseYear: Number(releaseYear),
-        category: { connect: { id: Number(categoryId) } },
-        description: descriptionRu,
+        price: Number(parsedData.price),
+        gender: parsedData.gender,
+        concentration: parsedData.concentration
+          ? parsedData.concentration
+          : undefined,
+        brand: parsedData.brand,
+        topNotes:
+          parsedData.topNotes && parsedData.topNotes.length
+            ? parsedData.topNotes
+            : undefined,
+        heartNotes:
+          parsedData.heartNotes && parsedData.heartNotes.length
+            ? parsedData.heartNotes
+            : undefined,
+        baseNotes:
+          parsedData.baseNotes && parsedData.baseNotes.length
+            ? parsedData.baseNotes
+            : undefined,
+        aromas:
+          parsedData.aromas && parsedData.aromas.length
+            ? parsedData.aromas
+            : undefined,
+        brandCountry: parsedData.brandCountry,
+        manufacturingCountry: parsedData.manufacturingCountry,
+        perfumer: parsedData.perfumer ? parsedData.perfumer : undefined,
+        classification: parsedData.classification,
+        releaseYear: Number(parsedData.releaseYear),
+        category: { connect: { id: Number(parsedData.categoryId) } },
+        productGroup: { connect: { id: Number(parsedData.productGroupId) } },
+        description: parsedData.descriptionRu,
         available: true,
+        // Makeup-specific поля
+        age: parsedData.age ? Number(parsedData.age) : undefined,
+        series: parsedData.series || undefined,
+        purpose: parsedData.purpose || undefined,
+        colorPalette: parsedData.colorPalette || undefined,
+        finish: parsedData.finish || undefined,
+        texture: parsedData.texture || undefined,
+        formula: parsedData.formula || undefined,
+        compositionFeatures: parsedData.compositionFeatures || undefined,
+        activeIngredients: parsedData.activeIngredients || undefined,
+        effect: parsedData.effect || undefined,
+        effectDuration: parsedData.effectDuration
+          ? Number(parsedData.effectDuration)
+          : undefined,
+        hypoallergenic:
+          typeof parsedData.hypoallergenic === "boolean"
+            ? parsedData.hypoallergenic
+            : undefined,
+        certificates: parsedData.certificates || undefined,
+        ethics: parsedData.ethics || undefined,
+        applicationMethod: parsedData.applicationMethod || undefined,
+        packagingFormat: parsedData.packagingFormat || undefined,
+        volume: parsedData.volume || undefined,
+        skinType: parsedData.skinType || undefined,
         translations: {
           upsert: {
             where: {
@@ -490,11 +518,11 @@ export async function updateProduct(
               },
             },
             update: {
-              description: descriptionDe,
+              description: parsedData.descriptionDe,
             },
             create: {
               language: Languages.DE,
-              description: descriptionDe,
+              description: parsedData.descriptionDe,
             },
           },
         },

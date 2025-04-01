@@ -30,7 +30,6 @@ import { FC } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import { createProduct } from "@/app/actions";
 
 type ProductWithTranslations = Product & {
   translations: {
@@ -39,9 +38,12 @@ type ProductWithTranslations = Product & {
 };
 interface Props {
   product?: ProductWithTranslations;
+  submitFunction:
+    | ((data: FormData & CreateProductFormValues, id: number) => Promise<void>)
+    | ((data: FormData & CreateProductFormValues) => Promise<void>);
 }
 
-export const CreatePerfumeForm: FC<Props> = ({ product }) => {
+export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
   const form = useForm<CreateProductFormValues>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
@@ -93,7 +95,10 @@ export const CreatePerfumeForm: FC<Props> = ({ product }) => {
       if (data.image) {
         formData.append("image", data.image);
       }
-      await createProduct(formData as FormData & CreateProductFormValues);
+      await submitFunction(
+        formData as FormData & CreateProductFormValues,
+        product?.id || 0
+      );
 
       form.reset();
       toast.error("Product created 📝", {

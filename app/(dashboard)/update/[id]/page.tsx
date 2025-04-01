@@ -1,6 +1,7 @@
 import { CreateMakeupForm, CreatePerfumeForm, Title } from "@/shared/components";
 
 import { prisma } from "@/prisma/prisma-client";
+import { updateProduct } from "@/app/actions";
 
 export default async function Update({
   params,
@@ -32,8 +33,8 @@ export default async function Update({
     <div className=" px-10 mb-10">
       <Title className="mb-5" text="Update product" />
 
-      {id === '1' && <CreatePerfumeForm />}
-      {id === '2' && <CreateMakeupForm />}
+      {product.categoryId === 1 && <CreatePerfumeForm product={product} submitFunction={updateProduct}/>}
+      {product.categoryId === 2 && <CreateMakeupForm product={product} submitFunction={updateProduct}/>}
 
     </div>
   );

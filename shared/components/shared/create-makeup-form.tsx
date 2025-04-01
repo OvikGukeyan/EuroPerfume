@@ -13,6 +13,7 @@ import {
   notes,
   packagingFormats,
   perfumeAromas,
+  productGroups,
   purposes,
   skinTypes,
   textures,
@@ -48,14 +49,18 @@ type ProductWithTranslations = Product & {
 };
 interface Props {
   product?: ProductWithTranslations;
+  submitFunction:
+    | ((data: FormData & CreateProductFormValues, id: number) => Promise<void>)
+    | ((data: FormData & CreateProductFormValues) => Promise<void>);
 }
 
-export const CreateMakeupForm: FC<Props> = ({ product }) => {
+export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
   const form = useForm<CreateProductFormValues>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
       productName: product?.name || "",
       image: undefined,
+      variations: [],
       descriptionRu: product?.description || "",
       descriptionDe: product?.translations?.[0]?.description || "",
       price: product?.price || undefined,
@@ -66,7 +71,7 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
       // Makeup-specific fields:
       age: product?.age || undefined,
       series: product?.series || "",
-      productGroupId: product?.productGroupId || 1,
+      productGroupId: product?.productGroupId || 5,
       purpose: product?.purpose || undefined,
       colorPalette: product?.colorPalette || "",
       finish: product?.finish || undefined,
@@ -88,6 +93,7 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
       classification: product?.classification || [],
       releaseYear: product?.releaseYear || 2000,
       categoryId: product?.categoryId || 2,
+
     },
   });
 
@@ -134,11 +140,20 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
 
       formData.append("releaseYear", data.releaseYear.toString());
       formData.append("categoryId", data.categoryId.toString());
+      formData.append("productGroupId", data.productGroupId.toString());
 
       if (data.image) {
         formData.append("image", data.image);
       }
-      await createProduct(formData as FormData & CreateProductFormValues);
+      if (data.variations && data.variations.length > 0) {
+        data.variations.forEach((file) => {
+          formData.append("variations", file);
+        });
+      }
+      await submitFunction(
+        formData as FormData & CreateProductFormValues,
+        product?.id || 0
+      );
 
       form.reset();
       toast.success("Product created 📝", { icon: "✅" });
@@ -154,6 +169,11 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex justify-between gap-10">
             <div className="w-1/2">
+              <FormSelect
+                name="productGroupId"
+                control={form.control}
+                items={productGroups}
+              />
               <FormField
                 name="productName"
                 control={form.control as Control<CreateProductFormValues>}
@@ -224,7 +244,12 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
                 render={({ field }) => (
                   <FormItem className="mb-5">
                     <FormControl>
-                      <FormInput type="number" label={"age"} {...field} placeholder="age" />
+                      <FormInput
+                        type="number"
+                        label={"age"}
+                        {...field}
+                        placeholder="age"
+                      />
                     </FormControl>
                   </FormItem>
                 )}
@@ -241,6 +266,29 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           field.onChange(file); // Передаем объект File в RHF
+                        }}
+                        type="file"
+                        onBlur={field.onBlur}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                name="variations"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormLabel>Variations</FormLabel>
+                    <FormControl>
+                      <Input
+                        multiple
+                        onChange={(e) => {
+                          const files = e.target.files
+                            ? Array.from(e.target.files)
+                            : [];
+                          field.onChange(files);
                         }}
                         type="file"
                         onBlur={field.onBlur}
@@ -463,8 +511,6 @@ export const CreateMakeupForm: FC<Props> = ({ product }) => {
                 control={form.control}
                 items={yers}
               />
-
-             
             </div>
           </div>
 

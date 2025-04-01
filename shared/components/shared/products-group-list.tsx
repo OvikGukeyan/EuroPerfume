@@ -1,56 +1,60 @@
 "use client";
 
-import React, { useEffect, useRef } from 'react';
-import {useIntersection} from 'react-use';
-import { ProductCard, Title } from '.';
-import { cn } from '@/shared/lib/utils';
-import { useCategoryStore } from '@/shared/store';
-import { Product } from '@prisma/client';
+import React, { useEffect, useRef } from "react";
+import { useIntersection } from "react-use";
+import { ProductCard, Title } from ".";
+import { cn } from "@/shared/lib/utils";
+import { useCategoryStore } from "@/shared/store";
+import { Product, ProductVariation } from "@prisma/client";
 
 interface Props {
-    title: string;
-    items: Product[];
-    className?: string;
-    listClassName?: string;
-    categoryId: number;
+  title: string;
+  items: (Product & { variations: ProductVariation[] })[];
+  className?: string;
+  listClassName?: string;
+  categoryId: number;
 }
 
 export const ProductsGroupList: React.FC<Props> = ({
-    title,
-    items,
-    listClassName,
-    categoryId,
-    className,
+  title,
+  items,
+  listClassName,
+  categoryId,
+  className,
 }) => {
+  const intersectionRef = useRef(null);
+  const intersection = useIntersection(intersectionRef, { threshold: 0.4 });
 
-    const intersectionRef = useRef(null);
-    const intersection = useIntersection(intersectionRef, {threshold: 0.4});
+  const setActiveCategoryId = useCategoryStore((store) => store.setActiveId);
 
-    const setActiveCategoryId = useCategoryStore((store) => store.setActiveId)
-    
-    useEffect(() => {
-        if(intersection?.isIntersecting) {
-            setActiveCategoryId(categoryId)
-        }
-    }, [categoryId, intersection?.isIntersecting, title]);
-    
-    return (
-        <div className={className} id={title} ref={intersectionRef}>
-            <Title text={title} size="lg" className="font-extrabold mb-5" />
-            <div className={cn('grid grid-cols-2 gap-3  lg:grid-cols-4 md:gap-[20px]', listClassName)}>
-                {items
-                    .map((product, i) => (
-                        <ProductCard
-                            key={product.id}
-                            id={product.id}
-                            name={product.name}
-                            imageUrl={product.imageUrl}
-                            price={product.price}
-                            available={product.available}
-                            categoryId={product.categoryId}
-                        />
-                    ))}
-            </div>
-        </div>
-    )
-}
+  useEffect(() => {
+    if (intersection?.isIntersecting) {
+      setActiveCategoryId(categoryId);
+    }
+  }, [categoryId, intersection?.isIntersecting, title]);
+
+  return (
+    <div className={className} id={title} ref={intersectionRef}>
+      <Title text={title} size="lg" className="font-extrabold mb-5" />
+      <div
+        className={cn(
+          "grid grid-cols-2 gap-x-3   lg:grid-cols-4 md:gap-x-[20px] md:gap-y-[60px]",
+          listClassName
+        )}
+      >
+        {items.map((product, i) => (
+          <ProductCard
+            key={product.id}
+            id={product.id}
+            name={product.name}
+            imageUrl={product.imageUrl as string}
+            price={product.price}
+            available={product.available}
+            categoryId={product.categoryId}
+            variations={product.variations}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};

@@ -5,11 +5,11 @@ import { cn } from "@/shared/lib/utils";
 import { useRouter } from "next/navigation";
 import React, { FC } from "react";
 import { ProductForm } from "..";
-import { Product, Review } from "@prisma/client";
+import { Product, ProductVariation, Review } from "@prisma/client";
 import { ModalContext } from "@/shared/lib";
 
 interface Props {
-  product: Product & { reviews: Review[] };
+  product: Product & { reviews: Review[], variations: ProductVariation[] };
   className?: string;
 }
 export const ChooseProductModal: FC<Props> = ({ className, product }) => {

@@ -95,6 +95,7 @@ export const findProducts = async (
 
                 include: {
                   translations: true,
+                  variations: true,
                 },
               },
             },

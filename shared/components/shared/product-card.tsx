@@ -8,9 +8,11 @@ import { Button } from "../ui";
 import { Heart, HeartOff, Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import { useCartStore, useFavoritesStore } from "@/shared/store";
-import { Volume } from "@/shared/constants/perfume";
+import { Volume, volumes } from "@/shared/constants/perfume";
 import { calcPrice } from "@/shared/lib";
 import { HeartBlack } from "@/shared/icons";
+import { unknown } from "zod";
+import { ProductVariation } from "@prisma/client";
 
 interface Props {
   id: number;
@@ -19,6 +21,7 @@ interface Props {
   imageUrl: string;
   available?: boolean;
   categoryId?: number;
+  variations: ProductVariation[];
   className?: string;
 }
 
@@ -28,9 +31,13 @@ export const ProductCard: React.FC<Props> = ({
   name,
   price,
   id,
-  categoryId
+  categoryId,
+  variations
 }) => {
-  const [volume, setVolume] = useState<Volume>(1);
+  const currentVolumesArray =
+    price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
+
+  const [volume, setVolume] = useState<Volume>(currentVolumesArray[0]);
   const [isFavorite, toggleIsFavorite] = useState(false);
 
   const onToggleFavorite = (e: React.MouseEvent) => {
@@ -40,9 +47,11 @@ export const ProductCard: React.FC<Props> = ({
 
     addFavoritesItem(id);
   };
-  const [addFavoritesItem, items] = useFavoritesStore(
-    (state) => [state.addFavoritesItem, state.items, state.favoritesLoading]
-  );
+  const [addFavoritesItem, items] = useFavoritesStore((state) => [
+    state.addFavoritesItem,
+    state.items,
+    state.favoritesLoading,
+  ]);
   const [addCartItem, loading] = useCartStore((state) => [
     state.addCartItem,
     state.loading,
@@ -69,7 +78,7 @@ export const ProductCard: React.FC<Props> = ({
             layout="fill"
             objectFit="cover"
             // className="object-cover"
-            src={imageUrl}
+            src={imageUrl || variations[0].imageUrl}
             alt={name}
           />
 
@@ -81,7 +90,7 @@ export const ProductCard: React.FC<Props> = ({
             {items.some((item) => item.productId === id) ? (
               <HeartBlack />
             ) : (
-              <Heart className=""/>
+              <Heart className="" />
             )}
           </Button>
         </div>
@@ -90,7 +99,14 @@ export const ProductCard: React.FC<Props> = ({
         <Title text={name} size="xs" className="md:text-lg my-3 font-bold" />
       </div>
 
-      {categoryId === 1 && <VolumeSelection className="mb-4" volume={volume} setVolume={setVolume} />}
+      {categoryId === 1 && (
+        <VolumeSelection
+          className="mb-4"
+          volumes={currentVolumesArray}
+          volume={volume}
+          setVolume={setVolume}
+        />
+      )}
 
       <div className="flex justify-between items-center ">
         <p className="text-[20px] ">

@@ -4,11 +4,11 @@ import { useCartStore } from "@/shared/store";
 import React, { FC } from "react";
 import toast from "react-hot-toast";
 import { ChooseProductForm } from "./choose-product-form";
-import { Product, Review } from "@prisma/client";
+import { Product, ProductVariation, Review } from "@prisma/client";
 import { Volume } from "@/shared/constants/perfume";
 
 interface Props {
-  product: Product & { reviews: Review[] };
+  product: Product & { reviews: Review[], variations: ProductVariation[] };
   onSubmit?: VoidFunction;
   className?: string;
 }

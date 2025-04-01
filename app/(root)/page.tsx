@@ -10,6 +10,7 @@ import {
 import { getSlides } from "@/shared/lib";
 
 import { findProducts, GetSearchParams } from "@/shared/lib/find-products";
+import { Product, ProductVariation } from "@prisma/client";
 
 export default async function Home({
   searchParams,
@@ -44,7 +45,7 @@ export default async function Home({
                       key={category.id}
                       title={category.name}
                       categoryId={category.id}
-                      items={category.productGroups.flatMap((productGroup) => productGroup.products)}
+                      items={category.productGroups.flatMap((productGroup) => productGroup.products) as (Product & { variations: ProductVariation[] })[]}
                     />
               )}
             </div>
