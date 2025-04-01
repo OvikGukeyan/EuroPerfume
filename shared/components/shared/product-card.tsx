@@ -78,7 +78,7 @@ export const ProductCard: React.FC<Props> = ({
             layout="fill"
             objectFit="cover"
             // className="object-cover"
-            src={imageUrl || variations[0].imageUrl}
+            src={imageUrl || variations[0].imageUrl }
             alt={name}
           />
 

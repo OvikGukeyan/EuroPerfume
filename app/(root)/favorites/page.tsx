@@ -16,7 +16,8 @@ export default function Favorites() {
               key={item.id}
               id={item.productId}
               name={item.name}
-              imageUrl={item.imageUrl}
+              imageUrl={item.imageUrl || ''} 
+              variations={[]}
               price={item.price}
             />
           ))}
