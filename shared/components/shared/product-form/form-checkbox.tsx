@@ -13,7 +13,7 @@ import { Aromas, Classifications, Notes } from "@prisma/client";
 
 interface Props {
   control: Control<CreateProductFormValues>;
-  items: { label: { ru: string; de: string }, value: string }[];
+  items: { label: { ru: string; de: string }; value: string }[];
   name: keyof CreateProductFormValues;
 }
 
@@ -23,9 +23,11 @@ export const FormCheckbox: FC<Props> = ({ control, name, items }) => {
       name={name}
       control={control}
       render={({ field }) => {
-        const currentValues: (Notes | Classifications | Aromas)[] = Array.isArray(field.value)
-          ? field.value
-          : [];
+        const currentValues =
+          Array.isArray(field.value) &&
+          field.value.every((value) => typeof value === "string")
+            ? (field.value as (Notes | Classifications | Aromas)[])
+            : [];
         return (
           <FormItem className="mb-5">
             <div className="mb-4">
