@@ -82,7 +82,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                 <div key={item.id} className="mb-2">
                   <CartDrawerItem
                     id={item.id}
-                    imageUrl={item.imageUrl}
+                    imageUrl={item.imageUrl || ""}
                     name={item.name}
                     price={item.price}
                     quantity={item.quantity}
