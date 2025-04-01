@@ -7,6 +7,7 @@ import { Title } from ".";
 import { Button, Switch } from "../ui";
 import { Settings2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { string } from "zod";
 
 interface Props {
   id: number;
@@ -43,7 +44,7 @@ export const DashboardProduct: React.FC<Props> = ({
             width={300}
             height={280}
             className="object-cover"
-            src={imageUrl || ""}
+            src={imageUrl || ''}
             alt={name}
           />
         </div>
