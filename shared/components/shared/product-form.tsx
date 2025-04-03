@@ -1,14 +1,14 @@
 "use client";
 
 import { useCartStore } from "@/shared/store";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import toast from "react-hot-toast";
 import { ChooseProductForm } from "./choose-product-form";
 import { Product, ProductVariation, Review } from "@prisma/client";
 import { Volume } from "@/shared/constants/perfume";
 
 interface Props {
-  product: Product & { reviews: Review[], variations: ProductVariation[] };
+  product: Product & { reviews: Review[]; variations: ProductVariation[] };
   onSubmit?: VoidFunction;
   className?: string;
 }
@@ -17,6 +17,10 @@ export const ProductForm: FC<Props> = ({
   className,
   onSubmit: _onSubmit,
 }) => {
+  const [activeVariation, setActiveVariation] = useState<ProductVariation>(
+    product.variations[0]
+  );
+
   const [addCartItem, loading] = useCartStore((state) => [
     state.addCartItem,
     state.loading,
@@ -27,6 +31,7 @@ export const ProductForm: FC<Props> = ({
       await addCartItem({
         productId,
         volume,
+        variationId: activeVariation.id,
       });
       toast.success(product.name + " added to cart");
     } catch (error) {
@@ -51,6 +56,8 @@ export const ProductForm: FC<Props> = ({
 
   return (
     <ChooseProductForm
+      activeVariation={activeVariation}
+      setActiveVariation={setActiveVariation}
       onSubmit={onSubmit}
       loading={loading}
       product={product}

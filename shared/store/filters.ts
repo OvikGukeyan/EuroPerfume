@@ -1,3 +1,4 @@
+import { productGroups } from "./../../prisma/constants";
 import { create } from "zustand";
 
 interface PriceProps {
@@ -17,6 +18,8 @@ export interface Filters {
   notes: Set<string>;
   prices: PriceProps;
   orderBy: OrderByType;
+  category: number | null;
+  productGroup: number | null;
   currentPage: number;
 }
 
@@ -31,6 +34,8 @@ interface FiltersStore extends Filters {
   setFilters: (filters: Filters) => void;
   setOrderBy: (value: string) => void;
   resetFilters: () => void;
+  setCategory: (category: number) => void;
+  setProductGroup: (productGroup: number) => void;
 }
 
 export const useFiltersStore = create<FiltersStore>((set, get) => ({
@@ -42,7 +47,13 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
   notes: new Set<string>(),
   prices: {},
   orderBy: {},
+  category: 1,
+  productGroup: null,
   currentPage: 1,
+
+  setCategory: (category: number) => set({ category }),
+
+  setProductGroup: (productGroup: number) => set(() => ({ productGroup })),
 
   setPrices: (name, value) =>
     set((state) => ({
@@ -107,6 +118,7 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
   // Метод для установки всех фильтров сразу
   setFilters: (newFilters) => set(() => newFilters),
 
+
   resetFilters: () =>
     set({
       gender: new Set<string>(),
@@ -117,5 +129,6 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
       prices: {},
       orderBy: {},
       currentPage: 1,
+      productGroup: null,
     }),
 }));

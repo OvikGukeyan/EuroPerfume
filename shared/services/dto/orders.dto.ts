@@ -1,6 +1,6 @@
-import { Order, OrderItem } from "@prisma/client";
+import { Order, OrderItem, Product, ProductVariation } from "@prisma/client";
 
 
 export interface OrderDTO extends Order {
-    items: OrderItem[]
+    items: (OrderItem & {variation: ProductVariation})[]
 }

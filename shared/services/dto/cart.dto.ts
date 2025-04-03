@@ -1,8 +1,9 @@
-import { Cart, CartItem } from "@prisma/client";
+import { Cart, CartItem, Product, ProductVariation } from "@prisma/client";
 import { ProductDTO } from "./product.dto";
 
 export type CartItemDTO = CartItem & {
-  product: ProductDTO;
+  product: Product;
+  variation?: ProductVariation;
 };
 
 export interface CartDTO extends Cart {
@@ -11,5 +12,6 @@ export interface CartDTO extends Cart {
 
 export interface CreateCartItemValues {
   productId: number;
-  volume: number
+  volume: number;
+  variationId?: number;
 }

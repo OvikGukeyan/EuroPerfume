@@ -11,6 +11,7 @@ import { CountButton } from '.';
 interface Props extends CartItemProps {
     onClickCountButton: (type: 'plus' | 'minus') => void;
     onClickRemove: () => void;
+    variation?: string;
     className?: string;
 }
 export const CartDrawerItem: FC<Props> = ({
@@ -19,6 +20,7 @@ export const CartDrawerItem: FC<Props> = ({
     price,
     quantity,
     disabled,
+    variation,
     onClickCountButton,
     onClickRemove,
     className,
@@ -30,7 +32,7 @@ export const CartDrawerItem: FC<Props> = ({
             <CartDetail.Image src={imageUrl} />
 
             <div className='flex-1'>
-                <CartDetail.Info name={name}  />
+                <CartDetail.Info name={name} info={variation || ''} />
 
                 <hr className='my-3' />
 

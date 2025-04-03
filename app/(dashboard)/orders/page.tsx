@@ -1,4 +1,3 @@
-import { prisma } from "@/prisma/prisma-client"
 import { OrdersTable } from "@/shared/components"
 
 export default async function Orders() {

@@ -12,11 +12,8 @@ export const updateCartTotalAmount = async (token: string) => {
           createdAt: "desc",
         },
         include: {
-          product: {
-            include: {
-              variations: true,
-            },
-          },
+          product: true,
+          variation: true,
         },
       },
     },
@@ -32,7 +29,7 @@ export const updateCartTotalAmount = async (token: string) => {
   //   );
   const totalAmount = userCart.items.reduce(
     (acc, item) =>
-      acc + calcCartItemTotalPrice({ ...item, product: item.product! }),
+      acc + calcCartItemTotalPrice({ ...item, product: item.product!, variation: item.variation ?? undefined  }),
     0
   );
 
@@ -50,6 +47,7 @@ export const updateCartTotalAmount = async (token: string) => {
         },
         include: {
           product: true,
+          variation: true,
         },
       },
     },

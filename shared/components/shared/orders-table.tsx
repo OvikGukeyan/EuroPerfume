@@ -20,6 +20,7 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useOrders } from "@/shared/hooks";
+import { OrderItemsPopover } from "./order-items-popover";
 
 type Props = {
   className?: string;
@@ -60,11 +61,13 @@ export const OrdersTable: FC<Props> = ({ className }) => {
             >
               <TableCell className="font-medium">{order.id}</TableCell>
               <TableCell>
-                {order.items.map((item) => (
+
+                <OrderItemsPopover order={order}/>
+                {/* {order.items.map((item) => (
                   <div key={item.id}>
                     {item.name} : {item.quantity}
                   </div>
-                ))}
+                ))} */}
               </TableCell>
               <TableCell>{order.totalAmount}</TableCell>
               <TableCell>{order.fullName}</TableCell>
@@ -72,7 +75,11 @@ export const OrdersTable: FC<Props> = ({ className }) => {
               <TableCell>{order.phone}</TableCell>
               <TableCell>{order.contactForm}</TableCell>
               <TableCell>
-                <Select onValueChange={(value) => {changeOrderStatus(order.id, value as OrderStatus)}}>
+                <Select
+                  onValueChange={(value) => {
+                    changeOrderStatus(order.id, value as OrderStatus);
+                  }}
+                >
                   <SelectTrigger>
                     <SelectValue placeholder={order.status} />
                   </SelectTrigger>
@@ -91,7 +98,13 @@ export const OrdersTable: FC<Props> = ({ className }) => {
               <TableCell>{order.address}</TableCell>
               <TableCell>{order.deliveryType}</TableCell>
               <TableCell>
-                <Button loading={loading} onClick={() => {removeOrder(order.id)}} variant="outline">
+                <Button
+                  loading={loading}
+                  onClick={() => {
+                    removeOrder(order.id);
+                  }}
+                  variant="outline"
+                >
                   <Trash2 size={17} />
                 </Button>
               </TableCell>

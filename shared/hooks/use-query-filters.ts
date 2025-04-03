@@ -17,6 +17,8 @@ export const useQueryFilters = (filters: Filters) => {
         gender: Array.from(filters.gender),
         notes: Array.from(filters.notes),
         page: filters.currentPage > 1 ? filters.currentPage : undefined,
+        category: filters.category || undefined,
+        productGroup: filters.productGroup || undefined,
       };
       const query = qs.stringify(params, { arrayFormat: "comma" });
       router.push(`?${query}`, { scroll: false });

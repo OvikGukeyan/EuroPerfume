@@ -10,6 +10,7 @@ import { CountButton } from './count-button';
 interface Props extends CartItemProps {
   onClickCountButton?: (type: 'plus' | 'minus') => void;
   onClickRemove?: () => void;
+  variation?: string;
   className?: string;
 }
 
@@ -22,12 +23,13 @@ export const CheckoutItem: React.FC<Props> = ({
   disabled,
   onClickCountButton,
   onClickRemove,
+  variation
 }) => {
   return (
     <div className={cn('flex items-center w-full justify-between', { 'opacity-50 pointer-events-none': disabled }, className)}>
       <div className="flex items-center gap-3 md:gap-5 flex-1">
         <CartItemDetails.Image src={imageUrl} />
-        <CartItemDetails.Info name={name}   clssName='w-1/2' />
+        <CartItemDetails.Info name={name} info={variation || '' }  clssName='w-1/2' />
       </div>
 
       <CartItemDetails.Price value={price} />

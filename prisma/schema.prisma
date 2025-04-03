@@ -96,11 +96,13 @@ model Product {
 }
 
 model ProductVariation {
-  id        Int     @id @default(autoincrement())
+  id        Int         @id @default(autoincrement())
   name      String
   imageUrl  String
   productId Int
-  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  CartItem  CartItem[]
+  OrderItem OrderItem[]
 }
 
 model ProductTranslation {
@@ -125,14 +127,16 @@ model Cart {
 }
 
 model CartItem {
-  id        Int      @id @default(autoincrement())
-  cartId    Int
-  quantity  Int      @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  productId Int
-  cart      Cart     @relation(fields: [cartId], references: [id])
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id          Int               @id @default(autoincrement())
+  cartId      Int
+  quantity    Int               @default(1)
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+  productId   Int
+  variationId Int?
+  cart        Cart              @relation(fields: [cartId], references: [id])
+  variation   ProductVariation? @relation(fields: [variationId], references: [id], onDelete: Cascade)
+  product     Product           @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model Favorites {
@@ -198,11 +202,13 @@ model Order {
 }
 
 model OrderItem {
-  id       Int    @id @default(autoincrement())
-  name     String
-  quantity Int
-  orderId  Int
-  order    Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id          Int               @id @default(autoincrement())
+  name        String
+  quantity    Int
+  variationId Int?
+  variation   ProductVariation? @relation(fields: [variationId], references: [id])
+  orderId     Int
+  order       Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model VerificationCode {

@@ -1,4 +1,3 @@
-import { productGroups } from "./../../prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
 import {
   Brands,
@@ -23,6 +22,8 @@ export interface GetSearchParams {
   priceTo?: string;
   orderBy?: string;
   page?: string;
+  category?: string;
+  productGroup?: string;
 }
 
 export interface FindProductsResponse {
@@ -36,6 +37,7 @@ export interface FindProductsResponse {
 
 const DEFAULT_MIN_PRICE = 0;
 const DEFAULT_MAX_PRICE = 50;
+
 export const findProducts = async (
   params: GetSearchParams
 ): Promise<FindProductsResponse> => {
@@ -63,6 +65,10 @@ export const findProducts = async (
     const priceFrom = Number((await params).priceFrom) || DEFAULT_MIN_PRICE;
     const priceTo = Number((await params).priceTo) || DEFAULT_MAX_PRICE;
     const orderBy = JSON.parse((await params).orderBy || "{}");
+
+    const categoryId = Number((await params).category);
+    const productGroupId = Number((await params).productGroup);
+
     const whereClause = {
       brand: { in: brands as Brands[] },
       gender: genders.length > 0 ? { in: genders as Gender[] } : undefined,
@@ -74,6 +80,8 @@ export const findProducts = async (
       price:
         priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
       available: true,
+      categoryId: categoryId || undefined,
+      productGroupId: productGroupId || undefined,
       ...(notes.length > 0 && {
         OR: [
           { topNotes: { hasSome: notes as Notes[] } },
@@ -109,6 +117,7 @@ export const findProducts = async (
 
     const totalPages = Math.ceil(totalCount / 6);
     return { categoryes, totalPages };
+
   } catch (error) {
     console.error(error);
     return { categoryes: [], totalPages: 0 };

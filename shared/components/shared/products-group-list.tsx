@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { useIntersection } from "react-use";
 import { ProductCard, Title } from ".";
 import { cn } from "@/shared/lib/utils";
-import { useCategoryStore } from "@/shared/store";
+
 import { ProductDTO } from "@/shared/services/dto/product.dto";
 
 interface Props {
@@ -25,13 +25,7 @@ export const ProductsGroupList: React.FC<Props> = ({
   const intersectionRef = useRef(null);
   const intersection = useIntersection(intersectionRef, { threshold: 0.4 });
 
-  const setActiveCategoryId = useCategoryStore((store) => store.setActiveId);
 
-  useEffect(() => {
-    if (intersection?.isIntersecting) {
-      setActiveCategoryId(categoryId);
-    }
-  }, [categoryId, intersection?.isIntersecting, title]);
 
   return (
     <div className={className} id={title} ref={intersectionRef}>
@@ -42,7 +36,7 @@ export const ProductsGroupList: React.FC<Props> = ({
           listClassName
         )}
       >
-        {items.map((product, i) => (
+        {items.map((product) => (
           <ProductCard
             key={product.id}
             id={product.id}

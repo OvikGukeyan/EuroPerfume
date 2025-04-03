@@ -12,9 +12,14 @@ export async function GET(req: NextRequest) {
 
     const orders = await prisma.order.findMany({
       include: {
-        items: true,
+        items: {
+          include: {
+            variation: true,
+          },
+        },
       },
     });
+    
     return NextResponse.json(orders);
   } catch (error) {
     console.log("[ORDERS_GET] Server error", error);

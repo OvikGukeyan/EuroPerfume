@@ -62,7 +62,8 @@ export const ProductCard: React.FC<Props> = ({
     try {
       await addCartItem({
         productId: id,
-        volume,
+        volume: categoryId === 1 ? volume : 1,
+        variationId: activeVariation ? activeVariation.id : undefined,
       });
       toast.success(name + " added to cart");
     } catch (error) {
@@ -70,7 +71,7 @@ export const ProductCard: React.FC<Props> = ({
       toast.error("Something went wrong");
     }
   };
-  const finalPrice = calcPrice(volume, price);
+  const finalPrice = categoryId === 1 ?  calcPrice(volume, price) : price;
   return (
     <div className={className}>
       <Link href={`/product/${id}`}>
@@ -79,7 +80,7 @@ export const ProductCard: React.FC<Props> = ({
             layout="fill"
             objectFit="cover"
             // className="object-cover"
-            src={imageUrl || activeVariation?.imageUrl || variations[0].imageUrl }
+            src={imageUrl || activeVariation?.imageUrl  }
             alt={name}
           />
 

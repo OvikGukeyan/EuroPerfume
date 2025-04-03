@@ -52,7 +52,7 @@ export {ResetForm} from './reset-form';
 export {CreateMakeupForm} from './create-makeup-form';
 export {ProductCharacteristics} from './product-characteristics';
 export {ChooseVariation} from './choose-variation';
-
+export {OrderItemsPopover} from './order-items-popover';
 
 export * from './email-templates';
 export * from './form';

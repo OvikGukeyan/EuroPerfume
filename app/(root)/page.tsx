@@ -21,12 +21,14 @@ export default async function Home({
   const params = await searchParams;
   const { categoryes, totalPages } = await findProducts(params);
   const slides = await getSlides();
+
   return (
+    
     <>
       <Carusel slides={slides} />
       <TopBar
         // categories={categoryes.filter(
-        //   (category) => category.products.length > 0
+        //   (category) => category.productGroups.flatMap((productGroup) => productGroup.products).length > 0
         // )}
         categories={categoryes}
       />
@@ -40,7 +42,7 @@ export default async function Home({
 
           <div className="flex-1">
             <div className="flex flex-col gap-16">
-              {categoryes.map(
+              {categoryes.filter((category) => category.productGroups.flatMap((productGroup) => productGroup.products).length > 0).map(
                 (category) =>
                     <ProductsGroupList
                       key={category.id}

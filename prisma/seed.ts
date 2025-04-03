@@ -59,6 +59,7 @@ async function up() {
       productId: 1,
       cartId: 1,
       quantity: 1,
+      variationId: 1
     },
   });
 

@@ -54,6 +54,7 @@ export async function createOrder(data: CheckoutFormValues) {
         items: {
           include: {
             product: true,
+            variation: true,
           },
         },
       },
@@ -91,6 +92,7 @@ export async function createOrder(data: CheckoutFormValues) {
           create: userCart.items.map((item) => ({
             name: item.product.name,
             quantity: item.quantity,
+            variationId: item.variationId,
           })),
         },
       },

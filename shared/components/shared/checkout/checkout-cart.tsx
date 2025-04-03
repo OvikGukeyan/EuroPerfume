@@ -14,7 +14,7 @@ interface Props {
     itemLoading?: boolean;
     className?: string;
 }
-export const CheckoutCart: FC<Props> = ({ className, items, totalAmount, removeCartItem, onClickCountButton, loading, itemLoading }) => {
+export const CheckoutCart: FC<Props> = ({ className, items, totalAmount, removeCartItem, onClickCountButton, loading }) => {
     return (
         <WhiteBlock
             className={className}
@@ -44,6 +44,7 @@ export const CheckoutCart: FC<Props> = ({ className, items, totalAmount, removeC
                                 price={item.price}
                                 quantity={item.quantity}
                                 disabled={item.disabled}
+                                variation={item.variationName}
                                 onClickCountButton={(type) => onClickCountButton(item.id, item.quantity, type)}
                                 onClickRemove={() => removeCartItem(item.id)}
                             />

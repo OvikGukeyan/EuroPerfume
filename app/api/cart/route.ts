@@ -22,11 +22,8 @@ export async function GET(req: NextRequest) {
             createdAt: "desc",
           },
           include: {
-            product: {
-              include: {
-                variations: true,
-              },
-            },
+            product: true,
+            variation: true,
           },
         },
       },
@@ -51,13 +48,13 @@ export async function POST(req: NextRequest) {
 
     const userCart = await findOrCreateCart(token);
     const data = (await req.json()) as CreateCartItemValues;
-
     const findCartItem = await prisma.cartItem.findFirst({
       where: {
         cartId: userCart.id,
         productId: data.productId,
       },
     });
+
 
     if (findCartItem) {
       await prisma.cartItem.update({
@@ -70,10 +67,12 @@ export async function POST(req: NextRequest) {
       });
     } else {
       await prisma.cartItem.create({
+        
         data: {
           cartId: userCart.id,
           productId: data.productId,
           quantity: data.volume,
+          variationId: data.variationId,
         },
       });
     }

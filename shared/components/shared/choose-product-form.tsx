@@ -4,7 +4,7 @@ import { cn } from "@/shared/lib/utils";
 import React, { FC, useEffect, useState } from "react";
 import { Button, Separator } from "../ui";
 import Image from "next/image";
-import { Title, Text, VolumeSelection, ProductCharacteristics } from ".";
+import { Title, Text, VolumeSelection, ProductCharacteristics, ChooseVariation } from ".";
 import { Volume, volumes } from "@/shared/constants/perfume";
 import { Product, ProductVariation, Review } from "@prisma/client";
 import {
@@ -23,18 +23,21 @@ interface Props {
   };
   loading: boolean;
   onSubmit?: (productId: number, volume: Volume) => Promise<void>;
+  activeVariation: ProductVariation;
+  setActiveVariation: (variation: ProductVariation) => void;
   className?: string;
 }
 export const ChooseProductForm: FC<Props> = ({
   product,
   loading,
   onSubmit,
+  activeVariation,
+  setActiveVariation,
   className,
 }) => {
   const currentVolumesArray =
   product.price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
   const [volume, setVolume] = useState<Volume>(currentVolumesArray[0]);
-
   const finalPrice = calcPrice(volume, product.price);
   const { averageRating, count } = calcAverageRating(product.reviews);
   const router = useRouter();
@@ -60,7 +63,7 @@ export const ChooseProductForm: FC<Props> = ({
         <Image
           width={350}
           height={350}
-          src={product.imageUrl || product.variations[0].imageUrl}
+          src={product.imageUrl || activeVariation.imageUrl }
           alt="product"
           className="z-10 duration-300 w-[350px] h-[350px] "
         />
@@ -89,13 +92,17 @@ export const ChooseProductForm: FC<Props> = ({
         ) : (
           <a href={`/product/${product.id}`}>
             <Rating
-              className="mt-5"
+              className="my-5"
               value={averageRating}
               withNumber
               reviewsCount={count}
             />
           </a>
         )}
+
+        {product.variations.length > 1 && (
+                <ChooseVariation setActiveVariation={setActiveVariation} activeVariation={activeVariation} className="mb-4" items={product.variations}/>
+              )}
 
         {product.categoryId === 1 && (
           <VolumeSelection
