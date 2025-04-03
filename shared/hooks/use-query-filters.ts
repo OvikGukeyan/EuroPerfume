@@ -10,7 +10,7 @@ export const useQueryFilters = (filters: Filters) => {
     if (isMounted.current) {
       const params = {
         ...filters.prices,
-        orderBy: JSON.stringify(filters.orderBy),
+        orderBy: Object.keys(filters.orderBy).length > 0 ? JSON.stringify(filters.orderBy) : undefined,
         brands: Array.from(filters.brands),
         classification: Array.from(filters.classification),
         concentration: Array.from(filters.concentration),

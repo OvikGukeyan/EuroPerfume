@@ -35,7 +35,7 @@ interface FiltersStore extends Filters {
   setOrderBy: (value: string) => void;
   resetFilters: () => void;
   setCategory: (category: number) => void;
-  setProductGroup: (productGroup: number) => void;
+  setProductGroup: (productGroup: number | null ) => void;
 }
 
 export const useFiltersStore = create<FiltersStore>((set, get) => ({
@@ -53,7 +53,7 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
 
   setCategory: (category: number) => set({ category }),
 
-  setProductGroup: (productGroup: number) => set(() => ({ productGroup })),
+  setProductGroup: (productGroup: number | null) => set(() => ({ productGroup })),
 
   setPrices: (name, value) =>
     set((state) => ({

@@ -19,9 +19,11 @@ interface Props {
   items: (Category & { productGroups: ProductGroup[] })[];
 }
 
-
 export const Categories: FC<Props> = ({ items, className }) => {
-  const setCategory = useFiltersStore((state) => state.setCategory);
+  const [setCategory, setProductGroup] = useFiltersStore((state) => [
+    state.setCategory,
+    state.setProductGroup,
+  ]);
   return (
     // <div style={{scrollbarWidth: 'none'}} className={cn('flex max-w-full gap-1 bg-gray-50 p-1 rounded-2xl overflow-x-auto whitespace-nowrap no-scrollbar ')}>
     //     {items.map(({id, name}) => (
@@ -36,31 +38,35 @@ export const Categories: FC<Props> = ({ items, className }) => {
     //         </a>
     //     ))}
     // </div>
-      <NavigationMenu className={cn(className,)}>
-        <NavigationMenuList className="gap-0 md:gap-5">
-          {items.map(({ id, name, productGroups }) => (
-            <NavigationMenuItem key={id}>
-              <NavigationMenuTrigger  onClick={() => setCategory(id)} className="text-md font-bold tracking-narrow md:tracking-wider">
-                {name}
-              </NavigationMenuTrigger>
-              {productGroups.length > 0 && (
-                <NavigationMenuContent className="z-60">
-                  <div className=" flex flex-col items-start min-w-[300px] p-5 gap-4">
-                    {productGroups.map((productGroup) => (
-                      <NavigationMenuLink
-                        key={productGroup.id}
-                        className="relative cursor-pointer group font-semibold "
-                      >
-                        {productGroup.name}
-                        <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
-                      </NavigationMenuLink>
-                    ))}
-                  </div>
-                </NavigationMenuContent>
-              )}
-            </NavigationMenuItem>
-          ))}
-        </NavigationMenuList>
-      </NavigationMenu>
+    <NavigationMenu className={cn(className)}>
+      <NavigationMenuList className="gap-0 md:gap-5">
+        {items.map(({ id, name, productGroups }) => (
+          <NavigationMenuItem key={id}>
+            <NavigationMenuTrigger
+              onClick={() => {setCategory(id); setProductGroup(null)}}
+              className="text-md font-bold tracking-narrow md:tracking-wider"
+            >
+              {name}
+            </NavigationMenuTrigger>
+            {productGroups.length > 0 && (
+              <NavigationMenuContent className="z-60">
+                <div className=" flex flex-col items-start min-w-[300px] p-5 gap-4">
+                  {productGroups.map((productGroup) => (
+                    <NavigationMenuLink
+                      key={productGroup.id}
+                      className="relative cursor-pointer group font-semibold "
+                      onClick={() => {setProductGroup(productGroup.id); setCategory(productGroup.categoryId)}}
+                    >
+                      {productGroup.name}
+                      <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+                    </NavigationMenuLink>
+                  ))}
+                </div>
+              </NavigationMenuContent>
+            )}
+          </NavigationMenuItem>
+        ))}
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 };
