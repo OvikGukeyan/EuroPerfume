@@ -14,5 +14,6 @@ export const search = async (query?: string): Promise<ProductDTO[]> => {
 
 export const getAll = async (): Promise<ProductDTO[]> => {
   const { data } = await axiosInstance.get<ProductDTO[]>(ApiRouts.PRODUCTS);
+  console.log(data);
   return data;
 };

@@ -16,7 +16,7 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
 } from "../ui/sidebar";
-import { Folders, GalleryHorizontalEnd, Plus, Settings2 } from "lucide-react";
+import { Folders, GalleryHorizontalEnd, House, Plus, Settings2 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -32,11 +32,7 @@ type Props = {
 export const AppSidebar: FC<Props> = ({ className }) => {
   const pathName = usePathname();
   const tools = [
-    // {
-    //   name: "Create New Product",
-    //   icon: <Plus />,
-    //   href: "/create",
-    // },
+   
     { name: "Products", icon: <Settings2 />, href: "/products" },
     {
       name: "Create New Slde",
@@ -52,6 +48,11 @@ export const AppSidebar: FC<Props> = ({ className }) => {
       name: "Orders",
       icon: <Folders />,
       href: "/orders",
+    },
+    {
+      name: "Home",
+      icon: <House />,
+      href: "/",
     },
   ];
   return (

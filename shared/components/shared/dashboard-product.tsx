@@ -8,6 +8,7 @@ import { Button, Switch } from "../ui";
 import { Settings2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { string } from "zod";
+import { ProductVariation } from "@prisma/client";
 
 interface Props {
   id: number;
@@ -17,7 +18,8 @@ interface Props {
   available?: boolean;
   deleteProduct: (id: number) => void;
   loading?: boolean;
-  switchAvailability: (id: number, available: boolean) => void
+  switchAvailability: (id: number, available: boolean) => void;
+  variations?: ProductVariation[];
   className?: string;
 }
 
@@ -29,12 +31,12 @@ export const DashboardProduct: React.FC<Props> = ({
   id,
   available,
   loading,
+  variations,
   switchAvailability,
   deleteProduct
 }) => {
 
   const router = useRouter();
-
 
   return (
     <div className={className}>
@@ -44,7 +46,7 @@ export const DashboardProduct: React.FC<Props> = ({
             width={300}
             height={280}
             className="object-cover"
-            src={imageUrl || ''}
+            src={imageUrl || variations?.[0]?.imageUrl || ""}
             alt={name}
           />
         </div>

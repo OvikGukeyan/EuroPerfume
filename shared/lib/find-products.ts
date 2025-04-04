@@ -80,7 +80,7 @@ export const findProducts = async (
       price:
         priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
       available: true,
-      categoryId: categoryId || undefined,
+      categoryId: categoryId || 1,
       productGroupId: productGroupId || undefined,
       ...(notes.length > 0 && {
         OR: [

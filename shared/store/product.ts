@@ -3,10 +3,11 @@ import { Api } from '../services/api-client';
 import { search } from './../services/products';
 import { create } from "zustand";
 import { Product } from '@prisma/client';
+import { ProductDTO } from '../services/dto/product.dto';
 
 
 interface ProductState {
-    items: Product[];
+    items: ProductDTO[];
     loading: boolean;
     error: boolean;
 
