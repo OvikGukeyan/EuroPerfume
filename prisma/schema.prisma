@@ -228,6 +228,7 @@ model Slide {
   desctopImg String
   tabletImg  String
   mobileImg  String
+  href       String
 }
 
 enum OrderStatus {

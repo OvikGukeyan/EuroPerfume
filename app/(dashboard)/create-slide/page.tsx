@@ -1,4 +1,4 @@
-import { createSlider } from "@/app/actions";
+import { createSlide } from "@/app/actions";
 import { Input, SubmitButtonBar, Title } from "@/shared/components";
 import { Label } from "@/shared/components/ui/label";
 
@@ -7,7 +7,7 @@ export default function CreateSlide() {
     <div className=" px-10 mb-10">
       <Title className="mb-5" text="Create new Slide" />
 
-      <form  className="flex flex-col items-start gap-5" action={createSlider}>
+      <form  className="flex flex-col items-start gap-5" action={createSlide}>
         <div>
           <Label className=" text-lg" htmlFor="name">
             Name
@@ -39,6 +39,18 @@ export default function CreateSlide() {
             Mobile Image
           </Label>
           <Input className="mt-2" required type="file" name="mobileImg" />
+        </div>
+
+        <div>
+          <Label className=" text-lg" htmlFor="name">
+            Link
+          </Label>
+          <Input
+            required
+            name="link"
+            className="mt-2"
+            placeholder="link"
+          />
         </div>
         <SubmitButtonBar />
       </form>

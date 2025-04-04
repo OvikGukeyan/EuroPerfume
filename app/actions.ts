@@ -631,20 +631,21 @@ export async function createReview(formData: FormData) {
   } catch (error) {}
 }
 
-export async function createSlider(formData: FormData) {
+export async function createSlide(formData: FormData) {
   try {
     const user = await getUserSession();
     if (!user || user.role !== UserRole.ADMIN) {
       throw new Error("Access denied");
     }
 
-    const { name, desctopImg, tabletImg, mobileImg } = Object.fromEntries(
+    const { name, desctopImg, tabletImg, mobileImg, link } = Object.fromEntries(
       formData.entries()
     ) as {
       name: string;
       desctopImg: File;
       tabletImg: File;
       mobileImg: File;
+      link: string
     };
 
     const images: File[] = [desctopImg, tabletImg, mobileImg];
@@ -672,6 +673,7 @@ export async function createSlider(formData: FormData) {
     await prisma.slide.create({
       data: {
         name: name,
+        href: link,
         desctopImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[0].data?.path}`,
         tabletImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[1].data?.path}`,
         mobileImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[2].data?.path}`,
