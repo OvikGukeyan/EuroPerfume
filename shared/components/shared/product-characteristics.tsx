@@ -15,10 +15,10 @@ export const ProductCharacteristics: FC<Props> = ({
   charactiristics,
 }) => {
   return (
-    <div className={cn("", className)}>
+    <div className={cn("w-full", className)}>
       <Title text="Characteristics:" size="sm" className="font-bold" />
 
-      <div className="flex justify-between  my-4">
+      <div className="my-4">
         <ul className=" columns-2 gap-x-5">
           {charactiristics.map((characteristic) => (
             <li key={characteristic.name} className="break-inside-avoid">

@@ -28,7 +28,7 @@ import {
 } from "@/shared/components/ui/form";
 
 import { Gender, Product } from "@prisma/client";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -51,6 +51,7 @@ interface Props {
 }
 
 export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
+  const [loading, setLoading] = useState(false);
   const form = useForm<CreateProductFormValues>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
@@ -94,6 +95,7 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
 
   const onSubmit = async (data: CreateProductFormValues) => {
     try {
+      setLoading(true);
       const formData = new FormData();
 
       formData.append("productName", data.productName);
@@ -157,6 +159,8 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong", { icon: "❌" });
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -514,7 +518,7 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
             </div>
           </div>
 
-          <Button type="submit">Create</Button>
+          <Button loading={loading} type="submit">Create</Button>
         </form>
       </Form>
     </div>

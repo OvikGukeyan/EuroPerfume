@@ -22,6 +22,7 @@ import {
 } from "@/shared/lib";
 import { Rating } from "./rating";
 import { useRouter } from "next/navigation";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 interface Props {
   product: Product & {
@@ -67,13 +68,6 @@ export const ChooseProductForm: FC<Props> = ({
   return (
     <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
       <div className="flex  items-center justify-center flex-1 relative w-full lg:w-2/5 bg-[#f2f2f2]">
-        {/* <Image
-          width={350}
-          height={350}
-          src={product.imageUrl || activeVariation.imageUrl}
-          alt="product"
-          className="z-10 duration-300 w-[350px] h-[350px] "
-        /> */}
         <ProductCarousel slides={product.imageUrl} />
       </div>
 
@@ -82,16 +76,30 @@ export const ChooseProductForm: FC<Props> = ({
 
         <Separator />
 
-        <div style={{ scrollbarWidth: "none" }} className={cn("overflow-scroll  overflow-x-hidden", isModal && 'lg:max-h-[400px]')}>
-          <Text size="md" className="my-4">
-            {product.description}
-          </Text>
-
-          <ProductCharacteristics charactiristics={charactiristics} />
+        <div
+          style={{ scrollbarWidth: "none" }}
+          className={cn(
+            "overflow-scroll  overflow-x-hidden",
+            isModal && "lg:max-h-[400px]"
+          )}
+        >
+          <Tabs defaultValue="description" className="w-full">
+            <TabsList className="grid w-full grid-cols-2 h-16">
+              <TabsTrigger className="h-10"  value="description">Description</TabsTrigger>
+              <TabsTrigger className="h-10" value="characteristics">Characteristics</TabsTrigger>
+            </TabsList>
+            <TabsContent value="description">
+              <Text size="md" className="my-4">
+                {product.description}
+              </Text>
+            </TabsContent>
+            <TabsContent value="characteristics">
+              <ProductCharacteristics charactiristics={charactiristics} />
+            </TabsContent>
+          </Tabs>
         </div>
 
         <Separator />
-
 
         {!isModal ? (
           <div onClick={scrollToReviews} className="cursor-pointer">

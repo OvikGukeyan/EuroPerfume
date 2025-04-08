@@ -26,7 +26,7 @@ import {
   CreateProductSchema,
 } from "@/shared/constants/create-product-schema";
 import { Gender, Product } from "@prisma/client";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -44,6 +44,7 @@ interface Props {
 }
 
 export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
+  const [loading, setLoading] = useState(false);
   const form = useForm<CreateProductFormValues>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
@@ -70,8 +71,9 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
   });
 
   const onSubmit = async (data: CreateProductFormValues) => {
-
     try {
+      setLoading(true);
+
       const formData = new FormData();
 
       formData.append("productName", data.productName);
@@ -112,6 +114,8 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
       return toast.error("Something went wrong", {
         icon: "❌",
       });
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -308,7 +312,7 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
             </div>
           </div>
 
-          <Button type="submit">Create</Button>
+          <Button loading={loading} type="submit">Create</Button>
         </form>
       </Form>
     </div>
