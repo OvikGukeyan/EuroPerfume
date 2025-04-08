@@ -21,7 +21,7 @@ export const CreateProductSchema = z.object({
   image: z.array(z.instanceof(File)).optional(),
   descriptionRu: z.string().min(10, { message: "Description should be at least 10 characters" }),
   descriptionDe: z.string().min(10, { message: "Description should be at least 10 characters" }),
-  price: z.coerce.number().int().positive({ message: "Price must be positive" }),
+  price: z.coerce.number().positive({ message: "Price must be positive" }),
   gender: z.nativeEnum(Gender),
   brand: z.nativeEnum(Brands),
   brandCountry: z.string(),

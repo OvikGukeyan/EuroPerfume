@@ -40,7 +40,7 @@ export const FormCheckbox: FC<Props> = ({ control, name, items }) => {
               <PopoverContent className="h-[300px] overflow-y-scroll scrollbar">
                 {items.map((item) => (
                   <div
-                    key={item.label.ru}
+                    key={item.label.ru+name}
                     className="flex flex-row items-start space-x-3 space-y-0"
                   >
                     <FormControl>

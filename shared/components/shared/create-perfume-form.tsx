@@ -10,7 +10,7 @@ import {
   perfumeAromas,
   yers,
 } from "@/prisma/constants";
-import { Button, Input, Popover } from "@/shared/components";
+import { Button, Input } from "@/shared/components";
 import { FormInput, FormTextarea } from "@/shared/components/shared";
 import { FormSelect } from "@/shared/components/shared/product-form/form-select";
 import { FormCheckbox } from "@/shared/components/shared/product-form/index";
@@ -30,7 +30,6 @@ import { FC } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import { PopoverContent, PopoverTrigger } from "../ui/popover";
 
 type ProductWithTranslations = Product & {
   translations: {
@@ -69,8 +68,11 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
       productGroupId: product?.productGroupId || 1,
     },
   });
+  console.log(form, 'form');
 
   const onSubmit = async (data: CreateProductFormValues) => {
+    console.log(form, 'form');
+
     try {
       const formData = new FormData();
 
@@ -200,8 +202,10 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
                       <Input
                         multiple
                         onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          field.onChange(file); // Передаем объект File в RHF
+                          const files = e.target.files
+                            ? Array.from(e.target.files)
+                            : [];
+                          field.onChange(files);
                         }}
                         type="file"
                         onBlur={field.onBlur}

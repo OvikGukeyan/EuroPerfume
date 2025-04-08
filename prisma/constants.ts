@@ -891,7 +891,6 @@ export const notes: { value: Notes; label: { ru: string; de: string } }[] = [
   { value: Notes.NAGARMOTA, label: { ru: "Нагармота", de: "Nagarmotha" } },
   { value: Notes.CIVET, label: { ru: "Цивет", de: "Zibet" } },
   { value: Notes.CASTOREUM, label: { ru: "Кастореум", de: "Castoréum" } },
-  { value: Notes.SAFFRON_DUP, label: { ru: "Шафран", de: "Safran" } },
   { value: Notes.OUD, label: { ru: "Уд", de: "Oud" } },
   { value: Notes.INCENSE, label: { ru: "Ладан", de: "Weihrauch" } },
   { value: Notes.SPICES, label: { ru: "Пряности", de: "Gewürze" } },
