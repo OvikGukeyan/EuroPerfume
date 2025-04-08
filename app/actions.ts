@@ -334,19 +334,31 @@ export async function createProduct(
     const parsedData = parseProductFormData(formData);
 
     let imageData;
-    if (parsedData.image) {
-      const { data: newData, error: uploadError } = await supabase.storage
-        .from("images")
-        .upload(
-          `${parsedData.image.name}--${new Date().toISOString()}`,
-          parsedData.image,
-          {
-            contentType: parsedData.image.type,
-          }
-        );
-      imageData = newData;
-      if (uploadError) throw uploadError;
-    }
+    // if (parsedData.image) {
+    //   const { data: newData, error: uploadError } = await supabase.storage
+    //     .from("images")
+    //     .upload(
+    //       `${parsedData.image.name}--${new Date().toISOString()}`,
+    //       parsedData.image,
+    //       {
+    //         contentType: parsedData.image.type,
+    //       }
+    //     );
+    //   imageData = newData;
+    //   if (uploadError) throw uploadError;
+    // }
+    const imageUploads = await Promise.all(
+      parsedData.image.map(async (file) => {
+        const fileName = `${file.name}--${new Date().toISOString()}`;
+        const { data, error } = await supabase.storage
+          .from("images")
+          .upload(fileName, file, {
+            contentType: file.type,
+          });
+        if (error) throw error;
+        return process.env.NEXT_PUBLIC_SUPABASE_URL + data?.path;
+      })
+    );
     const variationUploads = await Promise.all(
       parsedData.variations.map(async (file) => {
         const fileName = `${file.name}--${new Date().toISOString()}`;
@@ -366,9 +378,7 @@ export async function createProduct(
     await prisma.product.create({
       data: {
         name: parsedData.productName,
-        imageUrl: imageData
-          ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}${imageData?.path || ""}`
-          : undefined,
+        imageUrl: imageUploads,
         price: parsedData.price,
         gender: parsedData.gender,
         concentration: parsedData.concentration || undefined,
@@ -439,23 +449,24 @@ export async function updateProduct(
 
     const parsedData = parseProductFormData(formData);
 
-    let imagePath = product.imageUrl;
-    if (parsedData.image) {
-      const fileName = `${parsedData.image.name}--${new Date().toISOString()}`;
-      const { data: imageData, error: uploadError } = await supabase.storage
-        .from("images")
-        .upload(fileName, parsedData.image, {
-          contentType: parsedData.image.type,
-        });
-      if (uploadError) throw uploadError;
-      imagePath = imageData?.path;
-    }
+    const imageUploads = await Promise.all(
+      parsedData.image.map(async (file) => {
+        const fileName = `${file.name}--${new Date().toISOString()}`;
+        const { data, error } = await supabase.storage
+          .from("images")
+          .upload(fileName, file, {
+            contentType: file.type,
+          });
+        if (error) throw error;
+        return process.env.NEXT_PUBLIC_SUPABASE_URL + data?.path;
+      })
+    );
 
     await prisma.product.update({
       where: { id },
       data: {
         name: parsedData.productName,
-        imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${imagePath}`,
+        imageUrl: imageUploads.length > 0 ? imageUploads : product.imageUrl,
         price: Number(parsedData.price),
         gender: parsedData.gender,
         concentration: parsedData.concentration
@@ -645,7 +656,7 @@ export async function createSlide(formData: FormData) {
       desctopImg: File;
       tabletImg: File;
       mobileImg: File;
-      link: string
+      link: string;
     };
 
     const images: File[] = [desctopImg, tabletImg, mobileImg];

@@ -43,7 +43,7 @@ export const Filters: FC<Props> = () => {
           { text: "Chanel", value: Brands.CHANEL },
           { text: "Dior", value: Brands.DIOR },
           { text: "Gucci", value: Brands.GUCCI },
-          { text: "Yves Saint Laurent", value: Brands.YSL },
+          { text: "Yves Saint Laurent", value: Brands.YVES_SAINT_LAURENT },
           { text: "Versace", value: Brands.VERSACE },
           { text: "Calvin Klein", value: Brands.CALVIN_KLEIN },
           { text: "Tom Ford", value: Brands.TOM_FORD },

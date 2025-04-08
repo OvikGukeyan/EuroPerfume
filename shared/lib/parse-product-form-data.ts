@@ -29,7 +29,7 @@ export function parseProductFormData(formData: FormData) {
 
   return {
     productName: getString("productName"),
-    image: formData.get("image") as File,
+    image: formData.getAll("image") as File[],
     variations: formData.getAll("variations") as File[],
     descriptionRu: getString("descriptionRu"),
     descriptionDe: getString("descriptionDe"),

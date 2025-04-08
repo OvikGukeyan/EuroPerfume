@@ -53,6 +53,7 @@ export {CreateMakeupForm} from './create-makeup-form';
 export {ProductCharacteristics} from './product-characteristics';
 export {ChooseVariation} from './choose-variation';
 export {OrderItemsPopover} from './order-items-popover';
+export {ProductCarousel} from './product-carousel';
 
 export * from './email-templates';
 export * from './form';

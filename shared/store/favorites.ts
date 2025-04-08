@@ -35,7 +35,7 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
         id: item.id,
         productId: item.productId,
         name: item.product.name,
-        imageUrl: item.product.imageUrl || item.product.variations[0].imageUrl,
+        imageUrl: item.product.imageUrl[0] || item.product.variations[0].imageUrl,
         price: item.product.price,
         disabled: false
       }))});
@@ -55,7 +55,7 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
         id: item.id,
         productId: item.productId,
         name: item.product.name,
-        imageUrl: item.product.imageUrl || undefined,
+        imageUrl: item.product.imageUrl[0] || undefined,
         price: item.product.price,
         disabled: false
       }))});

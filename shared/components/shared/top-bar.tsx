@@ -16,7 +16,7 @@ export const TopBar: FC<Props> = ({ className, categories }) => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 400) {
+      if (currentScrollY > lastScrollY && currentScrollY > 900) {
         setShow(false);
       } else {
         setShow(true);

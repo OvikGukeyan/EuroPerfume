@@ -23,7 +23,7 @@ export default function Favorites() {
           ))}
         </div>
       ) : (
-        <div className="flex flex-col items-center justify-center w-full h-full mx-auto">
+        <div className="flex flex-col items-center justify-center w-full h-full min-h-[500px] mx-auto">
           <Image
             src={"/assets/images/empty-box.png"}
             alt="empty-cart"

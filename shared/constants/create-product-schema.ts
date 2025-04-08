@@ -18,7 +18,7 @@ import {
 
 export const CreateProductSchema = z.object({
   productName: z.string().min(1, { message: "Name is required" }),
-  image: z.instanceof(File, { message: "Image must be a valid file" }).optional(),
+  image: z.array(z.instanceof(File)).optional(),
   descriptionRu: z.string().min(10, { message: "Description should be at least 10 characters" }),
   descriptionDe: z.string().min(10, { message: "Description should be at least 10 characters" }),
   price: z.coerce.number().int().positive({ message: "Price must be positive" }),

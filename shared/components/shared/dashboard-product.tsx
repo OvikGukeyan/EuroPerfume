@@ -14,7 +14,7 @@ interface Props {
   id: number;
   name: string;
   price: number;
-  imageUrl: string | null;
+  imageUrl: string[] ;
   available?: boolean;
   deleteProduct: (id: number) => void;
   loading?: boolean;
@@ -46,7 +46,7 @@ export const DashboardProduct: React.FC<Props> = ({
             width={300}
             height={280}
             className="object-cover"
-            src={imageUrl || variations?.[0]?.imageUrl || ""}
+            src={imageUrl[0] || variations?.[0]?.imageUrl || ""}
             alt={name}
           />
         </div>

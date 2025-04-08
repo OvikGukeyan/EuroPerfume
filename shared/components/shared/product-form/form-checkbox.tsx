@@ -8,8 +8,10 @@ import {
   FormLabel,
   FormMessage,
 } from "../../ui/form";
-import { Checkbox } from "../..";
+import { Button, Checkbox } from "../..";
 import { Aromas, Classifications, Notes } from "@prisma/client";
+import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
+import { ArrowDown, ChevronDown } from "lucide-react";
 
 interface Props {
   control: Control<CreateProductFormValues>;
@@ -29,36 +31,43 @@ export const FormCheckbox: FC<Props> = ({ control, name, items }) => {
             ? (field.value as (Notes | Classifications | Aromas)[])
             : [];
         return (
-          <FormItem className="mb-5">
-            <div className="mb-4">
-              <FormLabel className="text-base">{`Select ${name}`}</FormLabel>
-            </div>
-            {items.map((item) => (
-              <div
-                key={item.label.ru}
-                className="flex flex-row items-start space-x-3 space-y-0"
-              >
-                <FormControl>
-                  <Checkbox
-                    checked={currentValues.includes(
-                      item.value as Notes | Classifications | Aromas
-                    )}
-                    onCheckedChange={(checked) => {
-                      if (checked) {
-                        field.onChange([...currentValues, item.value]);
-                      } else {
-                        field.onChange(
-                          currentValues.filter((value) => value !== item.value)
-                        );
-                      }
-                    }}
-                  />
-                </FormControl>
-                <FormLabel className="text-sm font-normal">
-                  {item.label.ru}
-                </FormLabel>
-              </div>
-            ))}
+          <FormItem className="mb-5 flex gap-2 items-center">
+            <Popover>
+              <PopoverTrigger className="border py-2 px-3 w-full rounded-sm flex justify-between items-center">
+                <FormLabel className="text-base">{`Select ${name}`}</FormLabel>
+                <ChevronDown size={15}/>
+              </PopoverTrigger>
+              <PopoverContent className="h-[300px] overflow-y-scroll scrollbar">
+                {items.map((item) => (
+                  <div
+                    key={item.label.ru}
+                    className="flex flex-row items-start space-x-3 space-y-0"
+                  >
+                    <FormControl>
+                      <Checkbox
+                        checked={currentValues.includes(
+                          item.value as Notes | Classifications | Aromas
+                        )}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            field.onChange([...currentValues, item.value]);
+                          } else {
+                            field.onChange(
+                              currentValues.filter(
+                                (value) => value !== item.value
+                              )
+                            );
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormLabel className="text-sm font-normal">
+                      {item.label.ru}
+                    </FormLabel>
+                  </div>
+                ))}
+              </PopoverContent>
+            </Popover>
             <FormMessage />
           </FormItem>
         );

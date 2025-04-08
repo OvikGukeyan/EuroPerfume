@@ -10,7 +10,7 @@ import {
   perfumeAromas,
   yers,
 } from "@/prisma/constants";
-import { Button, Input } from "@/shared/components";
+import { Button, Input, Popover } from "@/shared/components";
 import { FormInput, FormTextarea } from "@/shared/components/shared";
 import { FormSelect } from "@/shared/components/shared/product-form/form-select";
 import { FormCheckbox } from "@/shared/components/shared/product-form/index";
@@ -30,6 +30,7 @@ import { FC } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
+import { PopoverContent, PopoverTrigger } from "../ui/popover";
 
 type ProductWithTranslations = Product & {
   translations: {
@@ -92,8 +93,10 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
       formData.append("categoryId", data.categoryId.toString());
       formData.append("productGroupId", data.productGroupId.toString());
 
-      if (data.image) {
-        formData.append("image", data.image);
+      if (data.image && data.image.length > 0) {
+        data.image.forEach((file) => {
+          formData.append("image", file);
+        });
       }
       await submitFunction(
         formData as FormData & CreateProductFormValues,
@@ -195,6 +198,7 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
                     <FormLabel>Image</FormLabel>
                     <FormControl>
                       <Input
+                        multiple
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           field.onChange(file); // Передаем объект File в RHF
@@ -237,7 +241,9 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
                   </FormItem>
                 )}
               />
+            </div>
 
+            <div className="w-1/2 ">
               <FormField
                 name="price"
                 control={form.control as Control<CreateProductFormValues>}
@@ -256,32 +262,30 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
                 control={form.control}
                 items={genders}
               />
-
               <FormSelect
                 name="concentration"
                 control={form.control}
                 items={concentrations}
               />
               <FormSelect name="brand" control={form.control} items={brands} />
-
               <FormCheckbox
                 name="aromas"
                 control={form.control}
                 items={perfumeAromas}
               />
-            </div>
 
-            <div className="w-1/2">
               <FormCheckbox
                 name="topNotes"
                 control={form.control}
                 items={notes}
               />
+
               <FormCheckbox
                 name="heartNotes"
                 control={form.control}
                 items={notes}
               />
+
               <FormCheckbox
                 name="baseNotes"
                 control={form.control}

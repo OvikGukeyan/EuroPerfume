@@ -93,7 +93,6 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
       classification: product?.classification || [],
       releaseYear: product?.releaseYear || 2000,
       categoryId: product?.categoryId || 2,
-
     },
   });
 
@@ -142,8 +141,10 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
       formData.append("categoryId", data.categoryId.toString());
       formData.append("productGroupId", data.productGroupId.toString());
 
-      if (data.image) {
-        formData.append("image", data.image);
+      if (data.image && data.image.length > 0) {
+        data.image.forEach((file) => {
+          formData.append("image", file);
+        });
       }
       if (data.variations && data.variations.length > 0) {
         data.variations.forEach((file) => {
@@ -263,6 +264,7 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
                     <FormLabel>Image</FormLabel>
                     <FormControl>
                       <Input
+                        multiple
                         onChange={(e) => {
                           const file = e.target.files?.[0];
                           field.onChange(file); // Передаем объект File в RHF

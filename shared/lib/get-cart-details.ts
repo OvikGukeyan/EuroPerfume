@@ -22,7 +22,7 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
         id: item.id,
         quantity: item.quantity,
         name: item.product.name,
-        imageUrl: item.product.imageUrl || item.variation?.imageUrl , 
+        imageUrl: item.product.imageUrl[0] || item.variation?.imageUrl , 
         variationName: item.variation?.name || '',
         price: calcCartItemTotalPrice(item),
         disabled: false,
