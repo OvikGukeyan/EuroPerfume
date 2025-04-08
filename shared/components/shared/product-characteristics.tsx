@@ -1,14 +1,5 @@
 import React, { FC } from "react";
 import { cn } from "@/lib/utils";
-import { Product } from "@prisma/client";
-import {
-  brands,
-  classifications,
-  concentrations,
-  genders,
-  notes,
-  perfumeAromas,
-} from "@/prisma/constants";
 import { Title } from ".";
 
 type Props = {

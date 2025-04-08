@@ -82,7 +82,7 @@ export const ChooseProductForm: FC<Props> = ({
 
         <Separator />
 
-        <div className={cn("overflow-scroll  overflow-x-hidden", isModal && 'max-h-[400px] scrollbar')}>
+        <div style={{ scrollbarWidth: "none" }} className={cn("overflow-scroll  overflow-x-hidden", isModal && 'lg:max-h-[400px]')}>
           <Text size="md" className="my-4">
             {product.description}
           </Text>
