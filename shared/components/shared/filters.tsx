@@ -139,15 +139,15 @@ export const Filters: FC<Props> = () => {
         limit={6}
         // defaultItems={items.slice(0, 6)}
         items={[
-          { text: "Citrus", value: Notes.CITRUS },
-          { text: "Floral", value: Notes.FLORAL },
-          { text: "Green", value: Notes.GREEN },
-          { text: "Fruity", value: Notes.FRUITY },
-          { text: "Spicy", value: Notes.SPICY },
-          { text: "Woody", value: Notes.WOODY },
-          { text: "Oriental", value: Notes.ORIENTAL },
-          { text: "Musk", value: Notes.MUSK },
-          { text: "Aquatic", value: Notes.AQUATIC },
+          { text: "Citrus", value: Notes.ACACIA },
+          { text: "Floral", value: Notes.ABSOLYU_ROZY },
+          { text: "Green", value: Notes.AMBRA_AMBER },
+          { text: "Fruity", value: Notes.AKATSIA },
+          { text: "Spicy", value: Notes.ANYUTINYE_GLAZKI },
+          { text: "Woody", value: Notes.AROMAT_POSTELNOGO_BELYA },
+          { text: "Oriental", value: Notes.ANANAS },
+          { text: "Musk", value: Notes.BELAYA_LILIYA },
+          { text: "Aquatic", value: Notes.BELIY_BERGAMOT },
         ]}
         onClickCheckbox={filters.setSelectedNotes}
         selected={filters.notes}
