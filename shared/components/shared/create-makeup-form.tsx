@@ -3,16 +3,12 @@
 import {
   applicationMethods,
   brands,
-  categories,
   classifications,
-  concentrations,
   effects,
   finishes,
   formulas,
   genders,
-  notes,
   packagingFormats,
-  perfumeAromas,
   productGroups,
   purposes,
   skinTypes,
@@ -266,8 +262,10 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
                       <Input
                         multiple
                         onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          field.onChange(file); // Передаем объект File в RHF
+                          const files = e.target.files
+                            ? Array.from(e.target.files)
+                            : [];
+                          field.onChange(files);
                         }}
                         type="file"
                         onBlur={field.onBlur}

@@ -68,10 +68,8 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
       productGroupId: product?.productGroupId || 1,
     },
   });
-  console.log(form, 'form');
 
   const onSubmit = async (data: CreateProductFormValues) => {
-    console.log(form, 'form');
 
     try {
       const formData = new FormData();
