@@ -114,7 +114,7 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
       return toast.error("Something went wrong", {
         icon: "❌",
       });
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -275,30 +275,35 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
               />
               <FormSelect name="brand" control={form.control} items={brands} />
               <FormCheckbox
+                title="Аромат"
                 name="aromas"
                 control={form.control}
                 items={perfumeAromas}
               />
 
               <FormCheckbox
+                title="Верхние нотты"
                 name="topNotes"
                 control={form.control}
                 items={notes}
               />
 
               <FormCheckbox
+                title="Средние нотты"
                 name="heartNotes"
                 control={form.control}
                 items={notes}
               />
 
               <FormCheckbox
+                title="Базовые нотты"
                 name="baseNotes"
                 control={form.control}
                 items={notes}
               />
 
               <FormCheckbox
+                title="Классификация"
                 name="classification"
                 control={form.control}
                 items={classifications}
@@ -312,7 +317,9 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
             </div>
           </div>
 
-          <Button loading={loading} type="submit">Create</Button>
+          <Button loading={loading} type="submit">
+            Create
+          </Button>
         </form>
       </Form>
     </div>

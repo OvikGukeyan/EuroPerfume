@@ -505,6 +505,7 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
               />
 
               <FormCheckbox
+              title="Классификация"
                 name="classification"
                 control={form.control}
                 items={classifications}

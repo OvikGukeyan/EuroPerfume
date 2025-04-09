@@ -77,9 +77,9 @@ export const products: Prisma.ProductCreateManyInput[] = [
     gender: Gender.FEMALE,
     concentration: "EAU_DE_PARFUM",
     brand: "CHANEL",
-    topNotes: ["WILLIAMS_PEAR"],
-    heartNotes: ["WILLIAMS_PEAR"],
-    baseNotes: ["WILLIAMS_PEAR"],
+    topNotes: [Notes.ABRIKOS],
+    heartNotes: [Notes.ABRIKOS],
+    baseNotes: [Notes.ABRIKOS],
     releaseYear: 1921,
     classification: ["DESIGNER"],
     aromas: [Aromas.FLORAL],
@@ -103,9 +103,9 @@ export const products: Prisma.ProductCreateManyInput[] = [
     gender: Gender.FEMALE,
     concentration: "EAU_DE_TOILETTE",
     brand: "DIOR",
-    topNotes: ["WILLIAMS_PEAR"],
-    heartNotes: ["WILLIAMS_PEAR"],
-    baseNotes: ["WILLIAMS_PEAR"],
+    topNotes: [Notes.ABRIKOS],
+    heartNotes: [Notes.ABRIKOS],
+    baseNotes: [Notes.ABRIKOS],
     releaseYear: 2015,
     classification: ["DESIGNER"],
     aromas: [Aromas.ORIENTAL],
@@ -129,9 +129,9 @@ export const products: Prisma.ProductCreateManyInput[] = [
     gender: Gender.FEMALE,
     concentration: "PERFUME",
     brand: "GUCCI",
-    topNotes: ["WILLIAMS_PEAR"],
-    heartNotes: ["WILLIAMS_PEAR"],
-    baseNotes: ["WILLIAMS_PEAR"],
+    topNotes: [Notes.ABRIKOS],
+    heartNotes: [Notes.ABRIKOS],
+    baseNotes: [Notes.ABRIKOS],
     releaseYear: 2017,
     classification: ["CELEBRITY"],
     aromas: [Aromas.FLORAL],
@@ -155,9 +155,9 @@ export const products: Prisma.ProductCreateManyInput[] = [
     gender: Gender.FEMALE,
     concentration: "EXTRAIT",
     brand: "TOM_FORD",
-    topNotes: ["WILLIAMS_PEAR"],
-    heartNotes: ["WILLIAMS_PEAR"],
-    baseNotes: ["WILLIAMS_PEAR"],
+    topNotes: [Notes.ABRIKOS],
+    heartNotes: [Notes.ABRIKOS],
+    baseNotes: [Notes.ABRIKOS],
     releaseYear: 2006,
     classification: ["NICHE"],
     aromas: [Aromas.ORIENTAL],
@@ -181,9 +181,9 @@ export const products: Prisma.ProductCreateManyInput[] = [
     gender: Gender.FEMALE,
     concentration: "EAU_DE_PARFUM",
     brand: "YVES_SAINT_LAURENT",
-    topNotes: ["WILLIAMS_PEAR"],
-    heartNotes: ["WILLIAMS_PEAR"],
-    baseNotes: ["WILLIAMS_PEAR"],
+    topNotes: [Notes.ABRIKOS],
+    heartNotes: [Notes.ABRIKOS],
+    baseNotes: [Notes.ABRIKOS],
     releaseYear: 2019,
     classification: ["DESIGNER"],
     aromas: [Aromas.FLORAL],
@@ -207,9 +207,9 @@ export const products: Prisma.ProductCreateManyInput[] = [
     gender: Gender.FEMALE,
     concentration: "EAU_DE_TOILETTE",
     brand: "VERSACE",
-    topNotes: ["WILLIAMS_PEAR"],
-    heartNotes: ["WILLIAMS_PEAR"],
-    baseNotes: ["WILLIAMS_PEAR"],
+    topNotes: [Notes.ABRIKOS],
+    heartNotes: [Notes.ABRIKOS],
+    baseNotes: [Notes.ABRIKOS],
     releaseYear: 2012,
     classification: ["CELEBRITY"],
     aromas: [Aromas.ORIENTAL],
@@ -233,9 +233,9 @@ export const products: Prisma.ProductCreateManyInput[] = [
     gender: Gender.FEMALE,
     concentration: "EAU_DE_PARFUM",
     brand: "ARMANI",
-    topNotes: ["WILLIAMS_PEAR"],
-    heartNotes: ["WILLIAMS_PEAR"],
-    baseNotes: ["WILLIAMS_PEAR"],
+    topNotes: [Notes.ABRIKOS],
+    heartNotes: [Notes.ABRIKOS],
+    baseNotes: [Notes.ABRIKOS],
     releaseYear: 2004,
     classification: ["DESIGNER"],
     aromas: [Aromas.ORIENTAL],
@@ -259,9 +259,9 @@ export const products: Prisma.ProductCreateManyInput[] = [
     gender: Gender.FEMALE,
     concentration: "PERFUME",
     brand: "GIVENCHY",
-    topNotes: ["WILLIAMS_PEAR"],
-    heartNotes: ["WILLIAMS_PEAR"],
-    baseNotes: ["WILLIAMS_PEAR"],
+    topNotes: [Notes.ABRIKOS],
+    heartNotes: [Notes.ABRIKOS],
+    baseNotes: [Notes.ABRIKOS],
     releaseYear: 2015,
     classification: ["CELEBRITY"],
     aromas: [Aromas.ORIENTAL],
@@ -799,6 +799,7 @@ export const packagingFormats: {
   { value: PackagingFormat.JAR, label: { ru: "Баночка", de: "Dose" } },
 ];
 
+
 export const skinTypes: {
   value: SkinType;
   label: { ru: string; de: string };
@@ -904,10 +905,6 @@ export const notes: { value: Notes; label: { ru: string; de: string } }[] = [
   {
     value: Notes.ORANGE_PEEL,
     label: { ru: "Апельсиновая кожура", de: "Orangenschale" },
-  },
-  {
-    value: Notes.ORANGE_ZEST,
-    label: { ru: "Апельсиновая цедра", de: "Orangenzeste" },
   },
   {
     value: Notes.BEDLINEN_FRAGRANCE,
@@ -1131,98 +1128,8 @@ export const notes: { value: Notes; label: { ru: string; de: string } }[] = [
     value: Notes.ZELENAYA_LESTVA,
     label: { ru: "Зеленая листва", de: "Grüne Blätter" },
   },
-  { value: Notes.AKATSIA, label: { ru: "акация", de: "Akazie" } },
-  {
-    value: Notes.AKVATICHESKIE_NOTY,
-    label: { ru: "Акватические ноты", de: "Aquatische Noten" },
-  },
-  {
-    value: Notes.AKKORD_RUSSKOY_KOJI,
-    label: { ru: 'аккорд "русской кожи"', de: 'Akkord "russisches Leder"' },
-  },
-  { value: Notes.ALDEHYDY, label: { ru: "альдегиды", de: "Aldehyde" } },
-  {
-    value: Notes.AMBRA_YANTARY,
-    label: { ru: "амбра (янтарь)", de: "Amber (Tage)" },
-  },
-  { value: Notes.ANANAS, label: { ru: "Ананас", de: "Ananas" } },
-  { value: Notes.ANGELIKA, label: { ru: "ангелика", de: "Angelika" } },
-  {
-    value: Notes.ANGLIYSKAYA_LAVANDA,
-    label: { ru: "Английская лаванда", de: "Englische Lavendel" },
-  },
-  {
-    value: Notes.ANIMALISTICHESKIE_OTTENKI,
-    label: { ru: "анималистические оттенки", de: "animalistische Nuancen" },
-  },
-  {
-    value: Notes.ANYUTINYE_GLAZKI,
-    label: { ru: "анютины глазки", de: "Stiefmütterchen" },
-  },
-  {
-    value: Notes.APELSINOVAYA_KOJURA,
-    label: { ru: "Апельсиновая кожура", de: "Orangenschale" },
-  },
-  {
-    value: Notes.APELSINOVAYA_TSEDRA,
-    label: { ru: "Апельсиновая цедра", de: "Orangenzeste" },
-  },
-  {
-    value: Notes.AROMAT_POSTELNOGO_BELYA,
-    label: { ru: "аромат постельного белья", de: "Bettwäsche-Aroma" },
-  },
-  {
-    value: Notes.AROMATICHESKIE_NOTY,
-    label: { ru: "ароматические ноты", de: "aromatische Noten" },
-  },
-  { value: Notes.ARTEMIZIYA, label: { ru: "Артемизия", de: "Artemisia" } },
-  {
-    value: Notes.AFRIKANSKIY_APELSINOVYY_CVET,
-    label: {
-      ru: "Африканский апельсиновый цвет",
-      de: "Afrikanische Orangenblüte",
-    },
-  },
-  { value: Notes.BANAN, label: { ru: "Банан", de: "Banane" } },
-  { value: Notes.BEZE, label: { ru: "безе", de: "Baiser" } },
-  {
-    value: Notes.BELAYA_GRUSHA,
-    label: { ru: "белая груша", de: "weiße Birne" },
-  },
-  {
-    value: Notes.BELAYA_LILIYA,
-    label: { ru: "белая лилия", de: "weiße Lilie" },
-  },
-  { value: Notes.BELAYA_ROZA, label: { ru: "Белая роза", de: "weiße Rose" } },
-  {
-    value: Notes.BELAYA_SMORODINA,
-    label: { ru: "Белая смородина", de: "weiße Johannisbeere" },
-  },
-  {
-    value: Notes.BELAYA_FIALKA,
-    label: { ru: "Белая фиалка", de: "weiße Veilchen" },
-  },
-  {
-    value: Notes.BELAYA_FREZIA,
-    label: { ru: "Белая фрезия", de: "weiße Freesie" },
-  },
-  { value: Notes.BELEE_VINO, label: { ru: "Белое вино", de: "weißer Wein" } },
-  {
-    value: Notes.BELIE_CVETY,
-    label: { ru: "белые цветы", de: "weiße Blumen" },
-  },
-  {
-    value: Notes.BELIY_BERGAMOT,
-    label: { ru: "Белый бергамот", de: "weißer Bergamotte" },
-  },
-  {
-    value: Notes.BELIY_GEDIKHIUM,
-    label: { ru: "белый гедихиум", de: "weißer Gedihium" },
-  },
-  {
-    value: Notes.BELIY_GIAZINT,
-    label: { ru: "белый гиацинт", de: "weißer Hyazinth" },
-  },
+
+ 
   { value: Notes.KIPARIS, label: { ru: "Кипарис", de: "Zypresse" } },
   {
     value: Notes.KITAYSKIY_GREIPFRUT,
@@ -1429,10 +1336,6 @@ export const notes: { value: Notes; label: { ru: string; de: string } }[] = [
     label: { ru: "Лист черной смородины", de: "Blatt Schwarze Johannisbeere" },
   },
   {
-    value: Notes.LIST_ANANASA,
-    label: { ru: "Листья ананаса", de: "Ananasblätter" },
-  },
-  {
     value: Notes.LIST_APELSINA,
     label: { ru: "Листья апельсина", de: "Orangenblätter" },
   },
@@ -1445,10 +1348,6 @@ export const notes: { value: Notes; label: { ru: string; de: string } }[] = [
     label: { ru: "Листья герани", de: "Geranienblätter" },
   },
   {
-    value: Notes.LIST_GORKOGO_APELSINA,
-    label: { ru: "листья горького апельсина", de: "Blätter Bitterorange" },
-  },
-  {
     value: Notes.LIST_ZELYONOY_ZEMLYANIKI,
     label: { ru: "Листья земляники", de: "Erdbeerblätter" },
   },
@@ -1458,10 +1357,6 @@ export const notes: { value: Notes; label: { ru: string; de: string } }[] = [
       ru: "листья индийского финикового дерева",
       de: "Blätter Indischer Dattelpalme",
     },
-  },
-  {
-    value: Notes.LIST_INJIRA,
-    label: { ru: "Листья инжира", de: "Feigenblatt" },
   },
   {
     value: Notes.LIST_KEDRA,
@@ -1476,16 +1371,8 @@ export const notes: { value: Notes; label: { ru: string; de: string } }[] = [
     label: { ru: "листья клубники", de: "Erdbeerblätter" },
   },
   {
-    value: Notes.LIST_LIMONA,
-    label: { ru: "Листья лимона", de: "Zitronenblätter" },
-  },
-  {
     value: Notes.LIST_MALINY,
     label: { ru: "Листья малины", de: "Himbeerblätter" },
-  },
-  {
-    value: Notes.LIST_MANDARINA,
-    label: { ru: "Листья мандарина", de: "Mandarinenblätter" },
   },
   {
     value: Notes.LIST_MIMOZY,
@@ -1494,10 +1381,6 @@ export const notes: { value: Notes; label: { ru: string; de: string } }[] = [
   {
     value: Notes.LIST_OLIVY,
     label: { ru: "листья оливы", de: "Olivenblätter" },
-  },
-  {
-    value: Notes.LIST_PACHULI,
-    label: { ru: "Листья пачули", de: "Patschuliblatt" },
   },
   { value: Notes.LIST_PLYUSHA, label: { ru: "Листья плюща", de: "Efeublatt" } },
   {
@@ -2272,6 +2155,8 @@ export const notes: { value: Notes; label: { ru: string; de: string } }[] = [
   { value: Notes.YANTAR, label: { ru: "Янтарь", de: "Bernstein" } },
 ];
 
+
+
 export const perfumeAromas: {
   value: Aromas;
   label: { ru: string; de: string };
@@ -2296,7 +2181,6 @@ export const perfumeAromas: {
   { value: Aromas.LEATHER, label: { ru: "Кожаный", de: "Leder" } },
   { value: Aromas.METALLIC, label: { ru: "Металлический", de: "Metallisch" } },
   { value: Aromas.MILKY, label: { ru: "Молочный", de: "Milchig" } },
-  { value: Aromas.MUSKY, label: { ru: "Мускусный", de: "Moschusartig" } },
   { value: Aromas.OZONE, label: { ru: "Озоновый", de: "Ozonisch" } },
   {
     value: Aromas.ORIENTAL_AMBER,
@@ -2307,10 +2191,29 @@ export const perfumeAromas: {
   { value: Aromas.SWEET, label: { ru: "Сладкий", de: "Süß" } },
   { value: Aromas.RESINOUS, label: { ru: "Смолистый", de: "Harzig" } },
   { value: Aromas.MARITIME, label: { ru: "Морской", de: "Maritim" } },
-  { value: Aromas.AQUATIC, label: { ru: "Акватический", de: "Aquatisch" } },
   { value: Aromas.WOODY, label: { ru: "Древесный", de: "Holzig" } },
   { value: Aromas.GREEN, label: { ru: "Зелёный", de: "Grün" } },
   { value: Aromas.TOBACCO, label: { ru: "Табачный", de: "Tabakartig" } },
+
+  { value: Aromas.AMBER,             label: { ru: "Амбровые", de: "Ambroxene" } },
+  { value: Aromas.BALSAMIC,       label: { ru: "Бальзамические", de: "Balsamisch" } },
+  { value: Aromas.VANILLA,            label: { ru: "Ванильные", de: "Vanillig" } },
+  { value: Aromas.SPRINGTIME,             label: { ru: "Весенние", de: "Frühlings" } },
+  { value: Aromas.EVENING,            label: { ru: "Вечерние", de: "Abendlich" } },
+  { value: Aromas.AQUATIC,               label: { ru: "Водные", de: "Wasser" } },
+  { value: Aromas.ORIENTAL,           label: { ru: "Восточные", de: "Oriental" } },
+  { value: Aromas.ORIENTAL_GOURMAND, label: { ru: "Восточные гурманские", de: "Oriental Gourmand" } },
+  { value: Aromas.ORIENTAL_SPICY,    label: { ru: "Восточные пряные", de: "Oriental Würzig" } },
+  { value: Aromas.ORIENTAL_FLORAL, label: { ru: "Восточные цветочные", de: "Oriental Blumig" } },
+  { value: Aromas.DAYTIME,               label: { ru: "Дневные", de: "Tages" } },
+  { value: Aromas.WOODY_FOUGÈRE,   label: { ru: "Древесные фужерные", de: "Holzig-fougère" } },
+  { value: Aromas.CASHMERAN,            label: { ru: "Кашмеран", de: "Cashmeran" } },
+  { value: Aromas.SUMMER,               label: { ru: "Летние", de: "Sommer" } },
+  { value: Aromas.MUSKY,            label: { ru: "Мускатные", de: "Muskatartig" } },
+  { value: Aromas.ROMANTIC,       label: { ru: "Романтический", de: "Romantisch" } },
+  { value: Aromas.FRESH,              label: { ru: "Свежие", de: "Frisch" } },
+  { value: Aromas.HERBAL,            label: { ru: "Травяные", de: "Kräuter" } },
+  { value: Aromas.FLORAL_WOODY,  label: { ru: "Цветочные древесные", de: "Blumig-holzig" } },
 ];
 export type AromasType = typeof perfumeAromas;
 

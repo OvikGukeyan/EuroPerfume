@@ -13,6 +13,7 @@ import {
   PerfumeConcentration,
 } from "@prisma/client";
 import { useFiltersStore } from "@/shared/store/filters";
+import { brands, notes } from "@/prisma/constants";
 
 interface Props {
   className?: string;
@@ -39,15 +40,10 @@ export const Filters: FC<Props> = () => {
         className="mb-5"
         onClickCheckbox={filters.setSelectedBrands}
         selected={filters.brands}
-        items={[
-          { text: "Chanel", value: Brands.CHANEL },
-          { text: "Dior", value: Brands.DIOR },
-          { text: "Gucci", value: Brands.GUCCI },
-          { text: "Yves Saint Laurent", value: Brands.YVES_SAINT_LAURENT },
-          { text: "Versace", value: Brands.VERSACE },
-          { text: "Calvin Klein", value: Brands.CALVIN_KLEIN },
-          { text: "Tom Ford", value: Brands.TOM_FORD },
-        ]}
+        items={brands.map((item) => ({
+          text: item.name,
+          value: item.value,
+        }))}
       />
 
       <CheckboxFiltersGroup
@@ -138,17 +134,10 @@ export const Filters: FC<Props> = () => {
         className="mt-50"
         limit={6}
         // defaultItems={items.slice(0, 6)}
-        items={[
-          { text: "Citrus", value: Notes.ACACIA },
-          { text: "Floral", value: Notes.ABSOLYU_ROZY },
-          { text: "Green", value: Notes.AMBRA_AMBER },
-          { text: "Fruity", value: Notes.AKATSIA },
-          { text: "Spicy", value: Notes.ANYUTINYE_GLAZKI },
-          { text: "Woody", value: Notes.AROMAT_POSTELNOGO_BELYA },
-          { text: "Oriental", value: Notes.ANANAS },
-          { text: "Musk", value: Notes.BELAYA_LILIYA },
-          { text: "Aquatic", value: Notes.BELIY_BERGAMOT },
-        ]}
+        items={notes.map((note) => ({
+          text: note.label.ru,
+          value: note.value,
+        }))}
         onClickCheckbox={filters.setSelectedNotes}
         selected={filters.notes}
       />
