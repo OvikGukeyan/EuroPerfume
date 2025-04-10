@@ -15,10 +15,11 @@ export const CartButton: FC<Props> = ({ className }) => {
     return (
         <CartDrawer>
             <Button
-                loading={loading}
+            variant='ghost'
+                // loading={loading}
                 className={cn('group relative', {'w-[105px]': loading}, className)}>
-                <b>{totalAmount} €</b>
-                <span className="h-full w-[1px] bg-white/30 mx-3" />
+                <b className='hidden md:block'>{totalAmount} €</b>
+                <span className="hidden md:block h-full w-[1px] bg-black/30 mx-3" />
                 <div className="flex items-center gap-1 transition duration-300 group-hover:opacity-0">
                     <ShoppingCart size={16} className="relative" strokeWidth={2} />
                     <b>{itemCount}</b>

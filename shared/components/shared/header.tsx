@@ -13,7 +13,7 @@ import {
 } from "@/shared/components/shared";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { Heart, Truck } from "lucide-react";
+import { Heart, Menu, Truck } from "lucide-react";
 import { Button, Separator } from "../ui";
 import { useFavorites, useInitFiltersFromUrl } from "@/shared/hooks";
 interface Props {
@@ -27,9 +27,6 @@ export const Header: React.FC<Props> = ({
   hasSearch = true,
   hasCart = true,
 }) => {
-  
-
-
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -59,7 +56,7 @@ export const Header: React.FC<Props> = ({
 
   return (
     <>
-      <div className="flex items-center gap-4 h-10  px-3 md:px-5">
+      <div className="flex items-center gap-3 h-10  px-3 md:px-5">
         <Truck />
         <h3 className="text-sm md:text-base">
           Free shipping available for orders above $100
@@ -68,45 +65,53 @@ export const Header: React.FC<Props> = ({
       <header className={cn("", className)}>
         <Separator />
         <div className="flex items-center justify-between py-3 md:py-10 px-3 md:px-5 ">
-          <Link href={"/"}>
-            <div className="flex items-center gap-4 h-10 w-10 md:w-44 relative">
-              <picture>
-                <source
-                  media="(max-width: 767px)"
-                  srcSet="/assets/logo-mobile.png"
-                />
+          <div className="md:hidden flex items-center">
+            <Menu size={20} />
+            <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />
+          </div>
+          <div className="relative flex justify-center items-center w-36 md:w-44 h-10 mx-auto">
+            <Link href="/">
+              <picture className="w-full h-full">
+                <source media="(max-width: 767px)" srcSet="/assets/logo.png" />
                 <source media="(min-width: 767px)" srcSet="/assets/logo.png" />
                 <Image
-                  src={"/assets/logo.png"}
+                  src="/assets/logo.png"
                   layout="fill"
                   objectFit="contain"
+                  objectPosition="center"
                   alt="logo"
-                  className="mr-3 "
+                  className="w-full h-full"
                 />
               </picture>
-            </div>
-          </Link>
+            </Link>
+          </div>
 
           {hasSearch && (
             <div className="mx-10 flex-1 hidden md:flex">
               <SearchInput />
             </div>
           )}
+          <div></div>
 
-          <div className="flex  items-center gap-3">
-            <Button
-              onClick={() => router.push("/favorites")}
-              variant={"secondary"}
-              size={"icon"}
-              loading={loading}
-            >
-              <Heart />
-            </Button>
+          <div className="flex  items-center gap-0 md:gap-3">
             <AuthModal
+              className="hidden "
               open={openAuthModal}
               onClose={() => setOpenAuthModal(false)}
             />
-            <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />
+            <ProfileButton
+              className="hidden md:block"
+              onClickSignIn={() => setOpenAuthModal(true)}
+            />
+
+            <Button
+              onClick={() => router.push("/favorites")}
+              variant={"ghost"}
+              size={"icon"}
+              // loading={loading}
+            >
+              <Heart size={20} />
+            </Button>
 
             {hasCart && <CartButton />}
           </div>

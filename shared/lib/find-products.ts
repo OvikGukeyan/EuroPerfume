@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma/prisma-client";
 import {
+  Aromas,
   Brands,
   Category,
   Classifications,
@@ -16,6 +17,7 @@ export interface GetSearchParams {
   brands?: string;
   gender?: string;
   notes?: string;
+  aromas?: string;
   classification?: string;
   concentration?: string;
   priceFrom?: string;
@@ -53,6 +55,10 @@ export const findProducts = async (
       (await params).notes
         ?.split(",")
         .map((item) => item.trim().toUpperCase()) ?? [];
+    const aromas =
+      (await params).aromas
+        ?.split(",")
+        .map((item) => item.trim().toUpperCase()) ?? [];
     const classification =
       (await params).classification
         ?.split(",")
@@ -82,6 +88,7 @@ export const findProducts = async (
       available: true,
       categoryId: categoryId || 1,
       productGroupId: productGroupId || undefined,
+      aromas: aromas.length > 0 ? { hasSome: aromas as Aromas[] } : undefined,
       ...(notes.length > 0 && {
         OR: [
           { topNotes: { hasSome: notes as Notes[] } },
@@ -90,6 +97,8 @@ export const findProducts = async (
         ],
       }),
     };
+
+    console.log(whereClause)
     const [categoryes, totalCount] = await prisma.$transaction([
       prisma.category.findMany({
         include: {
@@ -117,7 +126,6 @@ export const findProducts = async (
 
     const totalPages = Math.ceil(totalCount / 6);
     return { categoryes, totalPages };
-
   } catch (error) {
     console.error(error);
     return { categoryes: [], totalPages: 0 };

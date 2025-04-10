@@ -1,4 +1,3 @@
-import { productGroups } from "./../../prisma/constants";
 import { create } from "zustand";
 
 interface PriceProps {
@@ -16,6 +15,7 @@ export interface Filters {
   brands: Set<string>;
   classification: Set<string>;
   notes: Set<string>;
+  aromas: Set<string>;
   prices: PriceProps;
   orderBy: OrderByType;
   category: number | null;
@@ -30,12 +30,13 @@ interface FiltersStore extends Filters {
   setSelectedBrands: (key: string) => void;
   setSelectedClassification: (key: string) => void;
   setSelectedNotes: (key: string) => void;
+  setSelectedAromas: (key: string) => void;
   setCurrentPage: (page: number) => void;
   setFilters: (filters: Filters) => void;
   setOrderBy: (value: string) => void;
   resetFilters: () => void;
   setCategory: (category: number) => void;
-  setProductGroup: (productGroup: number | null ) => void;
+  setProductGroup: (productGroup: number | null) => void;
 }
 
 export const useFiltersStore = create<FiltersStore>((set, get) => ({
@@ -45,6 +46,7 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
   brands: new Set<string>(),
   classification: new Set<string>(),
   notes: new Set<string>(),
+  aromas: new Set<string>(),
   prices: {},
   orderBy: {},
   category: 1,
@@ -53,7 +55,8 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
 
   setCategory: (category: number) => set({ category }),
 
-  setProductGroup: (productGroup: number | null) => set(() => ({ productGroup })),
+  setProductGroup: (productGroup: number | null) =>
+    set(() => ({ productGroup })),
 
   setPrices: (name, value) =>
     set((state) => ({
@@ -95,6 +98,13 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
       return { notes: newSet };
     }),
 
+  setSelectedAromas: (key) =>
+    set((state) => {
+      const newSet = new Set(state.aromas);
+      newSet.has(key) ? newSet.delete(key) : newSet.add(key);
+      return { aromas: newSet };
+    }),
+
   setOrderBy: (value: string) => {
     const orderBy = ((): OrderByType => {
       switch (value) {
@@ -118,7 +128,6 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
   // Метод для установки всех фильтров сразу
   setFilters: (newFilters) => set(() => newFilters),
 
-
   resetFilters: () =>
     set({
       gender: new Set<string>(),
@@ -126,6 +135,7 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
       brands: new Set<string>(),
       classification: new Set<string>(),
       notes: new Set<string>(),
+      aromas: new Set<string>(),
       prices: {},
       orderBy: {},
       currentPage: 1,

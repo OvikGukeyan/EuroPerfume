@@ -24,6 +24,9 @@ export const useInitFiltersFromUrl = () => {
       notes: new Set<string>(
         searchParams.get("notes")?.split(",").filter(Boolean) || []
       ),
+      aromas: new Set<string>(
+        searchParams.get("aromas")?.split(",").filter(Boolean) || []
+      ),
       currentPage: Number(searchParams.get("page")) || 1,
       orderBy: JSON.parse(searchParams.get("orderBy") || "{}"),
       prices: {

@@ -13,7 +13,7 @@ import {
   PerfumeConcentration,
 } from "@prisma/client";
 import { useFiltersStore } from "@/shared/store/filters";
-import { brands, notes } from "@/prisma/constants";
+import { brands, notes, perfumeAromas } from "@/prisma/constants";
 
 interface Props {
   className?: string;
@@ -129,9 +129,22 @@ export const Filters: FC<Props> = () => {
       </div>
 
       <CheckboxFiltersGroup
+        title="Aromas group"
+        name="aromas"
+        className="my-5"
+        limit={6}
+        // defaultItems={items.slice(0, 6)}
+        items={perfumeAromas.map((item) => ({
+          text: item.label.ru,
+          value: item.value,
+        }))}
+        onClickCheckbox={filters.setSelectedAromas}
+        selected={filters.aromas}
+      />
+
+      <CheckboxFiltersGroup
         title="Fragrance Notes"
         name="notes"
-        className="mt-50"
         limit={6}
         // defaultItems={items.slice(0, 6)}
         items={notes.map((note) => ({

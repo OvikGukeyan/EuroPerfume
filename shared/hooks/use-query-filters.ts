@@ -16,6 +16,7 @@ export const useQueryFilters = (filters: Filters) => {
         concentration: Array.from(filters.concentration),
         gender: Array.from(filters.gender),
         notes: Array.from(filters.notes),
+        aromas: Array.from(filters.aromas),
         page: filters.currentPage > 1 ? filters.currentPage : undefined,
         category: filters.category || undefined,
         productGroup: filters.productGroup || undefined,
