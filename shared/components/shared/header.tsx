@@ -7,15 +7,15 @@ import Link from "next/link";
 import {
   AuthModal,
   CartButton,
-  Container,
+  MenuDrawer,
   ProfileButton,
   SearchInput,
 } from "@/shared/components/shared";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
-import { Heart, Menu, Truck } from "lucide-react";
+import { Heart, Truck } from "lucide-react";
 import { Button, Separator } from "../ui";
-import { useFavorites, useInitFiltersFromUrl } from "@/shared/hooks";
+import { useInitFiltersFromUrl } from "@/shared/hooks";
 interface Props {
   hasSearch?: boolean;
   hasCart?: boolean;
@@ -52,7 +52,6 @@ export const Header: React.FC<Props> = ({
       }, 500);
     }
   }, [router, searchParams]);
-  const { favoritesLoading: loading } = useFavorites();
 
   return (
     <>
@@ -66,7 +65,7 @@ export const Header: React.FC<Props> = ({
         <Separator />
         <div className="flex items-center justify-between py-3 md:py-10 px-3 md:px-5 ">
           <div className="md:hidden flex items-center">
-            <Menu size={20} />
+           <MenuDrawer/>
             <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />
           </div>
           <div className="relative flex justify-center items-center w-36 md:w-44 h-10 mx-auto">

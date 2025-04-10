@@ -3,6 +3,7 @@ import * as cart from "./cart";
 import * as auth from "./auth";
 import * as favorites from "./favorites";
 import * as orders from "./orders"
+import * as categories from "./categories"
 
 
 export const Api = {
@@ -10,5 +11,6 @@ export const Api = {
     cart,
     auth,
     favorites,
-    orders
+    orders,
+    categories
 }

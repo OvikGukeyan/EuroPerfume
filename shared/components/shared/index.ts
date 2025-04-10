@@ -54,6 +54,8 @@ export {ProductCharacteristics} from './product-characteristics';
 export {ChooseVariation} from './choose-variation';
 export {OrderItemsPopover} from './order-items-popover';
 export {ProductCarousel} from './product-carousel';
+export {MenuDrawer} from './menu-drawer';
+export {MenuDrawerItem} from './menu-drawer-item';
 
 export * from './email-templates';
 export * from './form';

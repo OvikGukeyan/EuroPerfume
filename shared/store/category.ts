@@ -1,11 +1,24 @@
+import { Category, ProductGroup } from '@prisma/client';
 import {create} from 'zustand'
+import { Api } from '../services/api-client';
 
-interface State {
+export interface CategoriesState {
     activeId: number;
+    categories: (Category & { productGroups: ProductGroup[] })[]
     setActiveId: (activeId: number) => void;
+    fetchCategories: () => Promise<void>
 }
 
-export const useCategoryStore = create<State>()((set) => ({
+export const useCategoryStore = create<CategoriesState>()((set) => ({
     activeId: 1,
-    setActiveId: (activeId: number) => set({activeId})
+    categories:[],
+    setActiveId: (activeId: number) => set({activeId}),
+    fetchCategories: async () => {
+        try {
+            const data = await Api.categories.fetchCategories()
+            set({categories: data})
+        } catch (error) {
+            console.error(error)
+        }
+    }
 }))
