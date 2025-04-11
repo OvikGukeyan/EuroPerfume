@@ -1,4 +1,4 @@
-import { signIn, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import React, { FC } from "react";
 import { Button } from "../ui";
 import { CircleUser, User } from "lucide-react";
@@ -26,14 +26,14 @@ export const ProfileButton: FC<Props> = ({ className, onClickSignIn }) => {
         <>
           {session.user.role === "ADMIN" ? (
             <Link href={"/create/1"}>
-              <Button variant="secondary" className="flex items-center gap-2">
+              <Button variant="ghost" className="flex items-center gap-2">
                 <CircleUser size={18} />
                 <span className="hidden md:block">Dashboard</span>
               </Button>
             </Link>
           ) : (
             <Link href={"/profile"}>
-              <Button variant="secondary" className="flex items-center gap-2">
+              <Button variant="ghost" className="flex items-center gap-2">
                 <CircleUser size={18} />
                 <span className="hidden md:block">Profile</span>
               </Button>

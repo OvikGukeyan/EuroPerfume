@@ -50,7 +50,7 @@ export const TopBar: FC<Props> = ({ className, categories }) => {
           <SortPopup />
         </div>
 
-        <Categories  items={categories} />
+        <Categories className="hidden md:block"  items={categories} />
 
       </Container>
     </div>
