@@ -1,7 +1,7 @@
 "use client";
 import React, { FC, Suspense, useState } from "react";
 import { cn } from "@/lib/utils";
-import { MenuDrawerItem } from ".";
+import { MenuDrawerItem, SocialMediaBar } from ".";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "..";
 import { Menu } from "lucide-react";
@@ -18,7 +18,6 @@ export const MenuDrawer: FC<Props> = ({ className }) => {
   return (
     <div className={cn(className, "sticky top-52 md:top-56 z-20")}>
       <Suspense>
-   
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button
@@ -32,11 +31,24 @@ export const MenuDrawer: FC<Props> = ({ className }) => {
 
           <SheetContent
             side={"left"}
-            className="flex flex-col bg-[#FFF] px-4 py-12 xl:hidden overflow-y-auto"
+            className="flex flex-col justify-between bg-[#FFF] px-8 py-12 xl:hidden overflow-y-auto "
           >
-            {categories.map((category) => (
-              <MenuDrawerItem setOpen={setOpen} category={category} key={category.id} />
-            ))}
+            <div>
+              {categories.map((category) => (
+                <MenuDrawerItem
+                  setOpen={setOpen}
+                  category={category}
+                  key={category.id}
+                />
+              ))}
+            </div>
+            <div className="flex flex-col gap-3">
+              <h2 className="text-xl font-semibold">Возврат</h2>
+              <h2 className="text-xl font-semibold">Доставка</h2>
+              <h2 className="text-xl font-semibold">Оплата</h2>
+              <h2 className="text-xl font-semibold">Контакты</h2>
+            </div>
+            <SocialMediaBar />
           </SheetContent>
         </Sheet>
       </Suspense>

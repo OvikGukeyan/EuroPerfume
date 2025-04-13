@@ -21,8 +21,14 @@ export const useInitFiltersFromUrl = () => {
       classification: new Set<string>(
         searchParams.get("classification")?.split(",").filter(Boolean) || []
       ),
-      notes: new Set<string>(
-        searchParams.get("notes")?.split(",").filter(Boolean) || []
+      topNotes: new Set<string>(
+        searchParams.get("topNotes")?.split(",").filter(Boolean) || []
+      ),
+      heartNotes: new Set<string>(
+        searchParams.get("heartNotes")?.split(",").filter(Boolean) || []
+      ),
+      baseNotes: new Set<string>(
+        searchParams.get("baseNotes")?.split(",").filter(Boolean) || []
       ),
       aromas: new Set<string>(
         searchParams.get("aromas")?.split(",").filter(Boolean) || []

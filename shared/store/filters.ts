@@ -14,7 +14,9 @@ export interface Filters {
   concentration: Set<string>;
   brands: Set<string>;
   classification: Set<string>;
-  notes: Set<string>;
+  topNotes: Set<string>;
+  heartNotes: Set<string>;
+  baseNotes: Set<string>;
   aromas: Set<string>;
   prices: PriceProps;
   orderBy: OrderByType;
@@ -29,7 +31,9 @@ interface FiltersStore extends Filters {
   setSelectedConcentration: (key: string) => void;
   setSelectedBrands: (key: string) => void;
   setSelectedClassification: (key: string) => void;
-  setSelectedNotes: (key: string) => void;
+  setTopNotes: (key: string) => void;
+  setHeartNotes: (key: string) => void;
+  setBaseNotes: (key: string) => void;
   setSelectedAromas: (key: string) => void;
   setCurrentPage: (page: number) => void;
   setFilters: (filters: Filters) => void;
@@ -45,7 +49,9 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
   concentration: new Set<string>(),
   brands: new Set<string>(),
   classification: new Set<string>(),
-  notes: new Set<string>(),
+  topNotes: new Set<string>(),
+  heartNotes: new Set<string>(),
+  baseNotes: new Set<string>(),
   aromas: new Set<string>(),
   prices: {},
   orderBy: {},
@@ -91,11 +97,26 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
       return { classification: newSet };
     }),
 
-  setSelectedNotes: (key) =>
+  setTopNotes: (key) =>
     set((state) => {
-      const newSet = new Set(state.notes);
+      const newSet = new Set(state.topNotes);
       newSet.has(key) ? newSet.delete(key) : newSet.add(key);
-      return { notes: newSet };
+      return { topNotes: newSet };
+    }),
+
+  setHeartNotes: (key) =>
+    set((state) => {
+      const newSet = new Set(state.heartNotes);
+      newSet.has(key) ? newSet.delete(key) : newSet.add(key);
+      return { heartNotes: newSet };
+    }),
+
+
+  setBaseNotes: (key) =>
+    set((state) => {
+      const newSet = new Set(state.baseNotes);
+      newSet.has(key) ? newSet.delete(key) : newSet.add(key);
+      return { baseNotes: newSet };
     }),
 
   setSelectedAromas: (key) =>
@@ -134,7 +155,9 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
       concentration: new Set<string>(),
       brands: new Set<string>(),
       classification: new Set<string>(),
-      notes: new Set<string>(),
+      topNotes: new Set<string>(),
+      heartNotes: new Set<string>(),
+      baseNotes: new Set<string>(),
       aromas: new Set<string>(),
       prices: {},
       orderBy: {},

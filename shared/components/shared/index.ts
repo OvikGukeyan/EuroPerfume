@@ -56,6 +56,7 @@ export {OrderItemsPopover} from './order-items-popover';
 export {ProductCarousel} from './product-carousel';
 export {MenuDrawer} from './menu-drawer';
 export {MenuDrawerItem} from './menu-drawer-item';
+export {SocialMediaBar} from './social-media-bar';
 
 export * from './email-templates';
 export * from './form';

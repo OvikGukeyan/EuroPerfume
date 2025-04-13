@@ -38,6 +38,7 @@ export const Filters: FC<Props> = () => {
         title="Brands"
         name="brands"
         className="mb-5"
+        limit={3}
         onClickCheckbox={filters.setSelectedBrands}
         selected={filters.brands}
         items={brands.map((item) => ({
@@ -65,6 +66,7 @@ export const Filters: FC<Props> = () => {
         className="mb-5"
         onClickCheckbox={filters.setSelectedConcentration}
         selected={filters.concentration}
+        limit={3}
         items={[
           { text: "Extrait de Parfum", value: PerfumeConcentration.EXTRAIT },
           { text: "Perfume", value: PerfumeConcentration.PERFUME },
@@ -84,6 +86,7 @@ export const Filters: FC<Props> = () => {
         title="Classification"
         name="categories"
         className="mb-5"
+        limit={3}
         onClickCheckbox={filters.setSelectedClassification}
         selected={filters.classification}
         items={[
@@ -132,7 +135,7 @@ export const Filters: FC<Props> = () => {
         title="Aromas group"
         name="aromas"
         className="my-5"
-        limit={6}
+        limit={3}
         // defaultItems={items.slice(0, 6)}
         items={perfumeAromas.map((item) => ({
           text: item.label.ru,
@@ -143,16 +146,43 @@ export const Filters: FC<Props> = () => {
       />
 
       <CheckboxFiltersGroup
-        title="Fragrance Notes"
-        name="notes"
-        limit={6}
+        title="Top Notes"
+        name="topNotes"
+        limit={3}
         // defaultItems={items.slice(0, 6)}
         items={notes.map((note) => ({
           text: note.label.ru,
           value: note.value,
         }))}
-        onClickCheckbox={filters.setSelectedNotes}
-        selected={filters.notes}
+        onClickCheckbox={filters.setTopNotes}
+        selected={filters.topNotes}
+      />
+
+      <CheckboxFiltersGroup
+      className="my-5"
+        title="Heart Notes"
+        name="heartNotes"
+        limit={3}
+        // defaultItems={items.slice(0, 6)}
+        items={notes.map((note) => ({
+          text: note.label.ru,
+          value: note.value,
+        }))}
+        onClickCheckbox={filters.setHeartNotes}
+        selected={filters.heartNotes}
+      />
+
+      <CheckboxFiltersGroup
+        title="Base Notes"
+        name="baseNotes"
+        limit={3}
+        // defaultItems={items.slice(0, 6)}
+        items={notes.map((note) => ({
+          text: note.label.ru,
+          value: note.value,
+        }))}
+        onClickCheckbox={filters.setBaseNotes}
+        selected={filters.baseNotes}
       />
     </div>
   );

@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Instagram, Youtube } from "lucide-react";
 import { Separator } from "../ui";
+import { SocialMediaBar } from "./social-media-bar";
 
 type Props = {
   className?: string;
@@ -13,42 +14,7 @@ export const Footer: FC<Props> = ({ className }) => {
     <div className={cn("flex flex-col p-3 md:p-5 border-t", className)}>
       <div className="flex items-center justify-between">
         <Image src={"/assets/logo.png"} width={120} height={40} alt="logo" />
-        <div className="flex flex-col gap-5">
-            <div className="flex justify-end gap-3 ">
-              <Image
-                src={"/assets/images/instagram.png"}
-                width={30}
-                height={30}
-                alt={"instagram"}
-              />
-              <Image
-                src={"/assets/images/youtube.png"}
-                width={30}
-                height={30}
-                alt={"youtube"}
-              />
-              <Image
-                src={"/assets/images/tiktok.png"}
-                width={30}
-                height={30}
-                alt={"tiktok"}
-              />
-            </div>
-            <div className="flex items-center gap-3 ">
-              <Image
-                src={"/assets/images/whatsapp.png"}
-                width={30}
-                height={30}
-                alt={"instagram"}
-              />
-              <Image
-                src={"/assets/images/telegram.png"}
-                width={30}
-                height={30}
-                alt={"youtube"}
-              />
-            </div>
-        </div>
+       <SocialMediaBar />
       </div>
       <Separator className="my-5" />
       <div className="flex items-center justify-between gap-5 ">

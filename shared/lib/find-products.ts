@@ -16,7 +16,9 @@ export interface GetSearchParams {
   sortBy?: string;
   brands?: string;
   gender?: string;
-  notes?: string;
+  topNotes?: string;
+  heartNotes?: string;
+  baseNotes?: string;
   aromas?: string;
   classification?: string;
   concentration?: string;
@@ -51,8 +53,16 @@ export const findProducts = async (
       (await params).gender
         ?.split(",")
         .map((item) => item.trim().toUpperCase()) ?? [];
-    const notes =
-      (await params).notes
+    const topNotes =
+      (await params).topNotes
+        ?.split(",")
+        .map((item) => item.trim().toUpperCase()) ?? [];
+    const heartNotes =
+      (await params).heartNotes
+        ?.split(",")
+        .map((item) => item.trim().toUpperCase()) ?? [];
+    const baseNotes =
+      (await params).baseNotes
         ?.split(",")
         .map((item) => item.trim().toUpperCase()) ?? [];
     const aromas =
@@ -89,16 +99,12 @@ export const findProducts = async (
       categoryId: categoryId || 1,
       productGroupId: productGroupId || undefined,
       aromas: aromas.length > 0 ? { hasSome: aromas as Aromas[] } : undefined,
-      ...(notes.length > 0 && {
-        OR: [
-          { topNotes: { hasSome: notes as Notes[] } },
-          { heartNotes: { hasSome: notes as Notes[] } },
-          { baseNotes: { hasSome: notes as Notes[] } },
-        ],
-      }),
+      topNotes: topNotes.length > 0 ? { hasSome: topNotes as Notes[] } : undefined,
+      heartNotes: heartNotes.length > 0 ? { hasSome: heartNotes as Notes[] } : undefined,
+      baseNotes: baseNotes.length > 0 ? { hasSome: baseNotes as Notes[] } : undefined,
+     
     };
 
-    console.log(whereClause)
     const [categoryes, totalCount] = await prisma.$transaction([
       prisma.category.findMany({
         include: {

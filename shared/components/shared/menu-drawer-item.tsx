@@ -45,7 +45,7 @@ export const MenuDrawerItem: FC<Props> = ({ className, category, setOpen }) => {
       onOpenChange={setIsOpen}
       className={cn(className, "w-2/3 space-y-2")}
     >
-      <div className="flex items-center justify-between space-x-4 px-4">
+      <div className="flex items-center justify-between space-x-4 ">
         <CollapsibleTrigger onClick={() => handleItemClick(category)} asChild>
           <div className="flex items-center gap-2 cursor-pointer">
             <h2 className="text-2xl font-semibold">{category.name}</h2>
