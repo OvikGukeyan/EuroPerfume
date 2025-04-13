@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { use, useEffect, useState } from "react";
 import { ChooseVariation, Title, VolumeSelection } from ".";
 import { Button } from "../ui";
 import { Heart, HeartOff, Plus } from "lucide-react";
@@ -13,6 +13,8 @@ import { calcPrice } from "@/shared/lib";
 import { HeartBlack } from "@/shared/icons";
 import { unknown } from "zod";
 import { ProductVariation } from "@prisma/client";
+import { it } from "node:test";
+import { useFavorites } from "@/shared/hooks";
 
 interface Props {
   id: number;
@@ -32,14 +34,16 @@ export const ProductCard: React.FC<Props> = ({
   price,
   id,
   categoryId,
-  variations
+  variations,
 }) => {
   const currentVolumesArray =
     price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
 
   const [volume, setVolume] = useState<Volume>(currentVolumesArray[0]);
   const [isFavorite, toggleIsFavorite] = useState(false);
-  const [activeVariation, setActiveVariation] = useState<ProductVariation>(variations[0]);
+  const [activeVariation, setActiveVariation] = useState<ProductVariation>(
+    variations[0]
+  );
 
   const onToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -48,15 +52,19 @@ export const ProductCard: React.FC<Props> = ({
 
     addFavoritesItem(id);
   };
-  const [addFavoritesItem, items] = useFavoritesStore((state) => [
-    state.addFavoritesItem,
-    state.items,
-    state.favoritesLoading,
-  ]);
+
+  const { items, addFavoritesItem } = useFavorites();
+
   const [addCartItem, loading] = useCartStore((state) => [
     state.addCartItem,
     state.loading,
   ]);
+
+  useEffect(() => {
+    if (items.some((item) => item.productId === id)) {
+      toggleIsFavorite(true);
+    }
+  }, [items, id]);
 
   const onSubmit = async () => {
     try {
@@ -71,7 +79,7 @@ export const ProductCard: React.FC<Props> = ({
       toast.error("Something went wrong");
     }
   };
-  const finalPrice = categoryId === 1 ?  calcPrice(volume, price) : price;
+  const finalPrice = categoryId === 1 ? calcPrice(volume, price) : price;
   return (
     <div className={className}>
       <Link href={`/product/${id}`}>
@@ -80,7 +88,7 @@ export const ProductCard: React.FC<Props> = ({
             layout="fill"
             objectFit="cover"
             // className="object-cover"
-            src={imageUrl || activeVariation?.imageUrl  }
+            src={imageUrl || activeVariation?.imageUrl}
             alt={name}
           />
 
@@ -89,11 +97,7 @@ export const ProductCard: React.FC<Props> = ({
             onClick={(e) => onToggleFavorite(e)}
             variant="ghost"
           >
-            {items.some((item) => item.productId === id) ? (
-              <HeartBlack />
-            ) : (
-              <Heart className="" />
-            )}
+            {isFavorite ? <HeartBlack /> : <Heart className="" />}
           </Button>
         </div>
       </Link>
@@ -111,7 +115,12 @@ export const ProductCard: React.FC<Props> = ({
       )}
 
       {variations.length > 1 && (
-        <ChooseVariation setActiveVariation={setActiveVariation} activeVariation={activeVariation} className="mb-4" items={variations}/>
+        <ChooseVariation
+          setActiveVariation={setActiveVariation}
+          activeVariation={activeVariation}
+          className="mb-4"
+          items={variations}
+        />
       )}
 
       <div className="flex justify-between items-center ">
@@ -120,7 +129,7 @@ export const ProductCard: React.FC<Props> = ({
         </p>
 
         <Button
-          loading={loading}
+          // loading={loading}
           onClick={onSubmit}
           variant="outline"
           className="text-base font-bold"
