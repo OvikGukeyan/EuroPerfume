@@ -1,7 +1,14 @@
 import { Prisma } from "@prisma/client";
 import { prisma } from "./prisma-client";
 import { hashSync } from "bcrypt";
-import { categories, productGroups, products, productTranslations } from "./constants";
+import {
+  categories,
+  // newNotes,
+  // notes,
+  productGroups,
+  products,
+  productTranslations,
+} from "./constants";
 
 async function up() {
   await prisma.user.createMany({
@@ -28,8 +35,8 @@ async function up() {
   });
 
   await prisma.productGroup.createMany({
-    data: productGroups
-  })
+    data: productGroups,
+  });
 
   await prisma.product.createMany({
     data: products,
@@ -54,16 +61,18 @@ async function up() {
     ],
   });
 
-  await prisma.cartItem.create({
-    data: {
-      productId: 1,
-      cartId: 1,
-      quantity: 1,
-      variationId: 1
-    },
-  });
+  // await prisma.note.createMany({
+  //   data: newNotes,
+  // });
 
- 
+  // await prisma.cartItem.create({
+  //   data: {
+  //     productId: 1,
+  //     cartId: 1,
+  //     quantity: 1,
+  //     variationId: 1
+  //   },
+  // });
 }
 async function down() {
   // Сначала очищаем дочерние таблицы, затем родительские.

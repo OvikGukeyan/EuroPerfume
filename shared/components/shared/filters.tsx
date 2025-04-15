@@ -6,20 +6,20 @@ import { Title, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
 import { useQueryFilters } from "@/shared/hooks";
 import {
-  Brands,
   Classifications,
   Gender,
-  Notes,
+  Note,
   PerfumeConcentration,
 } from "@prisma/client";
 import { useFiltersStore } from "@/shared/store/filters";
-import { brands, notes, perfumeAromas } from "@/prisma/constants";
+import { brands, perfumeAromas } from "@/prisma/constants";
 
 interface Props {
+  notes: Note[];
   className?: string;
 }
 
-export const Filters: FC<Props> = () => {
+export const Filters: FC<Props> = ({ notes, className }) => {
   // const filters = useFilters();
   const filters = useFiltersStore();
 
@@ -151,8 +151,8 @@ export const Filters: FC<Props> = () => {
         limit={3}
         // defaultItems={items.slice(0, 6)}
         items={notes.map((note) => ({
-          text: note.label.ru,
-          value: note.value,
+          text: note.labelRu,
+          value: String(note.id),
         }))}
         onClickCheckbox={filters.setTopNotes}
         selected={filters.topNotes}
@@ -165,8 +165,8 @@ export const Filters: FC<Props> = () => {
         limit={3}
         // defaultItems={items.slice(0, 6)}
         items={notes.map((note) => ({
-          text: note.label.ru,
-          value: note.value,
+          text: note.labelRu,
+          value: String(note.id),
         }))}
         onClickCheckbox={filters.setHeartNotes}
         selected={filters.heartNotes}
@@ -178,8 +178,8 @@ export const Filters: FC<Props> = () => {
         limit={3}
         // defaultItems={items.slice(0, 6)}
         items={notes.map((note) => ({
-          text: note.label.ru,
-          value: note.value,
+          text: note.labelRu,
+          value: String(note.id),
         }))}
         onClickCheckbox={filters.setBaseNotes}
         selected={filters.baseNotes}

@@ -6,12 +6,11 @@ import {
   classifications,
   concentrations,
   genders,
-  notes,
   perfumeAromas,
   yers,
 } from "@/prisma/constants";
-import { Button, Input } from "@/shared/components";
-import { FormInput, FormTextarea } from "@/shared/components/shared";
+import { Button, Input, Popover } from "@/shared/components";
+import { CreateNoteForm, FormInput, FormTextarea } from "@/shared/components/shared";
 import { FormSelect } from "@/shared/components/shared/product-form/form-select";
 import { FormCheckbox } from "@/shared/components/shared/product-form/index";
 import {
@@ -25,16 +24,21 @@ import {
   CreateProductFormValues,
   CreateProductSchema,
 } from "@/shared/constants/create-product-schema";
-import { Gender, Product } from "@prisma/client";
+import { Gender, Note, NoteType, Product, ProductNote } from "@prisma/client";
 import { FC, useState } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
+import { useNotes } from "@/shared/hooks";
+import { PopoverContent, PopoverTrigger } from "../ui/popover";
 
 type ProductWithTranslations = Product & {
   translations: {
     description: string;
   }[];
+  productNotes: (ProductNote & {
+    note: Note;
+  })[];
 };
 interface Props {
   product?: ProductWithTranslations;
@@ -45,6 +49,7 @@ interface Props {
 
 export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
   const [loading, setLoading] = useState(false);
+  const { notes, createNote, loading: notesLoading, error: notesError } = useNotes();
   const form = useForm<CreateProductFormValues>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
@@ -60,9 +65,18 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
       manufacturingCountry: product?.manufacturingCountry || "",
       perfumer: product?.perfumer || "",
       aromas: product?.aromas || [],
-      topNotes: product?.topNotes || [],
-      heartNotes: product?.heartNotes || [],
-      baseNotes: product?.baseNotes || [],
+      topNotes:
+        product?.productNotes
+          .filter((note) => note.noteType === NoteType.TOP)
+          .map((note) => String(note.note.id)) || [],
+      heartNotes:
+        product?.productNotes
+          .filter((note) => note.noteType === NoteType.HEART)
+          .map((note) => String(note.note.id)) || [],
+      baseNotes:
+        product?.productNotes
+          .filter((note) => note.noteType === NoteType.BASE)
+          .map((note) => String(note.note.id)) || [],
       classification: product?.classification || [],
       releaseYear: product?.releaseYear || 2000,
       categoryId: product?.categoryId || 1,
@@ -281,26 +295,55 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
                 items={perfumeAromas}
               />
 
-              <FormCheckbox
-                title="Верхние нотты"
-                name="topNotes"
-                control={form.control}
-                items={notes}
-              />
+              <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
+                <FormCheckbox
+                  title="Верхние нотты"
+                  name="topNotes"
+                  control={form.control}
+                  items={notes.map((note) => ({
+                    label: {
+                      ru: note.labelRu,
+                      de: note.labelDe,
+                    },
+                    value: String(note.id),
+                  }))}
+                />
 
-              <FormCheckbox
-                title="Средние нотты"
-                name="heartNotes"
-                control={form.control}
-                items={notes}
-              />
+                <FormCheckbox
+                  title="Средние нотты"
+                  name="heartNotes"
+                  control={form.control}
+                  items={notes.map((note) => ({
+                    label: {
+                      ru: note.labelRu,
+                      de: note.labelDe,
+                    },
+                    value: String(note.id),
+                  }))}
+                />
 
-              <FormCheckbox
-                title="Базовые нотты"
-                name="baseNotes"
-                control={form.control}
-                items={notes}
-              />
+                <FormCheckbox
+                  title="Базовые нотты"
+                  name="baseNotes"
+                  control={form.control}
+                  items={notes.map((note) => ({
+                    label: {
+                      ru: note.labelRu,
+                      de: note.labelDe,
+                    },
+                    value: String(note.id),
+                  }))}
+                />
+
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <Button variant="outline">Add new note</Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-80">
+                    <CreateNoteForm onSubmit={createNote} loading={notesLoading} error={notesError}/>
+                  </PopoverContent>
+                </Popover>
+              </div>
 
               <FormCheckbox
                 title="Классификация"

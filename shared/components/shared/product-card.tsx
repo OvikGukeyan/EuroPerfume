@@ -63,6 +63,8 @@ export const ProductCard: React.FC<Props> = ({
   useEffect(() => {
     if (items.some((item) => item.productId === id)) {
       toggleIsFavorite(true);
+    }else {
+      toggleIsFavorite(false);
     }
   }, [items, id]);
 

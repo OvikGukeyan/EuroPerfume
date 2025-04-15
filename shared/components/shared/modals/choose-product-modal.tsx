@@ -7,9 +7,10 @@ import React, { FC } from "react";
 import { ProductForm } from "..";
 import { Product, ProductVariation, Review } from "@prisma/client";
 import { ModalContext } from "@/shared/lib";
+import { ProductDTO } from "@/shared/services/dto/product.dto";
 
 interface Props {
-  product: Product & { reviews: Review[], variations: ProductVariation[] };
+  product: ProductDTO;
   className?: string;
 }
 export const ChooseProductModal: FC<Props> = ({ className, product }) => {

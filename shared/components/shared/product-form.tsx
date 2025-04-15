@@ -6,9 +6,10 @@ import toast from "react-hot-toast";
 import { ChooseProductForm } from "./choose-product-form";
 import { Product, ProductVariation, Review } from "@prisma/client";
 import { Volume } from "@/shared/constants/perfume";
+import { ProductDTO } from "@/shared/services/dto/product.dto";
 
 interface Props {
-  product: Product & { reviews: Review[]; variations: ProductVariation[] };
+  product: ProductDTO;
   onSubmit?: VoidFunction;
   className?: string;
 }

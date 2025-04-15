@@ -24,6 +24,11 @@ export default async function Product({
         },
       },
       variations: true,
+      productNotes: {
+        include: {
+          note: true,
+        },
+      }
     },
   });
 

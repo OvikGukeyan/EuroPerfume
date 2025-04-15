@@ -3,6 +3,7 @@ import { prisma } from "@/prisma/prisma-client";
 import { notFound } from "next/navigation";
 import React from "react";
 import { Product, ProductVariation, Review } from "@prisma/client";
+import { ProductDTO } from "@/shared/services/dto/product.dto";
 
 export default async function ProductModalPage({
   params,
@@ -19,6 +20,11 @@ export default async function ProductModalPage({
         },
       },
       variations: true,
+      productNotes: {
+        include: {
+          note: true,
+        },
+      },
     },
   });
 
@@ -26,5 +32,5 @@ export default async function ProductModalPage({
     return notFound();
   }
 
-  return <ChooseProductModal product={product as Product & { reviews: Review[], variations: ProductVariation[] }} />
+  return <ChooseProductModal product={product as ProductDTO} />
 }

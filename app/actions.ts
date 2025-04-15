@@ -15,25 +15,13 @@ import {
 } from "@/shared/lib";
 import { getUserSession } from "@/shared/lib/get-user-session";
 import { sendEmail } from "@/shared/lib/send-email";
+import { NoteValues } from "@/shared/store";
 import {
-  Aromas,
-  Brands,
-  Gender,
   Languages,
-  Notes,
   OrderStatus,
-  PerfumeConcentration,
   Prisma,
-  Classifications,
   UserRole,
-  Purpose,
-  Finish,
-  Texture,
-  Formula,
-  Effects,
-  ApplicationMethod,
-  PackagingFormat,
-  SkinType,
+  NoteType,
 } from "@prisma/client";
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
@@ -383,9 +371,22 @@ export async function createProduct(
         gender: parsedData.gender,
         concentration: parsedData.concentration || undefined,
         brand: parsedData.brand,
-        topNotes: parsedData.topNotes,
-        heartNotes: parsedData.heartNotes,
-        baseNotes: parsedData.baseNotes,
+        productNotes: {
+          create: [
+            ...parsedData.topNotes.map((noteId: string) => ({
+              note: { connect: { id: Number(noteId) } },
+              noteType: NoteType.TOP,
+            })),
+            ...parsedData.heartNotes.map((noteId: string) => ({
+              note: { connect: { id: Number(noteId) } },
+              noteType: NoteType.HEART,
+            })),
+            ...parsedData.baseNotes.map((noteId: string) => ({
+              note: { connect: { id: Number(noteId) } },
+              noteType: NoteType.BASE,
+            })),
+          ],
+        },
         aromas: parsedData.aromas,
         brandCountry: parsedData.brandCountry,
         manufacturingCountry: parsedData.manufacturingCountry,
@@ -473,18 +474,24 @@ export async function updateProduct(
           ? parsedData.concentration
           : undefined,
         brand: parsedData.brand,
-        topNotes:
-          parsedData.topNotes && parsedData.topNotes.length
-            ? parsedData.topNotes
-            : undefined,
-        heartNotes:
-          parsedData.heartNotes && parsedData.heartNotes.length
-            ? parsedData.heartNotes
-            : undefined,
-        baseNotes:
-          parsedData.baseNotes && parsedData.baseNotes.length
-            ? parsedData.baseNotes
-            : undefined,
+        productNotes: {
+          create: [
+            ...parsedData.topNotes.map((noteId: string) => ({
+              note: { connect: { id: Number(noteId) } },
+              noteType: NoteType.TOP,
+            })),
+            // Средние ноты
+            ...parsedData.heartNotes.map((noteId: string) => ({
+              note: { connect: { id: Number(noteId) } },
+              noteType: NoteType.HEART,
+            })),
+            // Нижние ноты
+            ...parsedData.baseNotes.map((noteId: string) => ({
+              note: { connect: { id: Number(noteId) } },
+              noteType: NoteType.BASE,
+            })),
+          ],
+        },
         aromas:
           parsedData.aromas && parsedData.aromas.length
             ? parsedData.aromas
@@ -642,6 +649,28 @@ export async function createReview(formData: FormData) {
   } catch (error) {}
 }
 
+export async function createNote(formData: FormData) {
+  try {
+    const user = await getUserSession();
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
+    const { labelRu, labelDe } = Object.fromEntries(
+      formData.entries()
+    ) as NoteValues;
+
+    await prisma.note.create({
+      data: {
+        labelRu: labelRu,
+        labelDe: labelDe,
+      },
+    });
+  } catch (error) {
+    console.error("Error [CREATE_NOTE]", error);
+    throw error;
+  }
+}
+
 export async function createSlide(formData: FormData) {
   try {
     const user = await getUserSession();
@@ -692,6 +721,7 @@ export async function createSlide(formData: FormData) {
     });
   } catch (error) {
     console.error("Error [CREATE_SLIDER]", error);
+    throw error;
   } finally {
     redirect("/slides");
   }

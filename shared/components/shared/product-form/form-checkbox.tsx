@@ -9,11 +9,10 @@ import {
   FormLabel,
   FormMessage,
 } from "../../ui/form";
-import { Button, Checkbox } from "../..";
+import { Checkbox } from "../..";
 import { Aromas, Classifications, Notes } from "@prisma/client";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
-import { ArrowDown, ChevronDown } from "lucide-react";
-import { Card, CardHeader } from "../../ui/card";
+import { ChevronDown } from "lucide-react";
 
 interface Props {
   control: Control<CreateProductFormValues>;
@@ -63,7 +62,7 @@ export const FormCheckbox: FC<Props> = ({ control, name, items, title }) => {
                     <FormControl>
                       <Checkbox
                         checked={currentValues.includes(
-                          item.value as Notes | Classifications | Aromas
+                          item.value as  Classifications | Aromas
                         )}
                         onCheckedChange={(checked) => {
                           if (checked) {

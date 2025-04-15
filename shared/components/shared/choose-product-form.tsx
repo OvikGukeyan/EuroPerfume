@@ -3,7 +3,6 @@
 import { cn } from "@/shared/lib/utils";
 import React, { FC, useEffect, useState } from "react";
 import { Button, Separator } from "../ui";
-import Image from "next/image";
 import {
   Title,
   Text,
@@ -13,7 +12,7 @@ import {
   ProductCarousel,
 } from ".";
 import { Volume, volumes } from "@/shared/constants/perfume";
-import { Product, ProductVariation, Review } from "@prisma/client";
+import { ProductVariation } from "@prisma/client";
 import {
   calcAverageRating,
   calcPrice,
@@ -23,12 +22,10 @@ import {
 import { Rating } from "./rating";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
+import { ProductDTO } from "@/shared/services/dto/product.dto";
 
 interface Props {
-  product: Product & {
-    reviews: Review[];
-    variations: ProductVariation[];
-  };
+  product: ProductDTO
   loading: boolean;
   onSubmit?: (productId: number, volume: Volume) => Promise<void>;
   activeVariation: ProductVariation;

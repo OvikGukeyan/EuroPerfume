@@ -57,6 +57,7 @@ export {ProductCarousel} from './product-carousel';
 export {MenuDrawer} from './menu-drawer';
 export {MenuDrawerItem} from './menu-drawer-item';
 export {SocialMediaBar} from './social-media-bar';
+export {CreateNoteForm} from './create-note-form';
 
 export * from './email-templates';
 export * from './form';

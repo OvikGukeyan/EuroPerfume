@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { number, z } from "zod";
 import {
   Gender,
   Brands,
@@ -54,9 +54,9 @@ export const CreateProductSchema = z.object({
   concentration: z.nativeEnum(PerfumeConcentration).optional(),
   perfumer: z.string().optional(),
   aromas: z.array(z.nativeEnum(Aromas)).optional(),
-  topNotes: z.array(z.nativeEnum(Notes)).optional(),
-  heartNotes: z.array(z.nativeEnum(Notes)).optional(),
-  baseNotes: z.array(z.nativeEnum(Notes)).optional(),
+  topNotes: z.array(z.string()).optional(),
+  heartNotes: z.array(z.string()).optional(),
+  baseNotes: z.array(z.string()).optional(),
   variations: z.array(z.instanceof(File)).optional(),
 });
 

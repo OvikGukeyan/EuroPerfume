@@ -7,13 +7,17 @@ import {
 } from "../ui/sheet";
 import { Button } from "../ui";
 import { Filter } from "lucide-react";
+import { prisma } from "@/prisma/prisma-client";
 
-export const FiltersDrawer = () => {
+
+export const FiltersDrawer = async () => {
+const notes = await prisma.note.findMany();
+
   return (
     <div className="sticky top-52 md:top-56 z-20"  >
       <Suspense>
         <div className="w-[250px] hidden xl:block">
-          <Filters />
+          <Filters notes={notes} />
         </div>
 
         <Sheet >
@@ -28,7 +32,7 @@ export const FiltersDrawer = () => {
             side={"left"}
             className="flex flex-col bg-[#FFF] p-4 xl:hidden overflow-y-auto"
           >
-            <Filters />
+            <Filters notes={notes}/>
           </SheetContent>
         </Sheet>
       </Suspense>

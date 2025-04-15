@@ -6,21 +6,21 @@ import {
   effects,
   finishes,
   formulas,
-  notes,
   packagingFormats,
   perfumeAromas,
   purposes,
   skinTypes,
   textures,
 } from "@/prisma/constants";
-import { Product } from "@prisma/client";
+import { NoteType, Product } from "@prisma/client";
+import { ProductDTO } from "../services/dto/product.dto";
 
 type ReturnProps = {
   name: string;
   value: string;
 }[];
 
-export const createCharacteristicsArray = (product: Product): ReturnProps => {
+export const createCharacteristicsArray = (product: ProductDTO): ReturnProps => {
   const {
     brand,
     classification,
@@ -30,9 +30,7 @@ export const createCharacteristicsArray = (product: Product): ReturnProps => {
     perfumer,
     brandCountry,
     manufacturingCountry,
-    topNotes,
-    heartNotes,
-    baseNotes,
+    productNotes,
     aromas,
     age,
     series,
@@ -52,19 +50,19 @@ export const createCharacteristicsArray = (product: Product): ReturnProps => {
     packagingFormat,
     volume,
     skinType,
-  } = product;
-  const currentTopNotes = notes
-    .filter((note) => topNotes.includes(note.value))
-    .map(({ label: { ru } }) => ru)
+  } = product ;
+  const currentTopNotes = productNotes
+    .filter((note) => note.noteType === NoteType.TOP) 
+    .map((note) => note.note?.labelRu)
     .join(", ");
-  const currentHeartNotes = notes
-    .filter(({ value }) => heartNotes.includes(value))
-    .map(({ label: { ru } }) => ru)
-    .join(", ");
-  const currentBaseNotes = notes
-    .filter((note) => baseNotes.includes(note.value))
-    .map(({ label: { ru } }) => ru)
-    .join(", ");
+  const currentHeartNotes = productNotes
+  .filter((note) => note.noteType === NoteType.HEART) 
+  .map((note) => note.note?.labelRu)
+  .join(", ");
+  const currentBaseNotes = productNotes
+  .filter((note) => note.noteType === NoteType.BASE) 
+  .map((note) => note.note?.labelRu)
+  .join(", ");
   const currentAroma = perfumeAromas
     .filter((aroma) => aromas.includes(aroma.value))
     .map(({ label: { ru } }) => ru)

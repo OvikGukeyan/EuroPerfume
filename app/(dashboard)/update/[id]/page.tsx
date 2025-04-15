@@ -19,6 +19,11 @@ export default async function Update({
           language: "DE",
         },
       },
+      productNotes: {
+        include: {
+          note: true,
+        },
+      },
     }
   });
 

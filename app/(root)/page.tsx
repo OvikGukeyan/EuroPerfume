@@ -11,7 +11,6 @@ import { getSlides } from "@/shared/lib";
 
 import { findProducts, GetSearchParams } from "@/shared/lib/find-products";
 import { ProductDTO } from "@/shared/services/dto/product.dto";
-import { Product, ProductVariation } from "@prisma/client";
 
 export default async function Home({
   searchParams,
