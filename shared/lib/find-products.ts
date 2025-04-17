@@ -111,8 +111,8 @@ export const findProducts = async (
           productGroups: {
             include: {
               products: {
-                skip: (page - 1) * 6,
-                take: 6,
+                skip: (page - 1) * 10,
+                take: 10,
                 orderBy: orderBy,
                 where: whereClause,
 
@@ -130,7 +130,7 @@ export const findProducts = async (
       }),
     ]);
 
-    const totalPages = Math.ceil(totalCount / 6);
+    const totalPages = Math.ceil(totalCount / 10);
     return { categoryes, totalPages };
   } catch (error) {
     console.error(error);

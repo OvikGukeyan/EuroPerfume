@@ -678,16 +678,13 @@ export async function createSlide(formData: FormData) {
       throw new Error("Access denied");
     }
 
-    const { name, desctopImg, tabletImg, mobileImg, link } = Object.fromEntries(
-      formData.entries()
-    ) as {
-      name: string;
-      desctopImg: File;
-      tabletImg: File;
-      mobileImg: File;
-      link: string;
-    };
+    const name = formData.get("name") as string;
+    const link = formData.get("link") as string;
 
+    const desctopImg = formData.get("desctopImg") as File;
+    const tabletImg = formData.get("tabletImg") as File;
+    const mobileImg = formData.get("mobileImg") as File;
+    
     const images: File[] = [desctopImg, tabletImg, mobileImg];
 
     const uploadPromises = images.map((image) => {

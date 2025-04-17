@@ -17,27 +17,22 @@ import { useFiltersStore } from "@/shared/store/filters";
 type Props = {
   className?: string;
   countOfPages: number;
-  
 };
 
 export const PaginationComponent: FC<Props> = ({
   className,
   countOfPages = 5,
-  
 }) => {
- 
-
-
   const filters = useFiltersStore();
 
   const handleNextPageClick = () => {
-    if(filters.currentPage === countOfPages) return
+    if (filters.currentPage === countOfPages) return;
     filters.setCurrentPage(filters.currentPage + 1);
     window.scrollTo(0, 0);
   };
 
   const handlePreviousPageClick = () => {
-    if(filters.currentPage === 1) return
+    if (filters.currentPage === 1) return;
     filters.setCurrentPage(filters.currentPage - 1);
     window.scrollTo(0, 0);
   };
@@ -52,7 +47,7 @@ export const PaginationComponent: FC<Props> = ({
       <Pagination>
         <PaginationContent>
           <PaginationItem>
-            <PaginationPrevious href="#" onClick={handlePreviousPageClick}/>
+            <PaginationPrevious href="#" onClick={handlePreviousPageClick} />
           </PaginationItem>
           {[...Array(countOfPages)].map((_, index) => (
             <PaginationItem key={index}>
