@@ -30,10 +30,14 @@ export interface GetSearchParams {
   productGroup?: string;
 }
 
+type SafeProduct = Omit<Product, "price"> & {
+  price: number;
+};
+
 export interface FindProductsResponse {
   categoryes: (Category & {
     productGroups: (ProductGroup & {
-      products: Product[];
+      products: SafeProduct[];
     })[];
   })[];
   totalPages: number;
@@ -99,10 +103,12 @@ export const findProducts = async (
       categoryId: categoryId || 1,
       productGroupId: productGroupId || undefined,
       aromas: aromas.length > 0 ? { hasSome: aromas as Aromas[] } : undefined,
-      topNotes: topNotes.length > 0 ? { hasSome: topNotes as Notes[] } : undefined,
-      heartNotes: heartNotes.length > 0 ? { hasSome: heartNotes as Notes[] } : undefined,
-      baseNotes: baseNotes.length > 0 ? { hasSome: baseNotes as Notes[] } : undefined,
-     
+      topNotes:
+        topNotes.length > 0 ? { hasSome: topNotes as Notes[] } : undefined,
+      heartNotes:
+        heartNotes.length > 0 ? { hasSome: heartNotes as Notes[] } : undefined,
+      baseNotes:
+        baseNotes.length > 0 ? { hasSome: baseNotes as Notes[] } : undefined,
     };
 
     const [categoryes, totalCount] = await prisma.$transaction([
@@ -129,9 +135,21 @@ export const findProducts = async (
         where: whereClause,
       }),
     ]);
-
+    const safeCategories = categoryes.map((category) => ({
+      ...category,
+      productGroups: category.productGroups.map((group) => ({
+        ...group,
+        products: group.products.map((product) => ({
+          ...product,
+          price:
+            typeof product.price === "object" && "toNumber" in product.price
+              ? product.price.toNumber()
+              : product.price,
+        })),
+      })),
+    }));
     const totalPages = Math.ceil(totalCount / 10);
-    return { categoryes, totalPages };
+    return { categoryes: safeCategories, totalPages };
   } catch (error) {
     console.error(error);
     return { categoryes: [], totalPages: 0 };
