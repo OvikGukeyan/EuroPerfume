@@ -76,7 +76,7 @@ model Product {
   concentration PerfumeConcentration?
   perfumer      String?
 
-  price                Int
+  price                Decimal
   releaseYear          Int
   brandCountry         String
   manufacturingCountry String

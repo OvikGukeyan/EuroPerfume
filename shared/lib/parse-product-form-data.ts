@@ -18,7 +18,6 @@ import {
 export function parseProductFormData(formData: FormData) {
   const getString = (key: string, defaultValue = ""): string =>
     formData.get(key)?.toString() || defaultValue;
-
   const getNumber = (key: string): number | undefined => {
     const val = formData.get(key);
     return val ? Number(val) : undefined;

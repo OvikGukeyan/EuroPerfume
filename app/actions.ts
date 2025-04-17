@@ -321,20 +321,6 @@ export async function createProduct(
 
     const parsedData = parseProductFormData(formData);
 
-    let imageData;
-    // if (parsedData.image) {
-    //   const { data: newData, error: uploadError } = await supabase.storage
-    //     .from("images")
-    //     .upload(
-    //       `${parsedData.image.name}--${new Date().toISOString()}`,
-    //       parsedData.image,
-    //       {
-    //         contentType: parsedData.image.type,
-    //       }
-    //     );
-    //   imageData = newData;
-    //   if (uploadError) throw uploadError;
-    // }
     const imageUploads = await Promise.all(
       parsedData.image.map(async (file) => {
         const fileName = `${file.name}--${new Date().toISOString()}`;
@@ -362,7 +348,6 @@ export async function createProduct(
         };
       })
     );
-
     await prisma.product.create({
       data: {
         name: parsedData.productName,
@@ -688,7 +673,6 @@ export async function createSlide(formData: FormData) {
     const images: File[] = [desctopImg, mobileImg];
 
     const uploadPromises = images.map((image) => {
-      
       const fileName = `${image.name}--${new Date().toISOString()}`;
       return supabase.storage
         .from("images")
