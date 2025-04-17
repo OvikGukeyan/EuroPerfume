@@ -28,13 +28,6 @@ export default function CreateSlide() {
         </div>
 
         <div>
-          <Label className=" text-lg" htmlFor="tabletImg">
-            Tablet Image
-          </Label>
-          <Input className="mt-2" required type="file" name="tabletImg" />
-        </div>
-
-        <div>
           <Label className=" text-lg" htmlFor="mobileImg">
             Mobile Image
           </Label>

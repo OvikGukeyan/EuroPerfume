@@ -569,18 +569,19 @@ export async function deleteProduct(id: number) {
       throw new Error("Product not found");
     }
 
-    // if (product.imageUrl) {
-    //   const fileUrl = '/3s9Ccf1027978-0-dgl-DE.avif--2025-02-28T11:54:47.039Z';
-    //   const { error: removeError } = await supabase.storage
-    //     .from("images")
-    //     .remove([fileUrl]);
-    //   if (removeError) {
-    //     console.error("Error removing image from storage", removeError);
-    //     throw removeError;
-    //   } else {
-    //     console.log("Image successfully removed from storage");
-    //   }
-    // }
+    if (product.imageUrl.length > 0) {
+      const getRelativePath = (url: string) =>
+        url.split("/storage/v1/object/public/images/")[1];
+
+      const relativePaths = product.imageUrl.map(getRelativePath);
+      const removalResults = await supabase.storage
+        .from("images")
+        .remove(relativePaths);
+
+      if (removalResults.error) {
+        throw new Error(removalResults.error.message);
+      }
+    }
 
     await prisma.product.delete({
       where: { id },
@@ -682,12 +683,12 @@ export async function createSlide(formData: FormData) {
     const link = formData.get("link") as string;
 
     const desctopImg = formData.get("desctopImg") as File;
-    const tabletImg = formData.get("tabletImg") as File;
     const mobileImg = formData.get("mobileImg") as File;
-    
-    const images: File[] = [desctopImg, tabletImg, mobileImg];
+
+    const images: File[] = [desctopImg, mobileImg];
 
     const uploadPromises = images.map((image) => {
+      
       const fileName = `${image.name}--${new Date().toISOString()}`;
       return supabase.storage
         .from("images")
@@ -712,8 +713,7 @@ export async function createSlide(formData: FormData) {
         name: name,
         href: link,
         desctopImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[0].data?.path}`,
-        tabletImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[1].data?.path}`,
-        mobileImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[2].data?.path}`,
+        mobileImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[1].data?.path}`,
       },
     });
   } catch (error) {
@@ -726,6 +726,36 @@ export async function createSlide(formData: FormData) {
 
 export async function deleteSlide(id: number) {
   try {
+    const user = await getUserSession();
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
+
+    const slide = await prisma.slide.findUnique({
+      where: { id },
+    });
+
+    if (!slide) {
+      throw new Error("Slide not found");
+    }
+
+    const getRelativePath = (url: string) =>
+      url.split("/storage/v1/object/public/images/")[1];
+
+    const removalResults = await supabase.storage
+      .from("images")
+      .remove([
+        getRelativePath(slide.desctopImg),
+        getRelativePath(slide.mobileImg),
+      ]);
+
+    if (removalResults.error) {
+      console.error(
+        "Error removing images from storage:",
+        removalResults.error
+      );
+    }
+
     await prisma.slide.delete({
       where: { id },
     });

@@ -13,7 +13,6 @@ interface Props {
 }
 export const Carusel: FC<Props> = ({ slides }) => {
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 4000 }), []);
-
   return (
     <Carousel className="w-full" plugins={[autoplayPlugin]}>
       <CarouselContent>
@@ -38,13 +37,7 @@ export const Carusel: FC<Props> = ({ slides }) => {
                     quality={80}
                   />
                 </picture>
-                {/* <Image
-                  src={slide.desctopImg}
-                  alt="slide"
-                  layout="fill"
-                  objectFit="cover"
-                  quality={80}
-                /> */}
+              
               </div>
             </Link>
           </CarouselItem>

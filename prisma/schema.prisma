@@ -114,7 +114,7 @@ model ProductTranslation {
 }
 
 model ProductNote {
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
   note      Note     @relation(fields: [noteId], references: [id])
   noteId    Int
@@ -244,7 +244,6 @@ model Slide {
   id         Int    @id @default(autoincrement())
   name       String
   desctopImg String
-  tabletImg  String
   mobileImg  String
   href       String
 }
