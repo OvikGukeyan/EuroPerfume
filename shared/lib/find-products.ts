@@ -10,6 +10,7 @@ import {
   Product,
   ProductGroup,
 } from "@prisma/client";
+import { SafeProduct } from "../services/dto/product.dto";
 
 export interface GetSearchParams {
   query?: string;
@@ -30,9 +31,7 @@ export interface GetSearchParams {
   productGroup?: string;
 }
 
-type SafeProduct = Omit<Product, "price"> & {
-  price: number;
-};
+
 
 export interface FindProductsResponse {
   categoryes: (Category & {

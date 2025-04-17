@@ -1,6 +1,8 @@
 import { Note, Product, ProductNote, ProductVariation, Review } from "@prisma/client";
-
-export interface ProductDTO extends Product {
+export type SafeProduct = Omit<Product, "price"> & {
+    price: number;
+  };
+export interface ProductDTO extends SafeProduct {
     variations: ProductVariation[]
     reviews: Review[]
     productNotes: ( ProductNote & {

@@ -32,5 +32,12 @@ export default async function ProductModalPage({
     return notFound();
   }
 
-  return <ChooseProductModal product={product as ProductDTO} />
+  const safeProduct = {
+    ...product,
+    price:
+      typeof product.price === "object" && "toNumber" in product.price
+        ? product.price.toNumber()
+        : product.price,
+  };
+  return <ChooseProductModal product={safeProduct as ProductDTO} />;
 }

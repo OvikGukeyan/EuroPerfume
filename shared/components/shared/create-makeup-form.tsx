@@ -60,7 +60,7 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
       variations: [],
       descriptionRu: product?.description || "",
       descriptionDe: product?.translations?.[0]?.description || "",
-      price: product?.price || undefined,
+      price: product?.price.toNumber() || undefined,
       gender: product?.gender || Gender.UNISEX,
       brand: product?.brand || "CHANEL",
       brandCountry: product?.brandCountry || "",

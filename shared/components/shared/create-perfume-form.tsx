@@ -57,7 +57,7 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
       image: undefined,
       descriptionRu: product?.description || "",
       descriptionDe: product?.translations[0]?.description || "",
-      price: product?.price || undefined,
+      price: product?.price.toNumber() || undefined,
       gender: product?.gender || Gender.UNISEX,
       concentration: product?.concentration || "EAU_DE_COLOGNE",
       brand: product?.brand || "CHANEL",

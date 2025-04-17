@@ -36,9 +36,17 @@ export default async function Product({
     return notFound();
   }
 
+  const safeProduct = {
+    ...product,
+    price:
+      typeof product.price === "object" && "toNumber" in product.price
+        ? product.price.toNumber()
+        : product.price,
+  };
+
   return (
     <Container className="flex flex-col my-10">
-        <ProductForm  product={product}  />
+        <ProductForm  product={safeProduct}  />
       {product.reviews.length > 0 ? (
         <>
           <Title text="Reviews" size="lg" className="font-extrabold my-10" />
