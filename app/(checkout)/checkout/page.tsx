@@ -12,7 +12,6 @@ import { useSession } from "next-auth/react";
 import { Api } from "@/shared/services/api-client";
 import { useRouter } from "next/navigation";
 import { ContactForms, DeliveryTypes } from "@prisma/client";
-import { deliveryTypes } from "@/prisma/constants";
 import { calcTotlalAmountWithDelivery } from "@/shared/lib";
 
 
@@ -21,7 +20,6 @@ export default function Checkout() {
     const { totalAmount, items, updateItemQuantity, removeCartItem, loading, itemLoading } = useCart()
     const {data: session} = useSession();
     const router = useRouter();
-    
     const form = useForm<CheckoutFormValues>({
         resolver: zodResolver(checkoutFormSchema),
         defaultValues: {

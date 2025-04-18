@@ -19,8 +19,11 @@ export async function GET(req: NextRequest) {
         },
       },
     });
-    
-    return NextResponse.json(orders);
+    const safeOrders = orders.map((order) => ({
+      ...order, 
+      totalAmount: order.totalAmount.toNumber()
+    }))
+    return NextResponse.json(safeOrders);
   } catch (error) {
     console.log("[ORDERS_GET] Server error", error);
     return NextResponse.json(

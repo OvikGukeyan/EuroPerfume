@@ -51,16 +51,17 @@ export async function createOrder(data: CheckoutFormValues) {
       },
     });
 
+    
     if (!userCart) {
       throw new Error("Cart not found!");
     }
 
-    if (userCart?.totalAmount === 0) {
+    if (userCart?.totalAmount.toNumber() === 0) {
       throw new Error("Cart is empty!");
     }
 
     const { deliveryPrice } = calcTotlalAmountWithDelivery(
-      userCart.totalAmount,
+      userCart.totalAmount.toNumber(),
       data.deliveryType
     );
 
@@ -72,7 +73,7 @@ export async function createOrder(data: CheckoutFormValues) {
         address: data.address,
         comment: data.comment,
         token: cartToken,
-        totalAmount: userCart.totalAmount + deliveryPrice,
+        totalAmount: userCart.totalAmount.toNumber() + deliveryPrice,
         deliveryType: data.deliveryType,
         contactForm: data.contactForm,
         status: OrderStatus.PENDING,
@@ -124,7 +125,7 @@ export async function createOrder(data: CheckoutFormValues) {
       "Pay order #" + order.id,
       PayOrderTemplate({
         orderId: order.id,
-        totalAmount: order.totalAmount,
+        totalAmount: order.totalAmount.toNumber(),
         paymentUrl: "",
       })
     );

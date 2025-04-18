@@ -24,15 +24,16 @@ import {
   CreateProductFormValues,
   CreateProductSchema,
 } from "@/shared/constants/create-product-schema";
-import { Gender, Note, NoteType, Product, ProductNote } from "@prisma/client";
+import { Gender, Note, NoteType, ProductNote } from "@prisma/client";
 import { FC, useState } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { useNotes } from "@/shared/hooks";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
+import { SafeProduct } from "@/shared/services/dto/product.dto";
 
-type ProductWithTranslations = Product & {
+type ProductWithTranslations = SafeProduct & {
   translations: {
     description: string;
   }[];
@@ -57,7 +58,7 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
       image: undefined,
       descriptionRu: product?.description || "",
       descriptionDe: product?.translations[0]?.description || "",
-      price: product?.price.toNumber() || undefined,
+      price: product?.price || undefined,
       gender: product?.gender || Gender.UNISEX,
       concentration: product?.concentration || "EAU_DE_COLOGNE",
       brand: product?.brand || "CHANEL",

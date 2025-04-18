@@ -32,13 +32,13 @@ import { FC, useState } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import { createProduct } from "@/app/actions";
 import {
   CreateProductFormValues,
   CreateProductSchema,
 } from "@/shared/constants/create-product-schema";
+import { SafeProduct } from "@/shared/services/dto/product.dto";
 
-type ProductWithTranslations = Product & {
+type ProductWithTranslations = SafeProduct & {
   translations: {
     description: string;
   }[];
@@ -60,7 +60,7 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
       variations: [],
       descriptionRu: product?.description || "",
       descriptionDe: product?.translations?.[0]?.description || "",
-      price: product?.price.toNumber() || undefined,
+      price: product?.price || undefined,
       gender: product?.gender || Gender.UNISEX,
       brand: product?.brand || "CHANEL",
       brandCountry: product?.brandCountry || "",

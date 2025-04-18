@@ -137,7 +137,7 @@ model Cart {
   id          Int        @id @default(autoincrement())
   userId      Int?       @unique
   token       String
-  totalAmount Int        @default(0)
+  totalAmount Decimal        @default(0)
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   user        User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -203,7 +203,7 @@ model Order {
   id           Int           @id @default(autoincrement())
   userId       Int?
   token        String
-  totalAmount  Int
+  totalAmount  Decimal
   status       OrderStatus
   peymentId    String?
   items        OrderItem[]

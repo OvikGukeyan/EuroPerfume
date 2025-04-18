@@ -28,7 +28,11 @@ export async function GET(req: NextRequest) {
         },
       },
     });
-    return NextResponse.json(userCart);
+    const safeUserCart = {
+      ...userCart,
+      totalAmount: userCart?.totalAmount.toNumber(),
+    };
+    return NextResponse.json(safeUserCart);
   } catch (error) {
     console.log("[CART_GET] Server error", error);
     return NextResponse.json(
@@ -55,7 +59,6 @@ export async function POST(req: NextRequest) {
       },
     });
 
-
     if (findCartItem) {
       await prisma.cartItem.update({
         where: {
@@ -67,7 +70,6 @@ export async function POST(req: NextRequest) {
       });
     } else {
       await prisma.cartItem.create({
-        
         data: {
           cartId: userCart.id,
           productId: data.productId,

@@ -23,13 +23,25 @@ export const updateCartTotalAmount = async (token: string) => {
     return;
   }
 
-  //   const totalAmount = userCart.items.reduce(
-  //     (acc, item) => acc + calcCartItemTotalPrice(item),
-  //     0
-  //   );
-  const totalAmount = userCart.items.reduce(
+  const safeUserCart = {
+    ...userCart,
+    totalAmount: userCart?.totalAmount.toNumber(),
+    items: userCart.items.map((item) => ({
+      ...item,
+      product: {
+        ...item.product,
+        price: item.product.price.toNumber(),
+      },
+    })),
+  };
+  const totalAmount = safeUserCart.items.reduce(
     (acc, item) =>
-      acc + calcCartItemTotalPrice({ ...item, product: item.product!, variation: item.variation ?? undefined  }),
+      acc +
+      calcCartItemTotalPrice({
+        ...item,
+        product: item.product!,
+        variation: item.variation ?? undefined,
+      }),
     0
   );
 

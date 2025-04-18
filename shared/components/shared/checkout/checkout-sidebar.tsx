@@ -14,7 +14,7 @@ interface Props {
 
 export const CheckoutSidebar: FC<Props> = ({ className, loading, totalAmount, itemLoading, deliveryPrice }) => {
 
-    const totalPrice = totalAmount + deliveryPrice;
+    const totalPrice = Number(totalAmount) + Number(deliveryPrice);
 
     return (
         <WhiteBlock className='p-6 sticky top-4'>

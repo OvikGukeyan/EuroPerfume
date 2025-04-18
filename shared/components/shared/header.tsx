@@ -65,23 +65,19 @@ export const Header: React.FC<Props> = ({
         <Separator />
         <div className="flex items-center justify-between py-3 md:py-10 px-3 md:px-5 ">
           <div className="md:hidden flex items-center">
-           <MenuDrawer/>
+            <MenuDrawer />
             <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />
           </div>
-          <div className="relative flex justify-center items-center w-36 md:w-44 h-10 mx-auto">
+          <div className={cn("relative flex justify-center items-center w-36 md:w-44 h-10 ", hasSearch && 'mx-auto')}>
             <Link href="/">
-              <picture className="w-full h-full">
-                <source media="(max-width: 767px)" srcSet="/assets/logo.png" />
-                <source media="(min-width: 767px)" srcSet="/assets/logo.png" />
-                <Image
-                  src="/assets/logo.png"
-                  layout="fill"
-                  objectFit="contain"
-                  objectPosition="center"
-                  alt="logo"
-                  className="w-full h-full"
-                />
-              </picture>
+              <Image
+                src="/assets/logo.png"
+                layout="fill"
+                objectFit="contain"
+                objectPosition="center"
+                alt="logo"
+                className="w-full h-full"
+              />
             </Link>
           </div>
 

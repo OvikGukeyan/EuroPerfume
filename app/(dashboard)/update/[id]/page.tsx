@@ -33,13 +33,18 @@ export default async function Update({
     return 
     <h1>Product not found</h1>;
   }
+
+  const safeProduct = {
+    ...product,
+    price: product.price.toNumber(),
+  };
   
   return (
     <div className=" px-10 mb-10">
       <Title className="mb-5" text="Update product" />
 
-      {product.categoryId === 1 && <CreatePerfumeForm product={product} submitFunction={updateProduct}/>}
-      {product.categoryId === 2 && <CreateMakeupForm product={product} submitFunction={updateProduct}/>}
+      {product.categoryId === 1 && <CreatePerfumeForm product={safeProduct} submitFunction={updateProduct}/>}
+      {product.categoryId === 2 && <CreateMakeupForm product={safeProduct} submitFunction={updateProduct}/>}
 
     </div>
   );
