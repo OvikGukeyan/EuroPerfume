@@ -25,6 +25,7 @@ export default async function ProductModalPage({
           note: true,
         },
       },
+      brand: true
     },
   });
 

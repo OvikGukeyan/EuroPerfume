@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  brands,
   productGroups,
   classifications,
   concentrations,
@@ -10,7 +9,12 @@ import {
   yers,
 } from "@/prisma/constants";
 import { Button, Input, Popover } from "@/shared/components";
-import { CreateNoteForm, FormInput, FormTextarea } from "@/shared/components/shared";
+import {
+  BrandSelect,
+  CreateNoteForm,
+  FormInput,
+  FormTextarea,
+} from "@/shared/components/shared";
 import { FormSelect } from "@/shared/components/shared/product-form/form-select";
 import { FormCheckbox } from "@/shared/components/shared/product-form/index";
 import {
@@ -50,7 +54,12 @@ interface Props {
 
 export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
   const [loading, setLoading] = useState(false);
-  const { notes, createNote, loading: notesLoading, error: notesError } = useNotes();
+  const {
+    notes,
+    createNote,
+    loading: notesLoading,
+    error: notesError,
+  } = useNotes();
   const form = useForm<CreateProductFormValues>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
@@ -61,7 +70,7 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
       price: product?.price || undefined,
       gender: product?.gender || Gender.UNISEX,
       concentration: product?.concentration || "EAU_DE_COLOGNE",
-      brand: product?.brand || "CHANEL",
+      brand: product?.brandId.toString() || "",
       brandCountry: product?.brandCountry || "",
       manufacturingCountry: product?.manufacturingCountry || "",
       perfumer: product?.perfumer || "",
@@ -262,9 +271,7 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
                   </FormItem>
                 )}
               />
-            </div>
 
-            <div className="w-1/2 ">
               <FormField
                 name="price"
                 control={form.control as Control<CreateProductFormValues>}
@@ -277,7 +284,9 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
                   </FormItem>
                 )}
               />
+            </div>
 
+            <div className="w-1/2 ">
               <FormSelect
                 name="gender"
                 control={form.control}
@@ -288,13 +297,15 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
                 control={form.control}
                 items={concentrations}
               />
-              <FormSelect name="brand" control={form.control} items={brands} />
+
               <FormCheckbox
                 title="Аромат"
                 name="aromas"
                 control={form.control}
                 items={perfumeAromas}
               />
+
+              <BrandSelect control={form.control} />
 
               <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
                 <FormCheckbox
@@ -341,7 +352,11 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
                     <Button variant="outline">Add new note</Button>
                   </PopoverTrigger>
                   <PopoverContent className="w-80">
-                    <CreateNoteForm onSubmit={createNote} loading={notesLoading} error={notesError}/>
+                    <CreateNoteForm
+                      onSubmit={createNote}
+                      loading={notesLoading}
+                      error={notesError}
+                    />
                   </PopoverContent>
                 </Popover>
               </div>

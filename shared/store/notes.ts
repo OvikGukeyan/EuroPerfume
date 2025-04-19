@@ -6,7 +6,7 @@ export type NoteValues = {
     labelRu: string;
     labelDe: string;
 }
-interface NotesState {
+export interface NotesState {
     notes: Note[];
     loading: boolean;
     error: boolean;
@@ -33,10 +33,7 @@ export const useNotesStore = create<NotesState>()((set) => ({
         }
     },
 
-    createNote: async (note: {
-        labelRu: string;
-        labelDe: string;
-      }) => {
+    createNote: async (note: NoteValues) => {
         try {
             set({ loading: true, error: false });
             const data = await Api.notes.createNote(note);

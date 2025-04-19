@@ -51,7 +51,6 @@ export async function createOrder(data: CheckoutFormValues) {
       },
     });
 
-    
     if (!userCart) {
       throw new Error("Cart not found!");
     }
@@ -356,7 +355,9 @@ export async function createProduct(
         price: parsedData.price,
         gender: parsedData.gender,
         concentration: parsedData.concentration || undefined,
-        brand: parsedData.brand,
+        brand: {
+          connect: { id: Number(parsedData.brand) },
+        },
         productNotes: {
           create: [
             ...parsedData.topNotes.map((noteId: string) => ({
@@ -459,7 +460,9 @@ export async function updateProduct(
         concentration: parsedData.concentration
           ? parsedData.concentration
           : undefined,
-        brand: parsedData.brand,
+        brand: {
+          connect: { id: Number(parsedData.brand) },
+        },
         productNotes: {
           create: [
             ...parsedData.topNotes.map((noteId: string) => ({

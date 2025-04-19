@@ -45,6 +45,7 @@ export const ProductsGroupList: React.FC<Props> = ({
             available={product.available}
             categoryId={product.categoryId}
             variations={product.variations}
+            concentration={product.concentration || undefined}
           />
         ))}
       </div>

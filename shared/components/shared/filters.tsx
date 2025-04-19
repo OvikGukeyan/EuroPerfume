@@ -6,20 +6,22 @@ import { Title, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
 import { useQueryFilters } from "@/shared/hooks";
 import {
+  Brand,
   Classifications,
   Gender,
   Note,
   PerfumeConcentration,
 } from "@prisma/client";
 import { useFiltersStore } from "@/shared/store/filters";
-import { brands, perfumeAromas } from "@/prisma/constants";
+import { perfumeAromas } from "@/prisma/constants";
 
 interface Props {
   notes: Note[];
+  brands: Brand[];
   className?: string;
 }
 
-export const Filters: FC<Props> = ({ notes, className }) => {
+export const Filters: FC<Props> = ({ notes, brands, className }) => {
   // const filters = useFilters();
   const filters = useFiltersStore();
 
@@ -43,7 +45,7 @@ export const Filters: FC<Props> = ({ notes, className }) => {
         selected={filters.brands}
         items={brands.map((item) => ({
           text: item.name,
-          value: item.value,
+          value: item.id.toString(),
         }))}
       />
 

@@ -58,6 +58,8 @@ export {MenuDrawer} from './menu-drawer';
 export {MenuDrawerItem} from './menu-drawer-item';
 export {SocialMediaBar} from './social-media-bar';
 export {CreateNoteForm} from './create-note-form';
+export {CreateBrandForm} from './create-brand-form';
+export {BrandSelect} from './brand-select';
 
 export * from './email-templates';
 export * from './form';

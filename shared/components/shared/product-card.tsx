@@ -12,9 +12,10 @@ import { Volume, volumes } from "@/shared/constants/perfume";
 import { calcPrice } from "@/shared/lib";
 import { HeartBlack } from "@/shared/icons";
 import { unknown } from "zod";
-import { ProductVariation } from "@prisma/client";
+import { PerfumeConcentration, ProductVariation } from "@prisma/client";
 import { it } from "node:test";
 import { useFavorites } from "@/shared/hooks";
+import { concentrations } from "@/prisma/constants";
 
 interface Props {
   id: number;
@@ -24,6 +25,7 @@ interface Props {
   available?: boolean;
   categoryId?: number;
   variations: ProductVariation[];
+  concentration?: PerfumeConcentration;
   className?: string;
 }
 
@@ -35,6 +37,7 @@ export const ProductCard: React.FC<Props> = ({
   id,
   categoryId,
   variations,
+  concentration,
 }) => {
   const currentVolumesArray =
     price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
@@ -63,7 +66,7 @@ export const ProductCard: React.FC<Props> = ({
   useEffect(() => {
     if (items.some((item) => item.productId === id)) {
       toggleIsFavorite(true);
-    }else {
+    } else {
       toggleIsFavorite(false);
     }
   }, [items, id]);
@@ -82,6 +85,9 @@ export const ProductCard: React.FC<Props> = ({
     }
   };
   const finalPrice = categoryId === 1 ? calcPrice(volume, price) : price;
+  const concentratioName = concentrations.find(
+    (item) => item.value === concentration
+  );
   return (
     <div className={className}>
       <Link href={`/product/${id}`}>
@@ -103,9 +109,12 @@ export const ProductCard: React.FC<Props> = ({
           </Button>
         </div>
       </Link>
-      <div className="h-16">
+      <div className="h-20">
         <Title text={name} size="xs" className="md:text-lg my-3 font-bold" />
+      {concentration && <p className="text-md">{concentratioName?.name}</p>}
+
       </div>
+
 
       {categoryId === 1 && (
         <VolumeSelection

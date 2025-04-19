@@ -5,7 +5,7 @@ import { Label } from "@/shared/components/ui/label";
 export default function CreateNote() {
   return (
     <div className=" px-10 mb-10">
-      <Title className="mb-5" text="Create new Slide" />
+      <Title className="mb-5" text="Create new Note" />
 
       <form  className="flex flex-col items-start gap-5" action={createNote}>
         <div>

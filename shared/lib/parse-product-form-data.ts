@@ -1,7 +1,6 @@
 import {
   ApplicationMethod,
   Aromas,
-  Brands,
   Classifications,
   Effects,
   Finish,
@@ -35,7 +34,7 @@ export function parseProductFormData(formData: FormData) {
     price: getNumber("price")!,
     gender: getString("gender") as Gender,
     concentration: getString("concentration") as PerfumeConcentration,
-    brand: getString("brand") as Brands,
+    brand: getString("brand") ,
     topNotes: getJsonArray("topNotes") as Notes[],
     heartNotes: getJsonArray("heartNotes") as Notes[],
     baseNotes: getJsonArray("baseNotes") as Notes[],

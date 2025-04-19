@@ -3,6 +3,7 @@ import { prisma } from "./prisma-client";
 import { hashSync } from "bcrypt";
 import {
   categories,
+  // newBrands,
   // newNotes,
   // notes,
   productGroups,
@@ -37,6 +38,10 @@ async function up() {
   await prisma.productGroup.createMany({
     data: productGroups,
   });
+
+  // await prisma.brand.createMany({
+  //   data: newBrands
+  // })
 
   await prisma.product.createMany({
     data: products,

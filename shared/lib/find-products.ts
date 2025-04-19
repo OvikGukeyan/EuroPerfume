@@ -51,7 +51,7 @@ export const findProducts = async (
   try {
     const brands = (await params).brands
       ?.split(",")
-      .map((item) => item.trim().toUpperCase());
+      .map((item) => Number(item.trim()));
     const genders =
       (await params).gender
         ?.split(",")
@@ -89,7 +89,7 @@ export const findProducts = async (
     const productGroupId = Number((await params).productGroup);
 
     const whereClause = {
-      brand: { in: brands as Brands[] },
+      brandId: { in: brands },
       gender: genders.length > 0 ? { in: genders as Gender[] } : undefined,
       classification:
         classification.length > 0
@@ -124,6 +124,7 @@ export const findProducts = async (
                 include: {
                   translations: true,
                   variations: true,
+                  brand: true,
                 },
               },
             },

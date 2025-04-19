@@ -4,8 +4,8 @@ import { UserRole } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-  const notes = await prisma.note.findMany();
-  return NextResponse.json(notes);
+  const brands = await prisma.brand.findMany();
+  return NextResponse.json(brands);
 }
 
 export async function POST(req: NextRequest) {
@@ -14,9 +14,9 @@ export async function POST(req: NextRequest) {
     throw new Error("Access denied");
   }
   const { data } = await req.json();
-
-  const note = await prisma.note.create({
+  console.log(data);
+  const brand = await prisma.brand.create({
     data,
   });
-  return NextResponse.json(note);
+  return NextResponse.json(brand);
 }

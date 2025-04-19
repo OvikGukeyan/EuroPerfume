@@ -24,6 +24,7 @@ export default async function Update({
           note: true,
         },
       },
+      brand: true
     }
   });
 

@@ -28,7 +28,8 @@ export default async function Product({
         include: {
           note: true,
         },
-      }
+      },
+      brand: true
     },
   });
 

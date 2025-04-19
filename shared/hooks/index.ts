@@ -5,3 +5,4 @@ export { useFavorites } from './use-favorites';
 export {useOrders} from './use-orders';
 export {useCategories} from './use-categorie';
 export {useNotes} from './use-notes';
+export {useBrands} from './use-brands';

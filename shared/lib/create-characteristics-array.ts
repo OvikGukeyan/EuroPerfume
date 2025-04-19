@@ -1,6 +1,5 @@
 import {
   applicationMethods,
-  brands,
   classifications,
   concentrations,
   effects,
@@ -12,7 +11,7 @@ import {
   skinTypes,
   textures,
 } from "@/prisma/constants";
-import { NoteType, Product } from "@prisma/client";
+import { NoteType } from "@prisma/client";
 import { ProductDTO } from "../services/dto/product.dto";
 
 type ReturnProps = {
@@ -74,7 +73,6 @@ export const createCharacteristicsArray = (product: ProductDTO): ReturnProps => 
   const currentConcentration = concentrations.find(
     (item) => item.value === concentration
   )?.name;
-  const currentBrand = brands.find((item) => item.value === brand)?.name;
 
   const currentPurpose = purposes.find((item) => item.value === purpose)?.label
     .ru;
@@ -96,7 +94,7 @@ export const createCharacteristicsArray = (product: ProductDTO): ReturnProps => 
     ?.label.ru;
 
   const characteristics = [
-    { name: "Brand", value: currentBrand || "" },
+    { name: "Brand", value: brand.name },
     { name: "Aroma", value: currentAroma },
     { name: "Classification", value: currentClassification },
     { name: "Concentration", value: currentConcentration || "" },

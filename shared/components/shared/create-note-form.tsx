@@ -24,7 +24,7 @@ export const CreateNoteForm: FC<Props> = ({ className, onSubmit, loading, error 
   }
   return (
     <div className={cn(" px-10 mb-10", className)}>
-      <Title className="mb-5" text="Create new Slide" />
+      <Title className="mb-5" text="Create new Note" />
 
       <form className="flex flex-col items-start gap-5" action={createSlide}>
         <div>

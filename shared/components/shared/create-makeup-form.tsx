@@ -2,7 +2,6 @@
 
 import {
   applicationMethods,
-  brands,
   classifications,
   effects,
   finishes,
@@ -16,7 +15,7 @@ import {
   yers,
 } from "@/prisma/constants";
 import { Button, Input } from "@/shared/components";
-import { FormInput, FormTextarea } from "@/shared/components/shared";
+import { BrandSelect, FormInput, FormTextarea } from "@/shared/components/shared";
 import { FormSelect } from "@/shared/components/shared/product-form/form-select";
 import { FormCheckbox } from "@/shared/components/shared/product-form/index";
 import {
@@ -27,7 +26,7 @@ import {
   FormLabel,
 } from "@/shared/components/ui/form";
 
-import { Gender, Product } from "@prisma/client";
+import { Gender } from "@prisma/client";
 import { FC, useState } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -62,7 +61,7 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
       descriptionDe: product?.translations?.[0]?.description || "",
       price: product?.price || undefined,
       gender: product?.gender || Gender.UNISEX,
-      brand: product?.brand || "CHANEL",
+      brand: product?.brandId.toString() || "",
       brandCountry: product?.brandCountry || "",
       manufacturingCountry: product?.manufacturingCountry || "",
       // Makeup-specific fields:
@@ -357,7 +356,7 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
                 control={form.control}
                 items={purposes}
               />
-              <FormSelect name="brand" control={form.control} items={brands} />
+              <BrandSelect control={form.control} />
 
               <FormSelect
                 name="finish"
