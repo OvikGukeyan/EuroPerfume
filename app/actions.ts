@@ -674,8 +674,10 @@ export async function createSlide(formData: FormData) {
     const desctopImg = formData.get("desctopImg") as File;
     const mobileImg = formData.get("mobileImg") as File;
 
-    const images: File[] = [desctopImg, mobileImg];
+   
 
+    const images: File[] = [desctopImg, mobileImg];
+    
     const uploadPromises = images.map((image) => {
       const fileName = `${image.name}--${new Date().toISOString()}`;
       return supabase.storage
@@ -684,7 +686,6 @@ export async function createSlide(formData: FormData) {
     });
 
     const uploadResults = await Promise.all(uploadPromises);
-
     uploadResults.forEach((result, index) => {
       if (result.error) {
         console.error(`Error uploading ${images[index].name}:`, result.error);

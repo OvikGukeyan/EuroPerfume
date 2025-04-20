@@ -4,6 +4,12 @@ const nextConfig = {
   images: {
     domains: ['media.dodostatic.net', 'cdn.dodostatic.net', 'cdn.inappstory.ru', "media.douglas.de", "tlppllvnvzjgxgbzlwnh.supabase.co", 'thgjecpmxhqwfoknvjiu.supabase.co'],
   },
+  experimental: {
+    serverActions: {
+      bodySizeLimit: '5mb', 
+    },
+  },
+
 };
 
 export default nextConfig;
