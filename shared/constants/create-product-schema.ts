@@ -23,7 +23,7 @@ export const CreateProductSchema = z.object({
   descriptionDe: z.string().min(10, { message: "Description should be at least 10 characters" }),
   price: z.coerce.number().positive({ message: "Price must be positive" }),
   gender: z.nativeEnum(Gender),
-  brand: z.string(),
+  brand: z.string().min(1, { message: "Brand is required" }),
   brandCountry: z.string(),
   manufacturingCountry: z.string(),
   releaseYear: z.preprocess(

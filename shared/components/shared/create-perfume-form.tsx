@@ -142,7 +142,6 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
       setLoading(false);
     }
   };
-
   return (
     <div>
       <Form {...form}>

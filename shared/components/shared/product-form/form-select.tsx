@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { FormControl, FormField, FormItem, FormLabel } from "../../ui/form";
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form";
 import { Select } from "../..";
 import {
   SelectContent,
@@ -62,6 +62,7 @@ export const FormSelect: FC<Props> = ({ control, items, name }) => {
                 })}
               </SelectContent>
             </Select>
+            <FormMessage />
           </FormItem>
         );
       }}
