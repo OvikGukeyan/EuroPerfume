@@ -15,6 +15,8 @@ import {
   ApplicationMethod,
   PackagingFormat,
   SkinType,
+  Notes,
+  Brands,
 } from "@prisma/client";
 
 export const categories = [

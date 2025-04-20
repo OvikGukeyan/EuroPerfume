@@ -146,7 +146,6 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
 
   setCurrentPage: (page) => set(() => ({ currentPage: page })),
 
-  // Метод для установки всех фильтров сразу
   setFilters: (newFilters) => set(() => newFilters),
 
   resetFilters: () =>

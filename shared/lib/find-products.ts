@@ -1,13 +1,11 @@
 import { prisma } from "@/prisma/prisma-client";
 import {
   Aromas,
-  Brands,
   Category,
   Classifications,
   Gender,
   Notes,
   PerfumeConcentration,
-  Product,
   ProductGroup,
 } from "@prisma/client";
 import { SafeProduct } from "../services/dto/product.dto";

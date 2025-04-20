@@ -27,7 +27,6 @@ export const Header: React.FC<Props> = ({
   hasSearch = true,
   hasCart = true,
 }) => {
-  // console.log(newNotes, Notes)
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
