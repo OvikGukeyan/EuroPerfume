@@ -11,27 +11,28 @@ export default function CreateSlide() {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setLoading(true);
-    const form = new FormData(e.currentTarget);
-    const desctopImg = form.get("desctopImg") as File;
-    const mobileImg = form.get("mobileImg") as File;
-
-    // Сжатие файлов
-    const compressedDesctopImg = await imageCompressor(desctopImg);
-    const compressedMobileImg = await imageCompressor(mobileImg);
-
-    // Новый FormData с уже сжатыми файлами
-    const newFormData = new FormData();
-    newFormData.append("name", form.get("name") as string);
-    newFormData.append("link", form.get("link") as string);
-    newFormData.append("desctopImg", compressedDesctopImg);
-    newFormData.append("mobileImg", compressedMobileImg);
-
-    // Отправка в server action
-    await createSlide(newFormData);
-
-    setLoading(false);
+    try {
+      e.preventDefault();
+      setLoading(true);
+      const form = new FormData(e.currentTarget);
+      const desctopImg = form.get("desctopImg") as File;
+      const mobileImg = form.get("mobileImg") as File;
+  
+      const compressedDesctopImg = await imageCompressor(desctopImg);
+      const compressedMobileImg = await imageCompressor(mobileImg);
+  
+      const newFormData = new FormData();
+      newFormData.append("name", form.get("name") as string);
+      newFormData.append("link", form.get("link") as string);
+      newFormData.append("desctopImg", compressedDesctopImg);
+      newFormData.append("mobileImg", compressedMobileImg);
+  
+      await createSlide(newFormData);
+    } catch (error) {
+      console.error(error);
+    }finally {
+      setLoading(false);
+    }
   };
 
   return (
