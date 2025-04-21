@@ -7,6 +7,8 @@ import { Button } from "..";
 import { Menu } from "lucide-react";
 
 import { useCategories } from "@/shared/hooks";
+import Link from "next/link";
+import { links } from "@/shared/services/constants";
 
 type Props = {
   className?: string;
@@ -15,6 +17,8 @@ type Props = {
 export const MenuDrawer: FC<Props> = ({ className }) => {
   const { categories } = useCategories();
   const [open, setOpen] = useState(false);
+  
+
   return (
     <div className={cn(className, "sticky top-52 md:top-56 z-20")}>
       <Suspense>
@@ -43,10 +47,16 @@ export const MenuDrawer: FC<Props> = ({ className }) => {
               ))}
             </div>
             <div className="flex flex-col gap-3">
-              <h2 className="text-xl font-semibold">Возврат</h2>
-              <h2 className="text-xl font-semibold">Доставка</h2>
-              <h2 className="text-xl font-semibold">Оплата</h2>
-              <h2 className="text-xl font-semibold">Контакты</h2>
+              {links.map((link) => (
+                <Link
+                  onClick={() => setOpen(false)}
+                  href={link.href}
+                  key={link.href}
+                  className="text-xl font-semibold"
+                >
+                  {link.label.ru}
+                </Link>
+              ))}
             </div>
             <SocialMediaBar />
           </SheetContent>

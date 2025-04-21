@@ -8,8 +8,8 @@ type Props = {
 
 export const SocialMediaBar: FC<Props> = ({ className }) => {
   return (
-    <div className={cn("flex flex-col gap-5", className)}>
-      <div className="flex justify-end gap-3 ">
+    <div className={cn("flex flex-row md:flex-col gap-5", className)}>
+      <div className="flex justify-end gap-5 ">
         <Image
           src={"/assets/images/instagram.png"}
           width={30}
@@ -29,7 +29,7 @@ export const SocialMediaBar: FC<Props> = ({ className }) => {
           alt={"tiktok"}
         />
       </div>
-      <div className="flex items-center justify-end gap-3 ">
+      <div className="flex items-center justify-end gap-5 ">
         <Image
           src={"/assets/images/whatsapp.png"}
           width={30}
