@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  productGroups,
   classifications,
   concentrations,
   genders,
@@ -11,9 +10,11 @@ import {
 import { Button, Input, Popover } from "@/shared/components";
 import {
   BrandSelect,
+  CreateGroupForm,
   CreateNoteForm,
   FormInput,
   FormTextarea,
+  ProductGroupSelect,
 } from "@/shared/components/shared";
 import { FormSelect } from "@/shared/components/shared/product-form/form-select";
 import { FormCheckbox } from "@/shared/components/shared/product-form/index";
@@ -29,11 +30,11 @@ import {
   CreateProductSchema,
 } from "@/shared/constants/create-product-schema";
 import { Gender, Note, NoteType, ProductNote } from "@prisma/client";
-import { FC, useState } from "react";
+import { FC, use, useState } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
-import { useNotes } from "@/shared/hooks";
+import { useNotes, useProductGroup } from "@/shared/hooks";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 import { SafeProduct } from "@/shared/services/dto/product.dto";
 
@@ -60,6 +61,7 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
     loading: notesLoading,
     error: notesError,
   } = useNotes();
+  
   const form = useForm<CreateProductFormValues>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
@@ -148,11 +150,7 @@ export const CreatePerfumeForm: FC<Props> = ({ product, submitFunction }) => {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex justify-between gap-10">
             <div className="w-1/2">
-              <FormSelect
-                name="productGroupId"
-                control={form.control}
-                items={productGroups}
-              />
+              <ProductGroupSelect control={form.control} categoryId={1}/>
               <FormField
                 name="productName"
                 control={form.control as Control<CreateProductFormValues>}

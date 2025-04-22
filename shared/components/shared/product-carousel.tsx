@@ -58,12 +58,7 @@ export const ProductCarousel: React.FC<PropType> = ({
               key={index}
               className="flex items-center justify-center  flex-shrink-0 aspect-square w-full  bg-white "
             >
-              {/* <Image
-                layout="fill"
-                objectFit="contain"
-                src={`/assets/images/3s9Ccf1027978-0-dgl-DE.avif`}
-                alt={""}
-              /> */}
+             
               
               <img
                 src={imageUrl}

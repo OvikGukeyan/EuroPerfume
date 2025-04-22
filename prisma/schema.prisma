@@ -69,6 +69,8 @@ model Product {
   packagingFormat     PackagingFormat?
   volume              String?
   skinType            SkinType?
+  size                String?
+  material            String?
 
   productNotes  ProductNote[]
   aromas        Aromas[]              @default([])

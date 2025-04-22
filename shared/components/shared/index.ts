@@ -60,6 +60,8 @@ export {SocialMediaBar} from './social-media-bar';
 export {CreateNoteForm} from './create-note-form';
 export {CreateBrandForm} from './create-brand-form';
 export {BrandSelect} from './brand-select';
+export {ProductGroupSelect} from './product-group-select';
+export {CreateGroupForm} from './create-group-form';
 
 export * from './email-templates';
 export * from './form';

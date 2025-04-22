@@ -6,3 +6,4 @@ export {useOrders} from './use-orders';
 export {useCategories} from './use-categorie';
 export {useNotes} from './use-notes';
 export {useBrands} from './use-brands';
+export {useProductGroup} from './use-product-group';

@@ -15,7 +15,12 @@ import {
   yers,
 } from "@/prisma/constants";
 import { Button, Input } from "@/shared/components";
-import { BrandSelect, FormInput, FormTextarea } from "@/shared/components/shared";
+import {
+  BrandSelect,
+  FormInput,
+  FormTextarea,
+  ProductGroupSelect,
+} from "@/shared/components/shared";
 import { FormSelect } from "@/shared/components/shared/product-form/form-select";
 import { FormCheckbox } from "@/shared/components/shared/product-form/index";
 import {
@@ -36,6 +41,7 @@ import {
   CreateProductSchema,
 } from "@/shared/constants/create-product-schema";
 import { SafeProduct } from "@/shared/services/dto/product.dto";
+import { useParams } from "next/navigation";
 
 type ProductWithTranslations = SafeProduct & {
   translations: {
@@ -49,7 +55,10 @@ interface Props {
     | ((data: FormData & CreateProductFormValues) => Promise<void>);
 }
 
-export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
+export const CreateMakeupForm: FC<Props> = ({ product, submitFunction, }) => {
+  const params = useParams();
+  const categoryId = params?.id ? Number(params.id) : undefined;
+
   const [loading, setLoading] = useState(false);
   const form = useForm<CreateProductFormValues>({
     resolver: zodResolver(CreateProductSchema),
@@ -158,7 +167,7 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong", { icon: "❌" });
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -169,11 +178,7 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex justify-between gap-10">
             <div className="w-1/2">
-              <FormSelect
-                name="productGroupId"
-                control={form.control}
-                items={productGroups}
-              />
+              <ProductGroupSelect control={form.control} categoryId={categoryId || 0} />
               <FormField
                 name="productName"
                 control={form.control as Control<CreateProductFormValues>}
@@ -357,7 +362,9 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
                 items={purposes}
               />
               <BrandSelect control={form.control} />
+            </div>
 
+            <div className="w-1/2">
               <FormSelect
                 name="finish"
                 control={form.control}
@@ -372,9 +379,6 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
                   { name: "No", value: "false" },
                 ]}
               />
-            </div>
-
-            <div className="w-1/2">
               <FormField
                 name="colorPalette"
                 control={form.control as Control<CreateProductFormValues>}
@@ -504,7 +508,7 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
               />
 
               <FormCheckbox
-              title="Классификация"
+                title="Классификация"
                 name="classification"
                 control={form.control}
                 items={classifications}
@@ -518,7 +522,9 @@ export const CreateMakeupForm: FC<Props> = ({ product, submitFunction }) => {
             </div>
           </div>
 
-          <Button loading={loading} type="submit">Create</Button>
+          <Button loading={loading} type="submit">
+            Create
+          </Button>
         </form>
       </Form>
     </div>

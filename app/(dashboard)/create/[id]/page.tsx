@@ -15,6 +15,8 @@ export default async function Create({
 
       {id === '1' && <CreatePerfumeForm submitFunction={createProduct}/>}
       {id === '2' && <CreateMakeupForm submitFunction={createProduct}/>}
+      {id === '3' && <CreateMakeupForm submitFunction={createProduct}/>}
+
 
     </div>
   );

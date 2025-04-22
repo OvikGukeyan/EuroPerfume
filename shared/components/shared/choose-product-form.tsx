@@ -23,9 +23,10 @@ import { Rating } from "./rating";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { ProductDTO } from "@/shared/services/dto/product.dto";
+import Image from "next/image";
 
 interface Props {
-  product: ProductDTO
+  product: ProductDTO;
   loading: boolean;
   onSubmit?: (productId: number, volume: Volume) => Promise<void>;
   activeVariation: ProductVariation;
@@ -65,7 +66,16 @@ export const ChooseProductForm: FC<Props> = ({
   return (
     <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
       <div className="flex  items-center justify-center flex-1 relative w-full lg:w-2/5 bg-[#f2f2f2]">
-        <ProductCarousel slides={product.imageUrl} />
+        {product.imageUrl.length > 0 ? (
+          <ProductCarousel slides={product.imageUrl} />
+        ) : (
+          <Image
+            layout="fill"
+            objectFit="contain"
+            src={activeVariation.imageUrl}
+            alt={""}
+          />
+        )}
       </div>
 
       <div className="w-full lg:w-3/5  bg-[#f2f2f2] p-7">
@@ -82,8 +92,12 @@ export const ChooseProductForm: FC<Props> = ({
         >
           <Tabs defaultValue="description" className="w-full">
             <TabsList className="grid w-full grid-cols-2 h-16">
-              <TabsTrigger className="h-10"  value="description">Description</TabsTrigger>
-              <TabsTrigger className="h-10" value="characteristics">Characteristics</TabsTrigger>
+              <TabsTrigger className="h-10" value="description">
+                Description
+              </TabsTrigger>
+              <TabsTrigger className="h-10" value="characteristics">
+                Characteristics
+              </TabsTrigger>
             </TabsList>
             <TabsContent value="description">
               <Text size="md" className="my-4">

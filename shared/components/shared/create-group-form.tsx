@@ -4,18 +4,21 @@ import React, { FC, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button, Input, Title } from "..";
 import { Label } from "../ui/label";
+import { ProductGroupValues } from "@/shared/store";
 
 type Props = {
-  onSubmit: (data: { name: string }) => void;
+  onSubmit: (data: ProductGroupValues) => void;
   loading?: boolean;
   error: boolean;
+  categoryId: number;
   className?: string;
 };
 
-export const CreateBrandForm: FC<Props> = ({
+export const CreateGroupForm: FC<Props> = ({
   className,
   onSubmit,
   loading,
+  categoryId,
   error,
 }) => {
   const [name, setName] = useState<string>("");
@@ -23,6 +26,7 @@ export const CreateBrandForm: FC<Props> = ({
   const onSubmitClick = () => {
     onSubmit({
       name: name,
+      categoryId
     });
     setName("");
   };

@@ -34,11 +34,7 @@ export const AppSidebar: FC<Props> = ({ className }) => {
   const tools = [
    
     { name: "Products", icon: <Settings2 />, href: "/products" },
-    {
-      name: "Create Note", 
-      icon: <Music3 />,
-      href: "/create-note",
-    },
+   
     {
       name: "Create New Slde",
       icon: <Plus />,
