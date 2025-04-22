@@ -36,7 +36,6 @@ export {VolumeSelection} from './volume-selection';
 export {Text} from './text';
 export {PaginationComponent} from './pagination-component';
 export {AppSidebar} from './app-sidebar';
-export {CreatePerfumeForm} from './create-perfume-form'
 export {DashboardProduct} from './dashboard-product';
 export {Carusel} from './carusel';
 export {ReviewComponent} from './review';
@@ -49,7 +48,6 @@ export {MyPopover} from './my-popover';
 export {OrdersTable} from './orders-table';
 export {Footer} from './footer';
 export {ResetForm} from './reset-form';
-export {CreateMakeupForm} from './create-makeup-form';
 export {ProductCharacteristics} from './product-characteristics';
 export {ChooseVariation} from './choose-variation';
 export {OrderItemsPopover} from './order-items-popover';
@@ -62,6 +60,7 @@ export {CreateBrandForm} from './create-brand-form';
 export {BrandSelect} from './brand-select';
 export {ProductGroupSelect} from './product-group-select';
 export {CreateGroupForm} from './create-group-form';
+export {CreateProductForm} from './create-product-form';
 
 export * from './email-templates';
 export * from './form';

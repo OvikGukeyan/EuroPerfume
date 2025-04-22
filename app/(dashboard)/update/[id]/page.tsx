@@ -1,4 +1,4 @@
-import { CreateMakeupForm, CreatePerfumeForm, Title } from "@/shared/components";
+import { CreateProductForm, Title } from "@/shared/components";
 
 import { prisma } from "@/prisma/prisma-client";
 import { updateProduct } from "@/app/actions";
@@ -24,14 +24,12 @@ export default async function Update({
           note: true,
         },
       },
-      brand: true
-    }
+      brand: true,
+    },
   });
 
-  
-
   if (!product) {
-    return 
+    return;
     <h1>Product not found</h1>;
   }
 
@@ -39,14 +37,16 @@ export default async function Update({
     ...product,
     price: product.price.toNumber(),
   };
-  
+
   return (
     <div className=" px-10 mb-10">
       <Title className="mb-5" text="Update product" />
 
-      {product.categoryId === 1 && <CreatePerfumeForm product={safeProduct} submitFunction={updateProduct}/>}
-      {product.categoryId === 2 && <CreateMakeupForm product={safeProduct} submitFunction={updateProduct}/>}
-
+      <CreateProductForm
+        product={safeProduct}
+        submitFunction={updateProduct}
+        categoryId={product.categoryId}
+      />
     </div>
   );
 }

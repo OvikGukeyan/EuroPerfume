@@ -58,6 +58,8 @@ export const CreateProductSchema = z.object({
   heartNotes: z.array(z.string()).optional(),
   baseNotes: z.array(z.string()).optional(),
   variations: z.array(z.instanceof(File)).optional(),
+  size: z.string().optional(),
+  material: z.string().optional(),
 });
 
 export type CreateProductFormValues = z.infer<typeof CreateProductSchema>;
