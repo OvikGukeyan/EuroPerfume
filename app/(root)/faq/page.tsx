@@ -43,7 +43,7 @@ export default function Faq() {
           <p>
             Пожалуйста, отправьте нам фото повреждения в течение 48 часов после получения на{" "}
             <a href="mailto:info@euro-perfume.com" className="text-blue-600 underline">
-              info@euro-perfume.com
+              europerfumeshop@gmail.com
             </a>{" "}
             — мы обязательно найдём решение.
           </p>

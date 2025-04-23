@@ -69,7 +69,7 @@ export const MenuDrawerItem: FC<Props> = ({ className, category, setOpen }) => {
               handleSubItemClick(productGroup);
             }}
             key={productGroup.id}
-            className="px-4 py-2 font-mono text-xl cursor-pointer"
+            className="px-4 py-2 text-xl cursor-pointer"
           >
             {productGroup.name}
           </div>

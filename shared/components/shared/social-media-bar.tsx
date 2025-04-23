@@ -28,10 +28,10 @@ export const SocialMediaBar: FC<Props> = ({ className }) => {
           href="https://www.facebook.com/share/1AS6TtmyrW/?mibextid=wwXIfr"
         >
           <Image
-            src={"/assets/images/youtube.png"}
+            src={"/assets/images/facebook.png"}
             width={30}
             height={30}
-            alt={"youtube"}
+            alt={"facebook"}
           />
         </a>
         <a
