@@ -642,26 +642,33 @@ export async function createReview(formData: FormData) {
 
     const text = formData.get("comment") as string;
     const rating = Number(formData.get("rating"));
-    const productId = Number(formData.get("productId"));
-    await prisma.review.create({
-      data: {
-        text: text,
-        rating: rating,
-        user: {
-          connect: {
-            id: Number(user.id),
-          },
-        },
-        product: {
-          connect: {
-            id: productId,
-          },
+    const productId = formData.get("productId");
+    
+    const data: any = {
+      text,
+      rating,
+      user: {
+        connect: {
+          id: Number(user.id),
         },
       },
-    });
-  } catch (error) {}
-}
+    };
 
+    if (productId) {
+      data.product = {
+        connect: {
+          id: Number(productId),
+        },
+      };
+    }
+
+    await prisma.review.create({ data });
+    
+  } catch (error) {
+    console.error("Error [CREATE_REVIEW]", error);
+    throw error;
+  }
+}
 export async function createNote(formData: FormData) {
   try {
     const user = await getUserSession();

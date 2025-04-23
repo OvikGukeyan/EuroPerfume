@@ -5,14 +5,15 @@ import { Button } from "..";
 import { useFormStatus } from "react-dom";
 
 type Props = {
+  disabled?: boolean;
   className?: string;
 };
 
-export const SubmitButtonBar: FC<Props> = ({ className }) => {
+export const SubmitButtonBar: FC<Props> = ({ className, disabled }) => {
   const { pending } = useFormStatus();
   return (
     <div className={cn("flex items-center justify-end gap-5", className)}>
-      <Button loading={pending} size={"lg"}>
+      <Button disabled={disabled} loading={pending} size={"lg"}>
         Submit
       </Button>
     </div>

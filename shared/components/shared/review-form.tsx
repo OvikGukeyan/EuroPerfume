@@ -10,16 +10,15 @@ import {
   CardTitle,
 } from "../ui/card";
 import { createReview } from "@/app/actions";
-import { Review } from "@prisma/client";
-// import { useFormStatus } from "react-dom";
+
 
 type Props = {
   className?: string;
-  productId: number;
+  productId?: number;
 };
+export const ReviewForm: FC<Props> = async ({ className, productId }) => {
+ 
 
-export const ReviewForm: FC<Props> = ({ className, productId }) => {
-    // const { pending } = useFormStatus();
   return (
     <Card className={cn("p-5", className)}>
       <CardHeader>
@@ -37,7 +36,7 @@ export const ReviewForm: FC<Props> = ({ className, productId }) => {
         </CardContent>
 
         <CardFooter>
-          <SubmitButtonBar />
+          <SubmitButtonBar   />
         </CardFooter>
       </form>
     </Card>

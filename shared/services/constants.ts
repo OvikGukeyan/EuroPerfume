@@ -6,23 +6,30 @@ export enum ApiRouts {
 export const links = [
     {
       label: {
-        ru: "Доставка",
-        de: "Lieferung",
+        ru: "Доставка и оплата",
+        de: "Lieferung und Zahlung",
       },
-      href: "/delivery-info",
+      href: "/delivery-and-payment",
     },
     {
       label: {
-        ru: "Возврат",
-        de: "Rückgabe",
+        ru: "Возврат и обмен",
+        de: "Rückgabe und Austausch",
       },
-      href: "/payment-info",
+      href: "/return-and-exchange",
     },
     {
       label: {
-        ru: "Оплата",
-        de: "Zahlung",
+        ru: "Отзывы",
+        de: "Bewertungen",
       },
-      href: "/payment-info",
+      href: "/reviews",
+    },
+    {
+      label: {
+        ru: "FAQ",
+        de: "FAQ",
+      },
+      href: "/faq",
     },
   ];

@@ -1,7 +1,6 @@
+'use client';
 import { Button } from "@/shared/components/ui";
 import { Dialog, DialogContent } from "@/shared/components/ui/dialog";
-import { signIn } from "next-auth/react";
-import Image from "next/image";
 import React, { FC } from "react";
 import { LoginForm } from "./forms/login-form";
 import { RegisterForm } from "./forms/register-form";
