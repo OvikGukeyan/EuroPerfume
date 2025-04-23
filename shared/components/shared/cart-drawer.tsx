@@ -36,6 +36,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
     const newQuantity = type === "plus" ? quantity + 1 : quantity - 1;
     updateItemQuantity(id, newQuantity);
   };
+  console.log(totalAmount)
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>
@@ -49,7 +50,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
           </SheetHeader>
         )}
 
-        {!totalAmount && (
+        {totalAmount < 1 && (
           <div className="flex flex-col items-center justify-center w-full h-full mx-auto">
             <Image
               src={"/assets/images/empty-box.png"}

@@ -94,6 +94,7 @@ model Product {
   variations     ProductVariation[]
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
+  OrderItem      OrderItem[]
 }
 
 model ProductVariation {
@@ -236,6 +237,8 @@ model OrderItem {
   variation   ProductVariation? @relation(fields: [variationId], references: [id])
   orderId     Int
   order       Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product           @relation(fields: [productId], references: [id])
+  productId   Int
 }
 
 model VerificationCode {

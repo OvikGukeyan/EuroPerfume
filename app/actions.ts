@@ -3,6 +3,7 @@
 import { supabase } from "@/lib/supabase";
 import { prisma } from "@/prisma/prisma-client";
 import {
+  OrderSuccessTemplate,
   PasswordResetTemplate,
   PayOrderTemplate,
   UserVerificationTemplate,
@@ -15,6 +16,7 @@ import {
 } from "@/shared/lib";
 import { getUserSession } from "@/shared/lib/get-user-session";
 import { sendEmail } from "@/shared/lib/send-email";
+import { CartItemDTO } from "@/shared/services/dto/cart.dto";
 import { NoteValues } from "@/shared/store";
 import {
   Languages,
@@ -22,6 +24,9 @@ import {
   Prisma,
   UserRole,
   NoteType,
+  OrderItem,
+  ProductVariation,
+  Product,
 } from "@prisma/client";
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
@@ -81,7 +86,15 @@ export async function createOrder(data: CheckoutFormValues) {
             name: item.product.name,
             quantity: item.quantity,
             variationId: item.variationId,
+            productId: item.productId,
           })),
+        },
+      },
+      include: {
+        items: {
+          include: {
+            product: true,
+          },
         },
       },
     });
@@ -119,17 +132,26 @@ export async function createOrder(data: CheckoutFormValues) {
     //   },
     // });
 
+    const safeCartItems = userCart.items.map((item) => ({
+      ...item,
+      product: {
+        ...item.product,
+        price: item.product.price.toNumber(),
+      },
+    }))
     const res = await sendEmail(
       data.email,
       "Pay order #" + order.id,
-      PayOrderTemplate({
+      OrderSuccessTemplate({
         orderId: order.id,
-        totalAmount: order.totalAmount.toNumber(),
-        paymentUrl: "",
+        orderDate: new Date().toLocaleString(),
+        total: order.totalAmount.toNumber(),
+        items: safeCartItems as CartItemDTO[],
       })
     );
   } catch (error) {
     console.error("[createOrder] Server error", error);
+    throw error;
   }
 }
 
@@ -571,12 +593,13 @@ export async function deleteProduct(id: number) {
         throw new Error(removalResults.error.message);
       }
     }
-
+console.log(id, 'id!!!!');
     await prisma.product.delete({
       where: { id },
     });
   } catch (error) {
     console.error("Error [DELETE_PRODUCT]", error);
+    throw error;
   }
 }
 
@@ -674,10 +697,8 @@ export async function createSlide(formData: FormData) {
     const desctopImg = formData.get("desctopImg") as File;
     const mobileImg = formData.get("mobileImg") as File;
 
-   
-
     const images: File[] = [desctopImg, mobileImg];
-    
+
     const uploadPromises = images.map((image) => {
       const fileName = `${image.name}--${new Date().toISOString()}`;
       return supabase.storage

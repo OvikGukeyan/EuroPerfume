@@ -91,30 +91,26 @@ export const ProductCard: React.FC<Props> = ({
   return (
     <div className={className}>
       <Link href={`/product/${id}`}>
-        <div className="flex justify-center bg-secondary rounded-lg w-full h-[300px] relative">
-          <Image
-            layout="fill"
-            objectFit="cover"
-            // className="object-cover"
-            src={imageUrl || activeVariation?.imageUrl}
-            alt={name}
-          />
-
-          <Button
-            className="absolute top-3 right-1 md:right-5 hover:bg-transparent p-2"
-            onClick={(e) => onToggleFavorite(e)}
-            variant="ghost"
-          >
-            {isFavorite ? <HeartBlack /> : <Heart className="" />}
-          </Button>
-        </div>
+          <div className="w-full max-w-[400px] aspect-[4/5] relative">
+            <Image
+              src={imageUrl || activeVariation?.imageUrl}
+              alt={name}
+              fill
+              className="object-contain "
+            />
+            <Button
+              className="absolute top-3 right-1 md:right-5 hover:bg-transparent p-2"
+              onClick={(e) => onToggleFavorite(e)}
+              variant="ghost"
+            >
+              {isFavorite ? <HeartBlack /> : <Heart />}
+            </Button>
+          </div>
       </Link>
-      <div className="h-20">
-        <Title text={name} size="xs" className="md:text-lg my-3 font-bold" />
-      {concentration && <p className="text-md">{concentratioName?.name}</p>}
-
+      <div className="h-28">
+        <Title text={name} size="xs" className="md:text-lg mt-2 font-bold" />
+        {concentration && <p className="text-sm">{concentratioName?.name}</p>}
       </div>
-
 
       {categoryId === 1 && (
         <VolumeSelection
