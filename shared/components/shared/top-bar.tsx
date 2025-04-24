@@ -3,15 +3,16 @@ import React, { FC, useEffect, useState } from "react";
 import { Categories, SortPopup, Container, SearchInput } from ".";
 import { cn } from "@/shared/lib/utils";
 import { Category, ProductGroup } from "@prisma/client";
+import { useCategories } from "@/shared/hooks";
 
 interface Props {
   className?: string;
-  categories: (Category & { productGroups: ProductGroup[] })[];
 }
 
-export const TopBar: FC<Props> = ({ className, categories }) => {
+export const TopBar: FC<Props> = ({ className }) => {
   const [show, setShow] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const { categories } = useCategories();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,8 +51,7 @@ export const TopBar: FC<Props> = ({ className, categories }) => {
           <SortPopup />
         </div>
 
-        <Categories className="hidden md:block"  items={categories} />
-
+        <Categories className="hidden md:block" items={categories} />
       </Container>
     </div>
   );

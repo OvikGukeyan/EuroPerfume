@@ -1,5 +1,5 @@
 import React, { FC } from 'react'
-import { ArrowRight, Package, Percent, Truck } from 'lucide-react'
+import { ArrowRight, Package, Truck } from 'lucide-react'
 import { OrderDetails, WhiteBlock } from '..';
 import { Button, Skeleton } from '../..';
 

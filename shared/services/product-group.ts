@@ -8,6 +8,5 @@ export const fetchProductGroups = async () => {
 }
 
 export const createProductGroup = async (data: ProductGroupValues): Promise<ProductGroup> => {
-  console.log(data);
   return (await axiosInstance.post<ProductGroup>("/product-group", { data })).data;
 };

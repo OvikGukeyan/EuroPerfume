@@ -22,7 +22,6 @@ interface Props {
 }
 
 export const Filters: FC<Props> = ({ notes, brands, className }) => {
-  // const filters = useFilters();
   const filters = useFiltersStore();
   useQueryFilters(filters);
 

@@ -593,7 +593,6 @@ export async function deleteProduct(id: number) {
         throw new Error(removalResults.error.message);
       }
     }
-console.log(id, 'id!!!!');
     await prisma.product.delete({
       where: { id },
     });

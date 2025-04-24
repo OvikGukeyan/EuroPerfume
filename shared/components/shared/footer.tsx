@@ -18,7 +18,7 @@ export const Footer: FC<Props> = ({ className }) => {
         <Image src={"/assets/logo.png"} width={120} height={40} alt="logo" />
         <div className="flex flex-col md:flex-row gap-7 md:gap-20 justify-center items-center flex-1">
           {links.map((link) => (
-            <Link href={link.href}>
+            <Link key={link.href} href={link.href}>
               <h3 className="text-lg font-semibold">{link.label.ru}</h3>
             </Link>
           ))}

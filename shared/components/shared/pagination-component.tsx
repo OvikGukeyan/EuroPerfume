@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -13,20 +12,20 @@ import {
 } from "@/shared/components/ui/pagination";
 import { useQueryFilters } from "@/shared/hooks";
 import { useFiltersStore } from "@/shared/store/filters";
+import { useProductStore } from "@/shared/store/product";
 
 type Props = {
   className?: string;
-  countOfPages: number;
 };
 
 export const PaginationComponent: FC<Props> = ({
   className,
-  countOfPages = 5,
 }) => {
   const filters = useFiltersStore();
+  const [pages] = useProductStore((state) => [state.pages]);
 
   const handleNextPageClick = () => {
-    if (filters.currentPage === countOfPages) return;
+    if (filters.currentPage === pages) return;
     filters.setCurrentPage(filters.currentPage + 1);
     window.scrollTo(0, 0);
   };
@@ -49,7 +48,7 @@ export const PaginationComponent: FC<Props> = ({
           <PaginationItem>
             <PaginationPrevious href="#" onClick={handlePreviousPageClick} />
           </PaginationItem>
-          {[...Array(countOfPages)].map((_, index) => (
+          {[...Array(pages)].map((_, index) => (
             <PaginationItem key={index}>
               <PaginationLink
                 isActive={index + 1 === filters.currentPage}

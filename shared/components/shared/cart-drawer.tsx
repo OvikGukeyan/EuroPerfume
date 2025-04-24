@@ -36,7 +36,6 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
     const newQuantity = type === "plus" ? quantity + 1 : quantity - 1;
     updateItemQuantity(id, newQuantity);
   };
-  console.log(totalAmount)
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>

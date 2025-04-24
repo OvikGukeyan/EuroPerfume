@@ -10,3 +10,8 @@ export interface ProductDTO extends SafeProduct {
         note: Note
     } )[]
 }
+
+export interface ProductsWithPagination {
+    products: ProductDTO[]
+    totalPages: number
+}

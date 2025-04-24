@@ -1,31 +1,35 @@
 import { deleteProduct, toggleProductAvailability } from '@/app/actions';
 import { Api } from '../services/api-client';
-import { search } from './../services/products';
 import { create } from "zustand";
-import { Product } from '@prisma/client';
 import { ProductDTO } from '../services/dto/product.dto';
+import { findProducts, GetSearchParams } from '../lib/find-products';
 
 
 interface ProductState {
     items: ProductDTO[];
+    pages: number;
     loading: boolean;
     error: boolean;
 
-    fetchAllProducts: () => Promise<void>;
+
+    fetchAllProducts: (params?: GetSearchParams) => Promise<void>;
     deleteProduct: (id: number) => Promise<void>;
     switchAvailability: (id: number, available: boolean) => Promise<void>;
 }
 
 export const useProductStore = create<ProductState>((set, get) => ({
   items: [],
+  pages: 1,
   loading: true,
   error: false,
 
-  fetchAllProducts: async () => {
+  fetchAllProducts: async (params?: GetSearchParams) => {
       try{
           set({loading: true})
-          const data = await Api.products.getAll();
-          set({items: data})
+          const {products, totalPages} = await Api.products.getAll(params);
+         
+          set({pages: totalPages})
+          set({items: products})
       }catch(error){
           console.error(error);
       }finally{

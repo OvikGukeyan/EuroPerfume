@@ -1,7 +1,7 @@
-import { Product, ProductVariation } from "@prisma/client";
 import { ApiRouts } from "./constants";
 import { axiosInstance } from "./instance";
-import { ProductDTO } from "./dto/product.dto";
+import { ProductDTO, ProductsWithPagination } from "./dto/product.dto";
+import { GetSearchParams } from '../lib/find-products';
 
 export const search = async (query?: string): Promise<ProductDTO[]> => {
   const { data } = await axiosInstance.get<ProductDTO[]>(
@@ -12,7 +12,14 @@ export const search = async (query?: string): Promise<ProductDTO[]> => {
   return data;
 };
 
-export const getAll = async (): Promise<ProductDTO[]> => {
-  const { data } = await axiosInstance.get<ProductDTO[]>(ApiRouts.PRODUCTS);
+export const getAll = async (
+  params?: GetSearchParams
+): Promise<ProductsWithPagination> => {
+  const { data } = await axiosInstance.get<ProductsWithPagination>(
+    ApiRouts.PRODUCTS,
+    {
+      params,           
+    }
+  );
   return data;
 };

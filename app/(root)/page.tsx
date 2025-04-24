@@ -8,28 +8,18 @@ import {
   TopBar,
 } from "@/shared/components/shared";
 import { getSlides } from "@/shared/lib";
+import { Suspense } from "react";
 
-import { findProducts, GetSearchParams } from "@/shared/lib/find-products";
-import { ProductDTO } from "@/shared/services/dto/product.dto";
-
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<GetSearchParams>;
-}) {
-  const params = await searchParams;
-  const { categoryes, totalPages } = await findProducts(params);
+export default async function Home() {
   const slides = await getSlides();
 
   return (
-    
     <>
       <Carusel slides={slides} />
       <TopBar
-        // categories={categoryes.filter(
-        //   (category) => category.productGroups.flatMap((productGroup) => productGroup.products).length > 0
-        // )}
-        categories={categoryes}
+      // categories={categoryes.filter(
+      //   (category) => category.productGroups.flatMap((productGroup) => productGroup.products).length > 0
+      // )}
       />
 
       <Container className="mt-10">
@@ -41,19 +31,13 @@ export default async function Home({
 
           <div className="flex-1">
             <div className="flex flex-col gap-16">
-              {categoryes.filter((category) => category.productGroups.flatMap((productGroup) => productGroup.products).length > 0).map(
-                (category) =>
-                    <ProductsGroupList
-                      key={category.id}
-                      title={category.name}
-                      categoryId={category.id}
-                      items={category.productGroups.flatMap((productGroup) => productGroup.products) as ProductDTO[]}
-                    />
-              )}
+              <Suspense fallback={<div>Loading...</div>}>
+                <ProductsGroupList />
+              </Suspense>
             </div>
           </div>
         </div>
-        <PaginationComponent className="mt-10" countOfPages={totalPages} />
+        <PaginationComponent className="mt-10" />
       </Container>
     </>
   );

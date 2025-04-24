@@ -14,7 +14,6 @@ export async function POST(req: NextRequest) {
     throw new Error("Access denied");
   }
   const { data } = await req.json();
-  console.log(data);
   const brand = await prisma.brand.create({
     data,
   });

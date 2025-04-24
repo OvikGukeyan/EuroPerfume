@@ -1,12 +1,10 @@
 import { prisma } from "@/prisma/prisma-client";
 import {
   Aromas,
-  Category,
   Classifications,
   Gender,
   Notes,
   PerfumeConcentration,
-  ProductGroup,
 } from "@prisma/client";
 import { SafeProduct } from "../services/dto/product.dto";
 
@@ -29,14 +27,8 @@ export interface GetSearchParams {
   productGroup?: string;
 }
 
-
-
 export interface FindProductsResponse {
-  categoryes: (Category & {
-    productGroups: (ProductGroup & {
-      products: SafeProduct[];
-    })[];
-  })[];
+  products: SafeProduct[];
   totalPages: number;
 }
 
@@ -108,48 +100,50 @@ export const findProducts = async (
         baseNotes.length > 0 ? { hasSome: baseNotes as Notes[] } : undefined,
     };
 
-    const [categoryes, totalCount] = await prisma.$transaction([
-      prisma.category.findMany({
-        include: {
-          productGroups: {
-            include: {
-              products: {
-                skip: (page - 1) * 10,
-                take: 10,
-                orderBy: orderBy,
-                where: whereClause,
+    const [products, totalCount] = await prisma.$transaction([
+      // prisma.category.findMany({
+      //   include: {
+      //     productGroups: {
+      //       include: {
+      //         products: {
+      //           skip: (page - 1) * 10,
+      //           take: 10,
+      //           orderBy: orderBy,
+      //           where: whereClause,
 
-                include: {
-                  translations: true,
-                  variations: true,
-                  brand: true,
-                },
-              },
-            },
-          },
+      //           include: {
+      //             translations: true,
+      //             variations: true,
+      //             brand: true,
+      //           },
+      //         },
+      //       },
+      //     },
+      //   },
+      // }),
+      prisma.product.findMany({
+        skip: (page - 1) * 10,
+        take: 10,
+        orderBy: orderBy,
+        where: whereClause,
+        include: {
+          translations: true,
+          variations: true,
+          brand: true,
         },
       }),
       prisma.product.count({
         where: whereClause,
       }),
     ]);
-    const safeCategories = categoryes.map((category) => ({
-      ...category,
-      productGroups: category.productGroups.map((group) => ({
-        ...group,
-        products: group.products.map((product) => ({
-          ...product,
-          price:
-            typeof product.price === "object" && "toNumber" in product.price
-              ? product.price.toNumber()
-              : product.price,
-        })),
-      })),
+    const safeProducts = products.map((product) => ({
+      ...product,
+      price: product.price.toNumber(),
     }));
     const totalPages = Math.ceil(totalCount / 10);
-    return { categoryes: safeCategories, totalPages };
+    return { products: safeProducts, totalPages };
   } catch (error) {
     console.error(error);
-    return { categoryes: [], totalPages: 0 };
+    return { products: [], totalPages: 0 };
   }
 };

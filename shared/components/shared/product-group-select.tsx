@@ -22,7 +22,6 @@ export const ProductGroupSelect: FC<Props> = ({ className, categoryId, control }
     error: productGroupsError,
     createProductGroup,
   } = useProductGroup();
-console.log(productGroups, categoryId)
   return (
     <div
       className={cn(
