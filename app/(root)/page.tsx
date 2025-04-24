@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic"; 
+
 import {
   Container,
   Title,
@@ -15,6 +17,7 @@ export default async function Home() {
 
   return (
     <>
+    
       <Carusel slides={slides} />
       <TopBar
       // categories={categoryes.filter(
