@@ -574,6 +574,9 @@ export async function deleteProduct(id: number) {
 
     const product = await prisma.product.findUnique({
       where: { id },
+      include: {
+        variations: true,
+      }
     });
 
     if (!product) {
@@ -593,6 +596,32 @@ export async function deleteProduct(id: number) {
         throw new Error(removalResults.error.message);
       }
     }
+
+    if (product.variations.length > 0) {
+      const getRelativePath = (url: string) =>
+        url.split("/storage/v1/object/public/images/")[1];
+
+      const relativePaths = product.variations.map((variation) =>
+        getRelativePath(variation.imageUrl)
+      );
+      const removalResults = await supabase.storage
+        .from("images")
+        .remove(relativePaths);
+
+      if (removalResults.error) {
+        throw new Error(removalResults.error.message);
+      }
+
+
+      await prisma.productVariation.deleteMany({
+        where: {
+          productId: id,
+        },
+      });
+
+
+    }
+    
     await prisma.product.delete({
       where: { id },
     });
