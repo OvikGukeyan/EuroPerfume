@@ -36,9 +36,7 @@ export const useProductGroupStore = create<ProductGroupState>()((set) => ({
   createProductGroup: async (values: ProductGroupValues) => {
     try {
       set({ loading: true, error: false });
-      console.log(values);
       const data = await Api.productGroup.createProductGroup(values);
-      console.log(data);
       set((state) => ({
         productGroups: [...state.productGroups, data],
       }));

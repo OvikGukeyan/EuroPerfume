@@ -8,6 +8,8 @@ export type CartStateItem = {
     name: string;
     imageUrl?: string;
     variationName?: string;
+    productGroup?: string ;
+    groupName?: string;
     price: number;
     disabled: boolean;
     
@@ -24,6 +26,7 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
         name: item.product.name,
         imageUrl: item.product.imageUrl[0] || item.variation?.imageUrl , 
         variationName: item.variation?.name || '',
+        productGroup: item.product?.productGroup?.name || '',
         price: calcCartItemTotalPrice(item),
         disabled: false,
     })) as CartStateItem[];

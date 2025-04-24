@@ -1,11 +1,13 @@
-import { Cart, CartItem, Product, ProductVariation } from "@prisma/client";
+import { Cart, CartItem, Product, ProductGroup, ProductVariation } from "@prisma/client";
 import { ProductDTO, SafeProduct } from "./product.dto";
 
 export type SafeCart = Omit<Cart, "totalAmount"> & {
   totalAmount: number;
 };
 export type CartItemDTO = CartItem & {
-  product: SafeProduct;
+  product: (SafeProduct & {
+    productGroup?: ProductGroup;
+  });
   variation?: ProductVariation;
 };
 
