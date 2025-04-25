@@ -29,7 +29,7 @@ export default async function Product({
           note: true,
         },
       },
-      brand: true
+      brand: true,
     },
   });
 
@@ -46,9 +46,10 @@ export default async function Product({
   };
 
   return (
-    <Container className="flex flex-col my-10">
-        <ProductForm  product={safeProduct}  />
-      {product.reviews.length > 0 ? (
+    <Container className="flex flex-col my-10 p-0 md:p-4">
+      <ProductForm product={safeProduct} />
+     <div className="px-4 md:px-0">
+     {product.reviews.length > 0 ? (
         <>
           <Title text="Reviews" size="lg" className="font-extrabold my-10" />
           <ReviewsList reviews={product.reviews} className="mb-10" />
@@ -61,7 +62,8 @@ export default async function Product({
         />
       )}
 
-      <ReviewForm productId={product.id} />
+        <ReviewForm productId={product.id} />
+     </div>
     </Container>
   );
 }

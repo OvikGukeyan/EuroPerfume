@@ -1,6 +1,6 @@
 
 'use client';
-import { ProductCard } from ".";
+import { ProductCard, ProductCardSkeleton } from ".";
 import { cn } from "@/shared/lib/utils";
 import { useProducts } from "@/shared/hooks";
 
@@ -13,7 +13,7 @@ export const ProductsGroupList: React.FC<Props> = ({
   listClassName,
   className,
 }) => {
-  const {items: products} = useProducts();
+  const {items: products, loading} = useProducts();
   return (
     <div className={className}  >
       <div
@@ -35,6 +35,12 @@ export const ProductsGroupList: React.FC<Props> = ({
             concentration={product.concentration || undefined}
           />
         ))}
+        {
+        loading && 
+          [...Array(9)].map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))
+        }
       </div>
     </div>
   );

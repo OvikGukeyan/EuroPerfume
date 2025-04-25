@@ -20,7 +20,7 @@ export const ReviewForm: FC<Props> = async ({ className, productId }) => {
  
 
   return (
-    <Card className={cn("p-5", className)}>
+    <Card className={cn("p-2 md:p-5", className)}>
       <CardHeader>
         <CardTitle>
           <Title text="Write a review" size="md" className="font-extrabold " />

@@ -25,7 +25,7 @@ export const ChooseProductModal: FC<Props> = ({ className, product }) => {
       <DialogContent
         style={{ scrollbarWidth: "none" }}
         className={cn(
-          "p-0 w-full h-[100svh] md:w-[600px] lg:h-auto lg:w-[1060px] max-w-[1060px] min-h-[600px]  bg-white md:rounded-sm overflow-y-scroll  ",
+          "p-0 w-full h-[100svh] md:w-[600px] lg:h-auto lg:min-h-[650px] lg:w-[1060px] max-w-[1060px] min-h-[600px]  bg-white md:rounded-sm overflow-y-scroll ",
           className
         )}
       >
