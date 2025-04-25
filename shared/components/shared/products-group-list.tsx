@@ -22,23 +22,23 @@ export const ProductsGroupList: React.FC<Props> = ({
           listClassName
         )}
       >
-        {products.map((product) => (
-          <ProductCard
-            key={product.id}
-            id={product.id}
-            name={product.name}
-            imageUrl={product.imageUrl[0]}
-            price={product.price}
-            available={product.available}
-            categoryId={product.categoryId}
-            variations={product.variations}
-            concentration={product.concentration || undefined}
-          />
-        ))}
         {
-        loading && 
+        loading ? 
           [...Array(9)].map((_, index) => (
             <ProductCardSkeleton key={index} />
+          )): 
+          products.map((product) => (
+            <ProductCard
+              key={product.id}
+              id={product.id}
+              name={product.name}
+              imageUrl={product.imageUrl[0]}
+              price={product.price}
+              available={product.available}
+              categoryId={product.categoryId}
+              variations={product.variations}
+              concentration={product.concentration || undefined}
+            />
           ))
         }
       </div>
