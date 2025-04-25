@@ -32,4 +32,11 @@ export const links = [
       },
       href: "/faq",
     },
+    {
+      label: {
+        ru: "AGB",
+        de: "AGB",
+      },
+      href: "/agb",
+    }
   ];

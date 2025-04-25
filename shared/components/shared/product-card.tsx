@@ -26,6 +26,7 @@ interface Props {
   categoryId?: number;
   variations: ProductVariation[];
   concentration?: PerfumeConcentration;
+  productGroupId?: number;
   className?: string;
 }
 
@@ -37,6 +38,7 @@ export const ProductCard: React.FC<Props> = ({
   id,
   categoryId,
   variations,
+  productGroupId,
   concentration,
 }) => {
   const currentVolumesArray =
@@ -91,28 +93,28 @@ export const ProductCard: React.FC<Props> = ({
   return (
     <div className={className}>
       <Link href={`/product/${id}`}>
-          <div className="w-full max-w-[400px] aspect-[4/5] relative">
-            <Image
-              src={imageUrl || activeVariation?.imageUrl}
-              alt={name}
-              fill
-              className="object-contain "
-            />
-            <Button
-              className="absolute top-3 right-1 md:right-5 hover:bg-transparent p-2"
-              onClick={(e) => onToggleFavorite(e)}
-              variant="ghost"
-            >
-              {isFavorite ? <HeartBlack /> : <Heart />}
-            </Button>
-          </div>
+        <div className="w-full max-w-[400px] aspect-[4/5] relative">
+          <Image
+            src={imageUrl || activeVariation?.imageUrl}
+            alt={name}
+            fill
+            className="object-contain "
+          />
+          <Button
+            className="absolute top-3 right-1 md:right-5 hover:bg-transparent p-2"
+            onClick={(e) => onToggleFavorite(e)}
+            variant="ghost"
+          >
+            {isFavorite ? <HeartBlack /> : <Heart />}
+          </Button>
+        </div>
       </Link>
       <div className="h-28">
         <Title text={name} size="xs" className="md:text-lg mt-2 font-bold" />
         {concentration && <p className="text-sm">{concentratioName?.name}</p>}
       </div>
 
-      {categoryId === 1 && (
+      {(categoryId === 1 && (productGroupId && productGroupId  < 4)) && (
         <VolumeSelection
           className="mb-4"
           volumes={currentVolumesArray}
@@ -131,9 +133,18 @@ export const ProductCard: React.FC<Props> = ({
       )}
 
       <div className="flex justify-between items-center ">
+        <div className="flex flex-col">
         <p className="text-[20px] ">
           <span className="hidden md:inline">price</span> <b>{finalPrice} €</b>
         </p>
+        { categoryId === 1 && (productGroupId && productGroupId  < 4) &&
+          <p className="text-[15px] text-slate-500 ">
+          <span className="hidden md:inline"></span> <b>{price} € pro g</b>
+        </p>
+        }
+        
+        </div>
+        
 
         <Button
           // loading={loading}

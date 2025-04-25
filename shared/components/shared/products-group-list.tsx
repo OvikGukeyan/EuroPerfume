@@ -38,6 +38,7 @@ export const ProductsGroupList: React.FC<Props> = ({
               categoryId={product.categoryId}
               variations={product.variations}
               concentration={product.concentration || undefined}
+              productGroupId={product.productGroupId}
             />
           ))
         }
