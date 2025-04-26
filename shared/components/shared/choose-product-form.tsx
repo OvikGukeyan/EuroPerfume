@@ -45,7 +45,9 @@ export const ChooseProductForm: FC<Props> = ({
     product.price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
   const [volume, setVolume] = useState<Volume>(currentVolumesArray[0]);
   const finalPrice =
-    product.categoryId === 1 ? calcPrice(volume, product.price) : product.price;
+    product.categoryId === 1 && product.productGroupId < 4
+      ? calcPrice(volume, product.price)
+      : product.price;
   const { averageRating, count } = calcAverageRating(product.reviews);
   const router = useRouter();
   const { isModal } = useModalContext();

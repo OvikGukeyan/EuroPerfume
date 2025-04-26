@@ -86,7 +86,10 @@ export const ProductCard: React.FC<Props> = ({
       toast.error("Something went wrong");
     }
   };
-  const finalPrice = categoryId === 1 ? calcPrice(volume, price) : price;
+  const finalPrice =
+    categoryId === 1 && productGroupId && productGroupId < 4
+      ? calcPrice(volume, price)
+      : price;
   const concentratioName = concentrations.find(
     (item) => item.value === concentration
   );
@@ -114,7 +117,7 @@ export const ProductCard: React.FC<Props> = ({
         {concentration && <p className="text-sm">{concentratioName?.name}</p>}
       </div>
 
-      {(categoryId === 1 && (productGroupId && productGroupId  < 4)) && (
+      {categoryId === 1 && productGroupId && productGroupId < 4 && (
         <VolumeSelection
           className="mb-4"
           volumes={currentVolumesArray}
@@ -134,17 +137,16 @@ export const ProductCard: React.FC<Props> = ({
 
       <div className="flex justify-between items-center ">
         <div className="flex flex-col">
-        <p className="text-[20px] ">
-          <span className="hidden md:inline">price</span> <b>{finalPrice} €</b>
-        </p>
-        { categoryId === 1 && (productGroupId && productGroupId  < 4) &&
+          <p className="text-[20px] ">
+            <span className="hidden md:inline">price</span>{" "}
+            <b>{finalPrice} €</b>
+          </p>
+          {/* { categoryId === 1  && (productGroupId && productGroupId  < 4) &&
           <p className="text-[15px] text-slate-500 ">
           <span className="hidden md:inline"></span> <b>{price} € pro g</b>
         </p>
-        }
-        
+        } */}
         </div>
-        
 
         <Button
           // loading={loading}
