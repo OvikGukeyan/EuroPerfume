@@ -342,7 +342,6 @@ export async function createProduct(
     }
 
     const parsedData = parseProductFormData(formData);
-
     const imageUploads = await Promise.all(
       parsedData.image.map(async (file) => {
         const fileName = `${file.name}--${new Date().toISOString()}`;

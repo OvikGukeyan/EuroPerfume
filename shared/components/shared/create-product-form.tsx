@@ -199,11 +199,7 @@ export const CreateProductForm: FC<Props> = ({
       formData.append("classification", JSON.stringify(data.classification));
       formData.append("releaseYear", data.releaseYear.toString());
 
-      if (data.image && data.image.length > 0) {
-        data.image.forEach((file) => {
-          formData.append("image", file);
-        });
-      }
+
       await submitFunction(
         formData as FormData & CreateProductFormValues,
         product?.id || 0
