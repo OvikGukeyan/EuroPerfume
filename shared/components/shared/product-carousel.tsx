@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { EmblaOptionsType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 type PropType = {
   slides: string[];
@@ -46,8 +47,7 @@ export const ProductCarousel: React.FC<PropType> = ({
   }, [emblaMainApi, onSelect]);
 
   return (
-    <div className={`flex flex-col gap-4 ${className || ""}`}>
-      {/* Основная карусель */}
+    <div className={cn("flex flex-col gap-4 w-full min-h-400", className)}>
       <div
         className="relative w-full max-w-md overflow-hidden"
         ref={emblaMainRef}
@@ -58,12 +58,7 @@ export const ProductCarousel: React.FC<PropType> = ({
               key={index}
               className="flex items-center justify-center  flex-shrink-0 aspect-square w-full  bg-white "
             >
-             
-              
-              <img
-                src={imageUrl}
-                alt={""}
-              />
+              <img src={imageUrl} alt={""} />
             </div>
           ))}
         </div>
