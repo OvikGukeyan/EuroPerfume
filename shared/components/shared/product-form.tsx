@@ -31,7 +31,7 @@ export const ProductForm: FC<Props> = ({
     try {
       await addCartItem({
         productId,
-        volume,
+        volume: (product.categoryId === 1 && product.productGroupId && product.productGroupId < 4) ? volume : 1,
         variationId: activeVariation.id,
       });
       toast.success(product.name + " added to cart");

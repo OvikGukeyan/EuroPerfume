@@ -77,7 +77,7 @@ export const ProductCard: React.FC<Props> = ({
     try {
       await addCartItem({
         productId: id,
-        volume: categoryId === 1 ? volume : 1,
+        volume: (categoryId === 1 && productGroupId && productGroupId < 4) ? volume : 1,
         variationId: activeVariation ? activeVariation.id : undefined,
       });
       toast.success(name + " added to cart");
