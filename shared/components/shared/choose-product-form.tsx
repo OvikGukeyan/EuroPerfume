@@ -70,13 +70,13 @@ export const ChooseProductForm: FC<Props> = ({
     <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
       <div className="flex  items-center justify-center flex-1 relative w-full lg:w-2/5 bg-[#f2f2f2] p-2 min-h-[400px]">
       
-        {product.imageUrl.length > 0 ? (
+        {product.imageUrl.length > 1 ? (
           <ProductCarousel slides={product.imageUrl} />
         ) : (
           <Image
             layout="fill"
             objectFit="contain"
-            src={activeVariation.imageUrl}
+            src={activeVariation?.imageUrl || product.imageUrl[0]}
             alt={""}
           />
         )}
