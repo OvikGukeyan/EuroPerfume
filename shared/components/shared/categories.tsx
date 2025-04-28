@@ -43,21 +43,29 @@ export const Categories: FC<Props> = ({ items, className }) => {
         {items.map(({ id, name, productGroups }) => (
           <NavigationMenuItem key={id}>
             <NavigationMenuTrigger
-              onClick={() => {setCategory(id); setProductGroup(null)}}
+              onClick={() => {
+                setCategory(id);
+                setProductGroup(null);
+              }}
               className="text-md font-bold tracking-narrow md:tracking-wider"
             >
               {name}
             </NavigationMenuTrigger>
             {productGroups.length > 0 && (
               <NavigationMenuContent className="z-60">
-                <div className=" flex flex-col items-start min-w-[300px] p-5 gap-4">
+                <div 
+                className="flex  items-start min-w-[500px] min-h-[100px] p-5 gap-10"
+                >
                   {productGroups.map((productGroup) => (
                     <NavigationMenuLink
                       key={productGroup.id}
                       className="relative cursor-pointer group font-semibold "
-                      onClick={() => {setProductGroup(productGroup.id); setCategory(productGroup.categoryId)}}
+                      onClick={() => {
+                        setProductGroup(productGroup.id);
+                        setCategory(productGroup.categoryId);
+                      }}
                     >
-                      {productGroup.name}
+                      <p className="text-xl">{productGroup.name}</p>
                       <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
                     </NavigationMenuLink>
                   ))}

@@ -6,20 +6,18 @@ import { useProducts } from "@/shared/hooks";
 
 interface Props {
   className?: string;
-  listClassName?: string;
 }
 
 export const ProductsGroupList: React.FC<Props> = ({
-  listClassName,
   className,
 }) => {
   const {items: products, loading} = useProducts();
+  console.log('render')
   return (
-    <div className={className}  >
       <div
         className={cn(
           "grid grid-cols-2 gap-3   lg:grid-cols-4 md:gap-x-[20px] md:gap-y-[60px]",
-          listClassName
+          className
         )}
       >
         {
@@ -43,6 +41,5 @@ export const ProductsGroupList: React.FC<Props> = ({
           ))
         }
       </div>
-    </div>
   );
 };
