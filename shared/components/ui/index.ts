@@ -11,3 +11,4 @@ export {Separator} from './separator';
 export {Switch} from './switch';
 export {Toggle} from './toggle';
 export {Button} from './button';
+export {Progress} from './progress';

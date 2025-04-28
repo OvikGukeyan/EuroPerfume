@@ -37,7 +37,7 @@ export const ProductGroupSelect: FC<Props> = ({ className, categoryId, control }
 
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant="outline">Add new product group</Button>
+          <Button variant="outline">Add new</Button>
         </PopoverTrigger>
         <PopoverContent className="w-80">
           <CreateGroupForm

@@ -219,7 +219,7 @@ export const CreateProductForm: FC<Props> = ({
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex justify-between gap-10">
+          <div className="flex justify-between gap-3 md:gap-10">
             <div className="w-1/2">
               <ProductGroupSelect
                 control={form.control}

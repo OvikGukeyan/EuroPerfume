@@ -14,7 +14,7 @@ import {
 import Link from "next/link";
 import { Button } from "../ui";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { CartDrawerItem, Title } from ".";
+import { CartDrawerItem, FreeShippingProgress, Title } from ".";
 import { useCart } from "@/shared/hooks";
 
 export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
@@ -78,6 +78,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
         {totalAmount > 0 && (
           <>
             <div className="-mx-6 mt-5 overflow-auto scrollbar flex-1">
+              <FreeShippingProgress totalAmount={totalAmount} />
               {items.map((item) => (
                 <div key={item.id} className="mb-2">
                   <CartDrawerItem

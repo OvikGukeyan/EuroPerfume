@@ -62,6 +62,7 @@ export {ProductGroupSelect} from './product-group-select';
 export {CreateGroupForm} from './create-group-form';
 export {CreateProductForm} from './create-product-form';
 export {ProductCardSkeleton} from './product-card-skeleton';
+export {FreeShippingProgress} from './free-shipping-progress';
 
 export * from './email-templates';
 export * from './form';

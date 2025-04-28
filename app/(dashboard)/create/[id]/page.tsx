@@ -9,7 +9,7 @@ export default async function Create({
   const { id } = await params;
 
   return (
-    <div className=" px-10 mb-10">
+    <div className=" px-2 md:px-10 mb-10">
       <Title className="mb-5" text="Create new Product" />
 
       <CreateProductForm submitFunction={createProduct} categoryId={Number(id)} />

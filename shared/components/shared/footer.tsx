@@ -16,10 +16,10 @@ export const Footer: FC<Props> = ({ className }) => {
     <div className={cn("flex flex-col p-3 md:p-5 border-t", className)}>
       <div className="flex flex-col gap-7 md:flex-row  items-center justify-between">
         <Image src={"/assets/logo.png"} width={120} height={40} alt="logo" />
-        <div className="flex flex-col md:flex-row  md:gap-20 justify-between text-center items-center flex-1 mx-1">
+        <div className="flex flex-col md:flex-row  md:gap-14 justify-between text-center items-center flex-1 mx-1">
           {links.map((link) => (
             <Link key={link.href} href={link.href}>
-              <h3 className="text-lg font-semibold">{link.label.ru}</h3>
+              <h3 className="text-md font-semibold">{link.label.ru}</h3>
             </Link>
           ))}
         </div>

@@ -1,7 +1,7 @@
 'use client'
 
 import React, { FC } from 'react'
-import { CheckoutItem, CheckoutItemSkeleton, WhiteBlock } from '..'
+import { CheckoutItem, CheckoutItemSkeleton, FreeShippingProgress, WhiteBlock } from '..'
 import { Trash2 } from 'lucide-react'
 import { CartStateItem } from '@/shared/lib/get-cart-details'
 
@@ -54,6 +54,7 @@ export const CheckoutCart: FC<Props> = ({ className, items, totalAmount, removeC
 
 
             {!totalAmount && !loading && <p className="text-center text-gray-400 p-10">The cart is empty</p>}
+            <FreeShippingProgress totalAmount={totalAmount} />
         </WhiteBlock>
     )
 }
