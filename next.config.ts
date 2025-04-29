@@ -1,5 +1,8 @@
+import { NextConfig } from "next";
+import createNextIntlPlugin from 'next-intl/plugin';
+
 /** @type {import('next').NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
   reactStrictMode: false,
   images: {
     domains: ['media.dodostatic.net', 'cdn.dodostatic.net', 'cdn.inappstory.ru', "media.douglas.de", "tlppllvnvzjgxgbzlwnh.supabase.co", 'thgjecpmxhqwfoknvjiu.supabase.co'],
@@ -12,4 +15,5 @@ const nextConfig = {
 
 };
 
-export default nextConfig;
+const withNextIntl = createNextIntlPlugin();
+export default withNextIntl(nextConfig);

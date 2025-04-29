@@ -1,6 +1,9 @@
 import { Nunito } from "next/font/google";
-import "./globals.css";
+import "../globals.css";
 import { Providers } from "@/shared/components";
+import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { notFound } from "next/navigation";
+import { routing } from "@/i18n/routing";
 
 const nunito = Nunito({
   subsets: ["cyrillic"],
@@ -8,11 +11,18 @@ const nunito = Nunito({
   weight: ["400", "500", "600", "700", "800", "900"],
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
+  params,
 }: Readonly<{
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }>) {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) {
+    notFound();
+  }
+
   return (
     <html lang="en">
       <head>
@@ -20,7 +30,9 @@ export default function RootLayout({
       </head>
 
       <body className={nunito.className}>
-        <Providers>{children}</Providers>
+        <NextIntlClientProvider>
+          <Providers>{children}</Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

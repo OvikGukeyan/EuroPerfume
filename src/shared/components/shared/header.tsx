@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 import { Heart, Truck } from "lucide-react";
 import { Button, Separator } from "../ui";
 import { useInitFiltersFromUrl } from "@/shared/hooks";
+import {useTranslations} from 'next-intl';
 interface Props {
   hasSearch?: boolean;
   hasCart?: boolean;
@@ -27,6 +28,7 @@ export const Header: React.FC<Props> = ({
   hasSearch = true,
   hasCart = true,
 }) => {
+  const t = useTranslations('Header');
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -58,7 +60,7 @@ export const Header: React.FC<Props> = ({
       <div className="flex items-center gap-3 h-10  px-3 md:px-5">
         <Truck />
         <h3 className="text-sm md:text-base">
-          Free shipping available for orders above $100
+        {t('freeDeliveryInfo')}
         </h3>
       </div>
       <header className={cn("", className)}>

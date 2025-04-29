@@ -24,6 +24,7 @@ function shallowEqual(
 export const useProducts = () => {
   const pathname = usePathname();
   const isModal = pathname.startsWith("/product/");
+  
 
   const searchParams = useSearchParams();
   const productsState = useProductStore((state) => state);
