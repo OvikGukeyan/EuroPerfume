@@ -1,4 +1,4 @@
-import { deliveryTypes } from "@/prisma/constants";
+import { deliveryTypes } from "prisma/constants";
 import { DeliveryTypes } from "@prisma/client";
 
 export const calcTotlalAmountWithDelivery = (totlalAmount: number, delivery: DeliveryTypes) => {

@@ -15,7 +15,7 @@ import { unknown } from "zod";
 import { PerfumeConcentration, ProductVariation } from "@prisma/client";
 import { it } from "node:test";
 import { useFavorites } from "@/shared/hooks";
-import { concentrations } from "@/prisma/constants";
+import { concentrations } from "prisma/constants";
 
 interface Props {
   id: number;

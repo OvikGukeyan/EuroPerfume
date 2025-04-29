@@ -12,7 +12,7 @@ import {
 } from "..";
 import { cn } from "@/shared/lib/utils";
 import { Controller, useFormContext } from "react-hook-form";
-import { deliveryTypes } from "@/prisma/constants";
+import { deliveryTypes } from "prisma/constants";
 
 interface Props {
   totalAmount: number;

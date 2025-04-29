@@ -1,4 +1,4 @@
-import { prisma } from "@/prisma/prisma-client";
+import { prisma } from "prisma/prisma-client";
 import { Container, ProfileForm, ResetForm } from "@/shared/components";
 import { getUserSession } from "@/shared/lib/get-user-session";
 import { redirect } from "next/navigation";

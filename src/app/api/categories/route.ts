@@ -1,5 +1,5 @@
-import { prisma } from '@/prisma/prisma-client';
-import { categories, productGroups } from './../../../prisma/constants';
+import { prisma } from 'prisma/prisma-client';
+import { categories, productGroups } from '../../../../prisma/constants';
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

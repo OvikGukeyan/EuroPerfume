@@ -1,5 +1,5 @@
 import { ChooseProductModal } from "@/shared/components/shared";
-import { prisma } from "@/prisma/prisma-client";
+import { prisma } from "prisma/prisma-client";
 import { notFound } from "next/navigation";
 import React from "react";
 import { ProductDTO } from "@/shared/services/dto/product.dto";

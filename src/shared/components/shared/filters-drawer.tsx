@@ -7,7 +7,7 @@ import {
 } from "../ui/sheet";
 import { Button } from "../ui";
 import { Filter } from "lucide-react";
-import { prisma } from "@/prisma/prisma-client";
+import { prisma } from "prisma/prisma-client";
 
 
 export const FiltersDrawer = async () => {

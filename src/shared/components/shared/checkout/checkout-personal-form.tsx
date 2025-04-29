@@ -1,7 +1,7 @@
 import React, { FC } from 'react'
 import { FormInput, RadioInput, Title, WhiteBlock } from '..'
 import { cn } from '@/shared/lib/utils';
-import { contactForms } from '@/prisma/constants';
+import { contactForms } from 'prisma/constants';
 
 interface Props {
     totalAmount: number;

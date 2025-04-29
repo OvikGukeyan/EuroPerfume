@@ -13,7 +13,7 @@ import {
   PerfumeConcentration,
 } from "@prisma/client";
 import { useFiltersStore } from "@/shared/store/filters";
-import { perfumeAromas } from "@/prisma/constants";
+import { perfumeAromas } from "prisma/constants";
 
 interface Props {
   notes: Note[];

@@ -1,7 +1,7 @@
 "use server";
 
 import { supabase } from "@/lib/supabase";
-import { prisma } from "@/prisma/prisma-client";
+import { prisma } from "prisma/prisma-client";
 import {
   OrderSuccessTemplate,
   PasswordResetTemplate,

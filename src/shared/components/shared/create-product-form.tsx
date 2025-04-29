@@ -14,7 +14,7 @@ import {
   skinTypes,
   textures,
   yers,
-} from "@/prisma/constants";
+} from "prisma/constants";
 import { Button, Input, Popover } from "@/shared/components";
 import {
   BrandSelect,

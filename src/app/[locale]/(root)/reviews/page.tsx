@@ -1,4 +1,4 @@
-import { prisma } from "@/prisma/prisma-client";
+import { prisma } from "prisma/prisma-client";
 import { Container, InfoBlock, ReviewForm, ReviewsList, Title } from "@/shared/components";
 
 export default async function Reviews() {

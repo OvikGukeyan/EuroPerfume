@@ -1,6 +1,6 @@
 import { CreateProductForm, Title } from "@/shared/components";
 
-import { prisma } from "@/prisma/prisma-client";
+import { prisma } from "prisma/prisma-client";
 import { updateProduct } from "@/app/actions";
 
 export default async function Update({
