@@ -83,7 +83,7 @@ export const CreateProductForm: FC<Props> = ({
       descriptionDe: product?.translations[0]?.description || "",
       price: product?.price || undefined,
       gender: product?.gender || Gender.UNISEX,
-      concentration: product?.concentration || "EAU_DE_COLOGNE",
+      concentration: product?.concentration || undefined,
       brand: product?.brandId.toString() || "",
       brandCountry: product?.brandCountry || "",
       manufacturingCountry: product?.manufacturingCountry || "",
