@@ -5,7 +5,7 @@ import { formLoginSchema, TFormLoginValues } from "./schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInput, Title } from "../../..";
 import Image from "next/image";
-import { Button } from "@/shared/components/ui";
+import { Button } from "@/src/shared/components/ui";
 import toast from "react-hot-toast";
 import { signIn } from "next-auth/react";
 

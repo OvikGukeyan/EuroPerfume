@@ -2,10 +2,10 @@
 
 import React, { FC } from 'react'
 import { Button } from '../ui'
-import { cn } from '@/shared/lib/utils'
+import { cn } from '@/src/shared/lib/utils'
 import { ArrowRight, ShoppingCart } from 'lucide-react'
 import { CartDrawer } from './cart-drawer'
-import { useCartStore } from '@/shared/store'
+import { useCartStore } from '@/src/shared/store'
 
 interface Props {
     className?: string

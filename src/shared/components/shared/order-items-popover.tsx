@@ -1,7 +1,7 @@
 import React, { FC } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { OrderDTO } from "@/shared/services/dto/orders.dto";
+import { OrderDTO } from "@/src/shared/services/dto/orders.dto";
 
 type Props = {
   className?: string;

@@ -1,4 +1,4 @@
-import { authOptions } from "@/shared/constants/auth-options";
+import { authOptions } from "@/src/shared/constants/auth-options";
 import NextAuth from "next-auth";
 
 

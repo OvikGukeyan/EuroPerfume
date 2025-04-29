@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/src/shared/lib/utils";
 import React, { FC, useEffect, useState } from "react";
 import { Button, Separator } from "../ui";
 import {
@@ -11,18 +11,18 @@ import {
   ChooseVariation,
   ProductCarousel,
 } from ".";
-import { Volume, volumes } from "@/shared/constants/perfume";
+import { Volume, volumes } from "@/src/shared/constants/perfume";
 import { ProductVariation } from "@prisma/client";
 import {
   calcAverageRating,
   calcPrice,
   createCharacteristicsArray,
   useModalContext,
-} from "@/shared/lib";
+} from "@/src/shared/lib";
 import { Rating } from "./rating";
 import { useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { ProductDTO } from "@/shared/services/dto/product.dto";
+import { ProductDTO } from "@/src/shared/services/dto/product.dto";
 import Image from "next/image";
 
 interface Props {

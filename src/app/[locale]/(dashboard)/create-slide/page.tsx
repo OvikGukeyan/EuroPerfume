@@ -1,9 +1,10 @@
 "use client";
 
-import { createSlide } from "@/app/actions";
-import { Button, Input, Title } from "@/shared/components";
-import { Label } from "@/shared/components/ui/label";
-import { imageCompressor } from "@/shared/lib";
+
+import { createSlide } from "@/src/app/actions";
+import { Button, Input, Title } from "@/src/shared/components";
+import { Label } from "@/src/shared/components/ui/label";
+import { imageCompressor } from "@/src/shared/lib";
 import { useState } from "react";
 import { set } from "zod";
 

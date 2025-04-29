@@ -1,8 +1,8 @@
 "use client";
 import React, { FC } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/lib/utils";
 import { Button } from "../ui";
-import { Volume } from "@/shared/constants/perfume";
+import { Volume } from "@/src/shared/constants/perfume";
 
 type Props = {
   className?: string;

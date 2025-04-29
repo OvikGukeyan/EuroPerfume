@@ -1,6 +1,6 @@
 "use client";
-import { Button, Container, ProductCard, Title } from "@/shared/components";
-import { useFavorites } from "@/shared/hooks";
+import { Button, Container, ProductCard, Title } from "@/src/shared/components";
+import { useFavorites } from "@/src/shared/hooks";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";

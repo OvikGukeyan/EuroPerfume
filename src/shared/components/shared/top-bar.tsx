@@ -1,9 +1,9 @@
 "use client";
 import React, { FC, useEffect, useState } from "react";
 import { Categories, SortPopup, Container, SearchInput } from ".";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/src/shared/lib/utils";
 import { Category, ProductGroup } from "@prisma/client";
-import { useCategories } from "@/shared/hooks";
+import { useCategories } from "@/src/shared/hooks";
 
 interface Props {
   className?: string;

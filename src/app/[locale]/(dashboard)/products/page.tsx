@@ -1,7 +1,7 @@
 "use client";
-import { Categories, DashboardProduct, TopBar } from "@/shared/components";
-import { useCategories, useProducts, useQueryFilters } from "@/shared/hooks";
-import { useFiltersStore } from "@/shared/store/filters";
+import { Categories, DashboardProduct } from "@/src/shared/components";
+import { useCategories, useProducts, useQueryFilters } from "@/src/shared/hooks";
+import { useFiltersStore } from "@/src/shared/store/filters";
 import { useEffect } from "react";
 
 export default function Products() {

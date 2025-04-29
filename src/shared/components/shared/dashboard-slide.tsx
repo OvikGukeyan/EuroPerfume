@@ -1,12 +1,12 @@
 "use client";
 import React, { FC } from "react";
-import { cn } from "@/lib/utils";
 import { Title } from ".";
 import { Button } from "..";
 import { Trash2 } from "lucide-react";
 import { Slide } from "@prisma/client";
-import { deleteSlide } from "@/app/actions";
 import Image from "next/image";
+import { deleteSlide } from "@/src/app/actions";
+import { cn } from "@/src/lib/utils";
 
 type Props = {
   className?: string;

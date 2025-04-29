@@ -1,8 +1,8 @@
 "use client"
 
-import { cn } from '@/shared/lib/utils'
-import { Api } from '@/shared/services/api-client'
-import { ProductDTO } from '@/shared/services/dto/product.dto'
+import { cn } from '@/src/shared/lib/utils'
+import { Api } from '@/src/shared/services/api-client'
+import { ProductDTO } from '@/src/shared/services/dto/product.dto'
 import { Product, ProductVariation } from '@prisma/client'
 import { Search } from 'lucide-react'
 import Image from 'next/image'

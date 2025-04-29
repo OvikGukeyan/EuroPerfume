@@ -8,8 +8,8 @@ import {
   PaginationComponent,
   Carusel,
   TopBar,
-} from "@/shared/components/shared";
-import { getSlides } from "@/shared/lib";
+} from "@/src/shared/components/shared";
+import { getSlides } from "@/src/shared/lib";
 import { Suspense } from "react";
 
 export default async function Home() {

@@ -1,8 +1,8 @@
 
 'use client';
 import { ProductCard, ProductCardSkeleton } from ".";
-import { cn } from "@/shared/lib/utils";
-import { useProducts } from "@/shared/hooks";
+import { cn } from "@/src/shared/lib/utils";
+import { useProducts } from "@/src/shared/hooks";
 
 interface Props {
   className?: string;

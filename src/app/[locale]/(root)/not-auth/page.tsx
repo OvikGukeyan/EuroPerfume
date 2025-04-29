@@ -1,4 +1,4 @@
-import { InfoBlock } from "@/shared/components";
+import { InfoBlock } from "@/src/shared/components";
 
 export default function UnauthorizedPage() {
   return (

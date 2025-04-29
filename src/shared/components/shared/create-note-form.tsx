@@ -1,11 +1,11 @@
 "use client";
 
 import React, { FC, useState } from "react";
-import { cn } from "@/lib/utils";
 import { Button, Input, SubmitButtonBar, Title } from "..";
 import { Label } from "../ui/label";
-import { createSlide } from "@/app/actions";
-import { NoteValues } from "@/shared/store";
+import { NoteValues } from "../../store";
+import { cn } from "@/src/lib/utils";
+import { createSlide } from "@/src/app/actions";
 
 type Props = {
   onSubmit: (data: NoteValues) => void;

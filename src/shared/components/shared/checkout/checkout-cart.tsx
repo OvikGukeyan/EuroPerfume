@@ -3,7 +3,7 @@
 import React, { FC } from 'react'
 import { CheckoutItem, CheckoutItemSkeleton, FreeShippingProgress, WhiteBlock } from '..'
 import { Trash2 } from 'lucide-react'
-import { CartStateItem } from '@/shared/lib/get-cart-details'
+import { CartStateItem } from '@/src/shared/lib/get-cart-details'
 
 interface Props {
     items: CartStateItem[];

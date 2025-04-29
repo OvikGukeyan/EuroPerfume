@@ -7,15 +7,15 @@ import { ChooseVariation, Title, VolumeSelection } from ".";
 import { Button } from "../ui";
 import { Heart, HeartOff, Plus } from "lucide-react";
 import toast from "react-hot-toast";
-import { useCartStore, useFavoritesStore } from "@/shared/store";
-import { Volume, volumes } from "@/shared/constants/perfume";
-import { calcPrice } from "@/shared/lib";
-import { HeartBlack } from "@/shared/icons";
+import { useCartStore, useFavoritesStore } from "@/src/shared/store";
+import { Volume, volumes } from "@/src/shared/constants/perfume";
+import { calcPrice } from "@/src/shared/lib";
+import { HeartBlack } from "@/src/shared/icons";
 import { unknown } from "zod";
 import { PerfumeConcentration, ProductVariation } from "@prisma/client";
 import { it } from "node:test";
-import { useFavorites } from "@/shared/hooks";
-import { concentrations } from "prisma/constants";
+import { useFavorites } from "@/src/shared/hooks";
+import { concentrations } from "@/../../prisma/constants";;
 
 interface Props {
   id: number;

@@ -1,5 +1,5 @@
 "use client";
-import { CreateProductFormValues } from "@/shared/constants/create-product-schema";
+import { CreateProductFormValues } from "@/src/shared/constants/create-product-schema";
 import React, { FC, useState } from "react";
 import { Control } from "react-hook-form";
 import {

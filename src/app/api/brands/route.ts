@@ -1,5 +1,5 @@
-import { prisma } from "prisma/prisma-client";
-import { getUserSession } from "@/shared/lib/get-user-session";
+import { prisma } from "@/prisma/prisma-client";
+import { getUserSession } from "@/src/shared/lib/get-user-session";
 import { UserRole } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 

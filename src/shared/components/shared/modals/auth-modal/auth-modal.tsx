@@ -1,6 +1,6 @@
 'use client';
-import { Button } from "@/shared/components/ui";
-import { Dialog, DialogContent } from "@/shared/components/ui/dialog";
+import { Button } from "@/src/shared/components/ui";
+import { Dialog, DialogContent } from "@/src/shared/components/ui/dialog";
 import React, { FC } from "react";
 import { LoginForm } from "./forms/login-form";
 import { RegisterForm } from "./forms/register-form";

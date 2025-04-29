@@ -1,5 +1,4 @@
 import React, { FC } from "react";
-import { cn } from "@/lib/utils";
 import { RatingSelect, SubmitButtonBar, Title } from ".";
 import { Textarea } from "..";
 import {
@@ -9,7 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import { createReview } from "@/app/actions";
+import { createReview } from "@/src/app/actions";
+import { cn } from "@/src/lib/utils";
 
 
 type Props = {

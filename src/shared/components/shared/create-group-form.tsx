@@ -1,10 +1,10 @@
 "use client";
 
 import React, { FC, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/lib/utils";
 import { Button, Input, Title } from "..";
 import { Label } from "../ui/label";
-import { ProductGroupValues } from "@/shared/store";
+import { ProductGroupValues } from "@/src/shared/store";
 
 type Props = {
   onSubmit: (data: ProductGroupValues) => void;

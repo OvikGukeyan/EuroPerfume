@@ -1,9 +1,10 @@
 import { ProductGroup } from "@prisma/client";
-import { prisma } from "prisma/prisma-client";
-import { findOrCreateCart } from "@/shared/lib/find-or-create-cart";
-import { updateCartTotalAmount } from "@/shared/lib/update-cart-total-amount";
-import { CreateCartItemValues } from "@/shared/services/dto/cart.dto";
+import { prisma } from "@/prisma/prisma-client";
+
 import { NextRequest, NextResponse } from "next/server";
+import { findOrCreateCart } from "@/src/shared/lib";
+import { CreateCartItemValues } from "@/src/shared/services/dto/cart.dto";
+import { updateCartTotalAmount } from "@/src/shared/lib/update-cart-total-amount";
 
 export async function GET(req: NextRequest) {
   try {

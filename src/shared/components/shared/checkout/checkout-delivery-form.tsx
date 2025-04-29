@@ -10,9 +10,9 @@ import {
   Title,
   WhiteBlock,
 } from "..";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/src/shared/lib/utils";
 import { Controller, useFormContext } from "react-hook-form";
-import { deliveryTypes } from "prisma/constants";
+import { deliveryTypes } from "@/../../prisma/constants";
 
 interface Props {
   totalAmount: number;
@@ -30,10 +30,10 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
       contentClassName="p-8"
     >
       <div className="flex flex-col gap-5">
-        <Title text="Delivery Type" size="xs"  />
+        <Title text="Delivery Type" size="xs" />
 
         <div className="flex justify-between">
-          <RadioInput name='deliveryType' items={deliveryTypes} />
+          <RadioInput name="deliveryType" items={deliveryTypes} />
 
           <MyPopover />
         </div>

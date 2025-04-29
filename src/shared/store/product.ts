@@ -1,8 +1,8 @@
-import { deleteProduct, toggleProductAvailability } from '@/app/actions';
 import { Api } from '../services/api-client';
 import { create } from "zustand";
 import { ProductDTO } from '../services/dto/product.dto';
 import { findProducts, GetSearchParams } from '../lib/find-products';
+import { deleteProduct, toggleProductAvailability } from '@/src/app/actions';
 
 
 interface ProductState {

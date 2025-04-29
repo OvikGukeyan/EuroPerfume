@@ -1,14 +1,14 @@
 "use client";
 import React, { FC, Suspense, useState } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/lib/utils";
 import { MenuDrawerItem, SocialMediaBar } from ".";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "..";
 import { Menu } from "lucide-react";
 
-import { useCategories } from "@/shared/hooks";
+import { useCategories } from "@/src/shared/hooks";
 import Link from "next/link";
-import { links } from "@/shared/services/constants";
+import { links } from "@/src/shared/services/constants";
 
 type Props = {
   className?: string;

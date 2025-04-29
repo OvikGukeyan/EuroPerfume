@@ -1,13 +1,13 @@
 "use client";
 
-import { Dialog, DialogContent } from "@/shared/components/ui/dialog";
-import { cn } from "@/shared/lib/utils";
+import { Dialog, DialogContent } from "@/src/shared/components/ui/dialog";
+import { cn } from "@/src/shared/lib/utils";
 import { useRouter } from "next/navigation";
 import React, { FC } from "react";
 import { ProductForm } from "..";
 import { Product, ProductVariation, Review } from "@prisma/client";
-import { ModalContext } from "@/shared/lib";
-import { ProductDTO } from "@/shared/services/dto/product.dto";
+import { ModalContext } from "@/src/shared/lib";
+import { ProductDTO } from "@/src/shared/services/dto/product.dto";
 
 interface Props {
   product: ProductDTO;

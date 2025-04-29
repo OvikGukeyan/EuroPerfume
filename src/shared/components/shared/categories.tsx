@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/src/shared/lib/utils";
 import { Category, ProductGroup } from "@prisma/client";
 import React, { FC } from "react";
 import {
@@ -12,7 +12,7 @@ import {
   NavigationMenuTrigger,
   navigationMenuTriggerStyle,
 } from "../ui/navigation-menu";
-import { useFiltersStore } from "@/shared/store/filters";
+import { useFiltersStore } from "@/src/shared/store/filters";
 
 interface Props {
   className?: string;

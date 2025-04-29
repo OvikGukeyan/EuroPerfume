@@ -1,13 +1,13 @@
 "use client";
 
 import React, { FC } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/lib/utils";
 import { Button, CreateGroupForm, Popover } from "..";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
-import { FormSelect } from "@/shared/components/shared/product-form/form-select";
-import { useProductGroup } from "@/shared/hooks";
+import { FormSelect } from "@/src/shared/components/shared/product-form/form-select";
+import { useProductGroup } from "@/src/shared/hooks";
 import { Control } from "react-hook-form";
-import { CreateProductFormValues } from "@/shared/constants";
+import { CreateProductFormValues } from "@/src/shared/constants";
 
 type Props = {
   control: Control<CreateProductFormValues>;

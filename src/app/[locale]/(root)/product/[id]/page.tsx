@@ -1,13 +1,8 @@
-import {
-  Container,
-  ProductForm,
-  ReviewForm,
-  ReviewsList,
-  Title,
-} from "@/shared/components/shared";
-import { prisma } from "prisma/prisma-client";
+
+import { prisma } from "@/prisma/prisma-client";
 import { notFound } from "next/navigation";
 import React from "react";
+import { Container, ProductForm, ReviewForm, ReviewsList, Title } from "@/src/shared/components";
 
 export default async function Product({
   params,

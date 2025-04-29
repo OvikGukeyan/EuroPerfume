@@ -1,4 +1,4 @@
-import { findProducts, GetSearchParams } from "@/shared/lib/find-products";
+import { findProducts, GetSearchParams } from "@/src/shared/lib/find-products";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

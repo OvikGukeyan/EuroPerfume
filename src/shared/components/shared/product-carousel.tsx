@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { EmblaOptionsType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/lib/utils";
 
 type PropType = {
   slides: string[];

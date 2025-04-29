@@ -3,7 +3,7 @@ import { Button } from '../ui/button';
 import { ArrowLeft } from 'lucide-react';
 import { Title } from './title';
 import Link from 'next/link';
-import { cn } from '@/shared/lib/utils';
+import { cn } from '@/src/shared/lib/utils';
 import Image from 'next/image';
 
 interface Props {

@@ -1,10 +1,8 @@
 "use client";
 
-import { cn } from "@/shared/lib/utils";
 import React, { FC } from "react";
 import { Title, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
-import { useQueryFilters } from "@/shared/hooks";
 import {
   Brand,
   Classifications,
@@ -12,8 +10,10 @@ import {
   Note,
   PerfumeConcentration,
 } from "@prisma/client";
-import { useFiltersStore } from "@/shared/store/filters";
-import { perfumeAromas } from "prisma/constants";
+import { perfumeAromas } from "@/../../prisma/constants";import { useFiltersStore } from "../../store/filters";
+import { useQueryFilters } from "../../hooks";
+import { cn } from "@/src/lib/utils";
+;
 
 interface Props {
   notes: Note[];

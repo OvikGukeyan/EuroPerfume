@@ -1,9 +1,9 @@
 import { Nunito } from "next/font/google";
 import "../globals.css";
-import { Providers } from "@/shared/components";
+import { Providers } from "@/src/shared/components";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { routing } from "@/i18n/routing";
+import { routing } from "@/src/i18n/routing";
 
 const nunito = Nunito({
   subsets: ["cyrillic"],

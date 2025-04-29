@@ -1,6 +1,6 @@
-import { prisma } from "prisma/prisma-client";
-import { getUserSession } from "@/shared/lib/get-user-session";
+import { prisma } from "@/prisma/prisma-client";
 import { NextRequest, NextResponse } from "next/server";
+import { getUserSession } from "@/src/shared/lib/get-user-session";
 
 export async function GET(req: NextRequest) {
     try {

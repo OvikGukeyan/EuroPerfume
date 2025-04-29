@@ -1,5 +1,5 @@
-import { createProduct } from "@/app/actions";
-import { CreateProductForm, Title } from "@/shared/components/shared";
+import { createProduct } from "@/src/app/actions";
+import { CreateProductForm, Title } from "@/src/shared/components";
 
 export default async function Create({
   params,

@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/src/shared/lib/utils";
 import { MessageCircle } from "lucide-react";
 import dynamic from "next/dynamic";
 import { FC, useMemo } from "react";

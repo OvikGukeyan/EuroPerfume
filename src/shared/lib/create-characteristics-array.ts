@@ -10,7 +10,7 @@ import {
   purposes,
   skinTypes,
   textures,
-} from "prisma/constants";
+} from "@/../../prisma/constants";
 import { NoteType } from "@prisma/client";
 import { ProductDTO } from "../services/dto/product.dto";
 

@@ -1,10 +1,10 @@
 "use client";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/src/shared/lib/utils";
 import { ArrowUpDown } from "lucide-react";
 import React, { FC } from "react";
 import { Select } from "..";
 import { SelectContent, SelectItem, SelectTrigger } from "../ui/select";
-import { useFiltersStore } from "@/shared/store/filters";
+import { useFiltersStore } from "@/src/shared/store/filters";
 
 interface Props {
   className?: string;

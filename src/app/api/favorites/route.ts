@@ -1,5 +1,6 @@
-import { prisma } from "prisma/prisma-client";
-import { findOrCreateFavorites } from "@/shared/lib";
+import { prisma } from "@/prisma/prisma-client";
+import { findOrCreateFavorites } from "@/src/shared/lib";
+
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

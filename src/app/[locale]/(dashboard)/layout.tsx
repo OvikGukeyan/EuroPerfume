@@ -1,9 +1,8 @@
-import { AppSidebar } from "@/shared/components";
-import {
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/shared/components/ui/sidebar";
-import { getUserSession } from "@/shared/lib/get-user-session";
+
+
+import { AppSidebar } from "@/src/shared/components";
+import { SidebarProvider, SidebarTrigger } from "@/src/shared/components/ui/sidebar";
+import { getUserSession } from "@/src/shared/lib/get-user-session";
 import { UserRole } from "@prisma/client";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";

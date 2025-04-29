@@ -1,5 +1,5 @@
 
-import { cn } from '@/shared/lib/utils';
+import { cn } from '@/src/shared/lib/utils';
 import React, { FC } from 'react';
 import { CartItemProps } from './cart-item-details/cart-item-details.types';
 

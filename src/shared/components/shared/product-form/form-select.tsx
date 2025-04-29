@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "../../ui/select";
 import { Control } from "react-hook-form";
-import { CreateProductFormValues } from "@/shared/constants/create-product-schema";
+import { CreateProductFormValues } from "@/src/shared/constants/create-product-schema";
 
 interface Props {
   control: Control<CreateProductFormValues>;

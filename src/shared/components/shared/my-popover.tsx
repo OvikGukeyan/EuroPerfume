@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/lib/utils";
 import { Popover } from "..";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CircleHelp } from "lucide-react";

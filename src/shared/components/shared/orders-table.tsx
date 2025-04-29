@@ -1,6 +1,6 @@
 "use client";
 import React, { FC } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/lib/utils";
 import {
   Table,
   TableBody,
@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { useOrders } from "@/shared/hooks";
+import { useOrders } from "@/src/shared/hooks";
 import { OrderItemsPopover } from "./order-items-popover";
 
 type Props = {

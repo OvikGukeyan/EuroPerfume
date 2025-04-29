@@ -1,6 +1,6 @@
-import { calcCartItemTotalPrice } from "@/shared/lib";
-import { CartItemDTO } from "@/shared/services/dto/cart.dto";
-import { SafeProduct } from "@/shared/services/dto/product.dto";
+import { calcCartItemTotalPrice } from "@/src/shared/lib";
+import { CartItemDTO } from "@/src/shared/services/dto/cart.dto";
+import { SafeProduct } from "@/src/shared/services/dto/product.dto";
 import { CartItem, OrderItem, Product, ProductVariation } from "@prisma/client";
 import * as React from "react";
 

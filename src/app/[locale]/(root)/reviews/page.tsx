@@ -1,5 +1,5 @@
-import { prisma } from "prisma/prisma-client";
-import { Container, InfoBlock, ReviewForm, ReviewsList, Title } from "@/shared/components";
+import { prisma } from "@/prisma/prisma-client";
+import { Container, ReviewForm, ReviewsList, Title } from "@/src/shared/components";
 
 export default async function Reviews() {
   const reviews = await prisma.review.findMany({

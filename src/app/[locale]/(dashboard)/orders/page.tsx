@@ -1,4 +1,4 @@
-import { OrdersTable } from "@/shared/components"
+import { OrdersTable } from "@/src/shared/components";
 
 export default async function Orders() {
     // const orders = await prisma.order.findMany({

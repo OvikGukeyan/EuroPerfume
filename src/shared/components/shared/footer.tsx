@@ -1,10 +1,10 @@
 import React, { FC } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/lib/utils";
 import Image from "next/image";
 import { Instagram, Youtube } from "lucide-react";
 import { Separator } from "../ui";
 import { SocialMediaBar } from "./social-media-bar";
-import { links } from "@/shared/services/constants";
+import { links } from "@/src/shared/services/constants";
 import Link from "next/link";
 
 type Props = {

@@ -14,24 +14,24 @@ import {
   skinTypes,
   textures,
   yers,
-} from "prisma/constants";
-import { Button, Input, Popover } from "@/shared/components";
+} from "@/../../prisma/constants";
+import { Button, Input, Popover } from "@/src/shared/components";
 import {
   BrandSelect,
   CreateNoteForm,
   FormInput,
   FormTextarea,
   ProductGroupSelect,
-} from "@/shared/components/shared";
-import { FormSelect } from "@/shared/components/shared/product-form/form-select";
-import { FormCheckbox } from "@/shared/components/shared/product-form/index";
+} from "@/src/shared/components/shared";
+import { FormSelect } from "@/src/shared/components/shared/product-form/form-select";
+import { FormCheckbox } from "@/src/shared/components/shared/product-form/index";
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from "@/shared/components/ui/form";
+} from "@/src/shared/components/ui/form";
 
 import { Gender, Note, NoteType, ProductNote } from "@prisma/client";
 import { FC, useState } from "react";
@@ -41,9 +41,9 @@ import toast from "react-hot-toast";
 import {
   CreateProductFormValues,
   CreateProductSchema,
-} from "@/shared/constants/create-product-schema";
-import { SafeProduct } from "@/shared/services/dto/product.dto";
-import { useNotes } from "@/shared/hooks";
+} from "@/src/shared/constants/create-product-schema";
+import { SafeProduct } from "@/src/shared/services/dto/product.dto";
+import { useNotes } from "@/src/shared/hooks";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 
 type ProductWithTranslations = SafeProduct & {

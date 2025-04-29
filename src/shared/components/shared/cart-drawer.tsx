@@ -15,7 +15,7 @@ import Link from "next/link";
 import { Button } from "../ui";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { CartDrawerItem, FreeShippingProgress, Title } from ".";
-import { useCart } from "@/shared/hooks";
+import { useCart } from "@/src/shared/hooks";
 
 export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
   const {

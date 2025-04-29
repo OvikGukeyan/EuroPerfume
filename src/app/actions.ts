@@ -1,23 +1,8 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
-import { prisma } from "prisma/prisma-client";
-import {
-  OrderSuccessTemplate,
-  PasswordResetTemplate,
-  PayOrderTemplate,
-  UserVerificationTemplate,
-} from "@/shared/components";
-import { CheckoutFormValues } from "@/shared/constants";
-import { CreateProductFormValues } from "@/shared/constants/create-product-schema";
-import {
-  calcTotlalAmountWithDelivery,
-  parseProductFormData,
-} from "@/shared/lib";
-import { getUserSession } from "@/shared/lib/get-user-session";
-import { sendEmail } from "@/shared/lib/send-email";
-import { CartItemDTO } from "@/shared/services/dto/cart.dto";
-import { NoteValues } from "@/shared/store";
+import { prisma } from "@/prisma/prisma-client";
+
+
 import {
   Languages,
   OrderStatus,
@@ -31,6 +16,14 @@ import {
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { CheckoutFormValues, CreateProductFormValues } from "../shared/constants";
+import { calcTotlalAmountWithDelivery, parseProductFormData } from "../shared/lib";
+import { sendEmail } from "../shared/lib/send-email";
+import { OrderSuccessTemplate, PasswordResetTemplate, UserVerificationTemplate } from "../shared/components";
+import { CartItemDTO } from "../shared/services/dto/cart.dto";
+import { getUserSession } from "../shared/lib/get-user-session";
+import { supabase } from "../lib/supabase";
+import { NoteValues } from "../shared/store";
 
 export async function createOrder(data: CheckoutFormValues) {
   try {

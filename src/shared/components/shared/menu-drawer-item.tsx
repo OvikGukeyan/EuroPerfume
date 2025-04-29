@@ -1,6 +1,6 @@
 "use client";
 import React, { FC } from "react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/src/lib/utils";
 import {
   Collapsible,
   CollapsibleContent,
@@ -8,7 +8,7 @@ import {
 } from "../ui/collapsible";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Category, ProductGroup } from "@prisma/client";
-import { useFiltersStore } from "@/shared/store/filters";
+import { useFiltersStore } from "@/src/shared/store/filters";
 
 type Props = {
   category: Category & { productGroups: ProductGroup[] };

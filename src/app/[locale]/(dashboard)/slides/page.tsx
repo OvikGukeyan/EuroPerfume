@@ -1,5 +1,5 @@
-import { DeshboardSlide } from "@/shared/components";
-import { getSlides } from "@/shared/lib";
+import { DeshboardSlide } from "@/src/shared/components";
+import { getSlides } from "@/src/shared/lib";
 
 export default async function Slides() {
   const slides = await getSlides();

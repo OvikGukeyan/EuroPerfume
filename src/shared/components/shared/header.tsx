@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/src/shared/lib/utils";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,12 +10,12 @@ import {
   MenuDrawer,
   ProfileButton,
   SearchInput,
-} from "@/shared/components/shared";
+} from "@/src/shared/components/shared";
 import { useRouter, useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { Heart, Truck } from "lucide-react";
 import { Button, Separator } from "../ui";
-import { useInitFiltersFromUrl } from "@/shared/hooks";
+import { useInitFiltersFromUrl } from "@/src/shared/hooks";
 import {useTranslations} from 'next-intl';
 interface Props {
   hasSearch?: boolean;

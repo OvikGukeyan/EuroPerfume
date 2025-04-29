@@ -1,18 +1,12 @@
 "use client";
 
 import React, { FC } from "react";
-import { cn } from "@/lib/utils";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/shared/components/ui/pagination";
-import { useQueryFilters } from "@/shared/hooks";
-import { useFiltersStore } from "@/shared/store/filters";
-import { useProductStore } from "@/shared/store/product";
+import { useFiltersStore } from "../../store/filters";
+import { useProductStore } from "../../store/product";
+import { useQueryFilters } from "../../hooks";
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../ui/pagination";
+import { cn } from "@/src/lib/utils";
+
 
 type Props = {
   className?: string;
