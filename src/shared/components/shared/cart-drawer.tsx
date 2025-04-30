@@ -16,6 +16,7 @@ import { Button } from "../ui";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { CartDrawerItem, FreeShippingProgress, Title } from ".";
 import { useCart } from "@/src/shared/hooks";
+import { useTranslations } from "use-intl";
 
 export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
   const {
@@ -36,6 +37,8 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
     const newQuantity = type === "plus" ? quantity + 1 : quantity - 1;
     updateItemQuantity(id, newQuantity);
   };
+
+  const t = useTranslations("Cart");
   return (
     <Sheet>
       <SheetTrigger asChild>{children}</SheetTrigger>
@@ -43,8 +46,8 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
         {totalAmount > 0 && (
           <SheetHeader>
             <SheetTitle>
-              There is <span className="font-bold">{items.length}</span> items
-              in the cart
+            {t('title', { count: items.length })}
+            
             </SheetTitle>
           </SheetHeader>
         )}
@@ -59,17 +62,17 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
             />
             <Title
               size="sm"
-              text={"The cart is empty"}
+              text={t("emptyTitle")}
               className="text-center font-bold my-2"
             />
             <p className="text-center text-neutral-500 mb-5">
-              Add some products to the cart
+              {t("emptyText")}
             </p>
 
             <SheetClose>
               <Button className="w-56 h-12 text-base" size="lg">
                 <ArrowLeft className="w-5 mr-2" />
-                Continue shopping
+                {t("continueShopping")}
               </Button>
             </SheetClose>
           </div>
@@ -103,7 +106,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
               <div className="w-full">
                 <div className="flex mb-4">
                   <span className="flex flex-1 text-lg text-neutral-500">
-                    Итого
+                    <span>{t("total")}</span>
                     <div className="flex-1 border-b border-dashed border-b-neutral-200 relative -top-1 mx-2" />
                   </span>
 
@@ -117,7 +120,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                     type="submit"
                     className="w-full h-12 text-base"
                   >
-                    Checkout
+                    {t("checkout")}
                     <ArrowRight className="w-5 ml-2" />
                   </Button>
                 </Link>

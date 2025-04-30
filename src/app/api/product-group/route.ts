@@ -8,10 +8,16 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const { data } = await req.json();
+  console.log(data);
   const productGroup = await prisma.productGroup.create({
     data: {
-      name: data.name,
-      categoryId: data.categoryId,
+      labelRu: data.labelRu,
+      labelDe: data.labelDe,
+      category: {
+        connect: {
+          id: data.categoryId,
+        },
+      }
     },
   });
   return NextResponse.json(productGroup);

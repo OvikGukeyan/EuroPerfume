@@ -2,6 +2,7 @@ import React, { FC } from 'react'
 import { ArrowRight, Package, Truck } from 'lucide-react'
 import { OrderDetails, WhiteBlock } from '..';
 import { Button, Skeleton } from '../..';
+import { useTranslations } from 'next-intl';
 
 interface Props {
     className?: string;
@@ -15,11 +16,12 @@ interface Props {
 export const CheckoutSidebar: FC<Props> = ({ className, loading, totalAmount, itemLoading, deliveryPrice }) => {
 
     const totalPrice = Number(totalAmount) + Number(deliveryPrice);
+    const t = useTranslations("Checkout.sidebar");
 
     return (
         <WhiteBlock className='p-6 sticky top-4'>
             <div className="flex flex-col gap-1">
-                <span className="text-xl">Total price:</span>
+                <span className="text-xl">{t("totalPriceLabel")}</span>
                 {loading ? <Skeleton className="h-11 w-40" /> : <span className="h-11 text-[34px] font-extrabold">{totalPrice} €</span>}
             </div>
 
@@ -28,7 +30,7 @@ export const CheckoutSidebar: FC<Props> = ({ className, loading, totalAmount, it
                 title={
                     <div className="flex items-center">
                         <Package size={18} className="mr-2 text-gray-400" />
-                        Order price
+                        {t("orderPrice")}
                     </div>
 
                 }
@@ -45,7 +47,7 @@ export const CheckoutSidebar: FC<Props> = ({ className, loading, totalAmount, it
                 title={
                     <div className="flex items-center">
                         <Truck size={18} className="mr-2 text-gray-400" />
-                        Delivery
+                        {t("delivery")}
                     </div>
                 } value={
                     loading ?
@@ -58,7 +60,7 @@ export const CheckoutSidebar: FC<Props> = ({ className, loading, totalAmount, it
                 type="submit"
                 disabled={!totalAmount}
                 className="w-full h-14 rounded-2xl mt-6 text-base font-bold">
-                Submit
+                {t("submitButton")}
                 <ArrowRight className="w-5 ml-2" />
             </Button>
         </WhiteBlock>

@@ -1,139 +1,73 @@
-import { Button } from "@/src/shared/components";
-import { File } from "lucide-react";
-import React from "react";
+
+import { Button } from '@/src/shared/components';
+import { File } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function ReturnAndExchange() {
+  const t = useTranslations('Return');
+
   return (
     <div className="max-w-3xl mx-auto px-4 py-8 text-gray-800">
-      <h1 className="text-3xl font-semibold mb-6">Возврат и обмен</h1>
+      <h1 className="text-3xl font-semibold mb-6">{t('title')}</h1>
 
-      <p className="mb-4">Уважаемые клиенты,</p>
-
-      <p className="mb-4">
-        Согласно <strong>§ 312g Abs. 2 BGB</strong> (Гражданский кодекс
-        Германии), право на возврат не распространяется на определённые
-        категории товаров. Обратите внимание, что следующие товары не подлежат
-        возврату или обмену:
-      </p>
+      <p className="mb-4">{t('greeting')}</p>
+      <p className="mb-4">{t('legalNote')}</p>
 
       <ul className="list-disc list-inside space-y-2 mb-6">
-        <li>
-          <strong>Парфюмерия на распив (отливант)</strong> — товар
-          изготавливается индивидуально под заказ и не подлежит повторной
-          реализации;
-        </li>
-        <li>
-          <strong>Косметические и гигиенические средства</strong>, если упаковка
-          была вскрыта после доставки;
-        </li>
-        <li>
-          <strong>Аксессуары</strong> (сумки, косметички и т.п.), которые были
-          ношены, использовались или имеют следы эксплуатации;
-        </li>
-        <li>
-          <strong>Обувь и одежда</strong>, если они потеряли товарный вид, были
-          использованы или не возвращены в оригинальной упаковке;
-        </li>
-        <li>
-          <strong>
-            Персонализированные или индивидуально изготовленные товары
-          </strong>{" "}
-          (например, именные, кастомные изделия);
-        </li>
-        <li>
-          <strong>Подарочные сертификаты и электронные коды</strong>, если они
-          уже активированы.
-        </li>
+        {t.raw('nonReturnable').map((item: string, i: number) => (
+          <li key={i} dangerouslySetInnerHTML={{ __html: item }} />
+        ))}
       </ul>
 
-      <h2 className="text-2xl font-semibold mb-4">
-        Право потребителя на отказ от договора (возврат)
-      </h2>
-      <p className="mb-4">
-        <em>Потребитель</em> — это физическое лицо, которое заключает сделку в
-        целях, не связанных с предпринимательской или профессиональной
-        деятельностью.
-      </p>
+      <h2 className="text-2xl font-semibold mb-4">{t('consumerRight.title')}</h2>
+      <p className="mb-4">{t('consumerRight.definition')}</p>
 
-      <h2 className="text-2xl font-semibold mb-4">
-        Инструкция по отказу от договора
-      </h2>
-      <p className="mb-4">
-        Вы имеете право отказаться от договора в течение{" "}
-        <strong>14 дней</strong> без объяснения причин.
-      </p>
+      <h2 className="text-2xl font-semibold mb-4">{t('instruction.title')}</h2>
+      <p className="mb-4">{t('instruction.period')}</p>
 
-      <p className="mb-4 font-semibold">Срок отказа начинается со дня:</p>
+      <p className="mb-4 font-semibold">{t('instruction.begins')}</p>
       <ul className="list-disc list-inside space-y-2 mb-6">
-        <li>
-          получения товара вами или третьим лицом (кроме перевозчика), если
-          заказ доставлен одной партией;
-        </li>
-        <li>
-          получения последнего товара, если заказ доставлен несколькими
-          отправлениями;
-        </li>
-        <li>
-          получения последней части или партии, если товар поставляется частями.
-        </li>
+        {t.raw('instruction.conditions').map((item: string, i: number) => (
+          <li key={i}>{item}</li>
+        ))}
       </ul>
 
-      <p className="mb-4 font-semibold">Как оформить отказ?</p>
+      <p className="mb-4 font-semibold">{t('instruction.how.title')}</p>
       <p className="mb-4">
-        Вы должны сообщить нам, Euro Perfume, по адресу{" "}
-        <a href="mailto:europerfumeshop@gmail.com" className="underline">
-          europerfumeshop@gmail.com
-        </a>
-        , о своём решении, отправив чёткое заявление (например, по электронной
-        почте или письмом). Можно использовать приложенную форму отказа, но это
-        не обязательно.
+        {t.rich('instruction.how.description', {
+          a: (chunks) => (
+            <a href="mailto:europerfumeshop@gmail.com" className="underline">
+              {chunks}
+            </a>
+          ),
+        })}
       </p>
 
       <a href="/withdrawal-form.pdf" download>
-        <Button className="flex gap-2" variant="outline">Скачать форму
-          <File/>
+        <Button className="flex gap-2" variant="outline">
+          {t('instruction.download')}
+          <File />
         </Button>
       </a>
 
-      <p className="my-4">
-        <em>Срок соблюдён, если вы отправили уведомление до его истечения.</em>
-      </p>
+      <p className="my-4 italic">{t('instruction.deadlineNote')}</p>
 
-      <h2 className="text-2xl font-semibold mb-4">Последствия отказа</h2>
+      <h2 className="text-2xl font-semibold mb-4">{t('consequences.title')}</h2>
       <ul className="list-disc list-inside space-y-2 mb-6">
-        <li>
-          Мы вернём все платежи (включая стоимость доставки, кроме доплат за
-          особые условия) в течение <strong>14 дней</strong> тем же способом,
-          которым вы платили.
-        </li>
-        <li>
-          Мы можем задержать возврат до получения товара или доказательства его
-          отправки.
-        </li>
-        <li>
-          Вы обязаны вернуть товар в течение <strong>14 дней</strong> после
-          отказа и оплатить расходы на возврат.
-        </li>
-        <li>
-          Вы несёте ответственность за ухудшение товара, если оно вызвано
-          использованием не по назначению (например, не просто осмотр товара).
-        </li>
+        {t.raw('consequences.items').map((item: string, i: number) => (
+          <li key={i}>{item}</li>
+        ))}
       </ul>
 
-      <h2 className="text-2xl font-semibold mb-4">
-        Когда право на отказ не действует?
-      </h2>
+      <h2 className="text-2xl font-semibold mb-4">{t('exceptions.title')}</h2>
       <ul className="list-disc list-inside space-y-2 mb-6">
-        <li>
-          Товары, изготовленные на заказ (например, индивидуальные ароматы);
-        </li>
-        <li>Распечатанные косметические и гигиенические товары;</li>
-        <li>Персонализированные изделия;</li>
-        <li>Скоропортящиеся товары.</li>
+        {t.raw('exceptions.items').map((item: string, i: number) => (
+          <li key={i}>{item}</li>
+        ))}
       </ul>
 
-      <p className="font-semibold">Спасибо за понимание,</p>
-      <p className="font-semibold">Команда Euro Perfume</p>
+      <p className="font-semibold">{t('thanks')}</p>
+      <p className="font-semibold">{t('team')}</p>
     </div>
   );
 }

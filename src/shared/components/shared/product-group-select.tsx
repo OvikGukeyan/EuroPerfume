@@ -15,7 +15,11 @@ type Props = {
   className?: string;
 };
 
-export const ProductGroupSelect: FC<Props> = ({ className, categoryId, control }) => {
+export const ProductGroupSelect: FC<Props> = ({
+  className,
+  categoryId,
+  control,
+}) => {
   const {
     productGroups,
     loading: productGroupsLoading,
@@ -32,7 +36,12 @@ export const ProductGroupSelect: FC<Props> = ({ className, categoryId, control }
       <FormSelect
         name="productGroupId"
         control={control}
-        items={productGroups.filter((item) => item.categoryId === categoryId)}
+        items={productGroups
+          .filter((item) => item.categoryId === categoryId)
+          .map((item) => ({
+            value: item.id.toString(),
+            label: { ru: item.labelRu, de: item.labelDe },
+          }))}
       />
 
       <Popover>

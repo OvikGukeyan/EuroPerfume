@@ -70,14 +70,14 @@ async function up() {
   //   data: newNotes,
   // });
 
-  // await prisma.cartItem.create({
-  //   data: {
-  //     productId: 1,
-  //     cartId: 1,
-  //     quantity: 1,
-  //     variationId: 1
-  //   },
-  // });
+  await prisma.cartItem.create({
+    data: {
+      productId: 1,
+      cartId: 1,
+      quantity: 1,
+      variationId: 1
+    },
+  });
 }
 async function down() {
   // Сначала очищаем дочерние таблицы, затем родительские.

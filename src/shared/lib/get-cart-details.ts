@@ -26,7 +26,7 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
         name: item.product.name,
         imageUrl: item.product.imageUrl[0] || item.variation?.imageUrl , 
         variationName: item.variation?.name || '',
-        productGroup: item.product?.productGroup?.name || '',
+        productGroup: item.product?.productGroup?.labelRu || '',
         price: calcCartItemTotalPrice(item),
         disabled: false,
     })) as CartStateItem[];

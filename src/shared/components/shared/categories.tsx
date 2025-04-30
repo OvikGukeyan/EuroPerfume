@@ -10,9 +10,9 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
 } from "../ui/navigation-menu";
 import { useFiltersStore } from "@/src/shared/store/filters";
+import { useLocale } from "next-intl";
 
 interface Props {
   className?: string;
@@ -24,6 +24,7 @@ export const Categories: FC<Props> = ({ items, className }) => {
     state.setCategory,
     state.setProductGroup,
   ]);
+  const locale = useLocale() as 'ru' | 'de';
   return (
     // <div style={{scrollbarWidth: 'none'}} className={cn('flex max-w-full gap-1 bg-gray-50 p-1 rounded-2xl overflow-x-auto whitespace-nowrap no-scrollbar ')}>
     //     {items.map(({id, name}) => (
@@ -40,7 +41,7 @@ export const Categories: FC<Props> = ({ items, className }) => {
     // </div>
     <NavigationMenu className={cn(className)}>
       <NavigationMenuList className="gap-0 md:gap-5">
-        {items.map(({ id, name, productGroups }) => (
+        {items.map(({ id, labelRu,labelDe, productGroups }) => (
           <NavigationMenuItem key={id}>
             <NavigationMenuTrigger
               onClick={() => {
@@ -49,7 +50,7 @@ export const Categories: FC<Props> = ({ items, className }) => {
               }}
               className="text-md font-bold tracking-narrow md:tracking-wider"
             >
-              {name}
+              {locale === 'ru' ? labelRu : labelDe}
             </NavigationMenuTrigger>
             {productGroups.length > 0 && (
               <NavigationMenuContent className="z-60">
@@ -65,7 +66,7 @@ export const Categories: FC<Props> = ({ items, className }) => {
                         setCategory(productGroup.categoryId);
                       }}
                     >
-                      <p className="text-xl">{productGroup.name}</p>
+                      <p className="text-xl">{locale === 'ru' ? productGroup.labelRu : productGroup.labelDe}</p>
                       <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
                     </NavigationMenuLink>
                   ))}

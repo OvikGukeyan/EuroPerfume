@@ -13,6 +13,7 @@ import { calcTotlalAmountWithDelivery } from '@/src/shared/lib';
 import { Api } from '@/src/shared/services/api-client';
 import { createOrder } from '@/src/app/actions';
 import { CheckoutCart, CheckoutDeliveryForm, CheckoutPersonalForm, CheckoutSidebar, Title } from '@/src/shared/components';
+import { useTranslations } from 'next-intl';
 
 
 export default function Checkout() {
@@ -79,11 +80,11 @@ export default function Checkout() {
         updateItemQuantity(id, newQuantity)
     }
 
-
+const t = useTranslations("Checkout");
 
     return (
         <div className="mt-10">
-            <Title text="Checkout" size="xl" className="font-extrabold mb-8" />
+            <Title text={t('title')} size="xl" className="font-extrabold mb-8" />
             <FormProvider {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                     <div className="flex flex-col lg:flex-row gap-10">

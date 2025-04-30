@@ -13,6 +13,7 @@ import {
 import { cn } from "@/src/shared/lib/utils";
 import { Controller, useFormContext } from "react-hook-form";
 import { deliveryTypes } from "@/../../prisma/constants";
+import { useTranslations } from "next-intl";
 
 interface Props {
   totalAmount: number;
@@ -20,17 +21,18 @@ interface Props {
 }
 export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
   const { control } = useFormContext();
+  const t = useTranslations("Checkout.delivery");
   return (
     <WhiteBlock
       className={cn(
         className,
         !totalAmount ? "opacity-50 pointer-events-none" : ""
       )}
-      title="3. Delivery information"
+      title={t("stepTitle")}
       contentClassName="p-8"
     >
       <div className="flex flex-col gap-5">
-        <Title text="Delivery Type" size="xs" />
+        <Title text={t("deliveryType")} size="xs" />
 
         <div className="flex justify-between">
           <RadioInput name="deliveryType" items={deliveryTypes} />
@@ -52,7 +54,7 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
         <FormTextarea
           name="comment"
           className="text-base"
-          placeholder="Description"
+          placeholder={t('commentPlaceholder')}
           rows={5}
         />
       </div>

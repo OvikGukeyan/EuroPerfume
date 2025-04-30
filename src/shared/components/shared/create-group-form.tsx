@@ -21,14 +21,17 @@ export const CreateGroupForm: FC<Props> = ({
   categoryId,
   error,
 }) => {
-  const [name, setName] = useState<string>("");
+  const [labelDe, setLabelDe] = useState<string>("");
+  const [labelRu, setLabelRu] = useState<string>("");
 
   const onSubmitClick = () => {
     onSubmit({
-      name: name,
-      categoryId
+      labelDe: labelDe,
+      labelRu: labelRu,
+      categoryId,
     });
-    setName("");
+    setLabelDe("");
+    setLabelRu("");
   };
   return (
     <div className={cn(" px-10 mb-10", className)}>
@@ -40,18 +43,27 @@ export const CreateGroupForm: FC<Props> = ({
             Name
           </Label>
           <Input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={labelRu}
+            onChange={(e) => setLabelRu(e.target.value)}
             required
             name="labelRu"
             className="mt-2"
             placeholder="Ru"
           />
+
+          <Input
+            value={labelDe}
+            onChange={(e) => setLabelDe(e.target.value)}
+            required
+            name="labelRu"
+            className="mt-2"
+            placeholder="De"
+          />
         </div>
 
         {error && <p className="text-red-500 text-sm mt-2">Error</p>}
         <Button
-          disabled={name === ""}
+          disabled={labelRu === "" || labelDe === ""}
           loading={loading}
           onClick={onSubmitClick}
           type="submit"

@@ -3,7 +3,8 @@ import { create } from "zustand";
 import { Api } from "../services/api-client";
 
 export interface ProductGroupValues {
-  name: string;
+  labelRu: string;
+  labelDe: string;
   categoryId: number;
 }
 export interface ProductGroupState {

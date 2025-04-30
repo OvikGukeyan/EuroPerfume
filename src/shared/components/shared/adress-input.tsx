@@ -19,7 +19,7 @@ export const AdressInput: React.FC<Props> = ({ onChange }) => {
       types: ['address'],
       componentRestrictions: { country: 'de' }
     }}
-    placeholder="Enter your address"
+    placeholder="Address"
     apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
     onPlaceSelected={(place) => {
       const address = place?.formatted_address || '';

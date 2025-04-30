@@ -21,42 +21,50 @@ import {
 
 export const categories = [
   {
-    name: "Perfumes",
+    labelRu: "Парфюмерия",
+    labelDe: "Parfümerie",
     id: 1,
   },
   {
-    name: "Makeup",
+    labelRu: "Косметика",
+    labelDe: "Kosmetik",
     id: 2,
   },
   {
-    name: "Accessories",
+    labelRu: "Аксессуары",
+    labelDe: "Accessoires",
     id: 3,
   },
 ];
 
 export const productGroups = [
   {
-    name: "Unisex",
+    labelRu: 'Унисекс',
+    labelDe: 'Unisex',
     id: 1,
     categoryId: 1,
   },
   {
-    name: "Women",
+    labelRu: 'Женские',
+    labelDe: 'Damen',
     id: 2,
     categoryId: 1,
   },
   {
-    name: "Men",
+    labelRu: 'Мужские',
+    labelDe: 'Herren',
     id: 3,
     categoryId: 1,
   },
   {
-    name: "Atomizers",
+    labelRu: 'Атомайзеры',
+    labelDe: 'Atomizer',
     id: 4,
     categoryId: 1,
   },
   {
-    name: "All Makeups",
+    labelRu: 'Вся косметика',
+    labelDe: 'Alle Kosmetika',
     id: 5,
     categoryId: 2,
   },
@@ -345,15 +353,15 @@ export const productTranslations: Prisma.ProductTranslationCreateManyInput[] = [
 
 export const genders = [
   {
-    name: "Male",
+    label: { ru: "Мужской", de: "Männlich" },
     value: Gender.MALE,
   },
   {
-    name: "Female",
+    label: { ru: "Женский", de: "Weiblich" },
     value: Gender.FEMALE,
   },
   {
-    name: "Unisex",
+    label: { ru: "Унисекс", de: "Unisex" },
     value: Gender.UNISEX,
   },
 ];
