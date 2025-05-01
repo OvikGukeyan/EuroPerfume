@@ -12,7 +12,6 @@ export const ProductsGroupList: React.FC<Props> = ({
   className,
 }) => {
   const {items: products, loading} = useProducts();
-  console.log('render')
   return (
       <div
         className={cn(

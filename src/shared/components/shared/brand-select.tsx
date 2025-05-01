@@ -24,7 +24,7 @@ export const BrandSelect: FC<Props> = ({ className, control }) => {
         className
       )}
     >
-      <FormSelect name="brand" control={control} items={brands} />
+      <FormSelect name="brand" control={control} items={brands.map((item) => ({ name: item.name, value: item.id.toString() }))} />
 
       <Popover>
         <PopoverTrigger asChild>

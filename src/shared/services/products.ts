@@ -23,3 +23,5 @@ export const getAll = async (
   );
   return data;
 };
+
+

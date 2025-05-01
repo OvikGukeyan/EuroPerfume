@@ -1,5 +1,11 @@
 import React, { FC } from "react";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "../../ui/form";
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../../ui/form";
 import { Select } from "../..";
 import {
   SelectContent,
@@ -9,17 +15,15 @@ import {
 } from "../../ui/select";
 import { Control } from "react-hook-form";
 import { CreateProductFormValues } from "@/src/shared/constants/create-product-schema";
+import { search } from "@/src/shared/services/products";
 
 interface Props {
   control: Control<CreateProductFormValues>;
-  items:
-    | { name: string; value: string }[]
-    | { label: { ru: string; de: string }; value: string }[]
-    | { name: string; id: number }[];
-
+  items: { name: string; value: string }[];
   name: keyof CreateProductFormValues;
 }
 export const FormSelect: FC<Props> = ({ control, items, name }) => {
+  const [searchValue, setSearchValue] = React.useState("");
   return (
     <FormField
       name={name}
@@ -38,28 +42,22 @@ export const FormSelect: FC<Props> = ({ control, items, name }) => {
                 </SelectTrigger>
               </FormControl>
               <SelectContent>
-                {items.map((item) => {
-                  if ("name" in item) {
-                    if ("id" in item) {
-                      return (
-                        <SelectItem key={item.id} value={item.id.toString()}>
-                          {item.name}
-                        </SelectItem>
-                      );
-                    }
+                <input
+                  value={searchValue}
+                  onChange={(e) => setSearchValue(e.target.value)}
+                  className="w-full bg-gray-50 h-8 border pl-2 focus:outline-none my-2 rounded-md"
+                />
+                {items
+                  .filter((item) =>
+                    item.name.toLowerCase().includes(searchValue.toLowerCase())
+                  )
+                  .map((item) => {
                     return (
                       <SelectItem key={item.value} value={item.value}>
                         {item.name}
                       </SelectItem>
                     );
-                  } else {
-                    return (
-                      <SelectItem key={item.value} value={item.value}>
-                        {item.label.ru}
-                      </SelectItem>
-                    );
-                  }
-                })}
+                  })}
               </SelectContent>
             </Select>
             <FormMessage />

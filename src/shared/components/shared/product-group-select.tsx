@@ -8,6 +8,7 @@ import { FormSelect } from "@/src/shared/components/shared/product-form/form-sel
 import { useProductGroup } from "@/src/shared/hooks";
 import { Control } from "react-hook-form";
 import { CreateProductFormValues } from "@/src/shared/constants";
+import { Trash } from "lucide-react";
 
 type Props = {
   control: Control<CreateProductFormValues>;
@@ -25,6 +26,7 @@ export const ProductGroupSelect: FC<Props> = ({
     loading: productGroupsLoading,
     error: productGroupsError,
     createProductGroup,
+    deleteProductGroup,
   } = useProductGroup();
   return (
     <div
@@ -40,23 +42,47 @@ export const ProductGroupSelect: FC<Props> = ({
           .filter((item) => item.categoryId === categoryId)
           .map((item) => ({
             value: item.id.toString(),
-            label: { ru: item.labelRu, de: item.labelDe },
+            name: item.labelRu,
           }))}
       />
 
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button variant="outline">Add new</Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-80">
-          <CreateGroupForm
-            onSubmit={createProductGroup}
-            categoryId={categoryId}
-            error={productGroupsError}
-            loading={productGroupsLoading}
-          />
-        </PopoverContent>
-      </Popover>
+      <div className="w-full flex gap-5">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline">Add new</Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80">
+            <CreateGroupForm
+              onSubmit={createProductGroup}
+              categoryId={categoryId}
+              error={productGroupsError}
+              loading={productGroupsLoading}
+            />
+          </PopoverContent>
+        </Popover>
+
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button variant="outline">Delete</Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-80">
+            <ul>
+              {productGroups
+                .filter((item) => item.categoryId === categoryId)
+                .map((item) => (
+                  <li
+                    className="flex items-center justify-between cursor-pointer mb-2 hover:bg-slate-100 h-8 px-2"
+                    key={item.id}
+                    onClick={() => deleteProductGroup(item.id)}
+                  >
+                    <p>{item.labelRu}</p>
+                    <Trash size={16} />
+                  </li>
+                ))}
+            </ul>
+          </PopoverContent>
+        </Popover>
+      </div>
     </div>
   );
 };

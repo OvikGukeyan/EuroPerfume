@@ -376,7 +376,7 @@ export const CreateProductForm: FC<Props> = ({
               <FormSelect
                 name="gender"
                 control={form.control}
-                items={genders}
+                items={genders.map((item) => ({ name: item.label.ru, value: item.value }))}
               />
 
               <BrandSelect control={form.control} />
@@ -509,12 +509,12 @@ export const CreateProductForm: FC<Props> = ({
                   <FormSelect
                     name="purpose"
                     control={form.control}
-                    items={purposes}
+                    items={purposes.map((item) => ({ name: item.label.ru, value: item.value }))}
                   />
                   <FormSelect
                     name="finish"
                     control={form.control}
-                    items={finishes}
+                    items={finishes.map((item) => ({ name: item.label.ru, value: item.value }))}
                   />
 
                   <FormSelect
@@ -544,7 +544,7 @@ export const CreateProductForm: FC<Props> = ({
                   <FormSelect
                     name="formula"
                     control={form.control}
-                    items={formulas}
+                    items={formulas.map((item) => ({ name: item.label.ru, value: item.value }))}
                   />
 
                   <FormField
@@ -626,30 +626,30 @@ export const CreateProductForm: FC<Props> = ({
                   <FormSelect
                     name="texture"
                     control={form.control}
-                    items={textures}
+                    items={textures.map((item) => ({ name: item.label.ru, value: item.value }))}
                   />
 
                   <FormSelect
                     name="skinType"
                     control={form.control}
-                    items={skinTypes}
+                    items={skinTypes.map((item) => ({ name: item.label.ru, value: item.value }))}
                   />
 
                   <FormSelect
                     name="packagingFormat"
                     control={form.control}
-                    items={packagingFormats}
+                    items={packagingFormats.map((item) => ({ name: item.label.ru, value: item.value }))}
                   />
 
                   <FormSelect
                     name="effect"
                     control={form.control}
-                    items={effects}
+                    items={effects.map((item) => ({ name: item.label.ru, value: item.value }))}
                   />
                   <FormSelect
                     name="applicationMethod"
                     control={form.control}
-                    items={applicationMethods}
+                    items={applicationMethods.map((item) => ({ name: item.label.ru, value: item.value }))}
                   />
                 </>
               )}

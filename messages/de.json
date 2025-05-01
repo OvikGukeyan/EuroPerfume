@@ -188,5 +188,39 @@
     },
     "thanks": "Vielen Dank für Ihr Verständnis,",
     "team": "Ihr Euro Perfume Team"
+  },
+
+  "Faq": {
+    "title": "Häufig gestellte Fragen zu Rückgabe und Umtausch",
+    "items": [
+      {
+        "question": "1. Kann ich ein abgefülltes Parfüm zurückgeben?",
+        "answer": "Nein. Gemäß §312g BGB sowie aus hygienischen Gründen sind Abfüllungen vom Umtausch und der Rückgabe ausgeschlossen."
+      },
+      {
+        "question": "2. Warum gilt das Widerrufsrecht nicht für Abfüllungen?",
+        "answer": "Abfüllungen werden individuell auf Bestellung gefertigt (z. B. 2–10 ml) und können nach dem Öffnen nicht weiterverkauft werden."
+      },
+      {
+        "question": "3. Ich habe einen Originalflakon in Folie gekauft. Kann ich ihn zurückgeben?",
+        "answer": "Ja, sofern die Verpackung ungeöffnet und die Ware versiegelt ist, können Sie den Artikel innerhalb von 14 Tagen zurückgeben. Bitte kontaktieren Sie uns im Voraus."
+      },
+      {
+        "question": "4. Was tun, wenn meine Bestellung beschädigt angekommen ist?",
+        "answer": "Bitte senden Sie uns innerhalb von 48 Stunden nach Erhalt ein Foto des Schadens an <a>europerfumeshop@gmail.com</a> — wir finden garantiert eine Lösung."
+      }
+    ]
+  },
+
+  "Footer": {
+    "links": {
+      "about": "Über uns",
+      "return": "Rückgabe und Umtausch",
+      "faq": "Fragen",
+      "contact": "Kontakt"
+    },
+    "privacy": "Datenschutz",
+    "impressum": "Impressum",
+    "copyright": "EuroPerfume 2024. Alle Rechte vorbehalten."
   }
 }

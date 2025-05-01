@@ -14,6 +14,7 @@ export interface ProductGroupState {
 
   fetchProductGroups: () => Promise<void>;
   createProductGroup: (values: ProductGroupValues) => Promise<void>;
+  deleteProductGroup: (id: number) => Promise<void>;
 }
 
 export const useProductGroupStore = create<ProductGroupState>()((set) => ({
@@ -41,6 +42,19 @@ export const useProductGroupStore = create<ProductGroupState>()((set) => ({
       set((state) => ({
         productGroups: [...state.productGroups, data],
       }));
+    } catch (error) {
+      console.error(error);
+      set({ error: true });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  deleteProductGroup: async (id: number) => {
+    try {
+      set({ loading: true, error: false });
+      const data = await Api.productGroup.deleteProductGroup(id);
+      set({ productGroups: data });
     } catch (error) {
       console.error(error);
       set({ error: true });
