@@ -1,4 +1,3 @@
-export const dynamic = "force-dynamic"; 
 
 import {
   Container,
@@ -17,13 +16,8 @@ export default async function Home() {
 
   return (
     <>
-    
       <Carusel slides={slides} />
-      <TopBar
-      // categories={categoryes.filter(
-      //   (category) => category.productGroups.flatMap((productGroup) => productGroup.products).length > 0
-      // )}
-      />
+      <TopBar />
 
       <Container className="mt-10">
         <Title size="lg" className="font-extrabold" text="All products" />

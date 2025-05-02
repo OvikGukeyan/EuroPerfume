@@ -1,15 +1,12 @@
 import { useEffect, useRef } from "react";
 import qs from "qs";
-import { useRouter } from "next/navigation";
 import { Filters } from "../store/filters";
 
 export const useQueryFilters = (filters: Filters) => {
-  const router = useRouter();
   const isMounted = useRef(false);
+
   useEffect(() => {
-
     if (isMounted.current) {
-
       const params = {
         ...filters.prices,
         orderBy:
@@ -28,10 +25,13 @@ export const useQueryFilters = (filters: Filters) => {
         category: filters.category || undefined,
         productGroup: filters.productGroup || undefined,
       };
+
       const query = qs.stringify(params, { arrayFormat: "comma" });
-      router.replace(`?${query}`, { scroll: false });
-      console.log('push')
+      const url = `?${query}`;
+
+      window.history.pushState(null, "", url);
     }
+
     isMounted.current = true;
-  }, [filters, router]);
+  }, [filters]);
 };

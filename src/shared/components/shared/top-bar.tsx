@@ -11,23 +11,23 @@ interface Props {
 
 export const TopBar: FC<Props> = ({ className }) => {
   const [show, setShow] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
+  // const [lastScrollY, setLastScrollY] = useState(0);
   const { categories } = useCategories();
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY && currentScrollY > 900) {
-        setShow(false);
-      } else {
-        setShow(true);
-      }
-      setLastScrollY(currentScrollY);
-    };
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     const currentScrollY = window.scrollY;
+  //     if (currentScrollY > lastScrollY && currentScrollY > 900) {
+  //       setShow(false);
+  //     } else {
+  //       setShow(true);
+  //     }
+  //     setLastScrollY(currentScrollY);
+  //   };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScrollY]);
+  //   window.addEventListener("scroll", handleScroll);
+  //   return () => window.removeEventListener("scroll", handleScroll);
+  // }, [lastScrollY]);
 
   return (
     <div
