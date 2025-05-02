@@ -7,7 +7,9 @@ export const useQueryFilters = (filters: Filters) => {
   const router = useRouter();
   const isMounted = useRef(false);
   useEffect(() => {
+
     if (isMounted.current) {
+
       const params = {
         ...filters.prices,
         orderBy:
@@ -27,9 +29,9 @@ export const useQueryFilters = (filters: Filters) => {
         productGroup: filters.productGroup || undefined,
       };
       const query = qs.stringify(params, { arrayFormat: "comma" });
-      router.push(`?${query}`, { scroll: false });
+      router.replace(`?${query}`, { scroll: false });
+      console.log('push')
     }
-
     isMounted.current = true;
   }, [filters, router]);
 };

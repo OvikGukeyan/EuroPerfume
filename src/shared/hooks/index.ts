@@ -8,3 +8,4 @@ export {useNotes} from './use-notes';
 export {useBrands} from './use-brands';
 export {useProductGroup} from './use-product-group';
 export {useProducts} from './use-products';
+export {useUpdateFiltersQuery} from './use-update-filters-query';

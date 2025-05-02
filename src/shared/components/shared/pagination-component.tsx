@@ -30,7 +30,8 @@ export const PaginationComponent: FC<Props> = ({
     window.scrollTo(0, 0);
   };
 
-  useQueryFilters(filters);
+  // useQueryFilters(filters);
+
   const onPageChange = (page: number) => {
     filters.setCurrentPage(page);
     window.scrollTo(0, 0);
