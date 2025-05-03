@@ -17,7 +17,7 @@ export default function Products() {
   const { categories } = useCategories();
 
   const filters = useFiltersStore();
-  // useQueryFilters(filters);
+  useQueryFilters(filters);
   useEffect(() => {
     fetchAllProducts();
   }, []);

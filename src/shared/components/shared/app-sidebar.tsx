@@ -18,12 +18,12 @@ import {
 } from "../ui/sidebar";
 import { Folders, GalleryHorizontalEnd, House, Music3, Plus, Settings2 } from "lucide-react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
+import { usePathname } from "@/src/i18n/navigation";
 
 type Props = {
   className?: string;

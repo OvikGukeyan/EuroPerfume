@@ -34,13 +34,13 @@ export const Footer: FC<Props> = ({ className }) => {
       </div>
       <Separator className="my-5" />
       <div className="flex items-center justify-between gap-5">
-        <h5>{t('copyright')}</h5>
+        <h5>EuroPerfume 2024. Alle Rechte vorbehalten.</h5>
         <div className="flex gap-3">
           <Link href="/privacy-policy">
-            <p>{t('privacy')}</p>
+            <p>Datenschutz</p>
           </Link>
           <Link href="/impressum">
-            <p>{t('impressum')}</p>
+            <p>Impressum</p>
           </Link>
         </div>
       </div>

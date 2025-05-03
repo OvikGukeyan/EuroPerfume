@@ -2,12 +2,12 @@
 
 import { Dialog, DialogContent } from "@/src/shared/components/ui/dialog";
 import { cn } from "@/src/shared/lib/utils";
-import { useRouter } from "next/navigation";
 import React, { FC } from "react";
 import { ProductForm } from "..";
 import { Product, ProductVariation, Review } from "@prisma/client";
 import { ModalContext } from "@/src/shared/lib";
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
+import { useRouter } from "@/src/i18n/navigation";
 
 interface Props {
   product: ProductDTO;

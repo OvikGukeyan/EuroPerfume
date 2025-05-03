@@ -1,7 +1,7 @@
 "use client";
 import React, { FC, Suspense, useState } from "react";
 import { cn } from "@/src/lib/utils";
-import { MenuDrawerItem, SocialMediaBar } from ".";
+import { LanguageSwitcher, MenuDrawerItem, SocialMediaBar } from ".";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
 import { Button } from "..";
 import { Menu } from "lucide-react";
@@ -9,6 +9,7 @@ import { Menu } from "lucide-react";
 import { useCategories } from "@/src/shared/hooks";
 import Link from "next/link";
 import { links } from "@/src/shared/services/constants";
+import { useLocale } from "next-intl";
 
 type Props = {
   className?: string;
@@ -17,7 +18,7 @@ type Props = {
 export const MenuDrawer: FC<Props> = ({ className }) => {
   const { categories } = useCategories();
   const [open, setOpen] = useState(false);
-  
+  const locale = useLocale() as "ru" | "de";
 
   return (
     <div className={cn(className, "sticky top-52 md:top-56 z-20")}>
@@ -43,6 +44,7 @@ export const MenuDrawer: FC<Props> = ({ className }) => {
                   setOpen={setOpen}
                   category={category}
                   key={category.id}
+                  locale={locale}
                 />
               ))}
             </div>
@@ -54,11 +56,14 @@ export const MenuDrawer: FC<Props> = ({ className }) => {
                   key={link.href}
                   className="text-xl font-semibold"
                 >
-                  {link.label.ru}
+                  {link.label[locale]}
                 </Link>
               ))}
             </div>
-            <SocialMediaBar />
+            <SocialMediaBar className="mt-5"/>
+            <div className="flex justify-end mt-2">
+              <LanguageSwitcher />
+            </div>
           </SheetContent>
         </Sheet>
       </Suspense>

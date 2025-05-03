@@ -21,10 +21,7 @@ export const Carusel: FC<Props> = ({ slides }) => {
             <Link href={slide.href}>
               <div className="relative w-full aspect-[3.6/4] md:aspect-[10/3.5]">
                 <picture className="w-full h-full">
-                  <source
-                    media="(max-width: 767px)"
-                    srcSet={slide.mobileImg}
-                  />
+                  <source media="(max-width: 767px)" srcSet={slide.mobileImg} />
                   <source
                     media="(min-width: 767px)"
                     srcSet={slide.desctopImg}
@@ -37,7 +34,6 @@ export const Carusel: FC<Props> = ({ slides }) => {
                     quality={80}
                   />
                 </picture>
-              
               </div>
             </Link>
           </CarouselItem>

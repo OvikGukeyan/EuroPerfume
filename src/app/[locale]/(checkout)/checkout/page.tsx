@@ -5,7 +5,6 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import { ContactForms, DeliveryTypes } from "@prisma/client";
 import { checkoutFormSchema, CheckoutFormValues } from '@/src/shared/constants';
 import { useCart } from '@/src/shared/hooks';
@@ -14,6 +13,7 @@ import { Api } from '@/src/shared/services/api-client';
 import { createOrder } from '@/src/app/actions';
 import { CheckoutCart, CheckoutDeliveryForm, CheckoutPersonalForm, CheckoutSidebar, Title } from '@/src/shared/components';
 import { useTranslations } from 'next-intl';
+import { useRouter } from '@/src/i18n/navigation';
 
 
 export default function Checkout() {

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 import { useProductStore } from "../store/product";
 import { GetSearchParams } from "../lib/find-products";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { usePathname } from "@/src/i18n/navigation";
 
 function shallowEqual(
   obj1: Record<string, string>,

@@ -20,10 +20,10 @@ import {
   useModalContext,
 } from "@/src/shared/lib";
 import { Rating } from "./rating";
-import { useRouter } from "next/navigation";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
 import Image from "next/image";
+import { useRouter } from "@/src/i18n/navigation";
 
 interface Props {
   product: ProductDTO;

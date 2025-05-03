@@ -5,7 +5,7 @@ import Link from "next/link";
 import React, { use, useEffect, useState } from "react";
 import { ChooseVariation, Title, VolumeSelection } from ".";
 import { Button } from "../ui";
-import { Heart, HeartOff, Plus } from "lucide-react";
+import { Heart, HeartOff, Plus, ShoppingCart } from "lucide-react";
 import toast from "react-hot-toast";
 import { useCartStore, useFavoritesStore } from "@/src/shared/store";
 import { Volume, volumes } from "@/src/shared/constants/perfume";
@@ -152,13 +152,12 @@ export const ProductCard: React.FC<Props> = ({
         </div>
 
         <Button
-          // loading={loading}
           onClick={onSubmit}
           variant="outline"
           className="text-base font-bold"
         >
           <Plus size={20} className="mr-1" />
-          {t('addToCart')}
+          <ShoppingCart size={20} />
         </Button>
       </div>
     </div>

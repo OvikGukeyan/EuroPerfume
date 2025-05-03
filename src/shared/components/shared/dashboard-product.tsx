@@ -6,9 +6,8 @@ import React from "react";
 import { Title } from ".";
 import { Button, Switch } from "../ui";
 import { Settings2, Trash2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { string } from "zod";
 import { ProductVariation } from "@prisma/client";
+import { useRouter } from "@/src/i18n/navigation";
 
 interface Props {
   id: number;

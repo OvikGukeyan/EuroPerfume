@@ -7,16 +7,18 @@ import Link from "next/link";
 import {
   AuthModal,
   CartButton,
+  LanguageSwitcher,
   MenuDrawer,
   ProfileButton,
   SearchInput,
 } from "@/src/shared/components/shared";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { Heart, Truck } from "lucide-react";
 import { Button, Separator } from "../ui";
 import { useInitFiltersFromUrl } from "@/src/shared/hooks";
-import {useTranslations} from 'next-intl';
+import { useTranslations } from "next-intl";
+import { useRouter } from "@/src/i18n/navigation";
 interface Props {
   hasSearch?: boolean;
   hasCart?: boolean;
@@ -28,7 +30,7 @@ export const Header: React.FC<Props> = ({
   hasSearch = true,
   hasCart = true,
 }) => {
-  const t = useTranslations('Header');
+  const t = useTranslations("Header");
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -57,11 +59,12 @@ export const Header: React.FC<Props> = ({
 
   return (
     <>
-      <div className="flex items-center gap-3 h-10  px-3 md:px-5">
-        <Truck />
-        <h3 className="text-sm md:text-base">
-        {t('freeDeliveryInfo')}
-        </h3>
+      <div className="flex justify-between items-center px-3">
+        <div className="flex items-center gap-2 h-10   md:px-5 ">
+          <Truck />
+          <h3 className="text-sm md:text-base">{t("freeDeliveryInfo")}</h3>
+        </div>
+        <LanguageSwitcher className="hidden md:block"/>
       </div>
       <header className={cn("", className)}>
         <Separator />
@@ -70,7 +73,12 @@ export const Header: React.FC<Props> = ({
             <MenuDrawer />
             <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />
           </div>
-          <div className={cn("relative flex justify-center items-center w-36 md:w-44 h-10 ", hasSearch && 'mx-auto')}>
+          <div
+            className={cn(
+              "relative flex justify-center items-center w-36 md:w-44 h-10 ",
+              hasSearch && "mx-auto"
+            )}
+          >
             <Link href="/">
               <Image
                 src="/assets/logo.png"

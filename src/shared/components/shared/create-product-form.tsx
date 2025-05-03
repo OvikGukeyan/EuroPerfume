@@ -190,7 +190,7 @@ export const CreateProductForm: FC<Props> = ({
           formData.append("variations", file);
         });
       }
-      formData.append("concentration", data.concentration || "EAU_DE_COLOGNE");
+      formData.append("concentration", data.concentration || "");
       formData.append("perfumer", data.perfumer || "");
       formData.append("aromas", JSON.stringify(data.aromas));
       formData.append("topNotes", JSON.stringify(data.topNotes));

@@ -11,8 +11,8 @@ import toast from "react-hot-toast";
 import { signOut } from "next-auth/react";
 import { FormInput, Title } from "./";
 import { Button } from "..";
-import { useRouter } from "next/navigation";
 import { resetPassword } from "@/src/app/actions";
+import { useRouter } from "@/src/i18n/navigation";
 
 interface Props {
   code: string;

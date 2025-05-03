@@ -13,10 +13,11 @@ import { useFiltersStore } from "@/src/shared/store/filters";
 type Props = {
   category: Category & { productGroups: ProductGroup[] };
   setOpen: (open: boolean) => void;
+  locale: "ru" | "de";
   className?: string;
 };
 
-export const MenuDrawerItem: FC<Props> = ({ className, category, setOpen }) => {
+export const MenuDrawerItem: FC<Props> = ({ className, category, setOpen, locale }) => {
   const [isOpen, setIsOpen] = React.useState(true);
   const [setCategory, setProductGroup] = useFiltersStore((state) => [
     state.setCategory,
@@ -48,7 +49,7 @@ export const MenuDrawerItem: FC<Props> = ({ className, category, setOpen }) => {
       <div className="flex items-center justify-between space-x-4 ">
         <CollapsibleTrigger onClick={() => handleItemClick(category)} asChild>
           <div className="flex items-center gap-2 cursor-pointer">
-            <h2 className="text-2xl font-semibold">{category.labelRu}</h2>
+            <h2 className="text-2xl font-semibold">{locale === "ru" ? category.labelRu : category.labelDe}</h2>
             {category.productGroups.length > 0 && (
               <>
                 {isOpen ? (
@@ -71,7 +72,7 @@ export const MenuDrawerItem: FC<Props> = ({ className, category, setOpen }) => {
             key={productGroup.id}
             className="px-4 py-2 text-xl cursor-pointer"
           >
-            {productGroup.labelRu}
+            {locale === "ru" ? productGroup.labelRu : productGroup.labelDe}
           </div>
         ))}
       </CollapsibleContent>
