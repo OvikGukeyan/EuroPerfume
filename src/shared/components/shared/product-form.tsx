@@ -4,12 +4,20 @@ import { useCartStore } from "@/src/shared/store";
 import React, { FC, useState } from "react";
 import toast from "react-hot-toast";
 import { ChooseProductForm } from "./choose-product-form";
-import { Product, ProductVariation, Review } from "@prisma/client";
+import {
+  Product,
+  ProductTranslation,
+  ProductVariation,
+  Review,
+} from "@prisma/client";
 import { Volume } from "@/src/shared/constants/perfume";
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
 
+export interface ProductWithTranslations extends ProductDTO {
+  translations: ProductTranslation[];
+}
 interface Props {
-  product: ProductDTO;
+  product: ProductWithTranslations;
   onSubmit?: VoidFunction;
   className?: string;
 }
@@ -31,7 +39,12 @@ export const ProductForm: FC<Props> = ({
     try {
       await addCartItem({
         productId,
-        volume: (product.categoryId === 1 && product.productGroupId && product.productGroupId < 4) ? volume : 1,
+        volume:
+          product.categoryId === 1 &&
+          product.productGroupId &&
+          product.productGroupId < 4
+            ? volume
+            : 1,
         variationId: activeVariation.id,
       });
       toast.success(product.name + " added to cart");
@@ -42,18 +55,7 @@ export const ProductForm: FC<Props> = ({
     _onSubmit?.();
   };
 
-  // if (isPizzaForm) {
-  //     return (
-  //         <ChoosePizzaForm
-  //             imageUrl={product.imageUrl}
-  //             name={product.name}
-  //             ingredients={product.ingredients}
-  //             items={product.items}
-  //             onSubmit={onSubmit}
-  //             loading={loading}
-  //         />
-  //     )
-  // }
+ 
 
   return (
     <ChooseProductForm

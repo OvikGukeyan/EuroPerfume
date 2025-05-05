@@ -389,29 +389,21 @@ export async function createProduct(
           ],
         },
         aromas: parsedData.aromas,
-        brandCountry: parsedData.brandCountry,
-        manufacturingCountry: parsedData.manufacturingCountry,
         perfumer: parsedData.perfumer || undefined,
         classification: parsedData.classification,
         releaseYear: parsedData.releaseYear,
         category: { connect: { id: parsedData.categoryId } },
         productGroup: { connect: { id: parsedData.productGroupId } },
-        description: parsedData.descriptionRu,
         available: true,
         age: parsedData.age,
         series: parsedData.series || undefined,
         purpose: parsedData.purpose || undefined,
-        colorPalette: parsedData.colorPalette || undefined,
         finish: parsedData.finish || undefined,
         texture: parsedData.texture || undefined,
         formula: parsedData.formula || undefined,
-        compositionFeatures: parsedData.compositionFeatures || undefined,
-        activeIngredients: parsedData.activeIngredients || undefined,
         effect: parsedData.effect || undefined,
         effectDuration: parsedData.effectDuration,
         hypoallergenic: parsedData.hypoallergenic,
-        certificates: parsedData.certificates || undefined,
-        ethics: parsedData.ethics || undefined,
         applicationMethod: parsedData.applicationMethod || undefined,
         packagingFormat: parsedData.packagingFormat || undefined,
         volume: parsedData.volume || undefined,
@@ -421,7 +413,27 @@ export async function createProduct(
             {
               language: Languages.DE,
               description: parsedData.descriptionDe,
+              colorPalette: parsedData.colorPaletteDe,
+              compositionFeatures: parsedData.compositionFeaturesDe,
+              activeIngredients: parsedData.activeIngredientsDe,
+              ethics: parsedData.ethicsDe,
+              certificates: parsedData.certificatesDe,
+              material: parsedData.materialDe,
+              brandCountry: parsedData.brandCountryDe,
+              manufacturingCountry: parsedData.manufacturingCountryDe,
             },
+            {
+              language: Languages.RU,
+              description: parsedData.descriptionRu,
+              colorPalette: parsedData.colorPaletteRu,
+              compositionFeatures: parsedData.compositionFeaturesRu,
+              activeIngredients: parsedData.activeIngredientsRu,
+              ethics: parsedData.ethicsRu,
+              certificates: parsedData.certificatesRu,
+              material: parsedData.materialRu,
+              brandCountry: parsedData.brandCountryRu,
+              manufacturingCountry: parsedData.manufacturingCountryRu,
+            }
           ],
         },
         variations: {
@@ -499,25 +511,19 @@ export async function updateProduct(
           parsedData.aromas && parsedData.aromas.length
             ? parsedData.aromas
             : undefined,
-        brandCountry: parsedData.brandCountry,
-        manufacturingCountry: parsedData.manufacturingCountry,
+       
         perfumer: parsedData.perfumer ? parsedData.perfumer : undefined,
         classification: parsedData.classification,
         releaseYear: Number(parsedData.releaseYear),
         category: { connect: { id: Number(parsedData.categoryId) } },
         productGroup: { connect: { id: Number(parsedData.productGroupId) } },
-        description: parsedData.descriptionRu,
         available: true,
-        // Makeup-specific поля
         age: parsedData.age ? Number(parsedData.age) : undefined,
         series: parsedData.series || undefined,
         purpose: parsedData.purpose || undefined,
-        colorPalette: parsedData.colorPalette || undefined,
         finish: parsedData.finish || undefined,
         texture: parsedData.texture || undefined,
         formula: parsedData.formula || undefined,
-        compositionFeatures: parsedData.compositionFeatures || undefined,
-        activeIngredients: parsedData.activeIngredients || undefined,
         effect: parsedData.effect || undefined,
         effectDuration: parsedData.effectDuration
           ? Number(parsedData.effectDuration)
@@ -526,29 +532,76 @@ export async function updateProduct(
           typeof parsedData.hypoallergenic === "boolean"
             ? parsedData.hypoallergenic
             : undefined,
-        certificates: parsedData.certificates || undefined,
-        ethics: parsedData.ethics || undefined,
         applicationMethod: parsedData.applicationMethod || undefined,
         packagingFormat: parsedData.packagingFormat || undefined,
         volume: parsedData.volume || undefined,
         skinType: parsedData.skinType || undefined,
-        translations: {
-          upsert: {
-            where: {
-              translation_unique: {
-                productId: id,
-                language: Languages.DE,
-              },
-            },
-            update: {
-              description: parsedData.descriptionDe,
-            },
-            create: {
-              language: Languages.DE,
-              description: parsedData.descriptionDe,
-            },
-          },
+      },
+    });
+
+    await prisma.productTranslation.upsert({
+      where: {
+        translation_unique: {
+          productId: id,
+          language: Languages.DE,
         },
+      },
+      update: {
+        description: parsedData.descriptionDe,
+        colorPalette: parsedData.colorPaletteDe,
+        compositionFeatures: parsedData.compositionFeaturesDe,
+        activeIngredients: parsedData.activeIngredientsDe,
+        ethics: parsedData.ethicsDe,
+        certificates: parsedData.certificatesDe,
+        material: parsedData.materialDe,
+        brandCountry: parsedData.brandCountryDe,
+        manufacturingCountry: parsedData.manufacturingCountryDe,
+      },
+      create: {
+        productId: id,
+        language: Languages.DE,
+        description: parsedData.descriptionDe,
+        colorPalette: parsedData.colorPaletteDe,
+        compositionFeatures: parsedData.compositionFeaturesDe,
+        activeIngredients: parsedData.activeIngredientsDe,
+        ethics: parsedData.ethicsDe,
+        certificates: parsedData.certificatesDe,
+        material: parsedData.materialDe,
+        brandCountry: parsedData.brandCountryDe,
+        manufacturingCountry: parsedData.manufacturingCountryDe,
+      },
+    });
+    
+    await prisma.productTranslation.upsert({
+      where: {
+        translation_unique: {
+          productId: id,
+          language: Languages.RU,
+        },
+      },
+      update: {
+        description: parsedData.descriptionRu,
+        colorPalette: parsedData.colorPaletteRu,
+        compositionFeatures: parsedData.compositionFeaturesRu,
+        activeIngredients: parsedData.activeIngredientsRu,
+        ethics: parsedData.ethicsRu,
+        certificates: parsedData.certificatesRu,
+        material: parsedData.materialRu,
+        brandCountry: parsedData.brandCountryRu,
+        manufacturingCountry: parsedData.manufacturingCountryRu,
+      },
+      create: {
+        productId: id,
+        language: Languages.RU,
+        description: parsedData.descriptionRu,
+        colorPalette: parsedData.colorPaletteRu,
+        compositionFeatures: parsedData.compositionFeaturesRu,
+        activeIngredients: parsedData.activeIngredientsRu,
+        ethics: parsedData.ethicsRu,
+        certificates: parsedData.certificatesRu,
+        material: parsedData.materialRu,
+        brandCountry: parsedData.brandCountryRu,
+        manufacturingCountry: parsedData.manufacturingCountryRu,
       },
     });
   } catch (error) {

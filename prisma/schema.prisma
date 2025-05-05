@@ -49,30 +49,26 @@ model Product {
   imageUrl       String[]
   categoryId     Int
   productGroupId Int
-  description    String
   gender         Gender
   classification Classifications[]
+  series         String?
+  volume         String?
 
-  age                 Int?
-  series              String?
-  purpose             Purpose?
-  colorPalette        String?
-  finish              Finish?
-  texture             Texture?
-  formula             Formula?
-  compositionFeatures String?
-  activeIngredients   String?
-  effect              Effects?
-  effectDuration      Int?
-  hypoallergenic      Boolean?
-  certificates        String?
-  ethics              String?
-  applicationMethod   ApplicationMethod?
-  packagingFormat     PackagingFormat?
-  volume              String?
-  skinType            SkinType?
-  size                String?
-  material            String?
+  age     Int?
+  purpose Purpose?
+  finish  Finish?
+  texture Texture?
+  formula Formula?
+
+  effect         Effects?
+  effectDuration Int?
+  hypoallergenic Boolean?
+
+  applicationMethod ApplicationMethod?
+  packagingFormat   PackagingFormat?
+
+  skinType SkinType?
+  size     String?
 
   productNotes  ProductNote[]
   aromas        Aromas[]              @default([])
@@ -81,10 +77,8 @@ model Product {
   brand         Brand                 @relation(fields: [brandId], references: [id])
   brandId       Int
 
-  price                Decimal
-  releaseYear          Int
-  brandCountry         String
-  manufacturingCountry String
+  price       Decimal
+  releaseYear Int
 
   available      Boolean
   cartItems      CartItem[]
@@ -110,11 +104,21 @@ model ProductVariation {
 }
 
 model ProductTranslation {
-  id          Int       @id @default(autoincrement())
-  language    Languages
-  description String
-  productId   Int
-  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id       Int       @id @default(autoincrement())
+  language Languages
+
+  description          String
+  colorPalette         String?
+  compositionFeatures  String?
+  activeIngredients    String?
+  certificates         String?
+  ethics               String?
+  material             String?
+  brandCountry         String?
+  manufacturingCountry String?
+
+  productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([language, productId], name: "translation_unique")
 }

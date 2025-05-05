@@ -33,7 +33,7 @@ import {
   FormLabel,
 } from "@/src/shared/components/ui/form";
 
-import { Gender, Note, NoteType, ProductNote } from "@prisma/client";
+import { Gender, Languages, Note, NoteType, Product, ProductNote, ProductTranslation } from "@prisma/client";
 import { FC, useState } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -47,9 +47,7 @@ import { useNotes } from "@/src/shared/hooks";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 
 type ProductWithTranslations = SafeProduct & {
-  translations: {
-    description: string;
-  }[];
+  translations: ProductTranslation[];
   productNotes: (ProductNote & {
     note: Note;
   })[];
@@ -74,19 +72,42 @@ export const CreateProductForm: FC<Props> = ({
     loading: notesLoading,
     error: notesError,
   } = useNotes();
+  const translationRu = product?.translations.find(
+    (translation) => translation.language === "RU"
+  );
+  const translationDe = product?.translations.find(
+    (translation) => translation.language === "DE"
+  );
   const form = useForm<CreateProductFormValues>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
       productName: product?.name || "",
       image: undefined,
-      descriptionRu: product?.description || "",
-      descriptionDe: product?.translations[0]?.description || "",
+
       price: product?.price || undefined,
       gender: product?.gender || Gender.UNISEX,
       concentration: product?.concentration || undefined,
       brand: product?.brandId.toString() || "",
-      brandCountry: product?.brandCountry || "",
-      manufacturingCountry: product?.manufacturingCountry || "",
+
+      descriptionRu: translationRu?.description || "",
+      descriptionDe: translationDe?.description || "",
+      brandCountryRu: translationRu?.brandCountry || "",
+      brandCountryDe: translationDe?.brandCountry || "",
+      manufacturingCountryRu: translationRu?.manufacturingCountry || "",
+      manufacturingCountryDe: translationDe?.manufacturingCountry || "",
+      colorPaletteRu: translationRu?.colorPalette || "",
+      colorPaletteDe: translationDe?.colorPalette || "",
+      compositionFeaturesRu: translationRu?.compositionFeatures || "",
+      compositionFeaturesDe: translationDe?.compositionFeatures || "",
+      activeIngredientsRu: translationRu?.activeIngredients || "",
+      activeIngredientsDe: translationDe?.activeIngredients || "",
+      certificatesRu: translationRu?.certificates || "",
+      certificatesDe: translationDe?.certificates || "",
+      ethicsRu: translationRu?.ethics || "",
+      ethicsDe: translationDe?.ethics || "",
+      materialRu: translationRu?.material || "",
+      materialDe: translationDe?.material || "",
+
       perfumer: product?.perfumer || "",
       aromas: product?.aromas || [],
       topNotes:
@@ -109,25 +130,20 @@ export const CreateProductForm: FC<Props> = ({
       age: product?.age || undefined,
       series: product?.series || "",
       purpose: product?.purpose || undefined,
-      colorPalette: product?.colorPalette || "",
       finish: product?.finish || undefined,
       texture: product?.texture || undefined,
       formula: product?.formula || undefined,
-      compositionFeatures: product?.compositionFeatures || "",
-      activeIngredients: product?.activeIngredients || "",
       effect: product?.effect || undefined,
       effectDuration: product?.effectDuration || undefined,
       hypoallergenic: product?.hypoallergenic
         ? product?.hypoallergenic.toString()
         : "false",
-      certificates: product?.certificates || "",
-      ethics: product?.ethics || "",
+
       applicationMethod: product?.applicationMethod || undefined,
       packagingFormat: product?.packagingFormat || undefined,
       volume: product?.volume || "",
       skinType: product?.skinType || undefined,
       size: product?.size || "",
-      material: product?.material || "",
     },
   });
 
@@ -137,40 +153,64 @@ export const CreateProductForm: FC<Props> = ({
       const formData = new FormData();
 
       formData.append("productName", data.productName);
-      formData.append("descriptionRu", data.descriptionRu);
-      formData.append("descriptionDe", data.descriptionDe);
+
       formData.append("price", data.price.toString());
       formData.append("gender", data.gender);
       formData.append("brand", data.brand);
-      formData.append("brandCountry", data.brandCountry);
-      formData.append("manufacturingCountry", data.manufacturingCountry);
+      formData.append("series", data.series || "");
+      formData.append("purpose", data.purpose || "");
+
+      formData.append("descriptionRu", data.descriptionRu);
+      formData.append("descriptionDe", data.descriptionDe);
+
+      formData.append("brandCountryRu", data.brandCountryRu);
+      formData.append("brandCountryDe", data.brandCountryDe);
+
+      formData.append("manufacturingCountryRu", data.manufacturingCountryRu);
+      formData.append("manufacturingCountryDe", data.manufacturingCountryDe);
+
+      formData.append("colorPaletteRu", data.colorPaletteRu || "");
+      formData.append("colorPaletteDe", data.colorPaletteDe || "");
+
+      formData.append(
+        "compositionFeaturesRu",
+        data.compositionFeaturesRu || ""
+      );
+      formData.append(
+        "compositionFeaturesDe",
+        data.compositionFeaturesDe || ""
+      );
+
+      formData.append("activeIngredientsRu", data.activeIngredientsRu || "");
+      formData.append("activeIngredientsDe", data.activeIngredientsDe || "");
+
+      formData.append("certificatesRu", data.certificatesRu || "");
+      formData.append("certificatesDe", data.certificatesDe || "");
+
+      formData.append("ethicsRu", data.ethicsRu || "");
+      formData.append("ethicsDe", data.ethicsDe || "");
+
+      formData.append("materialRu", data.materialRu || "");
+      formData.append("materialDe", data.materialDe || "");
 
       // Makeup-specific fields
-      if (data.age !== undefined) formData.append("age", data.age.toString());
-      formData.append("series", data.series || "");
+      formData.append("age", data.age?.toString() || "");
       formData.append(
         "productGroupId",
         data.productGroupId ? data.productGroupId.toString() : "1"
       );
-      if (data.purpose) formData.append("purpose", data.purpose);
-      formData.append("colorPalette", data.colorPalette || "");
-      if (data.finish) formData.append("finish", data.finish);
-      if (data.texture) formData.append("texture", data.texture);
-      if (data.formula) formData.append("formula", data.formula);
-      formData.append("compositionFeatures", data.compositionFeatures || "");
-      formData.append("activeIngredients", data.activeIngredients || "");
-      if (data.effect) formData.append("effect", data.effect);
-      if (data.effectDuration !== undefined)
-        formData.append("effectDuration", data.effectDuration.toString());
+
+      formData.append("finish", data.finish || "");
+      formData.append("texture", data.texture || "");
+      formData.append("formula", data.formula || "");
+      formData.append("effect", data.effect || "");
+
+      formData.append("effectDuration", data.effectDuration?.toString() || "");
       formData.append("hypoallergenic", String(data.hypoallergenic));
-      formData.append("certificates", data.certificates || "");
-      formData.append("ethics", data.ethics || "");
-      if (data.applicationMethod)
-        formData.append("applicationMethod", data.applicationMethod);
-      if (data.packagingFormat)
-        formData.append("packagingFormat", data.packagingFormat);
+      formData.append("applicationMethod", data.applicationMethod || "");
+      formData.append("packagingFormat", data.packagingFormat || "");
       formData.append("volume", data.volume || "");
-      if (data.skinType) formData.append("skinType", data.skinType);
+      formData.append("skinType", data.skinType || "");
       formData.append("classification", JSON.stringify(data.classification));
 
       formData.append("releaseYear", data.releaseYear.toString());
@@ -178,7 +218,6 @@ export const CreateProductForm: FC<Props> = ({
       formData.append("productGroupId", data.productGroupId.toString());
 
       formData.append("size", data.size || "");
-      formData.append("material", data.material || "");
 
       if (data.image && data.image.length > 0) {
         data.image.forEach((file) => {
@@ -198,7 +237,6 @@ export const CreateProductForm: FC<Props> = ({
       formData.append("baseNotes", JSON.stringify(data.baseNotes));
       formData.append("classification", JSON.stringify(data.classification));
       formData.append("releaseYear", data.releaseYear.toString());
-
 
       await submitFunction(
         formData as FormData & CreateProductFormValues,
@@ -241,37 +279,73 @@ export const CreateProductForm: FC<Props> = ({
                 )}
               />
 
-              <FormField
-                name="brandCountry"
-                control={form.control as Control<CreateProductFormValues>}
-                render={({ field }) => (
-                  <FormItem className="mb-5">
-                    <FormControl>
-                      <FormInput
-                        label={"Brand Country"}
-                        {...field}
-                        placeholder="Brand Country"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+              <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
+                <FormField
+                  name="brandCountryRu"
+                  control={form.control as Control<CreateProductFormValues>}
+                  render={({ field }) => (
+                    <FormItem className="mb-5">
+                      <FormControl>
+                        <FormInput
+                          label={"Brand Country Ru"}
+                          {...field}
+                          placeholder="Brand Country"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                name="manufacturingCountry"
-                control={form.control as Control<CreateProductFormValues>}
-                render={({ field }) => (
-                  <FormItem className="mb-5">
-                    <FormControl>
-                      <FormInput
-                        label={"Manufacturing Country"}
-                        {...field}
-                        placeholder="Manufacturing Country"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  name="brandCountryDe"
+                  control={form.control as Control<CreateProductFormValues>}
+                  render={({ field }) => (
+                    <FormItem className="mb-5">
+                      <FormControl>
+                        <FormInput
+                          label={"Brand Country De"}
+                          {...field}
+                          placeholder="Brand Country"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
+                <FormField
+                  name="manufacturingCountryRu"
+                  control={form.control as Control<CreateProductFormValues>}
+                  render={({ field }) => (
+                    <FormItem className="mb-5">
+                      <FormControl>
+                        <FormInput
+                          label={"Manufacturing Country Ru"}
+                          {...field}
+                          placeholder="Manufacturing Country"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  name="manufacturingCountryDe"
+                  control={form.control as Control<CreateProductFormValues>}
+                  render={({ field }) => (
+                    <FormItem className="mb-5">
+                      <FormControl>
+                        <FormInput
+                          label={"Manufacturing Country De"}
+                          {...field}
+                          placeholder="Manufacturing Country"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
 
               <FormField
                 name="series"
@@ -328,38 +402,38 @@ export const CreateProductForm: FC<Props> = ({
                   </FormItem>
                 )}
               />
-
-              <FormField
-                name="descriptionRu"
-                control={form.control as Control<CreateProductFormValues>}
-                render={({ field }) => (
-                  <FormItem className="mb-5">
-                    <FormControl>
-                      <FormTextarea
-                        label="Description Ru"
-                        {...field}
-                        placeholder="Description"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                name="descriptionDe"
-                control={form.control as Control<CreateProductFormValues>}
-                render={({ field }) => (
-                  <FormItem className="mb-5">
-                    <FormControl>
-                      <FormTextarea
-                        label="Description De"
-                        {...field}
-                        placeholder="Description"
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-
+              <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
+                <FormField
+                  name="descriptionRu"
+                  control={form.control as Control<CreateProductFormValues>}
+                  render={({ field }) => (
+                    <FormItem className="mb-5">
+                      <FormControl>
+                        <FormTextarea
+                          label="Description Ru"
+                          {...field}
+                          placeholder="Description"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  name="descriptionDe"
+                  control={form.control as Control<CreateProductFormValues>}
+                  render={({ field }) => (
+                    <FormItem className="mb-5">
+                      <FormControl>
+                        <FormTextarea
+                          label="Description De"
+                          {...field}
+                          placeholder="Description"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
               <FormField
                 name="price"
                 control={form.control as Control<CreateProductFormValues>}
@@ -376,7 +450,10 @@ export const CreateProductForm: FC<Props> = ({
               <FormSelect
                 name="gender"
                 control={form.control}
-                items={genders.map((item) => ({ name: item.label.ru, value: item.value }))}
+                items={genders.map((item) => ({
+                  name: item.label.ru,
+                  value: item.value,
+                }))}
               />
 
               <BrandSelect control={form.control} />
@@ -509,12 +586,18 @@ export const CreateProductForm: FC<Props> = ({
                   <FormSelect
                     name="purpose"
                     control={form.control}
-                    items={purposes.map((item) => ({ name: item.label.ru, value: item.value }))}
+                    items={purposes.map((item) => ({
+                      name: item.label.ru,
+                      value: item.value,
+                    }))}
                   />
                   <FormSelect
                     name="finish"
                     control={form.control}
-                    items={finishes.map((item) => ({ name: item.label.ru, value: item.value }))}
+                    items={finishes.map((item) => ({
+                      name: item.label.ru,
+                      value: item.value,
+                    }))}
                   />
 
                   <FormSelect
@@ -525,91 +608,184 @@ export const CreateProductForm: FC<Props> = ({
                       { name: "No", value: "false" },
                     ]}
                   />
-                  <FormField
-                    name="colorPalette"
-                    control={form.control as Control<CreateProductFormValues>}
-                    render={({ field }) => (
-                      <FormItem className="mb-5">
-                        <FormControl>
-                          <FormInput
-                            label={"Color Palette"}
-                            {...field}
-                            placeholder="Color Palette"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
 
+                  <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
+                    <FormField
+                      name="colorPaletteRu"
+                      control={form.control as Control<CreateProductFormValues>}
+                      render={({ field }) => (
+                        <FormItem className="mb-5">
+                          <FormControl>
+                            <FormInput
+                              label={"Color Palette Ru"}
+                              {...field}
+                              placeholder="Color Palette"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      name="colorPaletteDe"
+                      control={form.control as Control<CreateProductFormValues>}
+                      render={({ field }) => (
+                        <FormItem className="mb-5">
+                          <FormControl>
+                            <FormInput
+                              label={"Color Palette De"}
+                              {...field}
+                              placeholder="Color Palette"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   <FormSelect
                     name="formula"
                     control={form.control}
-                    items={formulas.map((item) => ({ name: item.label.ru, value: item.value }))}
+                    items={formulas.map((item) => ({
+                      name: item.label.ru,
+                      value: item.value,
+                    }))}
                   />
 
-                  <FormField
-                    name="compositionFeatures"
-                    control={form.control as Control<CreateProductFormValues>}
-                    render={({ field }) => (
-                      <FormItem className="mb-5">
-                        <FormControl>
-                          <FormInput
-                            label={"Composition Features"}
-                            {...field}
-                            placeholder="Composition Features"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+                  <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
+                    <FormField
+                      name="compositionFeaturesRu"
+                      control={form.control as Control<CreateProductFormValues>}
+                      render={({ field }) => (
+                        <FormItem className="mb-5">
+                          <FormControl>
+                            <FormInput
+                              label={"Composition Features Ru"}
+                              {...field}
+                              placeholder="Composition Features"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
 
-                  <FormField
-                    name="activeIngredients"
-                    control={form.control as Control<CreateProductFormValues>}
-                    render={({ field }) => (
-                      <FormItem className="mb-5">
-                        <FormControl>
-                          <FormInput
-                            label={"Active Ingredients"}
-                            {...field}
-                            placeholder="Active Ingredients"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    name="certificates"
-                    control={form.control as Control<CreateProductFormValues>}
-                    render={({ field }) => (
-                      <FormItem className="mb-5">
-                        <FormControl>
-                          <FormInput
-                            label={"Certificates"}
-                            {...field}
-                            placeholder="Certificates"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+                    <FormField
+                      name="compositionFeaturesDe"
+                      control={form.control as Control<CreateProductFormValues>}
+                      render={({ field }) => (
+                        <FormItem className="mb-5">
+                          <FormControl>
+                            <FormInput
+                              label={"Composition Features De"}
+                              {...field}
+                              placeholder="Composition Features"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
 
-                  <FormField
-                    name="ethics"
-                    control={form.control as Control<CreateProductFormValues>}
-                    render={({ field }) => (
-                      <FormItem className="mb-5">
-                        <FormControl>
-                          <FormInput
-                            label={"Ethics"}
-                            {...field}
-                            placeholder="Ethics"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+                  <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
+                    <FormField
+                      name="activeIngredientsRu"
+                      control={form.control as Control<CreateProductFormValues>}
+                      render={({ field }) => (
+                        <FormItem className="mb-5">
+                          <FormControl>
+                            <FormInput
+                              label={"Active Ingredients Ru"}
+                              {...field}
+                              placeholder="Active Ingredients"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
 
+                    <FormField
+                      name="activeIngredientsDe"
+                      control={form.control as Control<CreateProductFormValues>}
+                      render={({ field }) => (
+                        <FormItem className="mb-5">
+                          <FormControl>
+                            <FormInput
+                              label={"Active Ingredients De"}
+                              {...field}
+                              placeholder="Active Ingredients"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
+                    <FormField
+                      name="certificatesRu"
+                      control={form.control as Control<CreateProductFormValues>}
+                      render={({ field }) => (
+                        <FormItem className="mb-5">
+                          <FormControl>
+                            <FormInput
+                              label={"Certificates Ru"}
+                              {...field}
+                              placeholder="Certificates"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      name="certificatesDe"
+                      control={form.control as Control<CreateProductFormValues>}
+                      render={({ field }) => (
+                        <FormItem className="mb-5">
+                          <FormControl>
+                            <FormInput
+                              label={"Certificates De"}
+                              {...field}
+                              placeholder="Certificates"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
+                    <FormField
+                      name="ethicsRu"
+                      control={form.control as Control<CreateProductFormValues>}
+                      render={({ field }) => (
+                        <FormItem className="mb-5">
+                          <FormControl>
+                            <FormInput
+                              label={"Ethics Ru"}
+                              {...field}
+                              placeholder="Ethics"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      name="ethicsDe"
+                      control={form.control as Control<CreateProductFormValues>}
+                      render={({ field }) => (
+                        <FormItem className="mb-5">
+                          <FormControl>
+                            <FormInput
+                              label={"Ethics De"}
+                              {...field}
+                              placeholder="Ethics"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                   <FormField
                     name="effectDuration"
                     control={form.control as Control<CreateProductFormValues>}
@@ -626,30 +802,45 @@ export const CreateProductForm: FC<Props> = ({
                   <FormSelect
                     name="texture"
                     control={form.control}
-                    items={textures.map((item) => ({ name: item.label.ru, value: item.value }))}
+                    items={textures.map((item) => ({
+                      name: item.label.ru,
+                      value: item.value,
+                    }))}
                   />
 
                   <FormSelect
                     name="skinType"
                     control={form.control}
-                    items={skinTypes.map((item) => ({ name: item.label.ru, value: item.value }))}
+                    items={skinTypes.map((item) => ({
+                      name: item.label.ru,
+                      value: item.value,
+                    }))}
                   />
 
                   <FormSelect
                     name="packagingFormat"
                     control={form.control}
-                    items={packagingFormats.map((item) => ({ name: item.label.ru, value: item.value }))}
+                    items={packagingFormats.map((item) => ({
+                      name: item.label.ru,
+                      value: item.value,
+                    }))}
                   />
 
                   <FormSelect
                     name="effect"
                     control={form.control}
-                    items={effects.map((item) => ({ name: item.label.ru, value: item.value }))}
+                    items={effects.map((item) => ({
+                      name: item.label.ru,
+                      value: item.value,
+                    }))}
                   />
                   <FormSelect
                     name="applicationMethod"
                     control={form.control}
-                    items={applicationMethods.map((item) => ({ name: item.label.ru, value: item.value }))}
+                    items={applicationMethods.map((item) => ({
+                      name: item.label.ru,
+                      value: item.value,
+                    }))}
                   />
                 </>
               )}
@@ -671,22 +862,39 @@ export const CreateProductForm: FC<Props> = ({
                       </FormItem>
                     )}
                   />
+                  <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
+                    <FormField
+                      name="materialRu"
+                      control={form.control as Control<CreateProductFormValues>}
+                      render={({ field }) => (
+                        <FormItem className="mb-5">
+                          <FormControl>
+                            <FormInput
+                              label={"Material Ru"}
+                              {...field}
+                              placeholder="Material"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
 
-                  <FormField
-                    name="material"
-                    control={form.control as Control<CreateProductFormValues>}
-                    render={({ field }) => (
-                      <FormItem className="mb-5">
-                        <FormControl>
-                          <FormInput
-                            label={"Material"}
-                            {...field}
-                            placeholder="Material"
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+                    <FormField
+                      name="materialDe"
+                      control={form.control as Control<CreateProductFormValues>}
+                      render={({ field }) => (
+                        <FormItem className="mb-5">
+                          <FormControl>
+                            <FormInput
+                              label={"Material De"}
+                              {...field}
+                              placeholder="Material"
+                            />
+                          </FormControl>
+                        </FormItem>
+                      )}
+                    />
+                  </div>
                 </>
               )}
             </div>

@@ -24,9 +24,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
 import Image from "next/image";
 import { useRouter } from "@/src/i18n/navigation";
+import { ProductWithTranslations } from "./product-form";
+import { useLocale } from "next-intl";
 
 interface Props {
-  product: ProductDTO;
+  product: ProductWithTranslations;
   loading: boolean;
   onSubmit?: (productId: number, volume: Volume) => Promise<void>;
   activeVariation: ProductVariation;
@@ -51,6 +53,7 @@ export const ChooseProductForm: FC<Props> = ({
   const { averageRating, count } = calcAverageRating(product.reviews);
   const router = useRouter();
   const { isModal } = useModalContext();
+  const locale = useLocale() as "ru" | "de";
 
   useEffect(() => {
     if (!isModal) {
@@ -65,7 +68,8 @@ export const ChooseProductForm: FC<Props> = ({
       router.push(`/product/${product.id}#reviews`);
     }
   };
-  const charactiristics = createCharacteristicsArray(product);
+
+  const charactiristics = createCharacteristicsArray(product, locale);
   return (
     <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
       <div className="flex  items-center justify-center flex-1 relative w-full lg:w-2/5 bg-[#f2f2f2] p-2 min-h-[400px]">
@@ -110,7 +114,7 @@ export const ChooseProductForm: FC<Props> = ({
               </TabsList>
               <TabsContent value="description">
                 <Text size="md" className="my-4">
-                  {product.description}
+                  {charactiristics.find((c) => c.name === "Description")?.value}
                 </Text>
               </TabsContent>
               <TabsContent value="characteristics">

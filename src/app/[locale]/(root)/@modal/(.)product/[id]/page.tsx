@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import React from "react";
 import { ChooseProductModal } from "@/src/shared/components";
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
+import { ProductWithTranslations } from "@/src/shared/components/shared/product-form";
 
 export default async function ProductModalPage({
   params,
@@ -24,7 +25,8 @@ export default async function ProductModalPage({
           note: true,
         },
       },
-      brand: true
+      brand: true,
+      translations: true
     },
   });
 
@@ -39,5 +41,5 @@ export default async function ProductModalPage({
         ? product.price.toNumber()
         : product.price,
   };
-  return <ChooseProductModal product={safeProduct as ProductDTO} />;
+  return <ChooseProductModal product={safeProduct as ProductWithTranslations} />;
 }

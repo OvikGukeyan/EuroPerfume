@@ -25,6 +25,7 @@ export default async function Product({
         },
       },
       brand: true,
+      translations: true
     },
   });
 
@@ -42,7 +43,7 @@ export default async function Product({
 
   return (
     <Container className="flex flex-col my-10 p-0 md:p-4">
-      <ProductForm product={safeProduct} />
+      <ProductForm product={safeProduct } />
      <div className="px-4 md:px-0">
      {product.reviews.length > 0 ? (
         <>

@@ -39,32 +39,32 @@ export const categories = [
 
 export const productGroups = [
   {
-    labelRu: 'Унисекс',
-    labelDe: 'Unisex',
+    labelRu: "Унисекс",
+    labelDe: "Unisex",
     id: 1,
     categoryId: 1,
   },
   {
-    labelRu: 'Женские',
-    labelDe: 'Damen',
+    labelRu: "Женские",
+    labelDe: "Damen",
     id: 2,
     categoryId: 1,
   },
   {
-    labelRu: 'Мужские',
-    labelDe: 'Herren',
+    labelRu: "Мужские",
+    labelDe: "Herren",
     id: 3,
     categoryId: 1,
   },
   {
-    labelRu: 'Атомайзеры',
-    labelDe: 'Atomizer',
+    labelRu: "Атомайзеры",
+    labelDe: "Atomizer",
     id: 4,
     categoryId: 1,
   },
   {
-    labelRu: 'Вся косметика',
-    labelDe: 'Alle Kosmetika',
+    labelRu: "Вся косметика",
+    labelDe: "Alle Kosmetika",
     id: 5,
     categoryId: 2,
   },
@@ -78,8 +78,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
       "https://media.douglas.de/medias/zUsfEz1217085-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3w4Mzg1NnxpbWFnZS9qcGVnfGFHUXdMMmhsTmk4Mk16QTNNelEyT1RnNU1EVTVNQzk2VlhObVJYb3hNakUzTURnMVh6QmZaR2RzTFVSRkxtcHdad3wyYmMxMGVhZGQ5ZjdiNWRjZDMyZDU1Y2QwMTQ4MWY4MzE4NjhkYTJiZjNkODU0MGE3ZTQxOTk4NzA0YWUyYzE4&grid=true&imPolicy=grayScaled&imdensity=1&imwidth=775",
       "https://media.douglas.de/medias/zUsfEz1217085-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3w4Mzg1NnxpbWFnZS9qcGVnfGFHUXdMMmhsTmk4Mk16QTNNelEyT1RnNU1EVTVNQzk2VlhObVJYb3hNakUzTURnMVh6QmZaR2RzTFVSRkxtcHdad3wyYmMxMGVhZGQ5ZjdiNWRjZDMyZDU1Y2QwMTQ4MWY4MzE4NjhkYTJiZjNkODU0MGE3ZTQxOTk4NzA0YWUyYzE4&grid=true&imPolicy=grayScaled&imdensity=1&imwidth=775",
     ],
-    description:
-      "Chanel No. 5 – это легендарный аромат, который уже более века символизирует изысканную элегантность и неподвластную времени женственность. Его уникальная композиция объединяет свежие цитрусовые и зеленые ноты с насыщенными аккордами цветочных букетов, в которых жасмин и роза играют главные роли. Тонкие нюансы древесных и амбровых оттенков создают ощущение глубины и загадочности, превращая аромат в настоящий шедевр парфюмерного искусства. Этот парфюм – идеальный выбор для тех, кто стремится подчеркнуть свою индивидуальность и безупречный вкус.",
     price: 5,
     available: true,
     gender: Gender.FEMALE,
@@ -89,8 +87,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
     releaseYear: 1921,
     classification: ["DESIGNER"],
     aromas: [Aromas.FLORAL],
-    brandCountry: "France",
-    manufacturingCountry: "France",
     perfumer: "Ernest Beaux",
     categoryId: 1,
     productGroupId: 1,
@@ -102,8 +98,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
       "https://media.douglas.de/medias/teTvKF1217080-0-dgl-DE.png?context=bWFzdGVyfGltYWdlc3w3OTYzMjN8aW1hZ2UvcG5nfGFHTTRMMmhrWVM4Mk1qQTJNamMxTURRek16TXhNQzkwWlZSMlMwWXhNakUzTURnd1h6QmZaR2RzTFVSRkxuQnVad3w4NTlmNDNkOWI2ODAyODZhOGI1Mjc1ZTFkMDlhNGE1ZmFiNGZmYzU1YThlOWI0ZmQ1MmFlMTRhNjczMjhhNzRm",
       "https://media.douglas.de/medias/teTvKF1217080-0-dgl-DE.png?context=bWFzdGVyfGltYWdlc3w3OTYzMjN8aW1hZ2UvcG5nfGFHTTRMMmhrWVM4Mk1qQTJNamMxTURRek16TXhNQzkwWlZSMlMwWXhNakUzTURnd1h6QmZaR2RzTFVSRkxuQnVad3w4NTlmNDNkOWI2ODAyODZhOGI1Mjc1ZTFkMDlhNGE1ZmFiNGZmYzU1YThlOWI0ZmQ1MmFlMTRhNjczMjhhNzRm",
     ],
-    description:
-      "Dior Sauvage – это современный, смелый и динамичный аромат, созданный для мужчин, ценящих свободу и приключения. Его композиция начинается с ярких цитрусовых аккордов, плавно переходящих в теплые, слегка пряные ноты, которые затем обволакиваются глубокими древесными оттенками. Этот аромат обладает высокой стойкостью и эволюционирует на коже, оставляя за собой незабываемый шлейф, который подчеркивает харизму и уверенность в себе.",
     price: 6,
     available: true,
     gender: Gender.FEMALE,
@@ -112,8 +106,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
     releaseYear: 2015,
     classification: ["DESIGNER"],
     aromas: [Aromas.ORIENTAL],
-    brandCountry: "France",
-    manufacturingCountry: "France",
     perfumer: "Francois Demachy",
     categoryId: 1,
     productGroupId: 1,
@@ -125,8 +117,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
       "https://media.douglas.de/medias/1W3Iiz1206949-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3w3MjQwNHxpbWFnZS9qcGVnfGFETmhMMmczTUM4Mk1qZzJNell4TkRBeE56VTJOaTh4VnpOSmFYb3hNakEyT1RRNVh6QmZaR2RzTFVSRkxtcHdad3w2ZTFjNjA1ZGE1OGY2NjQ4Zjk5NmI5OGUxYWE3NTE2ZmRiYWNmMjcyYjA5NGY5OGU5MjM1ZTgyZTUxY2Y5OGIy",
       "https://media.douglas.de/medias/1W3Iiz1206949-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3w3MjQwNHxpbWFnZS9qcGVnfGFETmhMMmczTUM4Mk1qZzJNell4TkRBeE56VTJOaTh4VnpOSmFYb3hNakEyT1RRNVh6QmZaR2RzTFVSRkxtcHdad3w2ZTFjNjA1ZGE1OGY2NjQ4Zjk5NmI5OGUxYWE3NTE2ZmRiYWNmMjcyYjA5NGY5OGU5MjM1ZTgyZTUxY2Y5OGIy",
     ],
-    description:
-      "Gucci Bloom – это богатый, женственный аромат, который переносит вас в сад свежих, нежных цветов. Его уникальная композиция сочетает яркость и силу цветочных нот с мягкой, романтичной базой, создавая аромат, полный свежести и элегантности. Gucci Bloom идеально подходит для современной женщины, которая ценит утонченность, а его стойкость и насыщенность оставляют долгий, чарующий шлейф.",
     price: 9,
     available: true,
     gender: Gender.FEMALE,
@@ -135,8 +125,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
     releaseYear: 2017,
     classification: ["CELEBRITY"],
     aromas: [Aromas.FLORAL],
-    brandCountry: "Italy",
-    manufacturingCountry: "Italy",
     perfumer: "Alessandro Michele",
     categoryId: 1,
     productGroupId: 1,
@@ -148,8 +136,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
       "https://media.douglas.de/medias/fX36ww289690-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3w4NTg3MHxpbWFnZS9qcGVnfGFEQTVMMmhrTXk4ek5EWTNNVEV5TXpreU1qazNOQzltV0RNMmQzY3lPRGsyT1RCZk1GOWtaMnd0UkVVdWFuQm58OTA0MDJmM2NkYTRmYWY2M2Y4MDAyZTdiNDZkZGY3MmY2OTU2ZmUzODgyZWQ5OWRjYjFjM2I5MTQzYmRiODU0OQ",
       "https://media.douglas.de/medias/fX36ww289690-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3w4NTg3MHxpbWFnZS9qcGVnfGFEQTVMMmhrTXk4ek5EWTNNVEV5TXpreU1qazNOQzltV0RNMmQzY3lPRGsyT1RCZk1GOWtaMnd0UkVVdWFuQm58OTA0MDJmM2NkYTRmYWY2M2Y4MDAyZTdiNDZkZGY3MmY2OTU2ZmUzODgyZWQ5OWRjYjFjM2I5MTQzYmRiODU0OQ",
     ],
-    description:
-      "Tom Ford Black Orchid – это роскошный и загадочный аромат, созданный для тех, кто ищет неповторимую экстравагантность. В его композиции чувственные нотки черной орхидеи сочетаются с глубокими, насыщенными оттенками шоколада, специй и древесных нот, создавая атмосферу таинственности и элегантности. Этот аромат – настоящий символ утонченного вкуса и изысканной роскоши.",
     price: 10,
     available: true,
     gender: Gender.FEMALE,
@@ -158,8 +144,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
     releaseYear: 2006,
     classification: ["NICHE"],
     aromas: [Aromas.ORIENTAL],
-    brandCountry: "USA",
-    manufacturingCountry: "USA",
     perfumer: "Tom Ford",
     categoryId: 1,
     productGroupId: 1,
@@ -171,8 +155,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
       "https://media.douglas.de/medias/https-media-prod-eu-1.mirakl.net-SOURCE-c25f678b853d40cf8426baeffbc0051a.jpg?context=bWFzdGVyfGltYWdlc3wxMTI5NzB8aW1hZ2UvanBlZ3xhRFV4TDJneFlpODJNekF6TlRrd01qazFNVFExTkM5b2RIUndjem92TDIxbFpHbGhMWEJ5YjJRdFpYVXRNUzV0YVhKaGEyd3VibVYwTDFOUFZWSkRSUzlqTWpWbU5qYzRZamcxTTJRME1HTm1PRFF5Tm1KaFpXWm1ZbU13TURVeFlRfDAzYTIxNjFkYTMzNjg0NTAyZjkxYTIwNmM2MTkyZjM3OGVjMmFmMzg4MjI2MjQ1MjViNGVhNTBlZDhlZDQwMjY",
       "https://media.douglas.de/medias/https-media-prod-eu-1.mirakl.net-SOURCE-c25f678b853d40cf8426baeffbc0051a.jpg?context=bWFzdGVyfGltYWdlc3wxMTI5NzB8aW1hZ2UvanBlZ3xhRFV4TDJneFlpODJNekF6TlRrd01qazFNVFExTkM5b2RIUndjem92TDIxbFpHbGhMWEJ5YjJRdFpYVXRNUzV0YVhKaGEyd3VibVYwTDFOUFZWSkRSUzlqTWpWbU5qYzRZamcxTTJRME1HTm1PRFF5Tm1KaFpXWm1ZbU13TURVeFlRfDAzYTIxNjFkYTMzNjg0NTAyZjkxYTIwNmM2MTkyZjM3OGVjMmFmMzg4MjI2MjQ1MjViNGVhNTBlZDhlZDQwMjY",
     ],
-    description:
-      "YSL Libre – это современный и смелый аромат, который объединяет в себе свежесть и чувственность. Его композиция наполнена яркими цветочными нотами, дополненными свежими цитрусовыми аккордами и теплой базой, создающей впечатление свободы и дерзости. Аромат Libre предназначен для уверенной в себе женщины, которая ценит стиль и индивидуальность.",
     price: 5,
     available: true,
     gender: Gender.FEMALE,
@@ -181,8 +163,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
     releaseYear: 2019,
     classification: ["DESIGNER"],
     aromas: [Aromas.FLORAL],
-    brandCountry: "France",
-    manufacturingCountry: "France",
     perfumer: "Anne Flipo",
     categoryId: 1,
     productGroupId: 1,
@@ -194,8 +174,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
       "https://media.douglas.de/medias/Bt0apQ818762-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3wyMjQ5MzJ8aW1hZ2UvanBlZ3xhREEyTDJnNU1TODBPVEF4T1RJeU9UWTJOek0xT0M5Q2REQmhjRkU0TVRnM05qSmZNRjlrWjJ3dFJFVXVhbkJufDE2MzZhOThhNmY0NDU5NzZmODcxNGUzOGJkODNiMTI5YjQ2ZTU4ZGY1NmI0YmQ3MzNjNWEwZTczZjIxZmYzZGU",
       "https://media.douglas.de/medias/Bt0apQ818762-0-dgl-DE.jpg?context=bWFzdGVyfGltYWdlc3wyMjQ5MzJ8aW1hZ2UvanBlZ3xhREEyTDJnNU1TODBPVEF4T1RJeU9UWTJOek0xT0M5Q2REQmhjRkU0TVRnM05qSmZNRjlrWjJ3dFJFVXVhbkJufDE2MzZhOThhNmY0NDU5NzZmODcxNGUzOGJkODNiMTI5YjQ2ZTU4ZGY1NmI0YmQ3MzNjNWEwZTczZjIxZmYzZGU",
     ],
-    description:
-      "Versace Eros – это страстный и энергичный аромат, который идеально отражает динамику современного мужчины. Композиция аромата построена на ярких и свежих цитрусовых нотах, обогащенных теплыми древесными и пряными аккордами, создающими неповторимый, запоминающийся шлейф. Этот аромат предназначен для тех, кто стремится к свободе, уверен в себе и не боится выделяться из толпы.",
     price: 4,
     available: true,
     gender: Gender.FEMALE,
@@ -204,8 +182,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
     releaseYear: 2012,
     classification: ["CELEBRITY"],
     aromas: [Aromas.ORIENTAL],
-    brandCountry: "Italy",
-    manufacturingCountry: "Italy",
     perfumer: "Versace Perfumer",
     categoryId: 1,
     productGroupId: 1,
@@ -217,8 +193,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
       "https://media.douglas.de/medias/VQ1jvL242838-0-global.jpg?context=bWFzdGVyfGltYWdlc3w0ODE3Njl8aW1hZ2UvanBlZ3xhRGd6TDJoaE1DODJNamM0TWpReU9URTJOelkwTmk5V1VURnFka3D5TkRJNE16aGZNRjluYkc5aVlXd3VhbkJufDI1MGFjMDMwNjhjNTFlZjQxY2Q1Yjg4M2VmOTVlYjdmNGFjNzM5ZTk2MWY0YWNkMzE0MTI2MTk3NTU3NzRkMWQ",
       "https://media.douglas.de/medias/VQ1jvL242838-0-global.jpg?context=bWFzdGVyfGltYWdlc3w0ODE3Njl8aW1hZ2UvanBlZ3xhRGd6TDJoaE1DODJNamM0TWpReU9URTJOelkwTmk5V1VURnFka3D5TkRJNE16aGZNRjluYkc5aVlXd3VhbkJufDI1MGFjMDMwNjhjNTFlZjQxY2Q1Yjg4M2VmOTVlYjdmNGFjNzM5ZTk2MWY0YWNkMzE0MTI2MTk3NTU3NzRkMWQ",
     ],
-    description:
-      "Armani Code – это элегантный и чувственный аромат, который воплощает в себе утонченную гармонию свежести и теплоты. Композиция аромата включает яркие цитрусовые ноты, дополненные пряными аккордами и мягкими древесными оттенками, создавая образ стильного и уверенного в себе мужчины. Этот парфюм подчеркивает индивидуальность и придает дополнительный шарм в любом окружении.",
     price: 6,
     available: true,
     gender: Gender.FEMALE,
@@ -227,8 +201,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
     releaseYear: 2004,
     classification: ["DESIGNER"],
     aromas: [Aromas.ORIENTAL],
-    brandCountry: "Italy",
-    manufacturingCountry: "Italy",
     perfumer: "Armani",
     categoryId: 1,
     productGroupId: 1,
@@ -240,8 +212,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
       "https://media.douglas.de/medias/83hfnR695892-0-global.jpg?context=bWFzdGVyfGltYWdlc3wyNDA1MTR8aW1hZ2UvanBlZ3xhRE5qTDJnd05DODJNelkwTXpVeE56WXhOakUxT0M4NE0yaG1ibEkyT1RVNE9USmZNRjluYkc5aVlXd3VhbkJufDY2ZmQwNjk5MTI0NGMzNjY5NWUzMzBkMjc1NzViZWJmY2UzYjYyMmZiMTI2YjY2OWY3MTQzNWIzMDFhZjAwN2Q",
       "https://media.douglas.de/medias/83hfnR695892-0-global.jpg?context=bWFzdGVyfGltYWdlc3wyNDA1MTR8aW1hZ2UvanBlZ3xhRE5qTDJnd05DODJNelkwTXpVeE56WXhOakUxT0M4NE0yaG1ibEkyT1RVNE9USmZNRjluYkc5aVlXd3VhbkJufDY2ZmQwNjk5MTI0NGMzNjY5NWUzMzBkMjc1NzViZWJmY2UzYjYyMmZiMTI2YjY2OWY3MTQzNWIzMDFhZjAwN2Q",
     ],
-    description:
-      "Givenchy Dahlia Divin – это утонченный и изысканный аромат, который рассказывает историю женственности, элегантности и чувственности. Его сложная композиция объединяет свежие цветочные ноты с глубокими и теплыми аккордами, создавая аромат, способный подчеркнуть индивидуальность и изысканный вкус. Этот парфюм оставляет за собой шлейф незабываемых эмоций и является истинным выражением стиля и утонченности.",
     price: 9,
     available: true,
     gender: Gender.FEMALE,
@@ -250,8 +220,6 @@ export const products: Prisma.ProductCreateManyInput[] = [
     releaseYear: 2015,
     classification: ["CELEBRITY"],
     aromas: [Aromas.ORIENTAL],
-    brandCountry: "France",
-    manufacturingCountry: "France",
     perfumer: "Givenchy Perfumer",
     categoryId: 1,
     productGroupId: 1,
@@ -390,7 +358,6 @@ export const concentrations = [
     value: PerfumeConcentration.EAU_DE_COLOGNE,
   },
 ];
-
 
 export const classifications: {
   value: Classifications;
@@ -576,8 +543,6 @@ export const contactForms = [
 
 export type ContactFormsType = typeof contactForms;
 
-
-
 export const perfumeAromas: {
   value: Aromas;
   label: { ru: string; de: string };
@@ -660,11 +625,6 @@ export const yers = Array.from(
     return { name: year, value: year };
   }
 );
-
-
-
-
-
 
 // export const notes: { value: Notes; label: { ru: string; de: string } }[] = [
 //   { value: Notes.AMBROXAN, label: { ru: "Амброксан", de: "Ambroxan" } },
@@ -1995,7 +1955,6 @@ export const yers = Array.from(
 //     labelDe: label.de,
 //   };
 // });
-
 
 // export const brands = [
 //   { name: "Aedes de Venustas", value: Brands.AEADESVENUSTAS },

@@ -14,11 +14,7 @@ export default async function Update({
       id: Number(id),
     },
     include: {
-      translations: {
-        where: {
-          language: "DE",
-        },
-      },
+      translations: true,
       productNotes: {
         include: {
           note: true,
