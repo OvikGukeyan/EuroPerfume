@@ -7,6 +7,7 @@ import * as categories from "./categories";
 import * as notes from "./notes";
 import * as brands from "./brands";
 import * as productGroup from "./product-group";
+import * as slides from "./slides";
 
 
 export const Api = {
@@ -18,5 +19,6 @@ export const Api = {
     categories,
     notes,
     brands,
-    productGroup
+    productGroup,
+    slides
 }
