@@ -1,21 +1,24 @@
 import imageCompression from "browser-image-compression";
 
-export const imageCompressor = async (file: File): Promise<File> => {
-    const originalName = file.name; // Сохраняем имя до сжатия
-  
-    const options = {
-      maxSizeMB: 1,
-      maxWidthOrHeight: 1920,
-      useWebWorker: true,
-    };
-  
-    const compressedBlob = await imageCompression(file, options);
-  
-    // Создаем File с тем же именем
-    const compressedFile = new File([compressedBlob], originalName, {
-      type: compressedBlob.type,
-      lastModified: Date.now(),
-    });
-  
-    return compressedFile;
+export const imageCompressor = async (file: File, outputType: "image/jpeg" | "image/webp" = "image/jpeg"): Promise<File> => {
+  const options = {
+    maxSizeMB: 0.5,
+    maxWidthOrHeight: 1920,
+    useWebWorker: true,
+    fileType: outputType, // 👈 Принудительно указываем нужный формат
   };
+
+  const compressedBlob = await imageCompression(file, options);
+
+  // Изменяем расширение файла под новый формат
+  const originalName = file.name.split(".")[0];
+  const newExtension = outputType === "image/webp" ? ".webp" : ".jpg";
+  const newFileName = originalName + newExtension;
+
+  const compressedFile = new File([compressedBlob], newFileName, {
+    type: outputType,
+    lastModified: Date.now(),
+  });
+
+  return compressedFile;
+};

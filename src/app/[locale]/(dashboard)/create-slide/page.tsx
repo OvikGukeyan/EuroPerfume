@@ -19,8 +19,8 @@ export default function CreateSlide() {
       const desctopImg = form.get("desctopImg") as File;
       const mobileImg = form.get("mobileImg") as File;
   
-      const compressedDesctopImg = await imageCompressor(desctopImg);
-      const compressedMobileImg = await imageCompressor(mobileImg);
+      const compressedDesctopImg = await imageCompressor(desctopImg, "image/webp");
+      const compressedMobileImg = await imageCompressor(mobileImg, "image/webp");
   
       const newFormData = new FormData();
       newFormData.append("name", form.get("name") as string);

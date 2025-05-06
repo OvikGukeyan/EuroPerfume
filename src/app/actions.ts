@@ -780,7 +780,7 @@ export async function createSlide(formData: FormData) {
     const images: File[] = [desctopImg, mobileImg];
 
     const uploadPromises = images.map((image) => {
-      const fileName = `${image.name}--${new Date().toISOString()}`;
+      const fileName = `image--${new Date().toISOString()}`;
       return supabase.storage
         .from("images")
         .upload(fileName, image, { contentType: image.type });

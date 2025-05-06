@@ -2,9 +2,11 @@
 
 import React, { FC, useMemo } from "react";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
+import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
 import { Slide } from "@prisma/client";
 import Link from "next/link";
+import { useMedia } from "react-use";
 
 interface Props {
   slides: Slide[];
@@ -12,6 +14,7 @@ interface Props {
 }
 export const Carusel: FC<Props> = ({ slides }) => {
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 4000 }), []);
+  console.log(slides);
   return (
     <Carousel className="w-full" plugins={[autoplayPlugin]}>
       <CarouselContent>
@@ -25,10 +28,12 @@ export const Carusel: FC<Props> = ({ slides }) => {
                     media="(min-width: 767px)"
                     srcSet={slide.desctopImg}
                   />
-                  <img
+                  <Image
                     src={slide.mobileImg}
                     alt="slide"
-                    className="w-full h-full object-cover"
+                    layout="fill"
+                    objectFit="cover"
+                    quality={80}
                   />
                 </picture>
               </div>
