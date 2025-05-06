@@ -25,10 +25,10 @@ export const Carusel: FC<Props> = ({ slides }) => {
                   <source media="(max-width: 767px)" srcSet={slide.mobileImg} />
                   <source
                     media="(min-width: 767px)"
-                    srcSet={slide.desctopImg}
+                    srcSet={slide.mobileImg}
                   />
                   <Image
-                    src={slide.desctopImg}
+                    src={slide.mobileImg}
                     alt="slide"
                     layout="fill"
                     objectFit="cover"
