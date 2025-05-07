@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/src/shared/lib/utils";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, use, useEffect, useState } from "react";
 import { Button, Separator } from "../ui";
 import {
   Title,
@@ -21,11 +21,10 @@ import {
 } from "@/src/shared/lib";
 import { Rating } from "./rating";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
-import { ProductDTO } from "@/src/shared/services/dto/product.dto";
 import Image from "next/image";
 import { useRouter } from "@/src/i18n/navigation";
 import { ProductWithTranslations } from "./product-form";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 interface Props {
   product: ProductWithTranslations;
@@ -70,10 +69,10 @@ export const ChooseProductForm: FC<Props> = ({
   };
 
   const charactiristics = createCharacteristicsArray(product, locale);
+  const t = useTranslations("Product");
   return (
     <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
       <div className="flex  items-center justify-center flex-1 relative w-full lg:w-2/5 bg-[#f2f2f2] p-2 min-h-[400px]">
-      
         {product.imageUrl.length > 1 ? (
           <ProductCarousel slides={product.imageUrl} />
         ) : (
@@ -106,10 +105,10 @@ export const ChooseProductForm: FC<Props> = ({
             <Tabs defaultValue="description" className="w-full">
               <TabsList className="grid w-full grid-cols-2 h-16">
                 <TabsTrigger className="h-10" value="description">
-                  Description
+                  {t("description")}
                 </TabsTrigger>
                 <TabsTrigger className="h-10" value="characteristics">
-                  Characteristics
+                  {t("characteristics")}
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="description">
@@ -171,7 +170,7 @@ export const ChooseProductForm: FC<Props> = ({
           onClick={() => onSubmit?.(product.id, volume)}
           className="h-[55px] px-10 text-base rounded-[18px] w-full mt-6 "
         >
-          Add too cart for {finalPrice} €
+          {t("addToCartFor")} {finalPrice} €
         </Button>
       </div>
     </div>

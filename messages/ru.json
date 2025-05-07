@@ -13,12 +13,17 @@
     "topNotes": "Верхние ноты",
     "heartNotes": "Сердечные ноты",
     "baseNotes": "Базовые ноты",
-    "priceLabel": "Цена от и до:"
+    "priceLabel": "Цена от и до:",
+    "hide": "-  Скрыть",
+    "showMore": "+  Показать больше"
   },
 
   "Product": {
     "addToCart": "Добавить",
-    "price": "цена"
+    "price": "цена",
+    "description": "Описание",
+    "characteristics": "Характеристики",
+    "addToCartFor": "Добавить в корзину за"
   },
 
   "Cart": {

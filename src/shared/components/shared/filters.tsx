@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC } from "react";
+import React, { FC, use, useEffect } from "react";
 import { Title, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
 import {
@@ -10,12 +10,15 @@ import {
   Note,
   PerfumeConcentration,
 } from "@prisma/client";
-import { classifications, genders, perfumeAromas } from "@/../../prisma/constants";import { useFiltersStore } from "../../store/filters";
+import {
+  classifications,
+  genders,
+  perfumeAromas,
+} from "@/../../prisma/constants";
+import { useFiltersStore } from "../../store/filters";
 import { useQueryFilters } from "../../hooks";
 import { cn } from "@/src/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
-;
-
 interface Props {
   notes: Note[];
   brands: Brand[];
@@ -31,9 +34,22 @@ export const Filters: FC<Props> = ({ notes, brands, className }) => {
     filters.setPrices("priceTo", prices[1]);
   };
 
-  const locale = useLocale() as 'ru' | 'de';
-  const t = useTranslations('Filters');
-
+  const locale = useLocale() as "ru" | "de";
+  const t = useTranslations("Filters");
+  useEffect(() => {
+    const dobleNotes = [];
+    for (let i = 0; i < notes.length; i++) {
+      for (let j = i + 1; j < notes.length; j++) {
+        if (
+          notes[i].labelDe.toLocaleLowerCase() ===
+          notes[j].labelDe.toLocaleLowerCase()
+        ) {
+          dobleNotes.push(notes[i]);
+        }
+      }
+    }
+    console.log(dobleNotes);
+  }, []);
 
   return (
     <div className={cn("")}>
@@ -152,7 +168,7 @@ export const Filters: FC<Props> = ({ notes, brands, className }) => {
         limit={3}
         // defaultItems={items.slice(0, 6)}
         items={notes.map((note) => ({
-          text: locale === 'de' ? note.labelDe : note.labelRu,
+          text: locale === "de" ? note.labelDe : note.labelRu,
           value: String(note.id),
         }))}
         onClickCheckbox={filters.setTopNotes}
@@ -160,13 +176,13 @@ export const Filters: FC<Props> = ({ notes, brands, className }) => {
       />
 
       <CheckboxFiltersGroup
-      className="my-5"
+        className="my-5"
         title={t("heartNotes")}
         name="heartNotes"
         limit={3}
         // defaultItems={items.slice(0, 6)}
         items={notes.map((note) => ({
-          text: locale === 'de' ? note.labelDe : note.labelRu,
+          text: locale === "de" ? note.labelDe : note.labelRu,
           value: String(note.id),
         }))}
         onClickCheckbox={filters.setHeartNotes}
@@ -179,7 +195,7 @@ export const Filters: FC<Props> = ({ notes, brands, className }) => {
         limit={3}
         // defaultItems={items.slice(0, 6)}
         items={notes.map((note) => ({
-          text: locale === 'de' ? note.labelDe : note.labelRu,
+          text: locale === "de" ? note.labelDe : note.labelRu,
           value: String(note.id),
         }))}
         onClickCheckbox={filters.setBaseNotes}

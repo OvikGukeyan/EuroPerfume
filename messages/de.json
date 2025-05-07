@@ -13,12 +13,17 @@
     "topNotes": "Kopfnote",
     "heartNotes": "Herznote",
     "baseNotes": "Basisnote",
-    "priceLabel": "Preis von bis:"
+    "priceLabel": "Preis von bis:",
+    "hide": "-  Ausblenden",
+    "showMore": "+  Mehr anzeigen"
   },
 
   "Product": {
     "addToCart": "Hinzufügen",
-    "price": "preis"
+    "price": "preis",
+    "description": "Beschreibung",
+    "characteristics": "Charakteristiken",
+    "addToCartFor": "Hinzufügen zum Warenkorb für"
   },
 
   "Cart": {

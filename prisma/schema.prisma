@@ -135,8 +135,8 @@ model ProductNote {
 
 model Note {
   id           Int           @id @default(autoincrement())
-  labelRu      String
-  labelDe      String
+  labelRu      String        @unique
+  labelDe      String        @unique
   productNotes ProductNote[]
 
   createdAt DateTime @default(now())

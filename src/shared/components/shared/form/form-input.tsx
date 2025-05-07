@@ -54,7 +54,7 @@ export const FormInput: FC<Props> = ({
           {...props}
         />
         <div className="absolute right-4 top-1/2 flex items-center gap-2">
-          {value && <ClearButton onClick={onClickClear} />}
+          {value && <ClearButton onClick={onClickClear} className="mr-5"/>}
           {type === "password" && (
             <>
               {passwordVisible ? (
