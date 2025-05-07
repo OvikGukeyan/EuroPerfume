@@ -14,7 +14,6 @@ interface Props {
 }
 export const Carusel: FC<Props> = ({ slides }) => {
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 4000 }), []);
-  console.log(slides);
   return (
     <Carousel className="w-full" plugins={[autoplayPlugin]}>
       <CarouselContent>

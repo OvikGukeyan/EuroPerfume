@@ -821,6 +821,7 @@ export async function deleteSlide(id: number) {
       throw new Error("Access denied");
     }
 
+
     const slide = await prisma.slide.findUnique({
       where: { id },
     });
@@ -851,6 +852,7 @@ export async function deleteSlide(id: number) {
     });
   } catch (error) {
     console.error("Error [DELETE_SLIDER]", error);
+    throw error;
   } finally {
     redirect("/create-slide");
   }
