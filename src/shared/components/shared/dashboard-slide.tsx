@@ -24,10 +24,10 @@ export const DeshboardSlide: FC<Props> = ({ className, slide }) => {
     transform: CSS.Transform.toString(transform),
     transition,
   };
-
-  const onClickDelete = () => {
+  const onClickDelete = async () => {
+    console.log(slide.id, "deleted");
     deleteSlide(slide.id);
-  }
+  };
   return (
     <div
       ref={setNodeRef}
@@ -43,7 +43,10 @@ export const DeshboardSlide: FC<Props> = ({ className, slide }) => {
 
       <Title text={slide.name} size="lg" className="font-bold" />
 
-      <Button onClick={onClickDelete}>
+      <Button
+        onClick={onClickDelete}
+        onPointerDown={(e) => e.stopPropagation()} // <-- Важно
+      >
         <Trash2 size={20} />
       </Button>
     </div>
