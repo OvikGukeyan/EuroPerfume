@@ -46,7 +46,7 @@ export const ProductGroupSelect: FC<Props> = ({
           }))}
       />
 
-      <div className="w-full flex gap-5">
+      <div className="w-full flex flex-col md:flex-row gap-5">
         <Popover>
           <PopoverTrigger asChild>
             <Button variant="outline">Add new</Button>

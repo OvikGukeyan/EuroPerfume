@@ -71,7 +71,7 @@ export const ChooseProductForm: FC<Props> = ({
   const charactiristics = createCharacteristicsArray(product, locale);
   const t = useTranslations("Product");
   return (
-    <div className={cn("flex flex-col lg:flex-row flex-1", className)}>
+    <div className={cn("flex flex-col lg:flex-row flex-1 max-w-[100vw]", className)}>
       <div className="flex  items-center justify-center flex-1 relative w-full lg:w-2/5 bg-[#f2f2f2] p-2 min-h-[400px]">
         {product.imageUrl.length > 1 ? (
           <ProductCarousel slides={product.imageUrl} />
@@ -111,13 +111,17 @@ export const ChooseProductForm: FC<Props> = ({
                   {t("characteristics")}
                 </TabsTrigger>
               </TabsList>
-              <TabsContent value="description">
+              <TabsContent className="w-full min-h-[200px]" value="description">
                 <Text size="md" className="my-4">
                   {charactiristics.find((c) => c.name === "Description")?.value}
                 </Text>
               </TabsContent>
-              <TabsContent value="characteristics">
-                <ProductCharacteristics charactiristics={charactiristics} />
+              <TabsContent className="w-full" value="characteristics">
+                <ProductCharacteristics
+                  charactiristics={charactiristics.filter(
+                    (c) => c.name !== "Description"
+                  )}
+                />
               </TabsContent>
             </Tabs>
           </div>

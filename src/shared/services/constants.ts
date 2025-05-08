@@ -2,7 +2,7 @@ export enum ApiRouts {
     SEARCH_PRODUCTS='/products/search',
     PRODUCTS='/products',
     SLIDES='/slides',
-    SLIDES_REORDER='/slides/reorder'
+    SLIDES_REORDER='/slides/reorder',
 }
 
 export const links = [

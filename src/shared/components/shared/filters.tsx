@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, use, useEffect } from "react";
+import React, { FC } from "react";
 import { Title, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
 import {
@@ -36,20 +36,7 @@ export const Filters: FC<Props> = ({ notes, brands, className }) => {
 
   const locale = useLocale() as "ru" | "de";
   const t = useTranslations("Filters");
-  useEffect(() => {
-    const dobleNotes = [];
-    for (let i = 0; i < notes.length; i++) {
-      for (let j = i + 1; j < notes.length; j++) {
-        if (
-          notes[i].labelDe.toLocaleLowerCase() ===
-          notes[j].labelDe.toLocaleLowerCase()
-        ) {
-          dobleNotes.push(notes[i]);
-        }
-      }
-    }
-    console.log(dobleNotes);
-  }, []);
+  
 
   return (
     <div className={cn("")}>

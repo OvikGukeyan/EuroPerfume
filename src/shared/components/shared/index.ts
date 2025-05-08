@@ -65,6 +65,7 @@ export {ProductCardSkeleton} from './product-card-skeleton';
 export {FreeShippingProgress} from './free-shipping-progress';
 export {LanguageSwitcher} from './language-switcher';
 export {DragAndDrop} from './drag-and-drop';
+export {BreadcrumbComponent} from './breadcrumb-component';
 
 export * from './email-templates';
 export * from './form';

@@ -6,7 +6,6 @@ import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
 import { Slide } from "@prisma/client";
 import Link from "next/link";
-import { useMedia } from "react-use";
 
 interface Props {
   slides: Slide[];
