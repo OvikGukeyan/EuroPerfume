@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/src/shared/lib/utils";
-import React, { FC, use, useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { Button, Separator } from "../ui";
 import {
   Title,
@@ -10,6 +10,7 @@ import {
   ProductCharacteristics,
   ChooseVariation,
   ProductCarousel,
+  ReviewsComponent,
 } from ".";
 import { Volume, volumes } from "@/src/shared/constants/perfume";
 import { ProductVariation } from "@prisma/client";
@@ -17,7 +18,6 @@ import {
   calcAverageRating,
   calcPrice,
   createCharacteristicsArray,
-  useModalContext,
 } from "@/src/shared/lib";
 import { Rating } from "./rating";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
@@ -51,14 +51,11 @@ export const ChooseProductForm: FC<Props> = ({
       : product.price;
   const { averageRating, count } = calcAverageRating(product.reviews);
   const router = useRouter();
-  const { isModal } = useModalContext();
   const locale = useLocale() as "ru" | "de";
 
   useEffect(() => {
-    if (!isModal) {
-      scrollToReviews();
-    }
-  }, [isModal]);
+    scrollToReviews();
+  }, []);
   const scrollToReviews = () => {
     const reviewsSection = document.getElementById("reviews");
     if (reviewsSection) {
@@ -71,7 +68,12 @@ export const ChooseProductForm: FC<Props> = ({
   const charactiristics = createCharacteristicsArray(product, locale);
   const t = useTranslations("Product");
   return (
-    <div className={cn("flex flex-col lg:flex-row flex-1 max-w-[100vw]", className)}>
+    <div
+      className={cn(
+        "flex flex-col lg:flex-row flex-1 max-w-[100vw]",
+        className
+      )}
+    >
       <div className="flex  items-center justify-center flex-1 relative w-full lg:w-2/5 bg-[#f2f2f2] p-2 min-h-[400px]">
         {product.imageUrl.length > 1 ? (
           <ProductCarousel slides={product.imageUrl} />
@@ -85,7 +87,7 @@ export const ChooseProductForm: FC<Props> = ({
         )}
       </div>
 
-      <div className="w-full flex flex-col justify-between lg:w-3/5  bg-[#f2f2f2] p-7">
+      <div className="w-full flex flex-col justify-between lg:w-3/5  bg-[#f2f2f2] p-1 md:p-7">
         <div>
           <Title
             text={product.name}
@@ -97,18 +99,19 @@ export const ChooseProductForm: FC<Props> = ({
 
           <div
             style={{ scrollbarWidth: "none" }}
-            className={cn(
-              "overflow-scroll  overflow-x-hidden",
-              isModal && "lg:max-h-[400px]"
-            )}
+            className={cn("overflow-scroll  overflow-x-hidden")}
           >
             <Tabs defaultValue="description" className="w-full">
-              <TabsList className="grid w-full grid-cols-2 h-16">
+              <TabsList className="grid w-full grid-cols-3 md:grid-cols-2 h-16">
                 <TabsTrigger className="h-10" value="description">
                   {t("description")}
                 </TabsTrigger>
                 <TabsTrigger className="h-10" value="characteristics">
                   {t("characteristics")}
+                </TabsTrigger>
+         
+                <TabsTrigger className="h-10 md:hidden" value="comments">
+                  {t("comments")}
                 </TabsTrigger>
               </TabsList>
               <TabsContent className="w-full min-h-[200px]" value="description">
@@ -123,30 +126,22 @@ export const ChooseProductForm: FC<Props> = ({
                   )}
                 />
               </TabsContent>
+              <TabsContent className="w-full md:hidden" value="comments">
+                <ReviewsComponent product={product} />
+              </TabsContent>
             </Tabs>
           </div>
 
           <Separator />
 
-          {!isModal ? (
-            <div onClick={scrollToReviews} className="cursor-pointer">
-              <Rating
-                className="my-5"
-                value={averageRating}
-                withNumber
-                reviewsCount={count}
-              />
-            </div>
-          ) : (
-            <a href={`/product/${product.id}`}>
-              <Rating
-                className="my-5"
-                value={averageRating}
-                withNumber
-                reviewsCount={count}
-              />
-            </a>
-          )}
+          <a href={`/product/${product.id}`}>
+            <Rating
+              className="my-5"
+              value={averageRating}
+              withNumber
+              reviewsCount={count}
+            />
+          </a>
 
           {product.variations.length > 1 && (
             <ChooseVariation

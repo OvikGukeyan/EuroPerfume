@@ -1,3 +1,4 @@
+
 import React, { FC } from "react";
 import { RatingSelect, SubmitButtonBar, Title } from ".";
 import { Textarea } from "..";
@@ -16,7 +17,7 @@ type Props = {
   className?: string;
   productId?: number;
 };
-export const ReviewForm: FC<Props> = async ({ className, productId }) => {
+export const ReviewForm: FC<Props> =  ({ className, productId }) => {
  
 
   return (

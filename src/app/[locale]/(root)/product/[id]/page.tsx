@@ -1,8 +1,15 @@
-
 import { prisma } from "@/prisma/prisma-client";
 import { notFound } from "next/navigation";
 import React from "react";
-import { BreadcrumbComponent, Container, ProductForm, ReviewForm, ReviewsList, Title } from "@/src/shared/components";
+import {
+  BreadcrumbComponent,
+  Container,
+  ProductForm,
+  ReviewForm,
+  ReviewsComponent,
+  ReviewsList,
+  Title,
+} from "@/src/shared/components";
 import { Recommendations } from "@/src/shared/components/shared/recommendations";
 
 export default async function Product({
@@ -45,25 +52,14 @@ export default async function Product({
 
   return (
     <Container className="flex flex-col mb-10 p-0 md:p-4">
-      <Recommendations product={safeProduct} />
-      <BreadcrumbComponent className="mb-10 mt-5 ml-5 md:ml-0 md:mt-0" productName={product.name} productCategory={product.category}/>
+      <BreadcrumbComponent
+        className="mb-10 mt-5 ml-5 md:ml-0 md:mt-0"
+        productName={product.name}
+        productCategory={product.category}
+      />
       <ProductForm product={safeProduct} />
-     <div className="px-4 md:px-0">
-     {product.reviews.length > 0 ? (
-        <>
-          <Title text="Reviews" size="lg" className="font-extrabold my-10" />
-          <ReviewsList reviews={product.reviews} className="mb-10" />
-        </>
-      ) : (
-        <Title
-          text="No reviews yet"
-          size="lg"
-          className="font-extrabold my-10"
-        />
-      )}
-
-        <ReviewForm productId={product.id} />
-     </div>
+      <ReviewsComponent className="hidden md:block" product={safeProduct} />
+      <Recommendations product={safeProduct} className="mt-10" />
     </Container>
   );
 }

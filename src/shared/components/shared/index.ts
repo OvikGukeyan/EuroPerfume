@@ -66,6 +66,8 @@ export {FreeShippingProgress} from './free-shipping-progress';
 export {LanguageSwitcher} from './language-switcher';
 export {DragAndDrop} from './drag-and-drop';
 export {BreadcrumbComponent} from './breadcrumb-component';
+export {Recommendations} from './recommendations';
+export {ReviewsComponent} from './reviews-component';
 
 export * from './email-templates';
 export * from './form';

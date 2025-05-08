@@ -23,7 +23,8 @@
     "price": "цена",
     "description": "Описание",
     "characteristics": "Характеристики",
-    "addToCartFor": "Добавить в корзину за"
+    "addToCartFor": "Добавить в корзину за",
+    "comments": "Комментарии"
   },
 
   "Cart": {

@@ -23,7 +23,8 @@
     "price": "preis",
     "description": "Beschreibung",
     "characteristics": "Charakteristiken",
-    "addToCartFor": "Hinzufügen zum Warenkorb für"
+    "addToCartFor": "Hinzufügen zum Warenkorb für",
+    "comments": "Kommentare"
   },
 
   "Cart": {

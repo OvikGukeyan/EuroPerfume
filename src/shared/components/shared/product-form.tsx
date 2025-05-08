@@ -5,10 +5,8 @@ import React, { FC, useState } from "react";
 import toast from "react-hot-toast";
 import { ChooseProductForm } from "./choose-product-form";
 import {
-  Product,
   ProductTranslation,
   ProductVariation,
-  Review,
 } from "@prisma/client";
 import { Volume } from "@/src/shared/constants/perfume";
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
