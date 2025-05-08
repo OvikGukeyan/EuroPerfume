@@ -9,7 +9,6 @@ export const metadata: Metadata = {
 
 export default function HomeLayout({
   children,
-  modal,
 }: Readonly<{
   children: React.ReactNode;
   modal: React.ReactNode;
@@ -22,7 +21,6 @@ export default function HomeLayout({
 
       <div className="flex-grow">
         {children}
-        {modal}
       </div>
 
       <Footer />

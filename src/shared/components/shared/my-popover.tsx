@@ -15,7 +15,7 @@ export const MyPopover: FC<Props> = ({ className }) => {
         <PopoverTrigger>
           <CircleHelp />
         </PopoverTrigger>
-        <PopoverContent className="w-72  md:w-96 ">
+        <PopoverContent className="w-72  md:w-96 h-[400px] overflow-y-auto">
           Мы рады предложить вам три способа доставки вашего заказа: <br /> 1.⁠ ⁠Без
           отслеживания в конверте Großbrief - стоимость 3 €. Пожалуйста, имейте
           в виду, что при выборе этого варианта почта иногда теряет посылки, и
