@@ -9,9 +9,6 @@ import {
   Prisma,
   UserRole,
   NoteType,
-  OrderItem,
-  ProductVariation,
-  Product,
 } from "@prisma/client";
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
@@ -476,6 +473,11 @@ export async function updateProduct(
       })
     );
 
+    await prisma.productNote.deleteMany({
+      where: {
+        productId: id,
+      },
+    });
     await prisma.product.update({
       where: { id },
       data: {
@@ -495,12 +497,10 @@ export async function updateProduct(
               note: { connect: { id: Number(noteId) } },
               noteType: NoteType.TOP,
             })),
-            // Средние ноты
             ...parsedData.heartNotes.map((noteId: string) => ({
               note: { connect: { id: Number(noteId) } },
               noteType: NoteType.HEART,
             })),
-            // Нижние ноты
             ...parsedData.baseNotes.map((noteId: string) => ({
               note: { connect: { id: Number(noteId) } },
               noteType: NoteType.BASE,
@@ -776,11 +776,10 @@ export async function createSlide(formData: FormData) {
 
     const desctopImg = formData.get("desctopImg") as File;
     const mobileImg = formData.get("mobileImg") as File;
-
     const images: File[] = [desctopImg, mobileImg];
 
-    const uploadPromises = images.map((image) => {
-      const fileName = `image--${new Date().toISOString()}`;
+    const uploadPromises = images.map((image, index) => {
+      const fileName = `image--${new Date().toISOString()}` + index;
       return supabase.storage
         .from("images")
         .upload(fileName, image, { contentType: image.type });

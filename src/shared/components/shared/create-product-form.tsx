@@ -33,7 +33,13 @@ import {
   FormLabel,
 } from "@/src/shared/components/ui/form";
 
-import { Gender, Languages, Note, NoteType, Product, ProductNote, ProductTranslation } from "@prisma/client";
+import {
+  Gender,
+  Note,
+  NoteType,
+  ProductNote,
+  ProductTranslation,
+} from "@prisma/client";
 import { FC, useState } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -146,6 +152,21 @@ export const CreateProductForm: FC<Props> = ({
       size: product?.size || "",
     },
   });
+  const topNotes =
+    form
+      .watch("topNotes")
+      ?.map((id) => notes.find((note) => note.id === Number(id))?.labelRu)
+      .join(", ") || "";
+  const heartNotes =
+    form
+      .watch("heartNotes")
+      ?.map((id) => notes.find((note) => note.id === Number(id))?.labelRu)
+      .join(", ") || "";
+  const baseNotes =
+    form
+      .watch("baseNotes")
+      ?.map((id) => notes.find((note) => note.id === Number(id))?.labelRu)
+      .join(", ") || "";
 
   const onSubmit = async (data: CreateProductFormValues) => {
     try {
@@ -505,7 +526,7 @@ export const CreateProductForm: FC<Props> = ({
 
                   <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
                     <FormCheckbox
-                      title="Верхние нотты"
+                      title={topNotes ? topNotes : "Верхние нотты"}
                       name="topNotes"
                       control={form.control}
                       items={notes.map((note) => ({
@@ -518,7 +539,7 @@ export const CreateProductForm: FC<Props> = ({
                     />
 
                     <FormCheckbox
-                      title="Средние нотты"
+                      title={ heartNotes ? heartNotes : "Средние нотты"}
                       name="heartNotes"
                       control={form.control}
                       items={notes.map((note) => ({
@@ -531,7 +552,7 @@ export const CreateProductForm: FC<Props> = ({
                     />
 
                     <FormCheckbox
-                      title="Базовые нотты"
+                      title={ baseNotes ? baseNotes : "Базовые нотты"}
                       name="baseNotes"
                       control={form.control}
                       items={notes.map((note) => ({

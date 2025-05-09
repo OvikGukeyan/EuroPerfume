@@ -25,7 +25,6 @@ export const DeshboardSlide: FC<Props> = ({ className, slide }) => {
     transition,
   };
   const onClickDelete = async () => {
-    console.log(slide.id, "deleted");
     deleteSlide(slide.id);
   };
   return (
@@ -45,7 +44,7 @@ export const DeshboardSlide: FC<Props> = ({ className, slide }) => {
 
       <Button
         onClick={onClickDelete}
-        onPointerDown={(e) => e.stopPropagation()} // <-- Важно
+        onPointerDown={(e) => e.stopPropagation()} 
       >
         <Trash2 size={20} />
       </Button>

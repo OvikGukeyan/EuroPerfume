@@ -19,7 +19,6 @@ export const useRecommendations = (product: ProductDTO) => {
   useEffect(() => {
     const fetchRecommendations = async () => {
       const {products} = await Api.products.getAll(params);
-      console.log(products);
       setRecommendations(products);
     };
 

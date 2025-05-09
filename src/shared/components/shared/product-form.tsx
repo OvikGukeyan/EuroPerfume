@@ -1,7 +1,7 @@
 "use client";
 
 import { useCartStore } from "@/src/shared/store";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { ChooseProductForm } from "./choose-product-form";
 import {
@@ -53,7 +53,11 @@ export const ProductForm: FC<Props> = ({
     _onSubmit?.();
   };
 
- 
+  useEffect(() => {
+    const viewed = JSON.parse(localStorage.getItem("recentlyViewed") || "[]");
+    const updated = [product.id, ...viewed.filter((id: number) => id !== product.id)].slice(0, 10);
+    localStorage.setItem("recentlyViewed", JSON.stringify(updated));
+  }, [product.id]);
 
   return (
     <ChooseProductForm
