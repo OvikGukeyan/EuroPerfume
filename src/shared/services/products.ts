@@ -27,4 +27,12 @@ export const getAll = async (
   return data;
 };
 
+export const getByIds = async (ids: string[]): Promise<ProductDTO[]> => {
+  const { data } = await axiosInstance.get<ProductDTO[]>(ApiRouts.BY_IDS, {
+    params: { ids: ids },
+  });
+  console.log(data);
+  return data;
+};
+
 

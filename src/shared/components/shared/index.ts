@@ -17,7 +17,6 @@ export { CartDrawer } from './cart-drawer';
 export { CountIconButton } from './count-icon-button';
 export { CartDrawerItem } from './cart-drawer-item';
 export { CountButton } from './count-button';
-export { ProductForm } from './product-form';
 export { WhiteBlock } from './white-block';
 export { OrderDetails } from './order-details';
 export { CheckoutItem } from './checkout-item';
@@ -68,6 +67,8 @@ export {DragAndDrop} from './drag-and-drop';
 export {BreadcrumbComponent} from './breadcrumb-component';
 export {Recommendations} from './recommendations';
 export {ReviewsComponent} from './reviews-component';
+export {RecentlyViewed} from './recently-viewed';
+export {ProductsCarusel} from './products-carusel';
 
 export * from './email-templates';
 export * from './form';

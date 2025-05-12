@@ -13,7 +13,7 @@ import {
 } from "@/../../prisma/constants";
 import { NoteType } from "@prisma/client";
 import { useLocale } from "next-intl";
-import { ProductWithTranslations } from "../components/shared/product-form";
+import { ProductWithTranslations } from "../components/shared/choose-product-form";
 
 type ReturnProps = {
   name: string;
@@ -103,8 +103,8 @@ export const createCharacteristicsArray = (
     { name: "Base Note", value: currentBaseNotes },
     { name: "Top Note", value: currentTopNotes },
     { name: "Heart Note", value: currentHeartNotes },
-    { name: "Gender", value: gender },
-    { name: "Release year", value: releaseYear.toString() },
+    { name: "Gender", value: gender || undefined },
+    { name: "Release year", value: releaseYear?.toString() || undefined },
     { name: "Perfumer", value: perfumer || undefined },
     { name: "Brand Country", value: translation?.brandCountry },
     { name: "Manufacturing Country", value: translation?.manufacturingCountry },

@@ -49,7 +49,7 @@ model Product {
   imageUrl       String[]
   categoryId     Int
   productGroupId Int
-  gender         Gender
+  gender         Gender?
   classification Classifications[]
   series         String?
   volume         String?
@@ -78,7 +78,7 @@ model Product {
   brandId       Int
 
   price       Decimal
-  releaseYear Int
+  releaseYear Int?
 
   available      Boolean
   cartItems      CartItem[]

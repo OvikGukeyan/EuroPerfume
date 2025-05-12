@@ -13,7 +13,7 @@ import {
   ReviewsComponent,
 } from ".";
 import { Volume, volumes } from "@/src/shared/constants/perfume";
-import { ProductVariation } from "@prisma/client";
+import { ProductTranslation, ProductVariation } from "@prisma/client";
 import {
   calcAverageRating,
   calcPrice,
@@ -23,45 +23,67 @@ import { Rating } from "./rating";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import Image from "next/image";
 import { useRouter } from "@/src/i18n/navigation";
-import { ProductWithTranslations } from "./product-form";
 import { useLocale, useTranslations } from "next-intl";
+import { useCartStore } from "../../store";
+import toast from "react-hot-toast";
+import { ProductDTO } from "../../services/dto/product.dto";
 
+export interface ProductWithTranslations extends ProductDTO {
+  translations: ProductTranslation[];
+}
 interface Props {
   product: ProductWithTranslations;
-  loading: boolean;
-  onSubmit?: (productId: number, volume: Volume) => Promise<void>;
-  activeVariation: ProductVariation;
-  setActiveVariation: (variation: ProductVariation) => void;
   className?: string;
 }
-export const ChooseProductForm: FC<Props> = ({
-  product,
-  loading,
-  onSubmit,
-  activeVariation,
-  setActiveVariation,
-  className,
-}) => {
+export const ChooseProductForm: FC<Props> = ({ product, className }) => {
+  const [activeVariation, setActiveVariation] = useState<ProductVariation>(
+    product.variations[0]
+  );
+
   const currentVolumesArray =
     product.price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
+
   const [volume, setVolume] = useState<Volume>(currentVolumesArray[0]);
+
   const finalPrice =
     product.categoryId === 1 && product.productGroupId < 4
       ? calcPrice(volume, product.price)
       : product.price;
+
   const { averageRating, count } = calcAverageRating(product.reviews);
-  const router = useRouter();
+
   const locale = useLocale() as "ru" | "de";
 
+  const [addCartItem, loading] = useCartStore((state) => [
+    state.addCartItem,
+    state.loading,
+  ]);
+
   useEffect(() => {
-    scrollToReviews();
-  }, []);
-  const scrollToReviews = () => {
-    const reviewsSection = document.getElementById("reviews");
-    if (reviewsSection) {
-      reviewsSection.scrollIntoView({ behavior: "smooth" });
-    } else {
-      router.push(`/product/${product.id}#reviews`);
+    const viewed = JSON.parse(localStorage.getItem("recentlyViewed") || "[]");
+    const updated = [
+      product.id,
+      ...viewed.filter((id: number) => id !== product.id),
+    ].slice(0, 10);
+    localStorage.setItem("recentlyViewed", JSON.stringify(updated));
+  }, [product.id]);
+
+  const onSubmit = async () => {
+    try {
+      await addCartItem({
+        productId: product.id,
+        volume:
+          product.categoryId === 1 &&
+          product.productGroupId &&
+          product.productGroupId < 4
+            ? volume
+            : 1,
+        variationId: activeVariation?.id,
+      });
+      toast.success(product.name + " added to cart");
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong");
     }
   };
 
@@ -109,7 +131,7 @@ export const ChooseProductForm: FC<Props> = ({
                 <TabsTrigger className="h-10" value="characteristics">
                   {t("characteristics")}
                 </TabsTrigger>
-         
+
                 <TabsTrigger className="h-10 md:hidden" value="comments">
                   {t("comments")}
                 </TabsTrigger>
@@ -166,7 +188,7 @@ export const ChooseProductForm: FC<Props> = ({
 
         <Button
           loading={loading}
-          onClick={() => onSubmit?.(product.id, volume)}
+          onClick={onSubmit}
           className="h-[55px] px-10 text-base rounded-[18px] w-full mt-6 "
         >
           {t("addToCartFor")} {finalPrice} €

@@ -364,7 +364,7 @@ export async function createProduct(
         name: parsedData.productName,
         imageUrl: imageUploads,
         price: parsedData.price,
-        gender: parsedData.gender,
+        gender: parsedData.gender || undefined,
         concentration: parsedData.concentration || undefined,
         brand: {
           connect: { id: Number(parsedData.brand) },
@@ -388,7 +388,7 @@ export async function createProduct(
         aromas: parsedData.aromas,
         perfumer: parsedData.perfumer || undefined,
         classification: parsedData.classification,
-        releaseYear: parsedData.releaseYear,
+        releaseYear: parsedData.releaseYear || undefined,
         category: { connect: { id: parsedData.categoryId } },
         productGroup: { connect: { id: parsedData.productGroupId } },
         available: true,
@@ -484,7 +484,7 @@ export async function updateProduct(
         name: parsedData.productName,
         imageUrl: imageUploads.length > 0 ? imageUploads : product.imageUrl,
         price: Number(parsedData.price),
-        gender: parsedData.gender,
+        gender: parsedData.gender || undefined,
         concentration: parsedData.concentration
           ? parsedData.concentration
           : undefined,
@@ -514,7 +514,7 @@ export async function updateProduct(
        
         perfumer: parsedData.perfumer ? parsedData.perfumer : undefined,
         classification: parsedData.classification,
-        releaseYear: Number(parsedData.releaseYear),
+        releaseYear: Number(parsedData.releaseYear) || undefined,
         category: { connect: { id: Number(parsedData.categoryId) } },
         productGroup: { connect: { id: Number(parsedData.productGroupId) } },
         available: true,

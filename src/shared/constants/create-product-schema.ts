@@ -42,7 +42,7 @@ export const CreateProductSchema = z
     ethicsDe: z.string().optional(),
 
     price: z.coerce.number().positive({ message: "Price must be positive" }),
-    gender: z.nativeEnum(Gender),
+    gender: z.nativeEnum(Gender).optional(),
     brand: z.string().min(1, { message: "Brand is required" }),
 
     releaseYear: z.preprocess(
@@ -52,7 +52,7 @@ export const CreateProductSchema = z
         .int()
         .min(1900, { message: "Release year must be 1900 or later" })
         .max(new Date().getFullYear(), { message: "Release year cannot be in the future" })
-    ),
+    ).optional(),
 
     categoryId: z.coerce.number().int(),
     age: z.coerce.number().int().optional(),

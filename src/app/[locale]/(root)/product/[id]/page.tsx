@@ -3,12 +3,10 @@ import { notFound } from "next/navigation";
 import React from "react";
 import {
   BreadcrumbComponent,
+  ChooseProductForm,
   Container,
-  ProductForm,
-  ReviewForm,
+  RecentlyViewed,
   ReviewsComponent,
-  ReviewsList,
-  Title,
 } from "@/src/shared/components";
 import { Recommendations } from "@/src/shared/components/shared/recommendations";
 
@@ -57,9 +55,10 @@ export default async function Product({
         productName={product.name}
         productCategory={product.category}
       />
-      <ProductForm product={safeProduct} />
+      <ChooseProductForm product={safeProduct} />
       <ReviewsComponent className="hidden md:block" product={safeProduct} />
-      <Recommendations product={safeProduct} className="mt-10" />
+      <Recommendations product={safeProduct} className="my-20" />
+      <RecentlyViewed />
     </Container>
   );
 }

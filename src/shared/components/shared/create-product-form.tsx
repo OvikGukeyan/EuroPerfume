@@ -91,7 +91,7 @@ export const CreateProductForm: FC<Props> = ({
       image: undefined,
 
       price: product?.price || undefined,
-      gender: product?.gender || Gender.UNISEX,
+      gender: product?.gender || undefined,
       concentration: product?.concentration || undefined,
       brand: product?.brandId.toString() || "",
 
@@ -129,7 +129,7 @@ export const CreateProductForm: FC<Props> = ({
           .filter((note) => note.noteType === NoteType.BASE)
           .map((note) => String(note.note.id)) || [],
       classification: product?.classification || [],
-      releaseYear: product?.releaseYear || 2000,
+      releaseYear: product?.releaseYear || undefined,
       categoryId: product?.categoryId || categoryId,
       productGroupId: product?.productGroupId || undefined,
       variations: [],
@@ -176,7 +176,7 @@ export const CreateProductForm: FC<Props> = ({
       formData.append("productName", data.productName);
 
       formData.append("price", data.price.toString());
-      formData.append("gender", data.gender);
+      formData.append("gender", data.gender || "");
       formData.append("brand", data.brand);
       formData.append("series", data.series || "");
       formData.append("purpose", data.purpose || "");
@@ -234,7 +234,7 @@ export const CreateProductForm: FC<Props> = ({
       formData.append("skinType", data.skinType || "");
       formData.append("classification", JSON.stringify(data.classification));
 
-      formData.append("releaseYear", data.releaseYear.toString());
+      formData.append("releaseYear", data.releaseYear?.toString() || "");
       formData.append("categoryId", data.categoryId.toString());
       formData.append("productGroupId", data.productGroupId.toString());
 
@@ -257,7 +257,6 @@ export const CreateProductForm: FC<Props> = ({
       formData.append("heartNotes", JSON.stringify(data.heartNotes));
       formData.append("baseNotes", JSON.stringify(data.baseNotes));
       formData.append("classification", JSON.stringify(data.classification));
-      formData.append("releaseYear", data.releaseYear.toString());
 
       await submitFunction(
         formData as FormData & CreateProductFormValues,
