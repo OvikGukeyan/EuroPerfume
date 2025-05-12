@@ -5,9 +5,9 @@ export async function GET(req: NextRequest) {
   try{
     const data = await prisma.productGroup.findMany();
     return NextResponse.json(data);
-  }catch(e){
-    console.log(e);
-    return NextResponse.json(e);
+  }catch(e: any) {
+    console.error(e);
+    return NextResponse.json({ message: e.message || "Internal Server Error" }, { status: 500 });
   }
  
 }
@@ -27,9 +27,13 @@ export async function POST(req: NextRequest) {
       },
     });
     return NextResponse.json(productGroup);
-  }catch(e){
-    console.log(e);
-    return NextResponse.json(e);
+  }catch (e: any) {
+    console.error("Error [CREATE PRODUCT GROUP]:", e);
+  
+    return NextResponse.json(
+      { message: e?.message || "Internal Server Error" },
+      { status: 500 }
+    );
   }
   
 };

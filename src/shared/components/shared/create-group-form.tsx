@@ -24,7 +24,7 @@ export const CreateGroupForm: FC<Props> = ({
   const [labelDe, setLabelDe] = useState<string>("");
   const [labelRu, setLabelRu] = useState<string>("");
 
-  const onSubmitClick = () => {
+  const onSubmitClick =  () => {
     onSubmit({
       labelDe: labelDe,
       labelRu: labelRu,
