@@ -3,7 +3,7 @@ import React, { FC, Suspense, useState } from "react";
 import { cn } from "@/src/lib/utils";
 import { LanguageSwitcher, MenuDrawerItem, SocialMediaBar } from ".";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
-import { Button } from "..";
+import { Button, Separator } from "..";
 import { Menu } from "lucide-react";
 
 import { useCategories } from "@/src/shared/hooks";
@@ -45,22 +45,27 @@ export const MenuDrawer: FC<Props> = ({ className }) => {
                   category={category}
                   key={category.id}
                   locale={locale}
+                  className="mb-4"
                 />
               ))}
             </div>
+            <Separator className="mb-5" />
             <div className="flex flex-col gap-3">
               {links.map((link) => (
                 <Link
                   onClick={() => setOpen(false)}
                   href={link.href}
                   key={link.href}
-                  className="text-xl font-semibold"
+                  className="text-lg font-semibold text-slate-500"
                 >
                   {link.label[locale]}
                 </Link>
               ))}
             </div>
+            <Separator className="my-5" />
+
             <SocialMediaBar className="mt-5"/>
+            
             <div className="flex justify-end mt-2">
               <LanguageSwitcher />
             </div>

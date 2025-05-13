@@ -18,7 +18,7 @@ type Props = {
 };
 
 export const MenuDrawerItem: FC<Props> = ({ className, category, setOpen, locale }) => {
-  const [isOpen, setIsOpen] = React.useState(true);
+  const [isOpen, setIsOpen] = React.useState(false);
   const [setCategory, setProductGroup] = useFiltersStore((state) => [
     state.setCategory,
     state.setProductGroup,
