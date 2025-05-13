@@ -90,7 +90,7 @@ export const findProducts = async (
         priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
       available: true,
       categoryId: categoryId || 1,
-      productGroupId: (productGroupId ? productGroupId : (categoryId === 1 || !categoryId  ? {notIn: [4]} : undefined)),
+      productGroupId: (productGroupId ? productGroupId : (categoryId === 1 || !categoryId  ? {in: [1, 2, 3]} : undefined)),
       aromas: aromas.length > 0 ? { hasSome: aromas as Aromas[] } : undefined,
       topNotes:
         topNotes.length > 0 ? { hasSome: topNotes as Notes[] } : undefined,
