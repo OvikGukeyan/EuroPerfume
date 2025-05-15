@@ -20,12 +20,10 @@ export const ProductCharacteristics: FC<Props> = ({
 
       <div className="my-4">
         <ul className=" md:columns-2 ">
-          {charactiristics.map((characteristic, index) => (
+          {charactiristics.map((characteristic) => (
             <li
               key={characteristic.name}
-              className={`break-inside-avoid flex justify-between  px-2 py-1   ${
-                index % 2 === 0 ? "bg-white" : "bg-gray-100"
-              }`}
+              className="break-inside-avoid flex justify-between  px-2 py-1 even:bg-gray-100 odd:bg-white"
             >
               <span className="font-bold mr-2 w-1/2">
                 {characteristic.name}:{" "}

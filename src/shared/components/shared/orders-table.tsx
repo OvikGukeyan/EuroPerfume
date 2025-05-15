@@ -35,17 +35,17 @@ export const OrdersTable: FC<Props> = ({ className }) => {
         <TableCaption>A list of your recent orders.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Order Id</TableHead>
             <TableHead>Items</TableHead>
             <TableHead>Total Amount</TableHead>
             <TableHead>Customer name</TableHead>
-            <TableHead>email</TableHead>
             <TableHead>phone</TableHead>
             <TableHead>contact form</TableHead>
+            <TableHead>delivery type</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>comment</TableHead>
             <TableHead>address</TableHead>
-            <TableHead>delivery type</TableHead>
+            <TableHead>email</TableHead>
+            <TableHead>Order Id</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -59,7 +59,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                 ""
               }
             >
-              <TableCell className="font-medium">{order.id}</TableCell>
+              
               <TableCell>
 
                 <OrderItemsPopover order={order}/>
@@ -71,9 +71,9 @@ export const OrdersTable: FC<Props> = ({ className }) => {
               </TableCell>
               <TableCell>{order.totalAmount}</TableCell>
               <TableCell>{order.fullName}</TableCell>
-              <TableCell>{order.email}</TableCell>
               <TableCell>{order.phone}</TableCell>
               <TableCell>{order.contactForm}</TableCell>
+              <TableCell>{order.deliveryType}</TableCell>
               <TableCell>
                 <Select
                   onValueChange={(value) => {
@@ -96,7 +96,8 @@ export const OrdersTable: FC<Props> = ({ className }) => {
               </TableCell>
               <TableCell>{order.comment}</TableCell>
               <TableCell>{order.address}</TableCell>
-              <TableCell>{order.deliveryType}</TableCell>
+              <TableCell>{order.email}</TableCell>
+              <TableCell className="font-medium">{order.id}</TableCell>
               <TableCell>
                 <Button
                   loading={loading}
