@@ -47,7 +47,7 @@ export const ProductCarousel: React.FC<PropType> = ({
   }, [emblaMainApi, onSelect]);
 
   return (
-    <div className={cn("flex flex-col gap-4 w-full min-h-400", className)}>
+    <div className={cn("flex flex-col items-center gap-4 w-full min-h-400", className)}>
       <div
         className="relative w-full max-w-md overflow-hidden"
         ref={emblaMainRef}
@@ -58,7 +58,7 @@ export const ProductCarousel: React.FC<PropType> = ({
               key={index}
               className="flex items-center justify-center  flex-shrink-0 aspect-square w-full  bg-white "
             >
-              <img src={imageUrl} alt={""} />
+              <img src={imageUrl} alt={"image"} />
             </div>
           ))}
         </div>
@@ -76,7 +76,7 @@ export const ProductCarousel: React.FC<PropType> = ({
                 <button
                   onClick={() => onThumbClick(index)}
                   type="button"
-                  className={`flex items-center justify-center w-16 h-16 border  ${
+                  className={`flex items-center justify-center w-16 h-16 border overflow-hidden  ${
                     index === selectedIndex
                       ? "border-gray-500"
                       : "border-gray-300"
