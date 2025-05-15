@@ -19,11 +19,14 @@ export const ProductCharacteristics: FC<Props> = ({
       <Title text="Characteristics:" size="sm" className="font-bold" />
 
       <div className="my-4">
-        <ul className=" columns-2 gap-x-5">
+        <ul className=" md:columns-2 gap-x-5">
           {charactiristics.map((characteristic) => (
-            <li key={characteristic.name} className="break-inside-avoid">
-              <span className="font-bold mr-2">{characteristic.name}: </span>
-              {characteristic.value}
+            <li
+              key={characteristic.name}
+              className="break-inside-avoid flex justify-between mb-2"
+            >
+              <span className="font-bold mr-2 w-1/2">{characteristic.name}: </span>
+              <div className=" w-1/2 text-left">{characteristic.value}</div>
             </li>
           ))}
         </ul>

@@ -17,7 +17,12 @@ type Props = {
   className?: string;
 };
 
-export const MenuDrawerItem: FC<Props> = ({ className, category, setOpen, locale }) => {
+export const MenuDrawerItem: FC<Props> = ({
+  className,
+  category,
+  setOpen,
+  locale,
+}) => {
   const [isOpen, setIsOpen] = React.useState(false);
   const [setCategory, setProductGroup] = useFiltersStore((state) => [
     state.setCategory,
@@ -44,12 +49,14 @@ export const MenuDrawerItem: FC<Props> = ({ className, category, setOpen, locale
       key={category.id}
       open={isOpen}
       onOpenChange={setIsOpen}
-      className={cn(className, "w-2/3 space-y-2")}
+      className={cn(className, "space-y-2")}
     >
       <div className="flex items-center justify-between space-x-4 ">
         <CollapsibleTrigger onClick={() => handleItemClick(category)} asChild>
           <div className="flex items-center gap-2 cursor-pointer">
-            <h2 className="text-2xl font-semibold">{locale === "ru" ? category.labelRu : category.labelDe}</h2>
+            <h2 className="text-2xl font-semibold">
+              {locale === "ru" ? category.labelRu : category.labelDe}
+            </h2>
             {category.productGroups.length > 0 && (
               <>
                 {isOpen ? (
@@ -64,6 +71,16 @@ export const MenuDrawerItem: FC<Props> = ({ className, category, setOpen, locale
       </div>
 
       <CollapsibleContent className="pl-5 space-y-2">
+        <div
+          onClick={() => {
+            setCategory(category.id);
+            setProductGroup(null);
+            setOpen(false);
+          }}
+          className="px-4 py-2 text-xl cursor-pointer"
+        >
+          {locale === "ru" ? <p>Показать все</p> : <p>Ales anzeigen</p>}
+        </div>
         {category.productGroups.map((productGroup) => (
           <div
             onClick={() => {

@@ -34,7 +34,6 @@ import {
 } from "@/src/shared/components/ui/form";
 
 import {
-  Gender,
   Note,
   NoteType,
   ProductNote,
@@ -166,6 +165,15 @@ export const CreateProductForm: FC<Props> = ({
     form
       .watch("baseNotes")
       ?.map((id) => notes.find((note) => note.id === Number(id))?.labelRu)
+      .join(", ") || "";
+
+  const choosedAromas =
+    form
+      .watch("aromas")
+      ?.map(
+        (value) =>
+          perfumeAromas.find((aroma) => aroma.value === value)?.label.ru
+      )
       .join(", ") || "";
 
   const onSubmit = async (data: CreateProductFormValues) => {
@@ -517,7 +525,7 @@ export const CreateProductForm: FC<Props> = ({
                   />
 
                   <FormCheckbox
-                    title="Аромат"
+                    title={choosedAromas ? choosedAromas : "Ароматы"}
                     name="aromas"
                     control={form.control}
                     items={perfumeAromas}
@@ -538,7 +546,7 @@ export const CreateProductForm: FC<Props> = ({
                     />
 
                     <FormCheckbox
-                      title={ heartNotes ? heartNotes : "Средние нотты"}
+                      title={heartNotes ? heartNotes : "Средние нотты"}
                       name="heartNotes"
                       control={form.control}
                       items={notes.map((note) => ({
@@ -551,7 +559,7 @@ export const CreateProductForm: FC<Props> = ({
                     />
 
                     <FormCheckbox
-                      title={ baseNotes ? baseNotes : "Базовые нотты"}
+                      title={baseNotes ? baseNotes : "Базовые нотты"}
                       name="baseNotes"
                       control={form.control}
                       items={notes.map((note) => ({
