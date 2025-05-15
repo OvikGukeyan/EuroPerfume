@@ -5,8 +5,6 @@ import { Title, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
 import {
   Brand,
-  Classifications,
-  Gender,
   Note,
   PerfumeConcentration,
 } from "@prisma/client";
@@ -19,6 +17,7 @@ import { useFiltersStore } from "../../store/filters";
 import { useQueryFilters } from "../../hooks";
 import { cn } from "@/src/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
+import { useCategoryStore } from "../../store";
 interface Props {
   notes: Note[];
   brands: Brand[];
@@ -28,7 +27,6 @@ interface Props {
 export const Filters: FC<Props> = ({ notes, brands, className }) => {
   const filters = useFiltersStore();
   useQueryFilters(filters);
-
   const updatePreces = (prices: number[]) => {
     filters.setPrices("priceFrom", prices[0]);
     filters.setPrices("priceTo", prices[1]);
@@ -36,7 +34,6 @@ export const Filters: FC<Props> = ({ notes, brands, className }) => {
 
   const locale = useLocale() as "ru" | "de";
   const t = useTranslations("Filters");
-  
 
   return (
     <div className={cn("")}>
@@ -65,28 +62,6 @@ export const Filters: FC<Props> = ({ notes, brands, className }) => {
           text: item.label[locale],
           value: item.value,
         }))}
-      />
-
-      <CheckboxFiltersGroup
-        title={t("concentration")}
-        name="concentration"
-        className="mb-5"
-        onClickCheckbox={filters.setSelectedConcentration}
-        selected={filters.concentration}
-        limit={3}
-        items={[
-          { text: "Extrait de Parfum", value: PerfumeConcentration.EXTRAIT },
-          { text: "Perfume", value: PerfumeConcentration.PERFUME },
-          { text: "Eau de Parfum", value: PerfumeConcentration.EAU_DE_PARFUM },
-          {
-            text: "Eau de Toilette",
-            value: PerfumeConcentration.EAU_DE_TOILETTE,
-          },
-          {
-            text: "Eau de Cologne",
-            value: PerfumeConcentration.EAU_DE_COLOGNE,
-          },
-        ]}
       />
 
       <CheckboxFiltersGroup
@@ -134,60 +109,91 @@ export const Filters: FC<Props> = ({ notes, brands, className }) => {
           onValueChange={updatePreces}
         />
       </div>
+      {filters.category === 1 &&
 
-      <CheckboxFiltersGroup
-        title={t("aromasGroup")}
-        name="aromas"
-        className="my-5"
-        limit={3}
-        // defaultItems={items.slice(0, 6)}
-        items={perfumeAromas.map((item) => ({
-          text: item.label[locale],
-          value: item.value,
-        }))}
-        onClickCheckbox={filters.setSelectedAromas}
-        selected={filters.aromas}
-      />
+        <>
+          <CheckboxFiltersGroup
+            title={t("concentration")}
+            name="concentration"
+            className="mb-5"
+            onClickCheckbox={filters.setSelectedConcentration}
+            selected={filters.concentration}
+            limit={3}
+            items={[
+              {
+                text: "Extrait de Parfum",
+                value: PerfumeConcentration.EXTRAIT,
+              },
+              { text: "Perfume", value: PerfumeConcentration.PERFUME },
+              {
+                text: "Eau de Parfum",
+                value: PerfumeConcentration.EAU_DE_PARFUM,
+              },
+              {
+                text: "Eau de Toilette",
+                value: PerfumeConcentration.EAU_DE_TOILETTE,
+              },
+              {
+                text: "Eau de Cologne",
+                value: PerfumeConcentration.EAU_DE_COLOGNE,
+              },
+            ]}
+          />
+          <CheckboxFiltersGroup
+            title={t("aromasGroup")}
+            name="aromas"
+            className="my-5"
+            limit={3}
+            // defaultItems={items.slice(0, 6)}
+            items={perfumeAromas.map((item) => ({
+              text: item.label[locale],
+              value: item.value,
+            }))}
+            onClickCheckbox={filters.setSelectedAromas}
+            selected={filters.aromas}
+          />
 
-      <CheckboxFiltersGroup
-        title={t("topNotes")}
-        name="topNotes"
-        limit={3}
-        // defaultItems={items.slice(0, 6)}
-        items={notes.map((note) => ({
-          text: locale === "de" ? note.labelDe : note.labelRu,
-          value: String(note.id),
-        }))}
-        onClickCheckbox={filters.setTopNotes}
-        selected={filters.topNotes}
-      />
+          <CheckboxFiltersGroup
+            title={t("topNotes")}
+            name="topNotes"
+            limit={3}
+            // defaultItems={items.slice(0, 6)}
+            items={notes.map((note) => ({
+              text: locale === "de" ? note.labelDe : note.labelRu,
+              value: String(note.id),
+            }))}
+            onClickCheckbox={filters.setTopNotes}
+            selected={filters.topNotes}
+          />
 
-      <CheckboxFiltersGroup
-        className="my-5"
-        title={t("heartNotes")}
-        name="heartNotes"
-        limit={3}
-        // defaultItems={items.slice(0, 6)}
-        items={notes.map((note) => ({
-          text: locale === "de" ? note.labelDe : note.labelRu,
-          value: String(note.id),
-        }))}
-        onClickCheckbox={filters.setHeartNotes}
-        selected={filters.heartNotes}
-      />
+          <CheckboxFiltersGroup
+            className="my-5"
+            title={t("heartNotes")}
+            name="heartNotes"
+            limit={3}
+            // defaultItems={items.slice(0, 6)}
+            items={notes.map((note) => ({
+              text: locale === "de" ? note.labelDe : note.labelRu,
+              value: String(note.id),
+            }))}
+            onClickCheckbox={filters.setHeartNotes}
+            selected={filters.heartNotes}
+          />
 
-      <CheckboxFiltersGroup
-        title={t("baseNotes")}
-        name="baseNotes"
-        limit={3}
-        // defaultItems={items.slice(0, 6)}
-        items={notes.map((note) => ({
-          text: locale === "de" ? note.labelDe : note.labelRu,
-          value: String(note.id),
-        }))}
-        onClickCheckbox={filters.setBaseNotes}
-        selected={filters.baseNotes}
-      />
+          <CheckboxFiltersGroup
+            title={t("baseNotes")}
+            name="baseNotes"
+            limit={3}
+            // defaultItems={items.slice(0, 6)}
+            items={notes.map((note) => ({
+              text: locale === "de" ? note.labelDe : note.labelRu,
+              value: String(note.id),
+            }))}
+            onClickCheckbox={filters.setBaseNotes}
+            selected={filters.baseNotes}
+          />
+        </>
+      }
     </div>
   );
 };
