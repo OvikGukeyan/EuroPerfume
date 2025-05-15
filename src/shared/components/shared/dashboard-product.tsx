@@ -13,7 +13,7 @@ interface Props {
   id: number;
   name: string;
   price: number;
-  imageUrl: string[] ;
+  imageUrl: string[];
   available?: boolean;
   deleteProduct: (id: number) => void;
   loading?: boolean;
@@ -32,9 +32,8 @@ export const DashboardProduct: React.FC<Props> = ({
   loading,
   variations,
   switchAvailability,
-  deleteProduct
+  deleteProduct,
 }) => {
-
   const router = useRouter();
 
   return (
@@ -51,7 +50,9 @@ export const DashboardProduct: React.FC<Props> = ({
         </div>
       </Link>
 
-      <Title text={name} size="sm" className="mb-1 mt-3 font-bold" />
+      <div className="h-[80px]">
+        <Title text={name} size="sm" className="mb-1 mt-3 font-bold" />
+      </div>
 
       <div className="flex items-center gap-2 md:gap-5 mt-4">
         <Button loading={loading} onClick={() => deleteProduct(id)}>
