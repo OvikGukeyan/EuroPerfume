@@ -10,4 +10,3 @@ export {useProductGroup} from './use-product-group';
 export {useProducts} from './use-products';
 export {useRecommendations} from './use-recommendations';
 export {useRecentlyViewed} from './use-recently-viewed';
-export {useAuth} from './use-auth';

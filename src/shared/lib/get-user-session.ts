@@ -1,8 +1,15 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "../constants/auth-options";
+import { prisma } from "@/prisma/prisma-client";
 
-export const getUserSession = async () => {
-    const session = await getServerSession(authOptions);
+export async function getUserSession() {
+  const session = await getServerSession(authOptions);
 
-    return session?.user ?? null;
+  if (!session ) return null;
+
+  const user = await prisma.user.findUnique({
+    where: { id: Number(session.user.id) },
+  });
+
+  return user ? session.user : null;
 }

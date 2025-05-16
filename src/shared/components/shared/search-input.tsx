@@ -3,8 +3,8 @@
 import { cn } from '@/src/shared/lib/utils'
 import { Api } from '@/src/shared/services/api-client'
 import { ProductDTO } from '@/src/shared/services/dto/product.dto'
-import { Product, ProductVariation } from '@prisma/client'
 import { Search } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useRef, useState } from 'react'
@@ -18,7 +18,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
     const [focused, setFocused] = useState(false);
     const [products, setProducts] = useState<ProductDTO[]>([]);
     const ref = useRef<HTMLInputElement>(null);
-
+    const { data: session } = useSession();
     useClickAway(ref, () => {
         setFocused(false)
     })
@@ -45,7 +45,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
                 <input
                     className="rounded-md outline-none w-full bg-gray-100 pl-11"
                     type="text"
-                    placeholder="Find product..."
+                    placeholder={ session ? `${session.user.name}, что ищете?` : "Find product..."}
                     onFocus={() => setFocused(true)}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}

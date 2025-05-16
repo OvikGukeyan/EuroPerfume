@@ -1,21 +1,22 @@
 'use client';
+import { useSession } from "next-auth/react";
 import React, { FC } from "react";
 import { Button } from "../ui";
-import { CircleUser, User } from "lucide-react";
+import { CircleUser, User, UserRoundCheck } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/src/shared/lib/utils";
-import { useAuth } from "../../hooks";
+
 
 interface Props {
   onClickSignIn?: () => void;
   className?: string;
 }
 export const ProfileButton: FC<Props> = ({ className, onClickSignIn }) => {
-  const {user} = useAuth();
+  const { data: session } = useSession();
 
   return (
     <div className={cn(className, '')}>
-      {!user ? (
+      {!session ? (
         <Button
           onClick={onClickSignIn}
           variant='ghost'
@@ -26,7 +27,7 @@ export const ProfileButton: FC<Props> = ({ className, onClickSignIn }) => {
         </Button>
       ) : (
         <>
-          {user.role === "ADMIN" ? (
+          {session.user.role === "ADMIN" ? (
             <Link href={"/create/1"}>
               <Button variant="ghost" className="flex items-center gap-2">
                 <CircleUser size={18} />
@@ -36,7 +37,7 @@ export const ProfileButton: FC<Props> = ({ className, onClickSignIn }) => {
           ) : (
             <Link href={"/profile"}>
               <Button variant="ghost" className="flex items-center gap-2">
-                <CircleUser size={18} />
+                <UserRoundCheck size={18} />
                 <span className="hidden md:block">Profile</span>
               </Button>
             </Link>

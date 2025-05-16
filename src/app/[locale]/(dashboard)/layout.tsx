@@ -1,7 +1,9 @@
-
-
+import { prisma } from "@/prisma/prisma-client";
 import { AppSidebar } from "@/src/shared/components";
-import { SidebarProvider, SidebarTrigger } from "@/src/shared/components/ui/sidebar";
+import {
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/src/shared/components/ui/sidebar";
 import { getUserSession } from "@/src/shared/lib/get-user-session";
 import { UserRole } from "@prisma/client";
 import type { Metadata } from "next";
@@ -22,6 +24,7 @@ export default async function DashboardLayout({
   if (!session || session.role !== UserRole.ADMIN) {
     redirect("/not-auth");
   }
+
   return (
     <SidebarProvider>
       <AppSidebar />

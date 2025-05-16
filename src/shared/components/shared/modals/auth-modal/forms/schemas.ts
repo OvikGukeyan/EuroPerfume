@@ -33,6 +33,10 @@ export const formRegisterSchema = formLoginSchema
         .string()
         .min(2, { message: "Full name must be at least 2 characters long" }),
       confirmPassword: passwordSchema,
+
+      acceptPolicy: z.boolean().refine((val) => val === true, {
+        message: "You must accept the policy",
+      }),
     })
   )
   .refine((data) => data.password === data.confirmPassword, {
