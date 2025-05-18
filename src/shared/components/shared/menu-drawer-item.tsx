@@ -9,6 +9,7 @@ import {
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { Category, ProductGroup } from "@prisma/client";
 import { useFiltersStore } from "@/src/shared/store/filters";
+import { useRouter } from "next/navigation";
 
 type Props = {
   category: Category & { productGroups: ProductGroup[] };
@@ -23,6 +24,7 @@ export const MenuDrawerItem: FC<Props> = ({
   setOpen,
   locale,
 }) => {
+  const router = useRouter();
   const [isOpen, setIsOpen] = React.useState(false);
   const [setCategory, setProductGroup] = useFiltersStore((state) => [
     state.setCategory,
@@ -32,6 +34,7 @@ export const MenuDrawerItem: FC<Props> = ({
   const handleItemClick = (
     category: Category & { productGroups: ProductGroup[] }
   ) => {
+
     if (category.productGroups.length === 0 || !category.productGroups) {
       setCategory(category.id);
       setProductGroup(null);
@@ -39,10 +42,12 @@ export const MenuDrawerItem: FC<Props> = ({
     }
   };
   const handleSubItemClick = (productGroup: ProductGroup) => {
+    console.log('productGroup');
     setProductGroup(productGroup.id);
     setCategory(productGroup.categoryId);
     setOpen(false);
   };
+
 
   return (
     <Collapsible

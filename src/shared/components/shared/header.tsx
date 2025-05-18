@@ -34,7 +34,6 @@ export const Header: React.FC<Props> = ({
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
-  
   useInitFiltersFromUrl();
   useEffect(() => {
     const paid = searchParams.has("paid");

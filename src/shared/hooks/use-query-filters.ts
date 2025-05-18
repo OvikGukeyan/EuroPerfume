@@ -1,10 +1,12 @@
 import { useEffect, useRef } from "react";
 import qs from "qs";
 import { Filters } from "../store/filters";
+import { usePathname, useRouter } from "@/src/i18n/navigation";
 
 export const useQueryFilters = (filters: Filters) => {
   const isMounted = useRef(false);
-
+  const router = useRouter();
+  const pathname = usePathname();
   useEffect(() => {
     if (isMounted.current) {
       const params = {
@@ -27,9 +29,12 @@ export const useQueryFilters = (filters: Filters) => {
       };
 
       const query = qs.stringify(params, { arrayFormat: "comma" });
-      const url = `?${query}`;
-
-      window.history.pushState(null, "", url);
+      const url = `/?${query}`;
+      if (pathname === `/`) {
+        window.history.pushState(null, "", url);
+      } else {
+        router.push(url);
+      }
     }
 
     isMounted.current = true;

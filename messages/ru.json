@@ -51,12 +51,22 @@
       "lastName": "Фамилия",
       "email": "Электронная почта",
       "phone": "Телефон",
-      "contactForm": "Форма обращения"
+      "contactForm": "Форма обращения",
+      "zip": "Почтовый индекс"
     },
     "delivery": {
       "stepTitle": "3. Информация о доставке",
       "deliveryType": "Способ доставки",
-      "commentPlaceholder": "Комментарий к заказу"
+      "commentPlaceholder": "Комментарий к заказу",
+      "billingAddress": "Aдрес из профиля",
+      "differentAddress": "Другой адрес",
+      "packstation": "DHL Почтомат",
+      "postOffice": "Oтделение DHL",
+      "deliveryAddress": "Адрес доставки",
+      "zip": "Почтовый индекс",
+      "postNumber": "Почтовый номер получателя",
+      "packstationNumber": "Номер Почтомата",
+      "officeNumber": "Номер отделения"
     },
     "sidebar": {
       "totalPriceLabel": "Общая сумма:",

@@ -1,14 +1,23 @@
 import React, { FC } from "react";
-import { FormInput, RadioInput, Title, WhiteBlock } from "..";
+import {
+  AdressInput,
+  ErrorText,
+  FormInput,
+  RadioInput,
+  Title,
+  WhiteBlock,
+} from "..";
 import { cn } from "@/src/shared/lib/utils";
 import { contactForms } from "@/../../prisma/constants";
 import { useTranslations } from "next-intl";
+import { Controller, useFormContext } from "react-hook-form";
 interface Props {
   totalAmount: number;
   className?: string;
 }
 export const CheckoutPersonalForm: FC<Props> = ({ className, totalAmount }) => {
   const t = useTranslations("Checkout.personal");
+  const { control } = useFormContext();
   return (
     <WhiteBlock
       title={t("stepTitle")}
@@ -38,6 +47,12 @@ export const CheckoutPersonalForm: FC<Props> = ({ className, totalAmount }) => {
           name="phone"
           className="text-base"
           placeholder={t("phone")}
+        />
+        <AdressInput className="md:col-span-2" name="address" />
+        <FormInput
+          name="zip"
+          className="text-base"
+          placeholder={t("zip")}
         />
         <div>
           <Title text={t("contactForm")} size="xs" className="mb-3" />

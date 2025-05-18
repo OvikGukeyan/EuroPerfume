@@ -6,7 +6,7 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { Button } from "../ui";
-import { Filter } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 import { prisma } from "@/prisma/prisma-client";
 
 
@@ -27,7 +27,7 @@ export const FiltersDrawer = async () => {
           <SheetTrigger  asChild >
             <Button className="xl:hidden flex items-center gap-2 ">
               <span className="hidden md:block">Filters</span> 
-              <Filter />
+              <SlidersHorizontal size={20} />
             </Button>
           </SheetTrigger>
 

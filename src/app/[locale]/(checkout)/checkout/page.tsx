@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { ContactForms, DeliveryTypes } from "@prisma/client";
+import { ContactForms, DeliveryTypes, ShippingMethods } from "@prisma/client";
 import { checkoutFormSchema, CheckoutFormValues } from '@/src/shared/constants';
 import { useCart } from '@/src/shared/hooks';
 import { calcTotlalAmountWithDelivery } from '@/src/shared/lib';
@@ -26,15 +26,28 @@ export default function Checkout() {
         defaultValues: {
             email: '',
             firstName: '',
+            deliveryFirstName: '',
             lastName: '',
+            deliveryLastName: '',
             phone: '',
             address: '',
+            deliveryAddress: '',
+            city: '',
+            deliveryCity: '',
+            zip: '',
+            deliveryZip: '',
             contactForm: ContactForms.WA,
             comment: '',
-            deliveryType: DeliveryTypes.GB
+            deliveryType: DeliveryTypes.PBH,
+            postNumber: '',
+            postOffice: '',
+            packstationNumber: '',
+            shippingMethod: ShippingMethods.BILLING_ADDRESS,
         },
     });
 
+const errors = form.formState.errors;
+console.log(errors);
     const delivery = form.watch('deliveryType');
     const {totalAmountWithDelivery, deliveryPrice} = calcTotlalAmountWithDelivery(totalAmount, delivery);
 
@@ -103,6 +116,7 @@ const t = useTranslations("Checkout");
                                 loading={loading || submitting}
                                 totalAmount={totalAmount}
                                 deliveryPrice={deliveryPrice}
+                                totalAmountWithDelivery={totalAmountWithDelivery}
                             />
 
 

@@ -386,6 +386,11 @@ export const classifications: {
 ];
 
 export const deliveryTypes = [
+   {
+    name: "Paket bis Haftung",
+    value: DeliveryTypes.PBH,
+    price: 6.2,
+  },
   {
     name: "Großbrief",
     value: DeliveryTypes.GB,
@@ -397,11 +402,7 @@ export const deliveryTypes = [
     value: DeliveryTypes.ES,
     price: 5,
   },
-  {
-    name: "Paket bis Haftung",
-    value: DeliveryTypes.PBH,
-    price: 6.2,
-  },
+ 
 ];
 
 export const purposes: { value: Purpose; label: { ru: string; de: string } }[] =

@@ -39,14 +39,14 @@ export const CheckoutCart: FC<Props> = ({
     <WhiteBlock
       className={className}
       title={t('stepTitle')}
-      endAdornment={
-        totalAmount > 0 && (
-          <button className="flex items-center gap-3 text-gray-400 hover:text-gray-600">
-            <Trash2 size={16} />
-            {t('clearCart')}
-          </button>
-        )
-      }
+      // endAdornment={
+      //   totalAmount > 0 && (
+      //     <button className="flex items-center gap-3 text-gray-400 hover:text-gray-600">
+      //       <Trash2 size={16} />
+      //       {t('clearCart')}
+      //     </button>
+      //   )
+      // }
     >
       <div className="flex flex-col gap-5">
         {loading

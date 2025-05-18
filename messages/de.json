@@ -51,12 +51,22 @@
       "lastName": "Nachname",
       "email": "E-Mail",
       "phone": "Telefon",
-      "contactForm": "Kontaktformular"
+      "contactForm": "Kontaktformular",
+      "zip": "PLZ"
     },
     "delivery": {
       "stepTitle": "3. Lieferinformationen",
       "deliveryType": "Lieferart",
-      "commentPlaceholder": "Kommentar zur Bestellung"
+      "commentPlaceholder": "Kommentar zur Bestellung",
+      "billingAddress": "Rechnungsadresse",
+      "differentAddress": "Andere Adresse",
+      "packstation": "DHL Packstation",
+      "postOffice": "DHL Postfiliale",
+      "deliveryAddress": "Lieferadresse",
+      "zip": "PLZ",
+      "postNumber": "Postnummer",
+      "packstationNumber": "Packstationnummer",
+      "officeNumber": "Postfilialenummer" 
     },
     "sidebar": {
       "totalPriceLabel": "Gesamtpreis:",
