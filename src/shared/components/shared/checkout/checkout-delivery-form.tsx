@@ -17,7 +17,8 @@ import { deliveryTypes } from "@/../../prisma/constants";
 import { useTranslations } from "next-intl";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import Autocomplete from "react-google-autocomplete";
-import { ShippingMethods } from "@prisma/client";
+import { DeliveryTypes, ShippingMethods } from "@prisma/client";
+import { set } from "zod";
 
 interface Props {
   totalAmount: number;
@@ -40,6 +41,7 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
         <Tabs
           onValueChange={(value) => {
             setValue("shippingMethod", value);
+            setValue("deliveryType", DeliveryTypes.PBH);
           }}
           defaultValue={ShippingMethods.BILLING_ADDRESS}
           className="w-full"
@@ -139,10 +141,18 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
                           types: ["(regions)"],
                           componentRestrictions: { country: "de" },
                         }}
-                        onPlaceSelected={field.onChange}
+                        onPlaceSelected={(place) => {
+                          const city =
+                            place.address_components?.find((c) =>
+                              c.types.includes("locality")
+                            )?.long_name ?? "";
+                          field.onChange(place.formatted_address);
+                        }}
                         className="flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-md ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       />
-                      {error?.message && <ErrorText className="mt-2" text={error.message} />}
+                      {error?.message && (
+                        <ErrorText className="mt-2" text={error.message} />
+                      )}
                     </>
                   )}
                 />
@@ -179,10 +189,18 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
                           types: ["(regions)"],
                           componentRestrictions: { country: "de" },
                         }}
-                        onPlaceSelected={field.onChange}
+                        onPlaceSelected={(place) => {
+                          const city =
+                            place.address_components?.find((c) =>
+                              c.types.includes("locality")
+                            )?.long_name ?? "";
+                          field.onChange(place.formatted_address);
+                        }}
                         className="flex h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-md ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       />
-                      {error?.message && <ErrorText className="mt-2" text={error.message} />}
+                      {error?.message && (
+                        <ErrorText className="mt-2" text={error.message} />
+                      )}
                     </>
                   )}
                 />

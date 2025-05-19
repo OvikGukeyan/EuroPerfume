@@ -58,13 +58,25 @@ export async function createOrder(data: CheckoutFormValues) {
       userCart.totalAmount.toNumber(),
       data.deliveryType
     );
+const fullName = data.firstName + " " + data.lastName;
+const deliveryFullNmae = data.deliveryFirstName && data.deliveryFirstName.length > 0 ? data.deliveryFirstName + " " + data.deliveryLastName : fullName;
 
     const order = await prisma.order.create({
       data: {
-        fullName: data.firstName + " " + data.lastName,
+        fullName: fullName,
+        deliveryFullNmae: deliveryFullNmae,
         email: data.email,
         phone: data.phone,
+        city: data.city,
+        deliveryCity: data.deliveryCity ? data.deliveryCity : data.city,
+        zip: data.zip,
+        deliveryZip: data.deliveryZip ? data.deliveryZip : data.zip,
+        shippingMethod: data.shippingMethod,
+        postNumber: data.postNumber,
+        postOffice: data.postOffice,
+        packstationNumber: data.packstationNumber,
         address: data.address,
+        deliveryAddress: data.deliveryAddress ? data.deliveryAddress : data.address,
         comment: data.comment,
         token: cartToken,
         totalAmount: userCart.totalAmount.toNumber() + deliveryPrice,

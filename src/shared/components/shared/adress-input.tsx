@@ -16,18 +16,20 @@ export const AdressInput: FC<Props> = ({ name, className }) => {
   );
 
   const adressError = errors[name]?.message as string;
-  const cityError = name === 'deliveryAddress' ? errors["deliveryCity"]?.message as string : errors["city"]?.message as string;
+  const cityName = name === 'deliveryAddress' ? "deliveryCity" : "city";
+  const zipName = name === 'deliveryAddress' ? "deliveryZip" : "zip";
+  const cityError =  errors[cityName]?.message as string ;
 
   const handleCitySelect = (place: google.maps.places.PlaceResult) => {
     const components = place.address_components;
-    const cityName =
+    const city =
       components?.find((c) => c.types.includes("locality"))?.long_name ?? "";
 
     const zip =
       components?.find((c) => c.types.includes("postal_code"))?.long_name ?? "";
 
-    setValue("city", cityName);
-    setValue("postalCode", zip);
+    setValue(cityName, city);
+    setValue(zipName, zip);
 
     // Установить bounds по геолокации города
     const location = place.geometry?.location;
