@@ -71,7 +71,7 @@ model Product {
   size     String?
 
   productNotes  ProductNote[]
-  aromas        Aromas[]              @default([])
+  aromas        Aroma[]
   concentration PerfumeConcentration?
   perfumer      String?
   brand         Brand                 @relation(fields: [brandId], references: [id])
@@ -138,6 +138,16 @@ model Note {
   labelRu      String        @unique
   labelDe      String        @unique
   productNotes ProductNote[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Aroma {
+  id       Int       @id @default(autoincrement())
+  labelRu  String    @unique
+  labelDe  String    @unique
+  products Product[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -1103,54 +1113,54 @@ enum ContactForms {
   TG
 }
 
-enum Aromas {
-  FOUGERE
-  WOODY
-  FLORAL
-  CITRUS
-  CHYPRE
-  LEATHER
-  AQUATIC
-  GREEN
-  GOURMAND
-  ANIMALIC
-  METALLIC
-  MILKY
-  MUSKY
-  OZONE
-  ORIENTAL_AMBER
-  SPICY
-  POWDERY
-  SWEET
-  RESINOUS
-  MARITIME
-  TOBACCO
-  ALDHYDE
-  AROMATIC
-  COFFEE
-  CARAMEL
-  CHOCOLATE
-  DUSTY
-  EARTHY
-  FRUITY
-  AMBER
-  BALSAMIC
-  VANILLA
-  SPRINGTIME
-  EVENING
-  ORIENTAL
-  ORIENTAL_GOURMAND
-  ORIENTAL_SPICY
-  ORIENTAL_FLORAL
-  DAYTIME
-  WOODY_FOUGÈRE
-  CASHMERAN
-  SUMMER
-  ROMANTIC
-  FRESH
-  HERBAL
-  FLORAL_WOODY
-}
+// enum Aromas {
+//   FOUGERE
+//   WOODY
+//   FLORAL
+//   CITRUS
+//   CHYPRE
+//   LEATHER
+//   AQUATIC
+//   GREEN
+//   GOURMAND
+//   ANIMALIC
+//   METALLIC
+//   MILKY
+//   MUSKY
+//   OZONE
+//   ORIENTAL_AMBER
+//   SPICY
+//   POWDERY
+//   SWEET
+//   RESINOUS
+//   MARITIME
+//   TOBACCO
+//   ALDHYDE
+//   AROMATIC
+//   COFFEE
+//   CARAMEL
+//   CHOCOLATE
+//   DUSTY
+//   EARTHY
+//   FRUITY
+//   AMBER
+//   BALSAMIC
+//   VANILLA
+//   SPRINGTIME
+//   EVENING
+//   ORIENTAL
+//   ORIENTAL_GOURMAND
+//   ORIENTAL_SPICY
+//   ORIENTAL_FLORAL
+//   DAYTIME
+//   WOODY_FOUGÈRE
+//   CASHMERAN
+//   SUMMER
+//   ROMANTIC
+//   FRESH
+//   HERBAL
+//   FLORAL_WOODY
+// }
 
 enum ShippingMethods {
   BILLING_ADDRESS

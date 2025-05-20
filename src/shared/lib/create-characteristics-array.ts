@@ -6,7 +6,6 @@ import {
   finishes,
   formulas,
   packagingFormats,
-  perfumeAromas,
   purposes,
   skinTypes,
   textures,
@@ -63,10 +62,7 @@ export const createCharacteristicsArray = (
     .filter((note) => note.noteType === NoteType.BASE)
     .map((note) => note.note?.labelRu)
     .join(", ");
-  const currentAroma = perfumeAromas
-    .filter((aroma) => aromas.includes(aroma.value))
-    .map(({ label: { ru } }) => ru)
-    .join(", ");
+  const currentAroma = aromas.map((item) => item.labelRu).join(", ");
   const currentClassification = classifications
     .filter((item) => classification.includes(item.value))
     .map(({ label: { ru } }) => ru)

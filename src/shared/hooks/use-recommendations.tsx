@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { ProductDTO } from "../services/dto/product.dto";
-import { Aromas, Product } from "@prisma/client";
 import { Api } from "../services/api-client";
 import { GetSearchParams } from "../lib/find-products";
+import { Aroma } from "@prisma/client";
 
 export interface RecommendationsParams {
   categoryId: number;
-  aromas?: Aromas[];
+  aromas?: Aroma[];
   productGroupId: number;
 }
 export const useRecommendations = (product: ProductDTO) => {

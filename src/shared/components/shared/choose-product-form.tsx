@@ -39,7 +39,6 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
   const [activeVariation, setActiveVariation] = useState<ProductVariation>(
     product.variations[0]
   );
-
   const currentVolumesArray =
     product.price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
 

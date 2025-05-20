@@ -11,7 +11,6 @@ import {
   ApplicationMethod,
   PackagingFormat,
   SkinType,
-  Aromas,
 } from "@prisma/client";
 
 export const CreateProductSchema = z
@@ -74,7 +73,7 @@ export const CreateProductSchema = z
     classification: z.array(z.nativeEnum(Classifications)).optional(),
     concentration: z.nativeEnum(PerfumeConcentration).optional(),
     perfumer: z.string().optional(),
-    aromas: z.array(z.nativeEnum(Aromas)).optional(),
+    aromas: z.array(z.string()).optional(),
 
     topNotes: z.array(z.string()).optional(),
     heartNotes: z.array(z.string()).optional(),

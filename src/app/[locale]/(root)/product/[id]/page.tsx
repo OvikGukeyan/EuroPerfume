@@ -25,6 +25,7 @@ export default async function Product({
         },
       },
       variations: true,
+      aromas: true,
       productNotes: {
         include: {
           note: true,

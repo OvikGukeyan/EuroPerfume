@@ -1,10 +1,12 @@
 import { prisma } from "@/prisma/prisma-client";
 import {
-  Aromas,
+  Aroma,
   Classifications,
   Gender,
   Notes,
+  NoteType,
   PerfumeConcentration,
+  Prisma,
 } from "@prisma/client";
 import { SafeProduct } from "../services/dto/product.dto";
 
@@ -77,7 +79,40 @@ export const findProducts = async (
 
     const categoryId = Number((await params).category);
     const productGroupId = Number((await params).productGroup);
+    const noteFilters: Prisma.ProductWhereInput[] = [];
 
+    if (topNotes.length > 0) {
+      noteFilters.push({
+        productNotes: {
+          some: {
+            noteType: NoteType.TOP,
+            noteId: { in: topNotes.map(Number) },
+          },
+        },
+      });
+    }
+
+    if (heartNotes.length > 0) {
+      noteFilters.push({
+        productNotes: {
+          some: {
+            noteType: NoteType.HEART,
+            noteId: { in: heartNotes.map(Number) },
+          },
+        },
+      });
+    }
+
+    if (baseNotes.length > 0) {
+      noteFilters.push({
+        productNotes: {
+          some: {
+            noteType: NoteType.BASE,
+            noteId: { in: baseNotes.map(Number) },
+          },
+        },
+      });
+    }
     const whereClause = {
       brandId: { in: brands },
       gender: genders.length > 0 ? { in: genders as Gender[] } : undefined,
@@ -90,14 +125,16 @@ export const findProducts = async (
         priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
       available: true,
       categoryId: categoryId || 1,
-      productGroupId: (productGroupId ? productGroupId : (categoryId === 1 || !categoryId  ? {in: [1, 2, 3]} : undefined)),
-      aromas: aromas.length > 0 ? { hasSome: aromas as Aromas[] } : undefined,
-      topNotes:
-        topNotes.length > 0 ? { hasSome: topNotes as Notes[] } : undefined,
-      heartNotes:
-        heartNotes.length > 0 ? { hasSome: heartNotes as Notes[] } : undefined,
-      baseNotes:
-        baseNotes.length > 0 ? { hasSome: baseNotes as Notes[] } : undefined,
+      productGroupId: productGroupId
+        ? productGroupId
+        : categoryId === 1 || !categoryId
+        ? { in: [1, 2, 3] }
+        : undefined,
+      aromas:
+        aromas.length > 0
+          ? { some: { id: { in: aromas.map((aroma) => Number(aroma)) } } }
+          : undefined,
+      ...(noteFilters.length > 0 && { AND: noteFilters }),
     };
 
     const [products, totalCount] = await prisma.$transaction([

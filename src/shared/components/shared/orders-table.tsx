@@ -21,6 +21,7 @@ import {
 } from "../ui/select";
 import { useOrders } from "@/src/shared/hooks";
 import { OrderItemsPopover } from "./order-items-popover";
+import { useRouter } from "@/src/i18n/navigation";
 
 type Props = {
   className?: string;
@@ -28,7 +29,7 @@ type Props = {
 
 export const OrdersTable: FC<Props> = ({ className }) => {
   const { items, removeOrder, changeOrderStatus, loading } = useOrders();
-
+  const router = useRouter();
   return (
     <div className={cn("", className)}>
       <Table>
@@ -42,15 +43,16 @@ export const OrdersTable: FC<Props> = ({ className }) => {
             <TableHead>contact form</TableHead>
             <TableHead>delivery type</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>comment</TableHead>
-            <TableHead>address</TableHead>
-            <TableHead>email</TableHead>
-            <TableHead>Order Id</TableHead>
+            
+            
+            
+            
           </TableRow>
         </TableHeader>
         <TableBody>
           {items.map((order) => (
             <TableRow
+              onClick={() => router.push(`/order/${order.id}`)}
               key={order.id}
               className={
                 (order.status === OrderStatus.PENDING && "bg-yellow-100") ||
@@ -59,15 +61,8 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                 ""
               }
             >
-              
               <TableCell>
-
-                <OrderItemsPopover order={order}/>
-                {/* {order.items.map((item) => (
-                  <div key={item.id}>
-                    {item.name} : {item.quantity}
-                  </div>
-                ))} */}
+                <OrderItemsPopover order={order} />
               </TableCell>
               <TableCell>{order.totalAmount}</TableCell>
               <TableCell>{order.fullName}</TableCell>
@@ -94,10 +89,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                   </SelectContent>
                 </Select>
               </TableCell>
-              <TableCell>{order.comment}</TableCell>
-              <TableCell>{order.address}</TableCell>
-              <TableCell>{order.email}</TableCell>
-              <TableCell className="font-medium">{order.id}</TableCell>
+              
               <TableCell>
                 <Button
                   loading={loading}

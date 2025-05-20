@@ -4,6 +4,7 @@ import React, { FC } from "react";
 import { Title, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
 import {
+  Aroma,
   Brand,
   Note,
   PerfumeConcentration,
@@ -11,20 +12,19 @@ import {
 import {
   classifications,
   genders,
-  perfumeAromas,
 } from "@/../../prisma/constants";
 import { useFiltersStore } from "../../store/filters";
 import { useQueryFilters } from "../../hooks";
 import { cn } from "@/src/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
-import { useCategoryStore } from "../../store";
 interface Props {
   notes: Note[];
   brands: Brand[];
+  aromas: Aroma[];
   className?: string;
 }
 
-export const Filters: FC<Props> = ({ notes, brands, className }) => {
+export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
   const filters = useFiltersStore();
   useQueryFilters(filters);
   const updatePreces = (prices: number[]) => {
@@ -34,7 +34,6 @@ export const Filters: FC<Props> = ({ notes, brands, className }) => {
 
   const locale = useLocale() as "ru" | "de";
   const t = useTranslations("Filters");
-
   return (
     <div className={cn("")}>
       <Title text={t("title")} className="mb-5 font-bold" />
@@ -109,7 +108,7 @@ export const Filters: FC<Props> = ({ notes, brands, className }) => {
           onValueChange={updatePreces}
         />
       </div>
-      {filters.category === 1 &&
+      {filters.category === 1 || filters.category === null &&
 
         <>
           <CheckboxFiltersGroup
@@ -145,9 +144,9 @@ export const Filters: FC<Props> = ({ notes, brands, className }) => {
             className="my-5"
             limit={3}
             // defaultItems={items.slice(0, 6)}
-            items={perfumeAromas.map((item) => ({
-              text: item.label[locale],
-              value: item.value,
+            items={aromas?.map((item) => ({
+              text: locale === "de" ? item.labelDe : item.labelRu,
+              value: String(item.id),
             }))}
             onClickCheckbox={filters.setSelectedAromas}
             selected={filters.aromas}

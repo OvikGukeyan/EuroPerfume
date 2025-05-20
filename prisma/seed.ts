@@ -7,7 +7,7 @@ import {
   // newNotes,
   // notes,
   productGroups,
-  products,
+  // products,
   productTranslations,
 } from "./constants";
 
@@ -43,9 +43,9 @@ async function up() {
   //   data: newBrands
   // })
 
-  await prisma.product.createMany({
-    data: products,
-  });
+  // await prisma.product.createMany({
+  //   data: products,
+  // });
 
   await prisma.productTranslation.createMany({
     data: productTranslations,

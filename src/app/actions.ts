@@ -2,7 +2,6 @@
 
 import { prisma } from "@/prisma/prisma-client";
 
-
 import {
   Languages,
   OrderStatus,
@@ -13,10 +12,20 @@ import {
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { CheckoutFormValues, CreateProductFormValues } from "../shared/constants";
-import { calcTotlalAmountWithDelivery, parseProductFormData } from "../shared/lib";
+import {
+  CheckoutFormValues,
+  CreateProductFormValues,
+} from "../shared/constants";
+import {
+  calcTotlalAmountWithDelivery,
+  parseProductFormData,
+} from "../shared/lib";
 import { sendEmail } from "../shared/lib/send-email";
-import { OrderSuccessTemplate, PasswordResetTemplate, UserVerificationTemplate } from "../shared/components";
+import {
+  OrderSuccessTemplate,
+  PasswordResetTemplate,
+  UserVerificationTemplate,
+} from "../shared/components";
 import { CartItemDTO } from "../shared/services/dto/cart.dto";
 import { getUserSession } from "../shared/lib/get-user-session";
 import { supabase } from "../lib/supabase";
@@ -58,8 +67,11 @@ export async function createOrder(data: CheckoutFormValues) {
       userCart.totalAmount.toNumber(),
       data.deliveryType
     );
-const fullName = data.firstName + " " + data.lastName;
-const deliveryFullNmae = data.deliveryFirstName && data.deliveryFirstName.length > 0 ? data.deliveryFirstName + " " + data.deliveryLastName : fullName;
+    const fullName = data.firstName + " " + data.lastName;
+    const deliveryFullNmae =
+      data.deliveryFirstName && data.deliveryFirstName.length > 0
+        ? data.deliveryFirstName + " " + data.deliveryLastName
+        : fullName;
 
     const order = await prisma.order.create({
       data: {
@@ -76,7 +88,9 @@ const deliveryFullNmae = data.deliveryFirstName && data.deliveryFirstName.length
         postOffice: data.postOffice,
         packstationNumber: data.packstationNumber,
         address: data.address,
-        deliveryAddress: data.deliveryAddress ? data.deliveryAddress : data.address,
+        deliveryAddress: data.deliveryAddress
+          ? data.deliveryAddress
+          : data.address,
         comment: data.comment,
         token: cartToken,
         totalAmount: userCart.totalAmount.toNumber() + deliveryPrice,
@@ -140,7 +154,7 @@ const deliveryFullNmae = data.deliveryFirstName && data.deliveryFirstName.length
         ...item.product,
         price: item.product.price.toNumber(),
       },
-    }))
+    }));
     const res = await sendEmail(
       data.email,
       "Pay order #" + order.id,
@@ -371,6 +385,7 @@ export async function createProduct(
         };
       })
     );
+    
     await prisma.product.create({
       data: {
         name: parsedData.productName,
@@ -397,7 +412,9 @@ export async function createProduct(
             })),
           ],
         },
-        aromas: parsedData.aromas,
+        aromas: {
+          connect: parsedData.aromas.map((id) => ({ id: Number(id) })),
+        },
         perfumer: parsedData.perfumer || undefined,
         classification: parsedData.classification,
         releaseYear: parsedData.releaseYear || undefined,
@@ -442,7 +459,7 @@ export async function createProduct(
               material: parsedData.materialRu,
               brandCountry: parsedData.brandCountryRu,
               manufacturingCountry: parsedData.manufacturingCountryRu,
-            }
+            },
           ],
         },
         variations: {
@@ -521,9 +538,11 @@ export async function updateProduct(
         },
         aromas:
           parsedData.aromas && parsedData.aromas.length
-            ? parsedData.aromas
+            ? {
+                connect: parsedData.aromas.map((id) => ({ id: Number(id) })),
+              }
             : undefined,
-       
+
         perfumer: parsedData.perfumer ? parsedData.perfumer : undefined,
         classification: parsedData.classification,
         releaseYear: Number(parsedData.releaseYear) || undefined,
@@ -583,7 +602,7 @@ export async function updateProduct(
         manufacturingCountry: parsedData.manufacturingCountryDe,
       },
     });
-    
+
     await prisma.productTranslation.upsert({
       where: {
         translation_unique: {
@@ -633,7 +652,7 @@ export async function deleteProduct(id: number) {
       where: { id },
       include: {
         variations: true,
-      }
+      },
     });
 
     if (!product) {
@@ -669,16 +688,13 @@ export async function deleteProduct(id: number) {
         throw new Error(removalResults.error.message);
       }
 
-
       await prisma.productVariation.deleteMany({
         where: {
           productId: id,
         },
       });
-
-
     }
-    
+
     await prisma.product.delete({
       where: { id },
     });
@@ -728,7 +744,7 @@ export async function createReview(formData: FormData) {
     const text = formData.get("comment") as string;
     const rating = Number(formData.get("rating"));
     const productId = formData.get("productId");
-    
+
     const data: any = {
       text,
       rating,
@@ -748,7 +764,6 @@ export async function createReview(formData: FormData) {
     }
 
     await prisma.review.create({ data });
-    
   } catch (error) {
     console.error("Error [CREATE_REVIEW]", error);
     throw error;
@@ -831,7 +846,6 @@ export async function deleteSlide(id: number) {
     if (!user || user.role !== UserRole.ADMIN) {
       throw new Error("Access denied");
     }
-
 
     const slide = await prisma.slide.findUnique({
       where: { id },

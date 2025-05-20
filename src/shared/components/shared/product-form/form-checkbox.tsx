@@ -10,7 +10,7 @@ import {
   FormMessage,
 } from "../../ui/form";
 import { Checkbox } from "../..";
-import { Aromas, Classifications, Notes } from "@prisma/client";
+import { Classifications, Notes } from "@prisma/client";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { ChevronDown } from "lucide-react";
 
@@ -37,7 +37,7 @@ export const FormCheckbox: FC<Props> = ({ control, name, items, title }) => {
         const currentValues =
           Array.isArray(field.value) &&
           field.value.every((value) => typeof value === "string")
-            ? (field.value as (Notes | Classifications | Aromas)[])
+            ? (field.value as (Notes | Classifications )[])
             : [];
         return (
           <FormItem className="mb-5 flex gap-2 items-center">
@@ -62,7 +62,7 @@ export const FormCheckbox: FC<Props> = ({ control, name, items, title }) => {
                     <FormControl>
                       <Checkbox
                         checked={currentValues.includes(
-                          item.value as  Classifications | Aromas
+                          item.value as  Classifications 
                         )}
                         onCheckedChange={(checked) => {
                           if (checked) {

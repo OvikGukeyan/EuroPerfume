@@ -9,7 +9,6 @@ import {
   formulas,
   genders,
   packagingFormats,
-  perfumeAromas,
   purposes,
   skinTypes,
   textures,
@@ -34,10 +33,7 @@ import {
 } from "@/src/shared/components/ui/form";
 
 import {
-  Note,
   NoteType,
-  ProductNote,
-  ProductTranslation,
 } from "@prisma/client";
 import { FC, useState } from "react";
 import { Control, useForm } from "react-hook-form";
@@ -47,18 +43,13 @@ import {
   CreateProductFormValues,
   CreateProductSchema,
 } from "@/src/shared/constants/create-product-schema";
-import { SafeProduct } from "@/src/shared/services/dto/product.dto";
-import { useNotes } from "@/src/shared/hooks";
+import { ProductDTO } from "@/src/shared/services/dto/product.dto";
+import { useAromas, useNotes } from "@/src/shared/hooks";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 
-type ProductWithTranslations = SafeProduct & {
-  translations: ProductTranslation[];
-  productNotes: (ProductNote & {
-    note: Note;
-  })[];
-};
+
 interface Props {
-  product?: ProductWithTranslations;
+  product?: Omit<ProductDTO, "variations" | "reviews">;
   categoryId: number;
   submitFunction:
     | ((data: FormData & CreateProductFormValues, id: number) => Promise<void>)
@@ -77,6 +68,8 @@ export const CreateProductForm: FC<Props> = ({
     loading: notesLoading,
     error: notesError,
   } = useNotes();
+
+  const {aromas, createAroma, loading: aromasLoading, error: aromasError} = useAromas();
   const translationRu = product?.translations.find(
     (translation) => translation.language === "RU"
   );
@@ -114,7 +107,7 @@ export const CreateProductForm: FC<Props> = ({
       materialDe: translationDe?.material || "",
 
       perfumer: product?.perfumer || "",
-      aromas: product?.aromas || [],
+      aromas: product?.aromas.map((aroma) => String(aroma.id)) || [],
       topNotes:
         product?.productNotes
           .filter((note) => note.noteType === NoteType.TOP)
@@ -171,11 +164,10 @@ export const CreateProductForm: FC<Props> = ({
     form
       .watch("aromas")
       ?.map(
-        (value) =>
-          perfumeAromas.find((aroma) => aroma.value === value)?.label.ru
+        (id) =>
+          aromas.find((aroma) => aroma.id === Number(id))?.labelRu
       )
       .join(", ") || "";
-
   const onSubmit = async (data: CreateProductFormValues) => {
     try {
       setLoading(true);
@@ -524,13 +516,32 @@ export const CreateProductForm: FC<Props> = ({
                     items={concentrations}
                   />
 
-                  <FormCheckbox
-                    title={choosedAromas ? choosedAromas : "Ароматы"}
-                    name="aromas"
-                    control={form.control}
-                    items={perfumeAromas}
-                  />
-
+                  <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
+                    <FormCheckbox
+                      title={choosedAromas ? choosedAromas : "Ароматы"}
+                      name="aromas"
+                      control={form.control}
+                      items={aromas.map((aroma) => ({
+                        label: {
+                          ru: aroma.labelRu,
+                          de: aroma.labelDe,
+                        },
+                        value: String(aroma.id),
+                      }))}
+                    />
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button variant="outline">Add new aroma</Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80">
+                        <CreateNoteForm
+                          onSubmit={createAroma}
+                          loading={aromasLoading}
+                          error={aromasError}
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                   <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
                     <FormCheckbox
                       title={topNotes ? topNotes : "Верхние нотты"}

@@ -1,6 +1,5 @@
 import {
   ApplicationMethod,
-  Aromas,
   Classifications,
   Effects,
   Finish,
@@ -24,7 +23,6 @@ export function parseProductFormData(formData: FormData) {
 
   const getJsonArray = <T>(key: string): T[] =>
     formData.get(key) ? JSON.parse(formData.get(key)!.toString()) : [];
-
   return {
     productName: getString("productName"),
     image: formData.getAll("image") as File[],
@@ -52,11 +50,11 @@ export function parseProductFormData(formData: FormData) {
     price: getNumber("price")!,
     gender: getString("gender") as Gender,
     concentration: getString("concentration") as PerfumeConcentration,
-    brand: getString("brand") ,
+    brand: getString("brand"),
     topNotes: getJsonArray("topNotes") as Notes[],
     heartNotes: getJsonArray("heartNotes") as Notes[],
     baseNotes: getJsonArray("baseNotes") as Notes[],
-    aromas: getJsonArray("aromas") as Aromas[],
+    aromas: getJsonArray("aromas") as Number[],
     perfumer: getString("perfumer"),
     classification: getJsonArray("classification") as Classifications[],
     releaseYear: getNumber("releaseYear")!,

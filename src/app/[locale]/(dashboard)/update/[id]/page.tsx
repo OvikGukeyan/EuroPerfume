@@ -15,6 +15,7 @@ export default async function Update({
     },
     include: {
       translations: true,
+      aromas: true,
       productNotes: {
         include: {
           note: true,
@@ -39,7 +40,7 @@ export default async function Update({
       <Title className="mb-5" text="Update product" />
 
       <CreateProductForm
-        product={safeProduct}
+        product={safeProduct }
         submitFunction={updateProduct}
         categoryId={product.categoryId}
       />
