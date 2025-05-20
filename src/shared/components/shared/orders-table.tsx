@@ -43,10 +43,6 @@ export const OrdersTable: FC<Props> = ({ className }) => {
             <TableHead>contact form</TableHead>
             <TableHead>delivery type</TableHead>
             <TableHead>Status</TableHead>
-            
-            
-            
-            
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -62,7 +58,9 @@ export const OrdersTable: FC<Props> = ({ className }) => {
               }
             >
               <TableCell>
-                <OrderItemsPopover order={order} />
+                <div onClick={(e) => e.stopPropagation()}>
+                  <OrderItemsPopover order={order} />
+                </div>
               </TableCell>
               <TableCell>{order.totalAmount}</TableCell>
               <TableCell>{order.fullName}</TableCell>
@@ -89,11 +87,12 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                   </SelectContent>
                 </Select>
               </TableCell>
-              
+
               <TableCell>
                 <Button
                   loading={loading}
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation();
                     removeOrder(order.id);
                   }}
                   variant="outline"

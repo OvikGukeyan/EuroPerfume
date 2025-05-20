@@ -30,7 +30,7 @@ export const useQueryFilters = (filters: Filters) => {
 
       const query = qs.stringify(params, { arrayFormat: "comma" });
       const url = `/?${query}`;
-      if (pathname === `/`) {
+      if (pathname === `/` || pathname === `/products` ) {
         window.history.pushState(null, "", url);
       } else {
         router.push(url);
