@@ -58,7 +58,7 @@
       "stepTitle": "3. Информация о доставке",
       "deliveryType": "Способ доставки",
       "commentPlaceholder": "Комментарий к заказу",
-      "billingAddress": "Aдрес из профиля",
+      "billingAddress": "Aдрес профиля",
       "differentAddress": "Другой адрес",
       "packstation": "DHL Почтомат",
       "postOffice": "Oтделение DHL",

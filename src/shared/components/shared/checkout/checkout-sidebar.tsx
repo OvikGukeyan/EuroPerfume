@@ -19,7 +19,7 @@ export const CheckoutSidebar: FC<Props> = ({ className, loading, totalAmount, it
     const t = useTranslations("Checkout.sidebar");
 
     return (
-        <WhiteBlock className='p-6 sticky top-4'>
+        <WhiteBlock className='p-2 md:p-6 sticky top-4'>
             <div className="flex flex-col gap-1">
                 <span className="text-xl">{t("totalPriceLabel")}</span>
                 {loading ? <Skeleton className="h-11 w-40" /> : <span className="h-11 text-[34px] font-extrabold">{totalAmountWithDelivery} €</span>}

@@ -25,7 +25,7 @@ export const CheckoutPersonalForm: FC<Props> = ({ className, totalAmount }) => {
         className,
         !totalAmount ? "opacity-50 pointer-events-none" : ""
       )}
-      contentClassName="p-8"
+      contentClassName="md:p-8"
     >
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         <FormInput

@@ -33,8 +33,8 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
         className,
         !totalAmount ? "opacity-50 pointer-events-none" : ""
       )}
-      title={t("stepTitle")}
-      contentClassName="p-8"
+      title={t("delivery.stepTitle")}
+      contentClassName=" md:p-8"
     >
       <div className="flex flex-col gap-5">
         <Title text={t("delivery.deliveryAddress")} size="xs" />
@@ -46,24 +46,24 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
           defaultValue={ShippingMethods.BILLING_ADDRESS}
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-4  h-16 px-4">
+          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto md:h-16 px-2 md:px-4">
             <TabsTrigger
-              className="h-10"
+              className="h-10 text-wrap"
               value={ShippingMethods.BILLING_ADDRESS}
             >
               {t("delivery.billingAddress")}
             </TabsTrigger>
             <TabsTrigger
-              className="h-10"
+              className="h-10 text-wrap"
               value={ShippingMethods.DIFFERENT_ADDRESS}
             >
               {t("delivery.differentAddress")}
             </TabsTrigger>
 
-            <TabsTrigger className="h-10 " value={ShippingMethods.PACKSTATION}>
+            <TabsTrigger className="h-10 text-wrap" value={ShippingMethods.PACKSTATION}>
               {t("delivery.packstation")}
             </TabsTrigger>
-            <TabsTrigger className="h-10 " value={ShippingMethods.POST_OFFICE}>
+            <TabsTrigger className="h-10 text-wrap" value={ShippingMethods.POST_OFFICE}>
               {t("delivery.postOffice")}
             </TabsTrigger>
           </TabsList>
