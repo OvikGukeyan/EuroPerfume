@@ -1,17 +1,14 @@
 "use client";
 import { ProductCard, ProductCardSkeleton } from ".";
 import { cn } from "@/src/shared/lib/utils";
-import { useProducts, useQueryFilters } from "@/src/shared/hooks";
-import { useFiltersStore } from "../../store/filters";
+import { useProducts } from "@/src/shared/hooks";
 
 interface Props {
   className?: string;
 }
 
 export const ProductsGroupList: React.FC<Props> = ({ className }) => {
-  const { items: products,availableFilters, loading } = useProducts();
-  const filters = useFiltersStore();
-  useQueryFilters(filters);
+  const { items: products, loading } = useProducts();
 
   return (
     <div

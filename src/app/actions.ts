@@ -482,10 +482,12 @@ export async function updateProduct(
     if (!user || user.role !== UserRole.ADMIN) {
       throw new Error("Access denied");
     }
-    const product = await prisma.product.findUnique({ where: { id },
+    const product = await prisma.product.findUnique({
+      where: { id },
       include: {
-      variations: true
-    }});
+        variations: true,
+      },
+    });
     if (!product) {
       throw new Error("Product not found");
     }
@@ -745,6 +747,40 @@ export async function deleteProduct(id: number) {
     });
   } catch (error) {
     console.error("Error [DELETE_PRODUCT]", error);
+    throw error;
+  }
+}
+
+export async function deleteProductVariation(id: number) {
+  try {
+    const user = await getUserSession();
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
+    const variation = await prisma.productVariation.findUnique({
+      where: { id },
+    });
+    if (!variation) {
+      throw new Error("Variation not found");
+    }
+    const getRelativePath = (url: string) =>
+      url.split("/storage/v1/object/public/images/")[1];
+
+    const relativePath = getRelativePath(variation.imageUrl);
+
+    const removalResults = await supabase.storage
+      .from("images")
+      .remove([relativePath]);
+
+    if (removalResults.error) {
+      throw new Error(removalResults.error.message);
+    }
+
+    await prisma.productVariation.delete({
+      where: { id },
+    });
+  } catch (error) {
+    console.error("Error [DELETE_PRODUCT_VARIATION]", error);
     throw error;
   }
 }

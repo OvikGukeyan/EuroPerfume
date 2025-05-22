@@ -117,7 +117,14 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
           />
 
           <Separator />
-
+          {product.variations.length > 1 && (
+            <ChooseVariation
+              setActiveVariation={setActiveVariation}
+              activeVariation={activeVariation}
+              className="mt-4"
+              items={product.variations}
+            />
+          )}
           <div
             style={{ scrollbarWidth: "none" }}
             className={cn("overflow-scroll  overflow-x-hidden")}
@@ -163,15 +170,6 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
               reviewsCount={count}
             />
           </a>
-
-          {product.variations.length > 1 && (
-            <ChooseVariation
-              setActiveVariation={setActiveVariation}
-              activeVariation={activeVariation}
-              className="mb-4"
-              items={product.variations}
-            />
-          )}
 
           {product.categoryId === 1 && product.productGroupId < 4 && (
             <VolumeSelection

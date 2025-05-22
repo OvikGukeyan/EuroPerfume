@@ -16,9 +16,10 @@ import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { Heart, Truck } from "lucide-react";
 import { Button, Separator } from "../ui";
-import { useInitFiltersFromUrl } from "@/src/shared/hooks";
+import { useInitFiltersFromUrl, useQueryFilters } from "@/src/shared/hooks";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/src/i18n/navigation";
+import { useFiltersStore } from "../../store/filters";
 interface Props {
   hasSearch?: boolean;
   hasCart?: boolean;
@@ -35,6 +36,8 @@ export const Header: React.FC<Props> = ({
   const searchParams = useSearchParams();
   const router = useRouter();
   useInitFiltersFromUrl();
+  const filters = useFiltersStore();
+  useQueryFilters(filters);
   useEffect(() => {
     const paid = searchParams.has("paid");
     const failed = searchParams.has("faild");

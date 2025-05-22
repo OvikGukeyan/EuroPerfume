@@ -79,54 +79,54 @@ export const CreateProductForm: FC<Props> = ({
   const form = useForm<CreateProductFormValues>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
-      productName: product?.name || "",
+      productName: product?.name || undefined,
       image: undefined,
 
       price: product?.price || undefined,
       gender: product?.gender || undefined,
       concentration: product?.concentration || undefined,
-      brand: product?.brandId.toString() || "",
+      brand: product?.brandId.toString() || undefined,
 
-      descriptionRu: translationRu?.description || "",
-      descriptionDe: translationDe?.description || "",
-      brandCountryRu: translationRu?.brandCountry || "",
-      brandCountryDe: translationDe?.brandCountry || "",
-      manufacturingCountryRu: translationRu?.manufacturingCountry || "",
-      manufacturingCountryDe: translationDe?.manufacturingCountry || "",
-      colorPaletteRu: translationRu?.colorPalette || "",
-      colorPaletteDe: translationDe?.colorPalette || "",
-      compositionFeaturesRu: translationRu?.compositionFeatures || "",
-      compositionFeaturesDe: translationDe?.compositionFeatures || "",
-      activeIngredientsRu: translationRu?.activeIngredients || "",
-      activeIngredientsDe: translationDe?.activeIngredients || "",
-      certificatesRu: translationRu?.certificates || "",
-      certificatesDe: translationDe?.certificates || "",
-      ethicsRu: translationRu?.ethics || "",
-      ethicsDe: translationDe?.ethics || "",
-      materialRu: translationRu?.material || "",
-      materialDe: translationDe?.material || "",
+      descriptionRu: translationRu?.description || undefined,
+      descriptionDe: translationDe?.description || undefined,
+      brandCountryRu: translationRu?.brandCountry || undefined,
+      brandCountryDe: translationDe?.brandCountry || undefined,
+      manufacturingCountryRu: translationRu?.manufacturingCountry || undefined,
+      manufacturingCountryDe: translationDe?.manufacturingCountry || undefined,
+      colorPaletteRu: translationRu?.colorPalette || undefined,
+      colorPaletteDe: translationDe?.colorPalette || undefined,
+      compositionFeaturesRu: translationRu?.compositionFeatures || undefined,
+      compositionFeaturesDe: translationDe?.compositionFeatures || undefined,
+      activeIngredientsRu: translationRu?.activeIngredients || undefined,
+      activeIngredientsDe: translationDe?.activeIngredients || undefined,
+      certificatesRu: translationRu?.certificates || undefined,
+      certificatesDe: translationDe?.certificates || undefined,
+      ethicsRu: translationRu?.ethics || undefined,
+      ethicsDe: translationDe?.ethics || undefined,
+      materialRu: translationRu?.material || undefined,
+      materialDe: translationDe?.material || undefined,
 
-      perfumer: product?.perfumer || "",
-      aromas: product?.aromas.map((aroma) => String(aroma.id)) || [],
+      perfumer: product?.perfumer || undefined,
+      aromas: product?.aromas.map((aroma) => String(aroma.id)) || undefined,
       topNotes:
         product?.productNotes
           .filter((note) => note.noteType === NoteType.TOP)
-          .map((note) => String(note.note.id)) || [],
+          .map((note) => String(note.note.id)) || undefined,
       heartNotes:
         product?.productNotes
           .filter((note) => note.noteType === NoteType.HEART)
-          .map((note) => String(note.note.id)) || [],
+          .map((note) => String(note.note.id)) || undefined,
       baseNotes:
         product?.productNotes
           .filter((note) => note.noteType === NoteType.BASE)
-          .map((note) => String(note.note.id)) || [],
-      classification: product?.classification || [],
+          .map((note) => String(note.note.id)) || undefined,
+      classification: product?.classification || undefined,
       releaseYear: product?.releaseYear || undefined,
       categoryId: product?.categoryId || categoryId,
       productGroupId: product?.productGroupId || undefined,
-      variations: [],
+      variations: undefined,
       age: product?.age || undefined,
-      series: product?.series || "",
+      series: product?.series || undefined,
       purpose: product?.purpose || undefined,
       finish: product?.finish || undefined,
       texture: product?.texture || undefined,
@@ -139,9 +139,9 @@ export const CreateProductForm: FC<Props> = ({
 
       applicationMethod: product?.applicationMethod || undefined,
       packagingFormat: product?.packagingFormat || undefined,
-      volume: product?.volume || "",
+      volume: product?.volume || undefined,
       skinType: product?.skinType || undefined,
-      size: product?.size || "",
+      size: product?.size || undefined,
     },
   });
   const topNotes =

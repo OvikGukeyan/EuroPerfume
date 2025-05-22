@@ -1,4 +1,4 @@
-import React, { act, FC } from 'react';
+import React, { FC } from 'react';
 import { cn } from '@/src/lib/utils';
 import { ProductVariation } from '@prisma/client';
 import { Button } from '../ui';
@@ -13,7 +13,7 @@ type Props = {
 export const ChooseVariation: FC<Props> = ({ className, items, setActiveVariation, activeVariation }) => {
     
   return (
-    <div style={{scrollbarWidth: 'none'}} className={cn('flex gap-3 w-full overflow-scroll ', className)}>
+    <div style={{scrollbarWidth: 'none'}} className={cn('flex gap-3 w-full overflow-x-scroll ', className)}>
 
       {items.map((item, index) => (
 

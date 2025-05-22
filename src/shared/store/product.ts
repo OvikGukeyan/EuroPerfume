@@ -3,7 +3,6 @@ import { create } from "zustand";
 import { ProductDTO } from "../services/dto/product.dto";
 import { GetSearchParams } from "../lib/find-products";
 import { deleteProduct, toggleProductAvailability } from "@/src/app/actions";
-import { NoteType } from "@prisma/client";
 import { getAvailableFilters } from "../lib";
 
 interface AvailableFilters {

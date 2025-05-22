@@ -5,7 +5,6 @@ import { Title, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
 import { Aroma, Brand, Note } from "@prisma/client";
 import { useFiltersStore } from "../../store/filters";
-import { useQueryFilters } from "../../hooks";
 import { cn } from "@/src/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 import { useProductStore } from "../../store/product";
@@ -21,12 +20,10 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
   const [availableFilters] = useProductStore((state) => [
     state.availableFilters,
   ]);
-  useQueryFilters(filters);
   const updatePreces = (prices: number[]) => {
     filters.setPrices("priceFrom", prices[0]);
     filters.setPrices("priceTo", prices[1]);
   };
-
   const locale = useLocale() as "ru" | "de";
   const t = useTranslations("Filters");
   return (

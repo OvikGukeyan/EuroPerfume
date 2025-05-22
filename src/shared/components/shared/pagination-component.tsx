@@ -3,7 +3,6 @@
 import React, { FC } from "react";
 import { useFiltersStore } from "../../store/filters";
 import { useProductStore } from "../../store/product";
-import { useQueryFilters } from "../../hooks";
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from "../ui/pagination";
 import { cn } from "@/src/lib/utils";
 
@@ -15,25 +14,24 @@ type Props = {
 export const PaginationComponent: FC<Props> = ({
   className,
 }) => {
-  const filters = useFiltersStore();
+  const [currentPage, setCurrentPage] = useFiltersStore(state => [state.currentPage, state.setCurrentPage]);
   const [pages] = useProductStore((state) => [state.pages]);
 
   const handleNextPageClick = () => {
-    if (filters.currentPage === pages) return;
-    filters.setCurrentPage(filters.currentPage + 1);
+    if (currentPage === pages) return;
+    setCurrentPage(currentPage + 1);
     window.scrollTo(0, 0);
   };
 
   const handlePreviousPageClick = () => {
-    if (filters.currentPage === 1) return;
-    filters.setCurrentPage(filters.currentPage - 1);
+    if (currentPage === 1) return;
+    setCurrentPage(currentPage - 1);
     window.scrollTo(0, 0);
   };
 
-  useQueryFilters(filters);
 
   const onPageChange = (page: number) => {
-    filters.setCurrentPage(page);
+    setCurrentPage(page);
     window.scrollTo(0, 0);
   };
   return (
@@ -46,7 +44,7 @@ export const PaginationComponent: FC<Props> = ({
           {[...Array(pages)].map((_, index) => (
             <PaginationItem key={index}>
               <PaginationLink
-                isActive={index + 1 === filters.currentPage}
+                isActive={index + 1 === currentPage}
                 href={"#"}
                 onClick={() => onPageChange(index + 1)}
               >
