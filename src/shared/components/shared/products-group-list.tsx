@@ -9,7 +9,7 @@ interface Props {
 }
 
 export const ProductsGroupList: React.FC<Props> = ({ className }) => {
-  const { items: products, loading } = useProducts();
+  const { items: products,availableFilters, loading } = useProducts();
   const filters = useFiltersStore();
   useQueryFilters(filters);
 

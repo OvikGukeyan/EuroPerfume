@@ -3,20 +3,12 @@
 import React, { FC } from "react";
 import { Title, CheckboxFiltersGroup } from ".";
 import { Input, RangeSlider } from "../ui";
-import {
-  Aroma,
-  Brand,
-  Note,
-  PerfumeConcentration,
-} from "@prisma/client";
-import {
-  classifications,
-  genders,
-} from "@/../../prisma/constants";
+import { Aroma, Brand, Note } from "@prisma/client";
 import { useFiltersStore } from "../../store/filters";
 import { useQueryFilters } from "../../hooks";
 import { cn } from "@/src/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
+import { useProductStore } from "../../store/product";
 interface Props {
   notes: Note[];
   brands: Brand[];
@@ -26,6 +18,9 @@ interface Props {
 
 export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
   const filters = useFiltersStore();
+  const [availableFilters] = useProductStore((state) => [
+    state.availableFilters,
+  ]);
   useQueryFilters(filters);
   const updatePreces = (prices: number[]) => {
     filters.setPrices("priceFrom", prices[0]);
@@ -38,43 +33,40 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
     <div className={cn("")}>
       <Title text={t("title")} className="mb-5 font-bold" />
 
-      <CheckboxFiltersGroup
-        title={t("brands")}
-        name="brands"
-        className="mb-5"
-        limit={3}
-        onClickCheckbox={filters.setSelectedBrands}
-        selected={filters.brands}
-        items={brands.map((item) => ({
-          text: item.name,
-          value: item.id.toString(),
-        }))}
-      />
+      {availableFilters?.brands && (
+        <CheckboxFiltersGroup
+          title={t("brands")}
+          name="brands"
+          className="mb-5"
+          limit={3}
+          onClickCheckbox={filters.setSelectedBrands}
+          selected={filters.brands}
+          items={availableFilters.brands}
+        />
+      )}
 
-      <CheckboxFiltersGroup
-        title={t("gender")}
-        name="gender"
-        className="mb-5"
-        onClickCheckbox={filters.setSelectedGender}
-        selected={filters.gender}
-        items={genders.map((item) => ({
-          text: item.label[locale],
-          value: item.value,
-        }))}
-      />
+      {availableFilters?.genders && (
+        <CheckboxFiltersGroup
+          title={t("gender")}
+          name="gender"
+          className="mb-5"
+          onClickCheckbox={filters.setSelectedGender}
+          selected={filters.gender}
+          items={availableFilters?.genders}
+        />
+      )}
 
-      <CheckboxFiltersGroup
-        title={t("classification")}
-        name="categories"
-        className="mb-5"
-        limit={3}
-        onClickCheckbox={filters.setSelectedClassification}
-        selected={filters.classification}
-        items={classifications.map((item) => ({
-          text: item.label[locale],
-          value: item.value,
-        }))}
-      />
+      {availableFilters?.classifications && (
+        <CheckboxFiltersGroup
+          title={t("classification")}
+          name="categories"
+          className="mb-5"
+          limit={3}
+          onClickCheckbox={filters.setSelectedClassification}
+          selected={filters.classification}
+          items={availableFilters.classifications}
+        />
+      )}
 
       <div className="mt-10 pb-7 pr-5">
         <p className="font-bold mb-3">{t("priceLabel")}</p>
@@ -108,91 +100,66 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           onValueChange={updatePreces}
         />
       </div>
-      {filters.category === 1 || filters.category === null &&
 
-        <>
-          <CheckboxFiltersGroup
-            title={t("concentration")}
-            name="concentration"
-            className="mb-5"
-            onClickCheckbox={filters.setSelectedConcentration}
-            selected={filters.concentration}
-            limit={3}
-            items={[
-              {
-                text: "Extrait de Parfum",
-                value: PerfumeConcentration.EXTRAIT,
-              },
-              { text: "Perfume", value: PerfumeConcentration.PERFUME },
-              {
-                text: "Eau de Parfum",
-                value: PerfumeConcentration.EAU_DE_PARFUM,
-              },
-              {
-                text: "Eau de Toilette",
-                value: PerfumeConcentration.EAU_DE_TOILETTE,
-              },
-              {
-                text: "Eau de Cologne",
-                value: PerfumeConcentration.EAU_DE_COLOGNE,
-              },
-            ]}
-          />
-          <CheckboxFiltersGroup
-            title={t("aromasGroup")}
-            name="aromas"
-            className="my-5"
-            limit={3}
-            // defaultItems={items.slice(0, 6)}
-            items={aromas?.map((item) => ({
-              text: locale === "de" ? item.labelDe : item.labelRu,
-              value: String(item.id),
-            }))}
-            onClickCheckbox={filters.setSelectedAromas}
-            selected={filters.aromas}
-          />
+      {availableFilters?.concentrations && (
+        <CheckboxFiltersGroup
+          title={t("concentration")}
+          name="concentration"
+          className="mb-5"
+          onClickCheckbox={filters.setSelectedConcentration}
+          selected={filters.concentration}
+          limit={3}
+          items={availableFilters.concentrations}
+        />
+      )}
+      {availableFilters?.aromas && (
+        <CheckboxFiltersGroup
+          title={t("aromasGroup")}
+          name="aromas"
+          className="my-5"
+          limit={3}
+          // defaultItems={items.slice(0, 6)}
+          items={availableFilters.aromas}
+          onClickCheckbox={filters.setSelectedAromas}
+          selected={filters.aromas}
+        />
+      )}
+      {availableFilters?.topNotes && (
+        <CheckboxFiltersGroup
+          title={t("topNotes")}
+          name="topNotes"
+          limit={3}
+          // defaultItems={items.slice(0, 6)}
+          items={availableFilters.topNotes}
+          onClickCheckbox={filters.setTopNotes}
+          selected={filters.topNotes}
+        />
+      )}
 
-          <CheckboxFiltersGroup
-            title={t("topNotes")}
-            name="topNotes"
-            limit={3}
-            // defaultItems={items.slice(0, 6)}
-            items={notes.map((note) => ({
-              text: locale === "de" ? note.labelDe : note.labelRu,
-              value: String(note.id),
-            }))}
-            onClickCheckbox={filters.setTopNotes}
-            selected={filters.topNotes}
-          />
+      {availableFilters?.heartNotes && (
+        <CheckboxFiltersGroup
+          className="my-5"
+          title={t("heartNotes")}
+          name="heartNotes"
+          limit={3}
+          // defaultItems={items.slice(0, 6)}
+          items={availableFilters.heartNotes}
+          onClickCheckbox={filters.setHeartNotes}
+          selected={filters.heartNotes}
+        />
+      )}
 
-          <CheckboxFiltersGroup
-            className="my-5"
-            title={t("heartNotes")}
-            name="heartNotes"
-            limit={3}
-            // defaultItems={items.slice(0, 6)}
-            items={notes.map((note) => ({
-              text: locale === "de" ? note.labelDe : note.labelRu,
-              value: String(note.id),
-            }))}
-            onClickCheckbox={filters.setHeartNotes}
-            selected={filters.heartNotes}
-          />
-
-          <CheckboxFiltersGroup
-            title={t("baseNotes")}
-            name="baseNotes"
-            limit={3}
-            // defaultItems={items.slice(0, 6)}
-            items={notes.map((note) => ({
-              text: locale === "de" ? note.labelDe : note.labelRu,
-              value: String(note.id),
-            }))}
-            onClickCheckbox={filters.setBaseNotes}
-            selected={filters.baseNotes}
-          />
-        </>
-      }
+      {availableFilters?.baseNotes && (
+        <CheckboxFiltersGroup
+          title={t("baseNotes")}
+          name="baseNotes"
+          limit={3}
+          // defaultItems={items.slice(0, 6)}
+          items={availableFilters.baseNotes}
+          onClickCheckbox={filters.setBaseNotes}
+          selected={filters.baseNotes}
+        />
+      )}
     </div>
   );
 };

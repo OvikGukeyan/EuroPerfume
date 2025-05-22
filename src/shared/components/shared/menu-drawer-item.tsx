@@ -42,7 +42,6 @@ export const MenuDrawerItem: FC<Props> = ({
     }
   };
   const handleSubItemClick = (productGroup: ProductGroup) => {
-    console.log('productGroup');
     setProductGroup(productGroup.id);
     setCategory(productGroup.categoryId);
     setOpen(false);

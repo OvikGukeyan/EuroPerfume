@@ -19,7 +19,6 @@ export default async function Order({
       user: true,
     },
   });
-  console.log(order?.user);
   return (
     <div className="my-4 px-7">
       <ul className=" md:columns-2 ">

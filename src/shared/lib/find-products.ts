@@ -167,6 +167,12 @@ export const findProducts = async (
           translations: true,
           variations: true,
           brand: true,
+          productNotes: {
+            include: {
+              note: true,
+            },
+          },
+          aromas: true,
         },
       }),
       prisma.product.count({

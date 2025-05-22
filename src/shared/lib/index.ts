@@ -9,3 +9,4 @@ export {calcTotlalAmountWithDelivery} from './calc-total-amount-with-delivery';
 export {parseProductFormData} from './parse-product-form-data';
 export {createCharacteristicsArray} from './create-characteristics-array';
 export {imageCompressor} from './image-compressor';
+export {getAvailableFilters} from './get-available-filters';

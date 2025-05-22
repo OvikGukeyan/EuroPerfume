@@ -1,13 +1,25 @@
 import { Api } from "../services/api-client";
 import { create } from "zustand";
 import { ProductDTO } from "../services/dto/product.dto";
-import { findProducts, GetSearchParams } from "../lib/find-products";
+import { GetSearchParams } from "../lib/find-products";
 import { deleteProduct, toggleProductAvailability } from "@/src/app/actions";
+import { NoteType } from "@prisma/client";
+import { getAvailableFilters } from "../lib";
 
+interface AvailableFilters {
+  brands: { text: string; value: string }[] | null;
+  classifications: { text: string; value: string }[] | null;
+  concentrations: { text: string; value: string }[] | null;
+  genders: { text: string; value: string }[] | null;
+  aromas: { text: string; value: string }[] | null;
+  baseNotes: { text: string; value: string }[] | null;
+  topNotes: { text: string; value: string }[] | null;
+  heartNotes: { text: string; value: string }[] | null;
+}
 interface ProductState {
   items: ProductDTO[];
   pages: number;
-  availableFilters: { text: string; value: string }[];
+  availableFilters: AvailableFilters | null;
   loading: boolean;
   error: boolean;
 
@@ -19,7 +31,7 @@ interface ProductState {
 export const useProductStore = create<ProductState>((set, get) => ({
   items: [],
   pages: 1,
-  availableFilters: [],
+  availableFilters: null,
   loading: true,
   error: false,
 
@@ -28,16 +40,12 @@ export const useProductStore = create<ProductState>((set, get) => ({
       set({ loading: true });
       const { products, totalPages } = await Api.products.getAll(params);
 
-      // const uniqueBrands = [...new Set(products.map((p) => ({text: p.brand.name, value: p.brand.id.toString() })))];
-      // const uniqueAromas = [
-      //   ...new Set(products.flatMap((p) => p.aromas.map((a) => ({text: a.labelDe, value: a.id.toString() })))),
-      // ];
-      // const uniqueClassifications = [
-      //   ...new Set(products.flatMap((p) => ({text: p.classification, value: p.classification}))),
-      // ];
-
-      set({ pages: totalPages });
-      set({ items: products });
+     const availableFilters = getAvailableFilters(products);
+      set({
+        items: products,
+        pages: totalPages,
+        availableFilters,
+      });
     } catch (error) {
       console.error(error);
     } finally {
