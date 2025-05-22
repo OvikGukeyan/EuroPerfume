@@ -385,7 +385,7 @@ export async function createProduct(
         };
       })
     );
-    
+
     await prisma.product.create({
       data: {
         name: parsedData.productName,
@@ -482,7 +482,10 @@ export async function updateProduct(
     if (!user || user.role !== UserRole.ADMIN) {
       throw new Error("Access denied");
     }
-    const product = await prisma.product.findUnique({ where: { id } });
+    const product = await prisma.product.findUnique({ where: { id },
+      include: {
+      variations: true
+    }});
     if (!product) {
       throw new Error("Product not found");
     }
@@ -502,6 +505,42 @@ export async function updateProduct(
       })
     );
 
+    const variationUploads = await Promise.all(
+      parsedData.variations.map(async (file) => {
+        const fileName = `${file.name}--${new Date().toISOString()}`;
+        const { data, error } = await supabase.storage
+          .from("images")
+          .upload(fileName, file, {
+            contentType: file.type,
+          });
+        if (error) throw error;
+        return {
+          imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${data?.path}`,
+          name: file.name.substring(0, file.name.lastIndexOf(".")) || file.name,
+        };
+      })
+    );
+    if (product.variations.length > 0) {
+      const getRelativePath = (url: string) =>
+        url.split("/storage/v1/object/public/images/")[1];
+
+      const relativePaths = product.variations.map((variation) =>
+        getRelativePath(variation.imageUrl)
+      );
+      const removalResults = await supabase.storage
+        .from("images")
+        .remove(relativePaths);
+
+      if (removalResults.error) {
+        throw new Error(removalResults.error.message);
+      }
+
+      await prisma.productVariation.deleteMany({
+        where: {
+          productId: id,
+        },
+      });
+    }
     await prisma.productNote.deleteMany({
       where: {
         productId: id,
@@ -562,6 +601,12 @@ export async function updateProduct(
         hypoallergenic:
           typeof parsedData.hypoallergenic === "boolean"
             ? parsedData.hypoallergenic
+            : undefined,
+        variations:
+          variationUploads.length > 0
+            ? {
+                create: variationUploads,
+              }
             : undefined,
         applicationMethod: parsedData.applicationMethod || undefined,
         packagingFormat: parsedData.packagingFormat || undefined,

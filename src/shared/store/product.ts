@@ -1,47 +1,55 @@
-import { Api } from '../services/api-client';
+import { Api } from "../services/api-client";
 import { create } from "zustand";
-import { ProductDTO } from '../services/dto/product.dto';
-import { findProducts, GetSearchParams } from '../lib/find-products';
-import { deleteProduct, toggleProductAvailability } from '@/src/app/actions';
-
+import { ProductDTO } from "../services/dto/product.dto";
+import { findProducts, GetSearchParams } from "../lib/find-products";
+import { deleteProduct, toggleProductAvailability } from "@/src/app/actions";
 
 interface ProductState {
-    items: ProductDTO[];
-    pages: number;
-    loading: boolean;
-    error: boolean;
+  items: ProductDTO[];
+  pages: number;
+  availableFilters: { text: string; value: string }[];
+  loading: boolean;
+  error: boolean;
 
-
-    fetchAllProducts: (params?: GetSearchParams) => Promise<void>;
-    deleteProduct: (id: number) => Promise<void>;
-    switchAvailability: (id: number, available: boolean) => Promise<void>;
+  fetchAllProducts: (params?: GetSearchParams) => Promise<void>;
+  deleteProduct: (id: number) => Promise<void>;
+  switchAvailability: (id: number, available: boolean) => Promise<void>;
 }
 
 export const useProductStore = create<ProductState>((set, get) => ({
   items: [],
   pages: 1,
+  availableFilters: [],
   loading: true,
   error: false,
 
   fetchAllProducts: async (params?: GetSearchParams) => {
-      try{
-          set({loading: true})
-          const {products, totalPages} = await Api.products.getAll(params);
-         
-          set({pages: totalPages})
-          set({items: products})
-      }catch(error){
-          console.error(error);
-      }finally{
-          set({loading: false})
-      }
+    try {
+      set({ loading: true });
+      const { products, totalPages } = await Api.products.getAll(params);
+
+      // const uniqueBrands = [...new Set(products.map((p) => ({text: p.brand.name, value: p.brand.id.toString() })))];
+      // const uniqueAromas = [
+      //   ...new Set(products.flatMap((p) => p.aromas.map((a) => ({text: a.labelDe, value: a.id.toString() })))),
+      // ];
+      // const uniqueClassifications = [
+      //   ...new Set(products.flatMap((p) => ({text: p.classification, value: p.classification}))),
+      // ];
+
+      set({ pages: totalPages });
+      set({ items: products });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      set({ loading: false });
+    }
   },
 
   deleteProduct: async (id: number) => {
     try {
       set({ loading: true, error: false });
       const data = await deleteProduct(id);
-      set({ items: get().items.filter(item => item.id !== id) });
+      set({ items: get().items.filter((item) => item.id !== id) });
     } catch (error) {
       console.error(error);
       set({ error: true });
@@ -54,12 +62,16 @@ export const useProductStore = create<ProductState>((set, get) => ({
     try {
       set({ loading: true, error: false });
       await toggleProductAvailability(id, available);
-      set({ items: get().items.map(item => item.id === id ? { ...item, available: available } : item) });
+      set({
+        items: get().items.map((item) =>
+          item.id === id ? { ...item, available: available } : item
+        ),
+      });
     } catch (error) {
       console.error(error);
       set({ error: true });
     } finally {
       set({ loading: false });
     }
-  }
+  },
 }));
