@@ -22,11 +22,12 @@ import {
 import { Rating } from "./rating";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import Image from "next/image";
-import { useRouter } from "@/src/i18n/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useCartStore } from "../../store";
 import toast from "react-hot-toast";
 import { ProductDTO } from "../../services/dto/product.dto";
+
+export type MediaItem = { type: "image" | "video"; url: string };
 
 export interface ProductWithTranslations extends ProductDTO {
   translations: ProductTranslation[];
@@ -88,6 +89,12 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
 
   const charactiristics = createCharacteristicsArray(product, locale);
   const t = useTranslations("Product");
+  const media: MediaItem[] = [
+    ...product.imageUrl.map((url) => ({ type: "image" as const, url })),
+    ...(product.videoUrl
+      ? [{ type: "video" as const, url: product.videoUrl }]
+      : []),
+  ];
   return (
     <div
       className={cn(
@@ -96,8 +103,8 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
       )}
     >
       <div className="flex  items-center justify-center flex-1 relative w-full lg:w-2/5 bg-[#f2f2f2] p-2 min-h-[400px]">
-        {product.imageUrl.length > 1 ? (
-          <ProductCarousel slides={product.imageUrl} />
+        {media.length > 1 ? (
+          <ProductCarousel slides={media} />
         ) : (
           <Image
             layout="fill"

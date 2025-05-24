@@ -18,6 +18,7 @@ export const CreateProductSchema = z
     productName: z.string().min(1, { message: "Name is required" }),
     image: z.array(z.instanceof(File)).optional(),
     variations: z.array(z.instanceof(File)).optional(),
+    video: z.instanceof(File).optional(),
 
     descriptionRu: z.string().min(10, { message: "Description should be at least 10 characters" }),
     descriptionDe: z.string().min(10, { message: "Description should be at least 10 characters" }),

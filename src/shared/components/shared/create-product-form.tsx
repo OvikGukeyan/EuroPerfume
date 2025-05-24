@@ -32,9 +32,7 @@ import {
   FormLabel,
 } from "@/src/shared/components/ui/form";
 
-import {
-  NoteType,
-} from "@prisma/client";
+import { NoteType } from "@prisma/client";
 import { FC, useState } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -46,7 +44,6 @@ import {
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
 import { useAromas, useNotes } from "@/src/shared/hooks";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
-
 
 interface Props {
   product?: Omit<ProductDTO, "variations" | "reviews">;
@@ -69,7 +66,12 @@ export const CreateProductForm: FC<Props> = ({
     error: notesError,
   } = useNotes();
 
-  const {aromas, createAroma, loading: aromasLoading, error: aromasError} = useAromas();
+  const {
+    aromas,
+    createAroma,
+    loading: aromasLoading,
+    error: aromasError,
+  } = useAromas();
   const translationRu = product?.translations.find(
     (translation) => translation.language === "RU"
   );
@@ -79,54 +81,54 @@ export const CreateProductForm: FC<Props> = ({
   const form = useForm<CreateProductFormValues>({
     resolver: zodResolver(CreateProductSchema),
     defaultValues: {
-      productName: product?.name || undefined,
+      productName: product?.name || "",
       image: undefined,
-
+      video: undefined,
       price: product?.price || undefined,
       gender: product?.gender || undefined,
       concentration: product?.concentration || undefined,
-      brand: product?.brandId.toString() || undefined,
+      brand: product?.brandId.toString() || "",
 
-      descriptionRu: translationRu?.description || undefined,
-      descriptionDe: translationDe?.description || undefined,
-      brandCountryRu: translationRu?.brandCountry || undefined,
-      brandCountryDe: translationDe?.brandCountry || undefined,
-      manufacturingCountryRu: translationRu?.manufacturingCountry || undefined,
-      manufacturingCountryDe: translationDe?.manufacturingCountry || undefined,
-      colorPaletteRu: translationRu?.colorPalette || undefined,
-      colorPaletteDe: translationDe?.colorPalette || undefined,
-      compositionFeaturesRu: translationRu?.compositionFeatures || undefined,
-      compositionFeaturesDe: translationDe?.compositionFeatures || undefined,
-      activeIngredientsRu: translationRu?.activeIngredients || undefined,
-      activeIngredientsDe: translationDe?.activeIngredients || undefined,
-      certificatesRu: translationRu?.certificates || undefined,
-      certificatesDe: translationDe?.certificates || undefined,
-      ethicsRu: translationRu?.ethics || undefined,
-      ethicsDe: translationDe?.ethics || undefined,
-      materialRu: translationRu?.material || undefined,
-      materialDe: translationDe?.material || undefined,
+      descriptionRu: translationRu?.description || "",
+      descriptionDe: translationDe?.description || "",
+      brandCountryRu: translationRu?.brandCountry || "",
+      brandCountryDe: translationDe?.brandCountry || "",
+      manufacturingCountryRu: translationRu?.manufacturingCountry || "",
+      manufacturingCountryDe: translationDe?.manufacturingCountry || "",
+      colorPaletteRu: translationRu?.colorPalette || "",
+      colorPaletteDe: translationDe?.colorPalette || "",
+      compositionFeaturesRu: translationRu?.compositionFeatures || "",
+      compositionFeaturesDe: translationDe?.compositionFeatures || "",
+      activeIngredientsRu: translationRu?.activeIngredients || "",
+      activeIngredientsDe: translationDe?.activeIngredients || "",
+      certificatesRu: translationRu?.certificates || "",
+      certificatesDe: translationDe?.certificates || "",
+      ethicsRu: translationRu?.ethics || "",
+      ethicsDe: translationDe?.ethics || "",
+      materialRu: translationRu?.material || "",
+      materialDe: translationDe?.material || "",
 
-      perfumer: product?.perfumer || undefined,
-      aromas: product?.aromas.map((aroma) => String(aroma.id)) || undefined,
+      perfumer: product?.perfumer || "",
+      aromas: product?.aromas.map((aroma) => String(aroma.id)) || [],
       topNotes:
         product?.productNotes
           .filter((note) => note.noteType === NoteType.TOP)
-          .map((note) => String(note.note.id)) || undefined,
+          .map((note) => String(note.note.id)) || [],
       heartNotes:
         product?.productNotes
           .filter((note) => note.noteType === NoteType.HEART)
-          .map((note) => String(note.note.id)) || undefined,
+          .map((note) => String(note.note.id)) || [],
       baseNotes:
         product?.productNotes
           .filter((note) => note.noteType === NoteType.BASE)
-          .map((note) => String(note.note.id)) || undefined,
-      classification: product?.classification || undefined,
+          .map((note) => String(note.note.id)) || [],
+      classification: product?.classification || [],
       releaseYear: product?.releaseYear || undefined,
       categoryId: product?.categoryId || categoryId,
       productGroupId: product?.productGroupId || undefined,
-      variations: undefined,
+      variations: [],
       age: product?.age || undefined,
-      series: product?.series || undefined,
+      series: product?.series || "",
       purpose: product?.purpose || undefined,
       finish: product?.finish || undefined,
       texture: product?.texture || undefined,
@@ -139,9 +141,9 @@ export const CreateProductForm: FC<Props> = ({
 
       applicationMethod: product?.applicationMethod || undefined,
       packagingFormat: product?.packagingFormat || undefined,
-      volume: product?.volume || undefined,
+      volume: product?.volume || "",
       skinType: product?.skinType || undefined,
-      size: product?.size || undefined,
+      size: product?.size || "",
     },
   });
   const topNotes =
@@ -163,10 +165,7 @@ export const CreateProductForm: FC<Props> = ({
   const choosedAromas =
     form
       .watch("aromas")
-      ?.map(
-        (id) =>
-          aromas.find((aroma) => aroma.id === Number(id))?.labelRu
-      )
+      ?.map((id) => aromas.find((aroma) => aroma.id === Number(id))?.labelRu)
       .join(", ") || "";
   const onSubmit = async (data: CreateProductFormValues) => {
     try {
@@ -250,6 +249,7 @@ export const CreateProductForm: FC<Props> = ({
           formData.append("variations", file);
         });
       }
+      formData.append("video", data.video || "");
       formData.append("concentration", data.concentration || "");
       formData.append("perfumer", data.perfumer || "");
       formData.append("aromas", JSON.stringify(data.aromas));
@@ -414,6 +414,27 @@ export const CreateProductForm: FC<Props> = ({
                             ? Array.from(e.target.files)
                             : [];
                           field.onChange(files);
+                        }}
+                        type="file"
+                        onBlur={field.onBlur}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="video"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormLabel>Video</FormLabel>
+                    <FormControl>
+                      <Input
+                        onChange={(e) => {
+                          const files = e.target.files
+                            ? Array.from(e.target.files)
+                            : [];
+                          field.onChange(files[0]);
                         }}
                         type="file"
                         onBlur={field.onBlur}

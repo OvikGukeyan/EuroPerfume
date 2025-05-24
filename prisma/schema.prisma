@@ -47,6 +47,7 @@ model Product {
   id             Int               @id @default(autoincrement())
   name           String
   imageUrl       String[]
+  videoUrl       String?
   categoryId     Int
   productGroupId Int
   gender         Gender?

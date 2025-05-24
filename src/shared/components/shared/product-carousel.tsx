@@ -4,9 +4,11 @@ import { EmblaOptionsType } from "embla-carousel";
 import useEmblaCarousel from "embla-carousel-react";
 import Image from "next/image";
 import { cn } from "@/src/lib/utils";
+import { MediaItem } from "./choose-product-form";
+import { PlayCircle } from "lucide-react";
 
 type PropType = {
-  slides: string[];
+  slides: MediaItem[];
   options?: EmblaOptionsType;
   className?: string;
 };
@@ -47,18 +49,35 @@ export const ProductCarousel: React.FC<PropType> = ({
   }, [emblaMainApi, onSelect]);
 
   return (
-    <div className={cn("flex flex-col items-center gap-4 w-full min-h-400", className)}>
+    <div
+      className={cn(
+        "flex flex-col items-center gap-4 w-full min-h-400",
+        className
+      )}
+    >
       <div
         className="relative w-full max-w-md overflow-hidden"
         ref={emblaMainRef}
       >
         <div className="flex transition-transform duration-0 w-full">
-          {slides.map((imageUrl, index) => (
+          {slides.map((slide, index) => (
             <div
               key={index}
               className="flex items-center justify-center  flex-shrink-0 aspect-square w-full  bg-white "
             >
-              <img src={imageUrl} alt={"image"} />
+              {slide.type === "video" ? (
+                <video
+                  key={index}
+                  src={slide.url}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  className="w-full h-auto"
+                />
+              ) : (
+                <img src={slide.url} alt={"image"} />
+              )}
             </div>
           ))}
         </div>
@@ -71,7 +90,7 @@ export const ProductCarousel: React.FC<PropType> = ({
           ref={emblaThumbsRef}
         >
           <div className="flex gap-2 overflow-y-hidden">
-            {slides.map((imageUrl, index) => (
+            {slides.map((slide, index) => (
               <div key={index} className="flex-shrink-0">
                 <button
                   onClick={() => onThumbClick(index)}
@@ -82,7 +101,11 @@ export const ProductCarousel: React.FC<PropType> = ({
                       : "border-gray-300"
                   }`}
                 >
-                  <Image width={64} height={64} src={imageUrl} alt={""} />
+                  {slide.type === "video" ? (
+                   <PlayCircle size={32} />
+                  ) : (
+                    <Image width={64} height={64} src={slide.url} alt={""} />
+                  )}
                 </button>
               </div>
             ))}

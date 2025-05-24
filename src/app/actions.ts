@@ -358,6 +358,29 @@ export async function createProduct(
     }
 
     const parsedData = parseProductFormData(formData);
+    const videoUpload = async () => {
+      const file = parsedData.video;
+      if (!file) {
+        return null;
+      }
+      const fileName = `video-${Date.now()}.${file.name.split(".").pop()}`;
+
+      const { data, error } = await supabase.storage
+        .from("videos")
+        .upload(fileName, file, {
+          contentType: file.type,
+        });
+
+      if (error) {
+        throw new Error("Upload failed");
+      }
+
+      const videoUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}videos/${data?.path}`;
+
+      return videoUrl;
+    };
+
+    const videoUrl = await videoUpload();
     const imageUploads = await Promise.all(
       parsedData.image.map(async (file) => {
         const fileName = `${file.name}--${new Date().toISOString()}`;
@@ -367,7 +390,7 @@ export async function createProduct(
             contentType: file.type,
           });
         if (error) throw error;
-        return process.env.NEXT_PUBLIC_SUPABASE_URL + data?.path;
+        return process.env.NEXT_PUBLIC_SUPABASE_URL + "images/" + data?.path;
       })
     );
     const variationUploads = await Promise.all(
@@ -380,7 +403,7 @@ export async function createProduct(
           });
         if (error) throw error;
         return {
-          imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${data?.path}`,
+          imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}images/${data?.path}`,
           name: file.name.substring(0, file.name.lastIndexOf(".")) || file.name,
         };
       })
@@ -390,6 +413,7 @@ export async function createProduct(
       data: {
         name: parsedData.productName,
         imageUrl: imageUploads,
+        videoUrl,
         price: parsedData.price,
         gender: parsedData.gender || undefined,
         concentration: parsedData.concentration || undefined,
@@ -493,7 +517,42 @@ export async function updateProduct(
     }
 
     const parsedData = parseProductFormData(formData);
+    const videoUpload = async () => {
+      const file = parsedData.video;
+      if (!file) {
+        return product.videoUrl;
+      }
+      const fileName = `video-${Date.now()}.${file.name.split(".").pop()}`;
 
+      const { data, error } = await supabase.storage
+        .from("videos")
+        .upload(fileName, file, {
+          contentType: file.type,
+        });
+
+      if (error) {
+        throw new Error("Upload failed");
+      }
+
+      const videoUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}videos/${data?.path}`;
+
+      return videoUrl;
+    };
+
+    const videoUrl = await videoUpload();
+    if (videoUrl && product.videoUrl) {
+      const getRelativePath = (url: string) =>
+        url.split("/storage/v1/object/public/videos/")[1];
+
+      const relativePath = getRelativePath(product.videoUrl);
+      const removalResults = await supabase.storage
+        .from("videos")
+        .remove([relativePath]);
+
+      if (removalResults.error) {
+        throw new Error(removalResults.error.message);
+      }
+    }
     const imageUploads = await Promise.all(
       parsedData.image.map(async (file) => {
         const fileName = `${file.name}--${new Date().toISOString()}`;
@@ -503,10 +562,24 @@ export async function updateProduct(
             contentType: file.type,
           });
         if (error) throw error;
-        return process.env.NEXT_PUBLIC_SUPABASE_URL + data?.path;
+        return process.env.NEXT_PUBLIC_SUPABASE_URL + "images/" + data?.path;
       })
     );
+    if (imageUploads.length > 0 && product.imageUrl.length > 0) {
+      const getRelativePath = (url: string) =>
+        url.split("/storage/v1/object/public/images/")[1];
 
+      const relativePaths = product.imageUrl.map((image) =>
+        getRelativePath(image)
+      );
+      const removalResults = await supabase.storage
+        .from("images")
+        .remove(relativePaths);
+
+      if (removalResults.error) {
+        throw new Error(removalResults.error.message);
+      }
+    }
     const variationUploads = await Promise.all(
       parsedData.variations.map(async (file) => {
         const fileName = `${file.name}--${new Date().toISOString()}`;
@@ -517,7 +590,7 @@ export async function updateProduct(
           });
         if (error) throw error;
         return {
-          imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${data?.path}`,
+          imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}images/${data?.path}`,
           name: file.name.substring(0, file.name.lastIndexOf(".")) || file.name,
         };
       })
@@ -553,6 +626,7 @@ export async function updateProduct(
       data: {
         name: parsedData.productName,
         imageUrl: imageUploads.length > 0 ? imageUploads : product.imageUrl,
+        videoUrl,
         price: Number(parsedData.price),
         gender: parsedData.gender || undefined,
         concentration: parsedData.concentration
@@ -714,6 +788,20 @@ export async function deleteProduct(id: number) {
       const removalResults = await supabase.storage
         .from("images")
         .remove(relativePaths);
+
+      if (removalResults.error) {
+        throw new Error(removalResults.error.message);
+      }
+    }
+
+    if (product.videoUrl) {
+      const getRelativePath = (url: string) =>
+        url.split("/storage/v1/object/public/videos/")[1];
+
+      const relativePath = getRelativePath(product.videoUrl);
+      const removalResults = await supabase.storage
+        .from("videos")
+        .remove([relativePath]);
 
       if (removalResults.error) {
         throw new Error(removalResults.error.message);
@@ -909,8 +997,8 @@ export async function createSlide(formData: FormData) {
       data: {
         name: name,
         href: link,
-        desctopImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[0].data?.path}`,
-        mobileImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}${uploadResults[1].data?.path}`,
+        desctopImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}images/${uploadResults[0].data?.path}`,
+        mobileImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}images/${uploadResults[1].data?.path}`,
       },
     });
   } catch (error) {

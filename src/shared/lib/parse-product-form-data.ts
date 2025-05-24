@@ -21,11 +21,12 @@ export function parseProductFormData(formData: FormData) {
     return val ? Number(val) : undefined;
   };
 
-  const getJsonArray = <T>(key: string): T[] =>
+  const getJsonArray = <T>(key: string): T[] => 
     formData.get(key) ? JSON.parse(formData.get(key)!.toString()) : [];
   return {
     productName: getString("productName"),
     image: formData.getAll("image") as File[],
+    video: formData.get("video") as File,
     variations: formData.getAll("variations") as File[],
 
     descriptionRu: getString("descriptionRu"),
