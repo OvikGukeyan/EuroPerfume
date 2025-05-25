@@ -1,4 +1,3 @@
-'use server';
 import { supabase } from "@/src/lib/supabase";
 
 export const handleVideoUpload = async (file: File): Promise<string | null> => {
