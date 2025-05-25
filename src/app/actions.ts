@@ -358,29 +358,7 @@ export async function createProduct(
     }
 
     const parsedData = parseProductFormData(formData);
-    const videoUpload = async () => {
-      const file = parsedData.video;
-      if (!file) {
-        return null;
-      }
-      const fileName = `video-${Date.now()}.${file.name.split(".").pop()}`;
-
-      const { data, error } = await supabase.storage
-        .from("videos")
-        .upload(fileName, file, {
-          contentType: file.type,
-        });
-
-      if (error) {
-        throw new Error("Upload failed");
-      }
-
-      const videoUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}videos/${data?.path}`;
-
-      return videoUrl;
-    };
-
-    const videoUrl = await videoUpload();
+   
     const imageUploads = await Promise.all(
       parsedData.image.map(async (file) => {
         const fileName = `${file.name}--${new Date().toISOString()}`;
@@ -413,7 +391,7 @@ export async function createProduct(
       data: {
         name: parsedData.productName,
         imageUrl: imageUploads,
-        videoUrl,
+        videoUrl: parsedData.video,
         price: parsedData.price,
         gender: parsedData.gender || undefined,
         concentration: parsedData.concentration || undefined,
@@ -517,30 +495,8 @@ export async function updateProduct(
     }
 
     const parsedData = parseProductFormData(formData);
-    const videoUpload = async () => {
-      const file = parsedData.video;
-      if (!file) {
-        return product.videoUrl;
-      }
-      const fileName = `video-${Date.now()}.${file.name.split(".").pop()}`;
-
-      const { data, error } = await supabase.storage
-        .from("videos")
-        .upload(fileName, file, {
-          contentType: file.type,
-        });
-
-      if (error) {
-        throw new Error("Upload failed");
-      }
-
-      const videoUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}videos/${data?.path}`;
-
-      return videoUrl;
-    };
-
-    const videoUrl = await videoUpload();
-    if (videoUrl && product.videoUrl) {
+  
+    if (parsedData.video && product.videoUrl) {
       const getRelativePath = (url: string) =>
         url.split("/storage/v1/object/public/videos/")[1];
 
@@ -626,7 +582,7 @@ export async function updateProduct(
       data: {
         name: parsedData.productName,
         imageUrl: imageUploads.length > 0 ? imageUploads : product.imageUrl,
-        videoUrl,
+        videoUrl: parsedData.video,
         price: Number(parsedData.price),
         gender: parsedData.gender || undefined,
         concentration: parsedData.concentration

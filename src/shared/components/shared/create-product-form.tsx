@@ -44,6 +44,7 @@ import {
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
 import { useAromas, useNotes } from "@/src/shared/hooks";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
+import { handleVideoUpload } from "../../lib";
 
 interface Props {
   product?: Omit<ProductDTO, "variations" | "reviews">;
@@ -430,11 +431,15 @@ export const CreateProductForm: FC<Props> = ({
                     <FormLabel>Video</FormLabel>
                     <FormControl>
                       <Input
-                        onChange={(e) => {
-                          const files = e.target.files
-                            ? Array.from(e.target.files)
-                            : [];
-                          field.onChange(files[0]);
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+
+                          const videoUrl = await handleVideoUpload(file);
+
+                          if (videoUrl) {
+                            field.onChange(videoUrl);
+                          }
                         }}
                         type="file"
                         onBlur={field.onBlur}

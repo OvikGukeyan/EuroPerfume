@@ -26,7 +26,7 @@ export function parseProductFormData(formData: FormData) {
   return {
     productName: getString("productName"),
     image: formData.getAll("image") as File[],
-    video: formData.get("video") as File,
+    video: getString("video"),
     variations: formData.getAll("variations") as File[],
 
     descriptionRu: getString("descriptionRu"),
