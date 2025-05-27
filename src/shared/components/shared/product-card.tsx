@@ -2,16 +2,15 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { use, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChooseVariation, Title, VolumeSelection } from ".";
 import { Button } from "../ui";
-import { Heart, HeartOff, Plus, ShoppingCart } from "lucide-react";
+import { Heart, Plus, ShoppingCart } from "lucide-react";
 import toast from "react-hot-toast";
-import { useCartStore, useFavoritesStore } from "@/src/shared/store";
+import { useCartStore } from "@/src/shared/store";
 import { Volume, volumes } from "@/src/shared/constants/perfume";
 import { calcPrice } from "@/src/shared/lib";
 import { HeartBlack } from "@/src/shared/icons";
-import { unknown } from "zod";
 import { PerfumeConcentration, ProductVariation } from "@prisma/client";
 import { it } from "node:test";
 import { useFavorites } from "@/src/shared/hooks";

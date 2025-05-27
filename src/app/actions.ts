@@ -360,8 +360,8 @@ export async function createProduct(
     const parsedData = parseProductFormData(formData);
    
     const imageUploads = await Promise.all(
-      parsedData.image.map(async (file) => {
-        const fileName = `${file.name}--${new Date().toISOString()}`;
+      parsedData.image.map(async (file, index) => {
+        const fileName = `${index}${file.name}--${new Date().toISOString()}`;
         const { data, error } = await supabase.storage
           .from("images")
           .upload(fileName, file, {
@@ -510,8 +510,8 @@ export async function updateProduct(
       }
     }
     const imageUploads = await Promise.all(
-      parsedData.image.map(async (file) => {
-        const fileName = `${file.name}--${new Date().toISOString()}`;
+      parsedData.image.map(async (file, index) => {
+        const fileName = `${index}${file.name}--${new Date().toISOString()}`;
         const { data, error } = await supabase.storage
           .from("images")
           .upload(fileName, file, {
