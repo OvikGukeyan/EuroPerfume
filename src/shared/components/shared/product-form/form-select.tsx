@@ -15,7 +15,6 @@ import {
 } from "../../ui/select";
 import { Control } from "react-hook-form";
 import { CreateProductFormValues } from "@/src/shared/constants/create-product-schema";
-import { search } from "@/src/shared/services/products";
 
 interface Props {
   control: Control<CreateProductFormValues>;

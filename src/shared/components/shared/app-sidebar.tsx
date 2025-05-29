@@ -16,7 +16,14 @@ import {
   SidebarMenuSub,
   SidebarMenuSubItem,
 } from "../ui/sidebar";
-import { Folders, GalleryHorizontalEnd, House, Music3, Plus, Settings2 } from "lucide-react";
+import {
+  Folders,
+  GalleryHorizontalEnd,
+  House,
+  Music3,
+  Plus,
+  Settings2,
+} from "lucide-react";
 import Link from "next/link";
 import {
   Collapsible,
@@ -32,9 +39,8 @@ type Props = {
 export const AppSidebar: FC<Props> = ({ className }) => {
   const pathName = usePathname();
   const tools = [
-   
     { name: "Products", icon: <Settings2 />, href: "/products" },
-   
+
     {
       name: "Create New Slde",
       icon: <Plus />,
@@ -73,7 +79,6 @@ export const AppSidebar: FC<Props> = ({ className }) => {
                   </CollapsibleTrigger>
                   <CollapsibleContent>
                     <SidebarMenuSub>
-                      
                       <Link href={"/create/1"}>
                         <SidebarMenuSubItem>
                           <SidebarMenuButton>Perfume</SidebarMenuButton>
@@ -91,7 +96,6 @@ export const AppSidebar: FC<Props> = ({ className }) => {
                           <SidebarMenuButton>Other</SidebarMenuButton>
                         </SidebarMenuSubItem>
                       </Link>
-
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </SidebarMenuItem>
@@ -104,10 +108,10 @@ export const AppSidebar: FC<Props> = ({ className }) => {
                       isActive={pathName === tool.href}
                       asChild
                     >
-                      <a href={"#"}>
+                      <div>
                         {tool.icon}
                         <span>{tool.name}</span>
-                      </a>
+                      </div>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </Link>

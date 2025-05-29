@@ -45,6 +45,7 @@ import { ProductDTO } from "@/src/shared/services/dto/product.dto";
 import { useAromas, useNotes } from "@/src/shared/hooks";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 import { handleVideoUpload } from "../../lib";
+import { Trash } from "lucide-react";
 
 interface Props {
   product?: Omit<ProductDTO, "variations" | "reviews">;
@@ -69,6 +70,7 @@ export const CreateProductForm: FC<Props> = ({
 
   const {
     aromas,
+    deleteAroma,
     createAroma,
     loading: aromasLoading,
     error: aromasError,
@@ -544,8 +546,8 @@ export const CreateProductForm: FC<Props> = ({
 
                   <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
                     <FormCheckbox
-                      title={choosedAromas ? choosedAromas : "Ароматы"}
                       name="aromas"
+                      title={choosedAromas ? choosedAromas : "Ароматы"}
                       control={form.control}
                       items={aromas.map((aroma) => ({
                         label: {
@@ -555,23 +557,46 @@ export const CreateProductForm: FC<Props> = ({
                         value: String(aroma.id),
                       }))}
                     />
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <Button variant="outline">Add new aroma</Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-80">
-                        <CreateNoteForm
-                          onSubmit={createAroma}
-                          loading={aromasLoading}
-                          error={aromasError}
-                        />
-                      </PopoverContent>
-                    </Popover>
+                    <div className="flex gap-5">
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline">Add new</Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-80">
+                          <CreateNoteForm
+                            onSubmit={createAroma}
+                            loading={aromasLoading}
+                            error={aromasError}
+                          />
+                        </PopoverContent>
+                      </Popover>
+
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button variant="outline">Delete</Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-80">
+                          <ul>
+                            {aromas.map((item) => (
+                              <li
+                                className="flex items-center justify-between cursor-pointer mb-2 hover:bg-slate-100 h-8 px-2"
+                                key={item.id}
+                                onClick={() => deleteAroma(item.id)}
+                              >
+                                <p>{item.labelRu}</p>
+                                <Trash size={16} />
+                              </li>
+                            ))}
+                          </ul>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
                   </div>
+
                   <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
                     <FormCheckbox
-                      title={topNotes ? topNotes : "Верхние нотты"}
                       name="topNotes"
+                      title={topNotes ? topNotes : "Верхние нотты"}
                       control={form.control}
                       items={notes.map((note) => ({
                         label: {
@@ -583,8 +608,8 @@ export const CreateProductForm: FC<Props> = ({
                     />
 
                     <FormCheckbox
-                      title={heartNotes ? heartNotes : "Средние нотты"}
                       name="heartNotes"
+                      title={heartNotes ? heartNotes : "Средние нотты"}
                       control={form.control}
                       items={notes.map((note) => ({
                         label: {
@@ -596,8 +621,8 @@ export const CreateProductForm: FC<Props> = ({
                     />
 
                     <FormCheckbox
-                      title={baseNotes ? baseNotes : "Базовые нотты"}
                       name="baseNotes"
+                      title={baseNotes ? baseNotes : "Базовые нотты"}
                       control={form.control}
                       items={notes.map((note) => ({
                         label: {

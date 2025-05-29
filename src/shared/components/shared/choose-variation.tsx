@@ -13,7 +13,7 @@ type Props = {
 export const ChooseVariation: FC<Props> = ({ className, items, setActiveVariation, activeVariation }) => {
     
   return (
-    <div style={{scrollbarWidth: 'none'}} className={cn('flex gap-3 w-full overflow-x-scroll ', className)}>
+    <div style={{scrollbarWidth: 'none'}} className={cn('flex gap-3 w-full overflow-x-scroll overflow-y-hidden', className)}>
 
       {items.map((item, index) => (
 

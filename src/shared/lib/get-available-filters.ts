@@ -1,6 +1,6 @@
 import { NoteType } from "@prisma/client";
 import { ProductDTO } from "../services/dto/product.dto";
-import { get } from "http";
+import { classifications, concentrations, genders } from "@/prisma/constants";
 
 export const getAvailableFilters = (products: ProductDTO[]) => {
   function getUniqueBy<T>(arr: T[], key: keyof T): T[] {
@@ -25,7 +25,7 @@ export const getAvailableFilters = (products: ProductDTO[]) => {
     products
       .flatMap((p) =>
         p.classification.map((c) => ({
-          text: c.toString(),
+          text: classifications.find((el) => el.value === c)?.label.de || "",
           value: c.toString(),
         }))
       )
@@ -37,7 +37,9 @@ export const getAvailableFilters = (products: ProductDTO[]) => {
       p.concentration
         ? [
             {
-              text: p.concentration.toString(),
+              text:
+                concentrations.find((el) => el.value === p.concentration)
+                  ?.name || "",
               value: p.concentration.toString(),
             },
           ]
@@ -51,7 +53,7 @@ export const getAvailableFilters = (products: ProductDTO[]) => {
       p.gender
         ? [
             {
-              text: p.gender.toString(),
+              text: genders.find((el) => el.value === p.gender)?.label.de || "",
               value: p.gender.toString(),
             },
           ]

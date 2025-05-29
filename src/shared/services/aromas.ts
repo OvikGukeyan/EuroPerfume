@@ -9,3 +9,7 @@ export const fetchAromas = async (): Promise<Aroma[]> => {
 export const createAroma = async (data: AromaValues): Promise<Aroma> => {
   return (await axiosInstance.post<Aroma>("/aromas", { data })).data;
 };
+
+export const deleteAroma = async (id: number): Promise<Aroma[]> => {
+  return (await axiosInstance.delete<Aroma[]>(`/aromas/${id}`)).data;
+};

@@ -1,7 +1,6 @@
 import { Volume } from "../constants/perfume";
 
 export const calcPrice = (volume: Volume, price: number): number => {
-    console.log(price, volume, price * volume)
 
     const finalPrice =
     (volume <= 10 && price * volume + 1) ||

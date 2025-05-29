@@ -8,6 +8,7 @@ import { useFiltersStore } from "../../store/filters";
 import { cn } from "@/src/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 import { useProductStore } from "../../store/product";
+import { concentrations } from "@/prisma/constants";
 interface Props {
   notes: Note[];
   brands: Brand[];
@@ -20,6 +21,11 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
   const [availableFilters] = useProductStore((state) => [
     state.availableFilters,
   ]);
+
+
+
+  
+
   const updatePreces = (prices: number[]) => {
     filters.setPrices("priceFrom", prices[0]);
     filters.setPrices("priceTo", prices[1]);

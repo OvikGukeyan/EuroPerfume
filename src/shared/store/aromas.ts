@@ -13,6 +13,7 @@ export interface AromasState {
 
     fetchAromas: () => Promise<void>;
     createAroma: (note: AromaValues) => Promise<void>;
+    deleteAroma: (id: number) => Promise<void>;
 }
 
 export const useAromasStore = create<AromasState>()((set) => ({
@@ -47,4 +48,17 @@ export const useAromasStore = create<AromasState>()((set) => ({
             set({ loading: false });
         }
     },
+
+    deleteAroma: async (id: number) => {
+        try {
+            set({ loading: true, error: false });
+            const data = await Api.aromas.deleteAroma(id);
+            set({ aromas: data });
+        } catch (error) {
+            console.error(error);
+            set({ error: true });
+        } finally {
+            set({ loading: false });
+        }
+    }
 }));
