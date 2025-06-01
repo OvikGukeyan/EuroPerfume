@@ -20,7 +20,6 @@ import {
   Folders,
   GalleryHorizontalEnd,
   House,
-  Music3,
   Plus,
   Settings2,
 } from "lucide-react";

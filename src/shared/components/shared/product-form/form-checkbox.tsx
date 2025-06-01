@@ -10,16 +10,14 @@ import {
   FormMessage,
 } from "../../ui/form";
 import { Checkbox } from "../..";
-import { Classifications, Notes } from "@prisma/client";
 import { Popover, PopoverContent, PopoverTrigger } from "../../ui/popover";
 import { ChevronDown } from "lucide-react";
 
 interface Props {
   control: Control<CreateProductFormValues>;
-  items: { label: { ru: string; de: string }; value: string }[];
+  items: { labelRu: string; labelDe: string; id: string }[];
   name: keyof CreateProductFormValues;
-  title: string
-
+  title: string;
 }
 
 export const FormCheckbox: FC<Props> = ({ control, name, items, title }) => {
@@ -28,7 +26,9 @@ export const FormCheckbox: FC<Props> = ({ control, name, items, title }) => {
     setSearchValue(event.target.value);
   };
 
-  const list = items.filter(item => item.label.ru.toLowerCase().includes(searchValue.toLowerCase())) 
+  const list = items.filter((item) =>
+    item.labelRu.toLowerCase().includes(searchValue.toLowerCase())
+  );
   return (
     <FormField
       name={name}
@@ -37,7 +37,7 @@ export const FormCheckbox: FC<Props> = ({ control, name, items, title }) => {
         const currentValues =
           Array.isArray(field.value) &&
           field.value.every((value) => typeof value === "string")
-            ? (field.value as (Notes | Classifications )[])
+            ? field.value
             : [];
         return (
           <FormItem className="mb-5 flex gap-2 items-center">
@@ -56,21 +56,21 @@ export const FormCheckbox: FC<Props> = ({ control, name, items, title }) => {
                 </div>
                 {list.map((item) => (
                   <div
-                    key={item.label.ru + name}
+                    key={item.labelRu + name}
                     className="flex flex-row items-start space-x-3 space-y-0"
                   >
                     <FormControl>
                       <Checkbox
                         checked={currentValues.includes(
-                          item.value as  Classifications 
+                          item.id
                         )}
                         onCheckedChange={(checked) => {
                           if (checked) {
-                            field.onChange([...currentValues, item.value]);
+                            field.onChange([...currentValues, item.id]);
                           } else {
                             field.onChange(
                               currentValues.filter(
-                                (value) => value !== item.value
+                                (value) => value !== item.id
                               )
                             );
                           }
@@ -78,7 +78,7 @@ export const FormCheckbox: FC<Props> = ({ control, name, items, title }) => {
                       />
                     </FormControl>
                     <FormLabel className="text-sm font-normal">
-                      {item.label.ru}
+                      {item.labelRu}
                     </FormLabel>
                   </div>
                 ))}

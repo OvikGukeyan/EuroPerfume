@@ -29,7 +29,7 @@ import {
 import { CartItemDTO } from "../shared/services/dto/cart.dto";
 import { getUserSession } from "../shared/lib/get-user-session";
 import { supabase } from "../lib/supabase";
-import { NoteValues } from "../shared/store";
+import { MetaValues } from "../shared/store";
 
 export async function createOrder(data: CheckoutFormValues) {
   try {
@@ -358,7 +358,7 @@ export async function createProduct(
     }
 
     const parsedData = parseProductFormData(formData);
-   
+
     const imageUploads = await Promise.all(
       parsedData.image.map(async (file, index) => {
         const fileName = `${index}${file.name}--${new Date().toISOString()}`;
@@ -400,15 +400,15 @@ export async function createProduct(
         },
         productNotes: {
           create: [
-            ...parsedData.topNotes.map((noteId: string) => ({
+            ...parsedData.topNotes.map((noteId) => ({
               note: { connect: { id: Number(noteId) } },
               noteType: NoteType.TOP,
             })),
-            ...parsedData.heartNotes.map((noteId: string) => ({
+            ...parsedData.heartNotes.map((noteId) => ({
               note: { connect: { id: Number(noteId) } },
               noteType: NoteType.HEART,
             })),
-            ...parsedData.baseNotes.map((noteId: string) => ({
+            ...parsedData.baseNotes.map((noteId) => ({
               note: { connect: { id: Number(noteId) } },
               noteType: NoteType.BASE,
             })),
@@ -418,24 +418,46 @@ export async function createProduct(
           connect: parsedData.aromas.map((id) => ({ id: Number(id) })),
         },
         perfumer: parsedData.perfumer || undefined,
-        classification: parsedData.classification,
+        classification: {
+          connect: parsedData.classification.map((id) => ({ id: Number(id) })),
+        },
         releaseYear: parsedData.releaseYear || undefined,
         category: { connect: { id: parsedData.categoryId } },
         productGroup: { connect: { id: parsedData.productGroupId } },
         available: true,
         age: parsedData.age,
         series: parsedData.series || undefined,
-        purpose: parsedData.purpose || undefined,
-        finish: parsedData.finish || undefined,
-        texture: parsedData.texture || undefined,
-        formula: parsedData.formula || undefined,
-        effect: parsedData.effect || undefined,
+        purpose: {
+          connect: parsedData.purpose.map((id) => ({ id: Number(id) })),
+        },
+        finish: {
+          connect: parsedData.finish.map((id) => ({ id: Number(id) })),
+        },
+        texture: {
+          connect: parsedData.texture.map((id) => ({ id: Number(id) })),
+        },
+        formula: {
+          connect: parsedData.formula.map((id) => ({ id: Number(id) })),
+        },
+        effect: {
+          connect: parsedData.effect.map((id) => ({ id: Number(id) })),
+        },
         effectDuration: parsedData.effectDuration,
         hypoallergenic: parsedData.hypoallergenic,
-        applicationMethod: parsedData.applicationMethod || undefined,
-        packagingFormat: parsedData.packagingFormat || undefined,
+        applicationMethod: {
+          connect: parsedData.applicationMethod.map((id) => ({
+            id: Number(id),
+          })),
+        },
+        packagingFormat: {
+          connect: parsedData.packagingFormat.map((id) => ({
+            id: Number(id),
+          })),
+        },
         volume: parsedData.volume || undefined,
-        skinType: parsedData.skinType || undefined,
+        skinType: {
+          connect: parsedData.skinType.map((id) => ({ id: Number(id) })),
+        },
         translations: {
           create: [
             {
@@ -495,7 +517,7 @@ export async function updateProduct(
     }
 
     const parsedData = parseProductFormData(formData);
-  
+
     if (parsedData.video && product.videoUrl) {
       const getRelativePath = (url: string) =>
         url.split("/storage/v1/object/public/videos/")[1];
@@ -593,15 +615,15 @@ export async function updateProduct(
         },
         productNotes: {
           create: [
-            ...parsedData.topNotes.map((noteId: string) => ({
+            ...parsedData.topNotes.map((noteId) => ({
               note: { connect: { id: Number(noteId) } },
               noteType: NoteType.TOP,
             })),
-            ...parsedData.heartNotes.map((noteId: string) => ({
+            ...parsedData.heartNotes.map((noteId) => ({
               note: { connect: { id: Number(noteId) } },
               noteType: NoteType.HEART,
             })),
-            ...parsedData.baseNotes.map((noteId: string) => ({
+            ...parsedData.baseNotes.map((noteId) => ({
               note: { connect: { id: Number(noteId) } },
               noteType: NoteType.BASE,
             })),
@@ -615,18 +637,50 @@ export async function updateProduct(
             : undefined,
 
         perfumer: parsedData.perfumer ? parsedData.perfumer : undefined,
-        classification: parsedData.classification,
+        classification:
+          parsedData.classification && parsedData.classification.length
+            ? {
+                connect: parsedData.classification.map((id) => ({
+                  id: Number(id),
+                })),
+              }
+            : undefined,
         releaseYear: Number(parsedData.releaseYear) || undefined,
         category: { connect: { id: Number(parsedData.categoryId) } },
         productGroup: { connect: { id: Number(parsedData.productGroupId) } },
         available: true,
         age: parsedData.age ? Number(parsedData.age) : undefined,
         series: parsedData.series || undefined,
-        purpose: parsedData.purpose || undefined,
-        finish: parsedData.finish || undefined,
-        texture: parsedData.texture || undefined,
-        formula: parsedData.formula || undefined,
-        effect: parsedData.effect || undefined,
+        purpose:
+          parsedData.purpose && parsedData.purpose.length
+            ? {
+                connect: parsedData.purpose.map((id) => ({ id: Number(id) })),
+              }
+            : undefined,
+        finish:
+          parsedData.finish && parsedData.finish.length
+            ? {
+                connect: parsedData.finish.map((id) => ({ id: Number(id) })),
+              }
+            : undefined,
+        texture:
+          parsedData.texture && parsedData.texture.length
+            ? {
+                connect: parsedData.texture.map((id) => ({ id: Number(id) })),
+              }
+            : undefined,
+        formula:
+          parsedData.formula && parsedData.formula.length
+            ? {
+                connect: parsedData.formula.map((id) => ({ id: Number(id) })),
+              }
+            : undefined,
+        effect:
+          parsedData.effect && parsedData.effect.length
+            ? {
+                connect: parsedData.effect.map((id) => ({ id: Number(id) })),
+              }
+            : undefined,
         effectDuration: parsedData.effectDuration
           ? Number(parsedData.effectDuration)
           : undefined,
@@ -640,10 +694,31 @@ export async function updateProduct(
                 create: variationUploads,
               }
             : undefined,
-        applicationMethod: parsedData.applicationMethod || undefined,
-        packagingFormat: parsedData.packagingFormat || undefined,
+        applicationMethod:
+          parsedData.applicationMethod && parsedData.applicationMethod.length
+            ? {
+                connect: parsedData.applicationMethod.map((id) => ({
+                  id: Number(id),
+                })),
+              }
+            : undefined,
+        packagingFormat:
+          parsedData.packagingFormat && parsedData.packagingFormat.length
+            ? {
+                connect: parsedData.packagingFormat.map((id) => ({
+                  id: Number(id),
+                })),
+              }
+            : undefined,
         volume: parsedData.volume || undefined,
-        skinType: parsedData.skinType || undefined,
+        skinType:
+          parsedData.skinType && parsedData.skinType.length
+            ? {
+                connect: parsedData.skinType.map((id) => ({
+                  id: Number(id),
+                })),
+              }
+            : undefined,
       },
     });
 
@@ -902,7 +977,7 @@ export async function createNote(formData: FormData) {
     }
     const { labelRu, labelDe } = Object.fromEntries(
       formData.entries()
-    ) as NoteValues;
+    ) as MetaValues;
 
     await prisma.note.create({
       data: {

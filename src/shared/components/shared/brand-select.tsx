@@ -5,9 +5,9 @@ import { cn } from "@/src/lib/utils";
 import { Button, CreateBrandForm, Popover } from "..";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 import { FormSelect } from "@/src/shared/components/shared/product-form/form-select";
-import { useBrands } from "@/src/shared/hooks";
 import { Control } from "react-hook-form";
 import { CreateProductFormValues } from "@/src/shared/constants";
+import { useProductMeta } from "../../hooks";
 
 type Props = {
     control: Control<CreateProductFormValues>;
@@ -15,8 +15,7 @@ type Props = {
 };
 
 export const BrandSelect: FC<Props> = ({ className, control }) => {
-      const { brands, createBrand, loading: brandsLoading, error: brandsError } = useBrands();
-    
+  const {productMeta: {brands}, createBrand, loading: brandsLoading, error: brandsError} = useProductMeta();  
   return (
     <div
       className={cn(

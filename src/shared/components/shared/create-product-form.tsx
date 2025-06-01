@@ -1,20 +1,12 @@
 "use client";
 
+import { concentrations, genders, yers } from "@/../../prisma/constants";
 import {
-  applicationMethods,
-  classifications,
-  concentrations,
-  effects,
-  finishes,
-  formulas,
-  genders,
-  packagingFormats,
-  purposes,
-  skinTypes,
-  textures,
-  yers,
-} from "@/../../prisma/constants";
-import { Button, Input, Popover } from "@/src/shared/components";
+  Button,
+  Input,
+  OptionControlPanel,
+  Popover,
+} from "@/src/shared/components";
 import {
   BrandSelect,
   CreateNoteForm,
@@ -42,10 +34,10 @@ import {
   CreateProductSchema,
 } from "@/src/shared/constants/create-product-schema";
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
-import { useAromas, useNotes } from "@/src/shared/hooks";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 import { handleVideoUpload } from "../../lib";
 import { Trash } from "lucide-react";
+import { useProductMeta } from "../../hooks";
 
 interface Props {
   product?: Omit<ProductDTO, "variations" | "reviews">;
@@ -61,20 +53,33 @@ export const CreateProductForm: FC<Props> = ({
   categoryId,
 }) => {
   const [loading, setLoading] = useState(false);
-  const {
-    notes,
-    createNote,
-    loading: notesLoading,
-    error: notesError,
-  } = useNotes();
 
   const {
-    aromas,
-    deleteAroma,
+    productMeta,
+    createNote,
     createAroma,
-    loading: aromasLoading,
-    error: aromasError,
-  } = useAromas();
+    deleteAroma,
+    createPurpose,
+    deletePurpose,
+    createFinish,
+    deleteFinish,
+    createApplicationMethod,
+    deleteApplicationMethod,
+    createClassification,
+    deleteClassification,
+    createEffect,
+    deleteEffect,
+    createPackagingFormat,
+    deletePackagingFormat,
+    createSkinType,
+    deleteSkinType,
+    createTexture,
+    deleteTexture,
+    createFormula,
+    deleteFormula,
+    loading: metaLoading,
+    error: metaError,
+  } = useProductMeta();
   const translationRu = product?.translations.find(
     (translation) => translation.language === "RU"
   );
@@ -125,51 +130,60 @@ export const CreateProductForm: FC<Props> = ({
         product?.productNotes
           .filter((note) => note.noteType === NoteType.BASE)
           .map((note) => String(note.note.id)) || [],
-      classification: product?.classification || [],
+      classification:
+        product?.classification.map((classification) =>
+          String(classification.id)
+        ) || [],
       releaseYear: product?.releaseYear || undefined,
       categoryId: product?.categoryId || categoryId,
       productGroupId: product?.productGroupId || undefined,
       variations: [],
       age: product?.age || undefined,
       series: product?.series || "",
-      purpose: product?.purpose || undefined,
-      finish: product?.finish || undefined,
-      texture: product?.texture || undefined,
-      formula: product?.formula || undefined,
-      effect: product?.effect || undefined,
+      purpose: product?.purpose.map((purpose) => String(purpose.id)) || [],
+      finish: product?.finish.map((finish) => String(finish.id)) || [],
+      texture: product?.texture.map((texture) => String(texture.id)) || [],
+      formula: product?.formula.map((formula) => String(formula.id)) || [],
+      effect: product?.effect.map((effect) => String(effect.id)) || [],
       effectDuration: product?.effectDuration || undefined,
       hypoallergenic: product?.hypoallergenic
         ? product?.hypoallergenic.toString()
         : "false",
 
-      applicationMethod: product?.applicationMethod || undefined,
-      packagingFormat: product?.packagingFormat || undefined,
+      applicationMethod:
+        product?.applicationMethod.map((method) => String(method.id)) || [],
+      packagingFormat:
+        product?.packagingFormat.map((format) => String(format.id)) || [],
       volume: product?.volume || "",
-      skinType: product?.skinType || undefined,
+      skinType: product?.skinType.map((type) => String(type.id)) || [],
       size: product?.size || "",
     },
   });
   const topNotes =
     form
       .watch("topNotes")
-      ?.map((id) => notes.find((note) => note.id === Number(id))?.labelRu)
+      ?.map(
+        (id: string) =>
+          productMeta.notes.find((note) => note.id === Number(id))?.labelRu
+      )
       .join(", ") || "";
   const heartNotes =
     form
       .watch("heartNotes")
-      ?.map((id) => notes.find((note) => note.id === Number(id))?.labelRu)
+      ?.map(
+        (id: string) =>
+          productMeta.notes.find((note) => note.id === Number(id))?.labelRu
+      )
       .join(", ") || "";
   const baseNotes =
     form
       .watch("baseNotes")
-      ?.map((id) => notes.find((note) => note.id === Number(id))?.labelRu)
+      ?.map(
+        (id: string) =>
+          productMeta.notes.find((note) => note.id === Number(id))?.labelRu
+      )
       .join(", ") || "";
 
-  const choosedAromas =
-    form
-      .watch("aromas")
-      ?.map((id) => aromas.find((aroma) => aroma.id === Number(id))?.labelRu)
-      .join(", ") || "";
   const onSubmit = async (data: CreateProductFormValues) => {
     try {
       setLoading(true);
@@ -181,7 +195,7 @@ export const CreateProductForm: FC<Props> = ({
       formData.append("gender", data.gender || "");
       formData.append("brand", data.brand);
       formData.append("series", data.series || "");
-      formData.append("purpose", data.purpose || "");
+      formData.append("purpose", JSON.stringify(data.purpose));
 
       formData.append("descriptionRu", data.descriptionRu);
       formData.append("descriptionDe", data.descriptionDe);
@@ -223,17 +237,20 @@ export const CreateProductForm: FC<Props> = ({
         data.productGroupId ? data.productGroupId.toString() : "1"
       );
 
-      formData.append("finish", data.finish || "");
-      formData.append("texture", data.texture || "");
-      formData.append("formula", data.formula || "");
-      formData.append("effect", data.effect || "");
+      formData.append("finish", JSON.stringify(data.finish));
+      formData.append("texture", JSON.stringify(data.texture));
+      formData.append("formula", JSON.stringify(data.formula));
+      formData.append("effect", JSON.stringify(data.effect));
 
       formData.append("effectDuration", data.effectDuration?.toString() || "");
       formData.append("hypoallergenic", String(data.hypoallergenic));
-      formData.append("applicationMethod", data.applicationMethod || "");
-      formData.append("packagingFormat", data.packagingFormat || "");
+      formData.append(
+        "applicationMethod",
+        JSON.stringify(data.applicationMethod)
+      );
+      formData.append("packagingFormat", JSON.stringify(data.packagingFormat));
       formData.append("volume", data.volume || "");
-      formData.append("skinType", data.skinType || "");
+      formData.append("skinType", JSON.stringify(data.skinType));
       formData.append("classification", JSON.stringify(data.classification));
 
       formData.append("releaseYear", data.releaseYear?.toString() || "");
@@ -505,14 +522,19 @@ export const CreateProductForm: FC<Props> = ({
               />
 
               <BrandSelect control={form.control} />
-
-              <FormCheckbox
-                title="Классификация"
+              <OptionControlPanel
                 name="classification"
                 control={form.control}
-                items={classifications}
+                items={productMeta.classifications.map((classification) => ({
+                  ...classification,
+                  id: String(classification.id),
+                }))}
+                title="Выберите классификацию"
+                onCreate={createClassification}
+                onDelete={deleteClassification}
+                loading={metaLoading}
+                error={metaError}
               />
-
               <FormSelect
                 name="releaseYear"
                 control={form.control}
@@ -543,67 +565,28 @@ export const CreateProductForm: FC<Props> = ({
                     control={form.control}
                     items={concentrations}
                   />
-
-                  <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
-                    <FormCheckbox
-                      name="aromas"
-                      title={choosedAromas ? choosedAromas : "Ароматы"}
-                      control={form.control}
-                      items={aromas.map((aroma) => ({
-                        label: {
-                          ru: aroma.labelRu,
-                          de: aroma.labelDe,
-                        },
-                        value: String(aroma.id),
-                      }))}
-                    />
-                    <div className="flex gap-5">
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline">Add new</Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-80">
-                          <CreateNoteForm
-                            onSubmit={createAroma}
-                            loading={aromasLoading}
-                            error={aromasError}
-                          />
-                        </PopoverContent>
-                      </Popover>
-
-                      <Popover>
-                        <PopoverTrigger asChild>
-                          <Button variant="outline">Delete</Button>
-                        </PopoverTrigger>
-                        <PopoverContent className="w-80">
-                          <ul>
-                            {aromas.map((item) => (
-                              <li
-                                className="flex items-center justify-between cursor-pointer mb-2 hover:bg-slate-100 h-8 px-2"
-                                key={item.id}
-                                onClick={() => deleteAroma(item.id)}
-                              >
-                                <p>{item.labelRu}</p>
-                                <Trash size={16} />
-                              </li>
-                            ))}
-                          </ul>
-                        </PopoverContent>
-                      </Popover>
-                    </div>
-                  </div>
+                  <OptionControlPanel
+                    control={form.control}
+                    items={productMeta.aromas.map((aroma) => ({
+                      ...aroma,
+                      id: String(aroma.id),
+                    }))}
+                    name="aromas"
+                    title="Выберите ароматы"
+                    onCreate={createAroma}
+                    onDelete={deleteAroma}
+                    loading={metaLoading}
+                    error={metaError}
+                  />
 
                   <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
                     <FormCheckbox
                       name="topNotes"
                       title={topNotes ? topNotes : "Верхние нотты"}
                       control={form.control}
-                      items={notes.map((note) => ({
-                        label: {
-                          ru: note.labelRu,
-                          de: note.labelDe,
-                        },
-                        value: String(note.id),
+                      items={productMeta.notes.map((note) => ({
+                        ...note,
+                        id: String(note.id),
                       }))}
                     />
 
@@ -611,12 +594,9 @@ export const CreateProductForm: FC<Props> = ({
                       name="heartNotes"
                       title={heartNotes ? heartNotes : "Средние нотты"}
                       control={form.control}
-                      items={notes.map((note) => ({
-                        label: {
-                          ru: note.labelRu,
-                          de: note.labelDe,
-                        },
-                        value: String(note.id),
+                      items={productMeta.notes.map((note) => ({
+                        ...note,
+                        id: String(note.id),
                       }))}
                     />
 
@@ -624,12 +604,9 @@ export const CreateProductForm: FC<Props> = ({
                       name="baseNotes"
                       title={baseNotes ? baseNotes : "Базовые нотты"}
                       control={form.control}
-                      items={notes.map((note) => ({
-                        label: {
-                          ru: note.labelRu,
-                          de: note.labelDe,
-                        },
-                        value: String(note.id),
+                      items={productMeta.notes.map((note) => ({
+                        ...note,
+                        id: String(note.id),
                       }))}
                     />
 
@@ -640,8 +617,8 @@ export const CreateProductForm: FC<Props> = ({
                       <PopoverContent className="w-80">
                         <CreateNoteForm
                           onSubmit={createNote}
-                          loading={notesLoading}
-                          error={notesError}
+                          loading={metaLoading}
+                          error={metaError}
                         />
                       </PopoverContent>
                     </Popover>
@@ -673,21 +650,31 @@ export const CreateProductForm: FC<Props> = ({
                       </FormItem>
                     )}
                   />
-                  <FormSelect
+                  <OptionControlPanel
                     name="purpose"
                     control={form.control}
-                    items={purposes.map((item) => ({
-                      name: item.label.ru,
-                      value: item.value,
+                    items={productMeta.purposes.map((purpose) => ({
+                      ...purpose,
+                      id: String(purpose.id),
                     }))}
+                    title="Выберите назначение"
+                    onCreate={createPurpose}
+                    onDelete={deletePurpose}
+                    loading={metaLoading}
+                    error={metaError}
                   />
-                  <FormSelect
+                  <OptionControlPanel
                     name="finish"
                     control={form.control}
-                    items={finishes.map((item) => ({
-                      name: item.label.ru,
-                      value: item.value,
+                    items={productMeta.finishes.map((purpose) => ({
+                      ...purpose,
+                      id: String(purpose.id),
                     }))}
+                    title="Выберите финиш"
+                    onCreate={createFinish}
+                    onDelete={deleteFinish}
+                    loading={metaLoading}
+                    error={metaError}
                   />
 
                   <FormSelect
@@ -732,13 +719,18 @@ export const CreateProductForm: FC<Props> = ({
                       )}
                     />
                   </div>
-                  <FormSelect
+                  <OptionControlPanel
                     name="formula"
                     control={form.control}
-                    items={formulas.map((item) => ({
-                      name: item.label.ru,
-                      value: item.value,
+                    items={productMeta.formulas.map((formula) => ({
+                      ...formula,
+                      id: String(formula.id),
                     }))}
+                    title="Выберите формулы"
+                    onCreate={createFormula}
+                    onDelete={deleteFormula}
+                    loading={metaLoading}
+                    error={metaError}
                   />
 
                   <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
@@ -888,49 +880,74 @@ export const CreateProductForm: FC<Props> = ({
                       </FormItem>
                     )}
                   />
-
-                  <FormSelect
+                  <OptionControlPanel
                     name="texture"
                     control={form.control}
-                    items={textures.map((item) => ({
-                      name: item.label.ru,
-                      value: item.value,
+                    items={productMeta.textures.map((texture) => ({
+                      ...texture,
+                      id: String(texture.id),
                     }))}
+                    title="Выберите текстуру"
+                    onCreate={createTexture}
+                    onDelete={deleteTexture}
+                    loading={metaLoading}
+                    error={metaError}
                   />
-
-                  <FormSelect
+                  <OptionControlPanel
                     name="skinType"
                     control={form.control}
-                    items={skinTypes.map((item) => ({
-                      name: item.label.ru,
-                      value: item.value,
+                    items={productMeta.skinTypes.map((skinType) => ({
+                      ...skinType,
+                      id: String(skinType.id),
                     }))}
+                    title="Выберите тип кожи"
+                    onCreate={createSkinType}
+                    onDelete={deleteSkinType}
+                    loading={metaLoading}
+                    error={metaError}
                   />
-
-                  <FormSelect
+                  <OptionControlPanel
                     name="packagingFormat"
                     control={form.control}
-                    items={packagingFormats.map((item) => ({
-                      name: item.label.ru,
-                      value: item.value,
-                    }))}
+                    items={productMeta.packagingFormats.map(
+                      (packagingFormat) => ({
+                        ...packagingFormat,
+                        id: String(packagingFormat.id),
+                      })
+                    )}
+                    title="Выберите формат упаковки"
+                    onCreate={createPackagingFormat}
+                    onDelete={deletePackagingFormat}
+                    loading={metaLoading}
+                    error={metaError}
                   />
-
-                  <FormSelect
+                  <OptionControlPanel
                     name="effect"
                     control={form.control}
-                    items={effects.map((item) => ({
-                      name: item.label.ru,
-                      value: item.value,
+                    items={productMeta.effects.map((effect) => ({
+                      ...effect,
+                      id: String(effect.id),
                     }))}
+                    title="Выберите эффект"
+                    onCreate={createEffect}
+                    onDelete={deleteEffect}
+                    loading={metaLoading}
+                    error={metaError}
                   />
-                  <FormSelect
+                  <OptionControlPanel
                     name="applicationMethod"
                     control={form.control}
-                    items={applicationMethods.map((item) => ({
-                      name: item.label.ru,
-                      value: item.value,
-                    }))}
+                    items={productMeta.applicationMethods.map(
+                      (applicationMethod) => ({
+                        ...applicationMethod,
+                        id: String(applicationMethod.id),
+                      })
+                    )}
+                    title="Выберите метод применения"
+                    onCreate={createApplicationMethod}
+                    onDelete={deleteApplicationMethod}
+                    loading={metaLoading}
+                    error={metaError}
                   />
                 </>
               )}

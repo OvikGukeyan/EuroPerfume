@@ -1,19 +1,46 @@
-import { Aroma, Brand, Note, Product, ProductNote, ProductTranslation, ProductVariation, Review } from "@prisma/client";
+import {
+  ApplicationMethod,
+  Aroma,
+  Brand,
+  Classification,
+  Effect,
+  Finish,
+  Formula,
+  Note,
+  PackagingFormat,
+  Product,
+  ProductNote,
+  ProductTranslation,
+  ProductVariation,
+  Purpose,
+  Review,
+  SkinType,
+  Texture,
+} from "@prisma/client";
 export type SafeProduct = Omit<Product, "price"> & {
-    price: number;
-  };
+  price: number;
+};
 export interface ProductDTO extends SafeProduct {
-    variations: ProductVariation[]
-    reviews: Review[]
-    brand: Brand
-    aromas: Aroma[]
-    translations: ProductTranslation[];
-    productNotes: ( ProductNote & {
-        note: Note
-    } )[]
+  variations: ProductVariation[];
+  reviews: Review[];
+  brand: Brand;
+  aromas: Aroma[];
+  classification: Classification[];
+  effect: Effect[];
+  purpose: Purpose[];
+  skinType: SkinType[];
+  packagingFormat: PackagingFormat[];
+  finish: Finish[];
+  applicationMethod: ApplicationMethod[];
+  texture: Texture[];
+  formula: Formula[];
+  translations: ProductTranslation[];
+  productNotes: (ProductNote & {
+    note: Note;
+  })[];
 }
 
 export interface ProductsWithPagination {
-    products: ProductDTO[]
-    totalPages: number
+  products: ProductDTO[];
+  totalPages: number;
 }

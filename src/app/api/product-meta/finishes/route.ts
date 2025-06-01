@@ -4,10 +4,7 @@ import { getUserSession } from "@/src/shared/lib/get-user-session";
 import { UserRole } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
-  const aromas = await prisma.aroma.findMany();
-  return NextResponse.json(aromas);
-}
+
 
 export async function POST(req: NextRequest) {
   const user = await getUserSession();
@@ -16,8 +13,8 @@ export async function POST(req: NextRequest) {
   }
   const { data } = await req.json();
 
-  const aroma = await prisma.aroma.create({
+  const finish = await prisma.finish.create({
     data,
   });
-  return NextResponse.json(aroma);
+  return NextResponse.json(finish);
 }

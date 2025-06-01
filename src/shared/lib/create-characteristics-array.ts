@@ -1,14 +1,5 @@
 import {
-  applicationMethods,
-  classifications,
   concentrations,
-  effects,
-  finishes,
-  formulas,
-  packagingFormats,
-  purposes,
-  skinTypes,
-  textures,
 } from "@/../../prisma/constants";
 import { NoteType } from "@prisma/client";
 import { useLocale } from "next-intl";
@@ -63,32 +54,20 @@ export const createCharacteristicsArray = (
     .map((note) => note.note?.labelRu)
     .join(", ");
   const currentAroma = aromas.map((item) => item.labelRu).join(", ");
-  const currentClassification = classifications
-    .filter((item) => classification.includes(item.value))
-    .map(({ label: { ru } }) => ru)
-    .join(", ");
+  const currentClassification = classification.map((item) => item.labelRu).join(", ");
   const currentConcentration = concentrations.find(
     (item) => item.value === concentration
   )?.name;
 
-  const currentPurpose = purposes.find((item) => item.value === purpose)?.label
-    .ru;
-  const currentFinish = finishes.find((item) => item.value === finish)?.label
-    .ru;
-  const currentTexture = textures.find((item) => item.value === texture)?.label
-    .ru;
-  const currentFormula = formulas.find((item) => item.value === formula)?.label
-    .ru;
-  const currentEffect = effects.find((item) => item.value === effect)?.label.ru;
+  const currentPurpose = purpose.map((item) => item.labelRu).join(", ");
+  const currentFinish = finish.map((item) => item.labelRu).join(", ");
+  const currentTexture = texture.map((item) => item.labelRu).join(", ");
+  const currentFormula = formula.map((item) => item.labelRu).join(", ");
+  const currentEffect = effect.map((item) => item.labelRu).join(", ");
   const isHypoallergenic = hypoallergenic ? "Да" : "Нет";
-  const currentApplicationMethod = applicationMethods.find(
-    (item) => item.value === applicationMethod
-  )?.label.ru;
-  const currentPackagingFormat = packagingFormats.find(
-    (item) => item.value === packagingFormat
-  )?.label.ru;
-  const currentSkinType = skinTypes.find((item) => item.value === skinType)
-    ?.label.ru;
+  const currentApplicationMethod = applicationMethod.map((item) => item.labelRu).join(", ");
+  const currentPackagingFormat = packagingFormat.map((item) => item.labelRu).join(", ");
+  const currentSkinType = skinType.map((item) => item.labelRu).join(", ");
 
   const characteristics = [
     {name: "Description", value: translation?.description || ""},

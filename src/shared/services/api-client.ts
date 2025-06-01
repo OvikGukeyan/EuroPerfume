@@ -4,11 +4,9 @@ import * as auth from "./auth";
 import * as favorites from "./favorites";
 import * as orders from "./orders";
 import * as categories from "./categories";
-import * as notes from "./notes";
-import * as brands from "./brands";
 import * as productGroup from "./product-group";
 import * as slides from "./slides";
-import * as aromas from "./aromas";
+import * as productMeta from "./product-meta";
 
 
 export const Api = {
@@ -18,9 +16,7 @@ export const Api = {
     favorites,
     orders,
     categories,
-    notes,
-    brands,
     productGroup,
     slides,
-    aromas
+    productMeta
 }

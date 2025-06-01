@@ -1,9 +1,6 @@
 import { prisma } from "@/prisma/prisma-client";
 import {
-  Aroma,
-  Classifications,
   Gender,
-  Notes,
   NoteType,
   PerfumeConcentration,
   Prisma,
@@ -118,7 +115,7 @@ export const findProducts = async (
       gender: genders.length > 0 ? { in: genders as Gender[] } : undefined,
       classification:
         classification.length > 0
-          ? { hasSome: classification as Classifications[] }
+          ? { some: {id: {in: classification.map((classification) => Number(classification))}} }
           : undefined,
       concentration: { in: concentration as PerfumeConcentration[] },
       price:
@@ -173,6 +170,15 @@ export const findProducts = async (
             },
           },
           aromas: true,
+          classification: true,
+          effect: true,
+          purpose: true,
+          skinType: true, 
+          packagingFormat: true,
+          finish: true,
+          applicationMethod: true,
+          texture: true,
+          formula: true,
         },
       }),
       prisma.product.count({

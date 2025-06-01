@@ -11,3 +11,4 @@ export {createCharacteristicsArray} from './create-characteristics-array';
 export {imageCompressor} from './image-compressor';
 export {getAvailableFilters} from './get-available-filters';
 export {handleVideoUpload} from './handle-video-upload';
+export {updateMetaList} from './update-meta-list';

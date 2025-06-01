@@ -4,10 +4,7 @@ import { getUserSession } from "@/src/shared/lib/get-user-session";
 import { UserRole } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
-  const notes = await prisma.note.findMany();
-  return NextResponse.json(notes);
-}
+
 
 export async function POST(req: NextRequest) {
   const user = await getUserSession();
@@ -16,8 +13,8 @@ export async function POST(req: NextRequest) {
   }
   const { data } = await req.json();
 
-  const note = await prisma.note.create({
+  const packagingFormat = await prisma.packagingFormat.create({
     data,
   });
-  return NextResponse.json(note);
+  return NextResponse.json(packagingFormat);
 }

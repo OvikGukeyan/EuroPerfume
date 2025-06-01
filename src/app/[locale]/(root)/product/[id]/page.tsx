@@ -26,6 +26,15 @@ export default async function Product({
       },
       variations: true,
       aromas: true,
+      classification: true,
+      effect: true,
+      purpose: true,
+      skinType: true,
+      packagingFormat: true,
+      finish: true,
+      applicationMethod: true,
+      texture: true,
+      formula: true,
       productNotes: {
         include: {
           note: true,

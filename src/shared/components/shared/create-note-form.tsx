@@ -1,14 +1,14 @@
 "use client";
 
 import React, { FC, useState } from "react";
-import { Button, Input, SubmitButtonBar, Title } from "..";
+import { Button, Input, Title } from "..";
 import { Label } from "../ui/label";
-import { NoteValues } from "../../store";
 import { cn } from "@/src/lib/utils";
 import { createSlide } from "@/src/app/actions";
+import { MetaValues } from "../../store";
 
 type Props = {
-  onSubmit: (data: NoteValues) => void;
+  onSubmit: (data: MetaValues) => void;
   loading?: boolean;
   error: boolean;
   className?: string;
