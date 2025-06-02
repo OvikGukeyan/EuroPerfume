@@ -9,6 +9,7 @@ import {
   Note,
   PackagingFormat,
   Product,
+  ProductGroup,
   ProductNote,
   ProductTranslation,
   ProductVariation,
@@ -21,6 +22,7 @@ export type SafeProduct = Omit<Product, "price"> & {
   price: number;
 };
 export interface ProductDTO extends SafeProduct {
+  productGroup: ProductGroup;
   variations: ProductVariation[];
   reviews: Review[];
   brand: Brand;

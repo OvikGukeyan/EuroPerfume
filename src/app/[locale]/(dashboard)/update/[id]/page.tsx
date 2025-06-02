@@ -14,6 +14,7 @@ export default async function Update({
       id: Number(id),
     },
     include: {
+      productGroup: true,
       translations: true,
       aromas: true,
       classification: true,

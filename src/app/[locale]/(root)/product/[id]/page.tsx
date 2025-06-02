@@ -24,6 +24,7 @@ export default async function Product({
           user: true,
         },
       },
+      productGroup: true,
       variations: true,
       aromas: true,
       classification: true,

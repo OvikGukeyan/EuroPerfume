@@ -1,10 +1,12 @@
+import { productGroups } from './../../../prisma/constants';
 import { create } from "zustand";
 import { Api } from "../services/api-client";
-import { Review } from "@prisma/client";
+import { ProductGroup, Review } from "@prisma/client";
 
 
 
 export type FavoritesStateItem = {
+    productGroup: ProductGroup;
     id: number;
     productId: number;
     name: string;
@@ -32,6 +34,7 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       set({ favoritesLoading: true, error: false });
       const data = await Api.favorites.getFavorites();
       set({ items: data .items.map((item) => ({
+        productGroup: item.product.productGroup,
         id: item.id,
         productId: item.productId,
         name: item.product.name,
@@ -52,6 +55,7 @@ export const useFavoritesStore = create<FavoritesState>((set, get) => ({
       set({ favoritesLoading: true, error: false });
       const {items} = await Api.favorites.addFavoritesItem(productId);
       set({ items: items.map((item) => ({
+        productGroup: item.product.productGroup,
         id: item.id,
         productId: item.productId,
         name: item.product.name,

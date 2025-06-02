@@ -11,14 +11,14 @@ import { useCartStore } from "@/src/shared/store";
 import { Volume, volumes } from "@/src/shared/constants/perfume";
 import { calcPrice } from "@/src/shared/lib";
 import { HeartBlack } from "@/src/shared/icons";
-import { PerfumeConcentration, ProductVariation } from "@prisma/client";
-import { it } from "node:test";
+import { PerfumeConcentration, ProductGroup, ProductVariation } from "@prisma/client";
 import { useFavorites } from "@/src/shared/hooks";
-import { concentrations } from "@/../../prisma/constants";import { useTranslations } from "use-intl";
-;
+import { concentrations, productGroups } from "@/../../prisma/constants";
+import { useTranslations } from "use-intl";
 
 interface Props {
   id: number;
+  productGroup: ProductGroup;
   name: string;
   price: number;
   imageUrl: string;
@@ -26,7 +26,6 @@ interface Props {
   categoryId?: number;
   variations: ProductVariation[];
   concentration?: PerfumeConcentration;
-  productGroupId?: number;
   className?: string;
 }
 
@@ -37,8 +36,8 @@ export const ProductCard: React.FC<Props> = ({
   price,
   id,
   categoryId,
+  productGroup,
   variations,
-  productGroupId,
   concentration,
 }) => {
   const currentVolumesArray =
@@ -50,7 +49,7 @@ export const ProductCard: React.FC<Props> = ({
     variations[0]
   );
 
-  const t = useTranslations('Product');
+  const t = useTranslations("Product");
 
   const onToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -79,7 +78,8 @@ export const ProductCard: React.FC<Props> = ({
     try {
       await addCartItem({
         productId: id,
-        volume: (categoryId === 1 && productGroupId && productGroupId < 4) ? volume : 1,
+        volume:
+          categoryId === 1 && productGroup.id && productGroup.id < 4 ? volume : 1,
         variationId: activeVariation ? activeVariation.id : undefined,
       });
       toast.success(name + " added to cart");
@@ -89,12 +89,14 @@ export const ProductCard: React.FC<Props> = ({
     }
   };
   const finalPrice =
-    categoryId === 1 && productGroupId && productGroupId < 4
+    categoryId === 1 && productGroup.id && productGroup.id < 4
       ? calcPrice(volume, price)
       : price;
   const concentratioName = concentrations.find(
     (item) => item.value === concentration
-  );
+  )?.name;
+
+ 
   return (
     <div className={className}>
       <Link href={`/product/${id}`}>
@@ -116,10 +118,10 @@ export const ProductCard: React.FC<Props> = ({
       </Link>
       <div className="h-28">
         <Title text={name} size="xs" className="md:text-lg mt-2 font-bold" />
-        {concentration && <p className="text-sm">{concentratioName?.name}</p>}
+        <p className="text-sm">{concentratioName || productGroup.labelRu}</p>
       </div>
 
-      {categoryId === 1 && productGroupId && productGroupId < 4 && (
+      {categoryId === 1 && productGroup.id && productGroup.id < 4 && (
         <VolumeSelection
           className="mb-4"
           volumes={currentVolumesArray}
@@ -140,7 +142,7 @@ export const ProductCard: React.FC<Props> = ({
       <div className="flex justify-between items-center ">
         <div className="flex flex-col">
           <p className="text-[20px] ">
-            <span className="hidden md:inline">{t('price')}</span>{" "}
+            <span className="hidden md:inline">{t("price")}</span>{" "}
             <b>{finalPrice} €</b>
           </p>
           {/* { categoryId === 1  && (productGroupId && productGroupId  < 4) &&

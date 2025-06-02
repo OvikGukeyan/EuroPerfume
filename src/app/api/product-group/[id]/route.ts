@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const id = Number((await params).id);
-    if (isNaN(id)) {
+    if (isNaN(id) || id <= 4) {
       return NextResponse.json(
         { message: "Invalid product group ID" },
         { status: 400 }

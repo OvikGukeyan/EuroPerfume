@@ -26,13 +26,13 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
             >
               <Link href={`/product/${item.id}`}>
                 <ProductCard
+                  productGroup={item.productGroup}
                   id={item.id}
                   name={item.name}
                   imageUrl={item.imageUrl[0] || item.variations[0].imageUrl}
                   price={item.price}
                   variations={item.variations}
                   categoryId={item.categoryId}
-                  productGroupId={item.productGroupId}
                 />
               </Link>
             </CarouselItem>

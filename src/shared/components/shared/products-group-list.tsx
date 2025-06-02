@@ -30,7 +30,7 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
               categoryId={product.categoryId}
               variations={product.variations}
               concentration={product.concentration || undefined}
-              productGroupId={product.productGroupId}
+              productGroup={product.productGroup}
             />
           ))}
     </div>

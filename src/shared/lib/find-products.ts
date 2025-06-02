@@ -161,6 +161,7 @@ export const findProducts = async (
         orderBy: orderBy,
         where: whereClause,
         include: {
+          productGroup: true,
           translations: true,
           variations: true,
           brand: true,
