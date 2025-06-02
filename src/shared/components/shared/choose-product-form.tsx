@@ -46,7 +46,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
   const [volume, setVolume] = useState<Volume>(currentVolumesArray[0]);
 
   const finalPrice =
-    product.categoryId === 1 && product.productGroupId < 4
+    product.categoryId === 1 && product.productGroup.id < 4
       ? calcPrice(volume, product.price)
       : product.price;
 
