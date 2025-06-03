@@ -11,7 +11,11 @@ import { useCartStore } from "@/src/shared/store";
 import { Volume, volumes } from "@/src/shared/constants/perfume";
 import { calcPrice } from "@/src/shared/lib";
 import { HeartBlack } from "@/src/shared/icons";
-import { PerfumeConcentration, ProductGroup, ProductVariation } from "@prisma/client";
+import {
+  PerfumeConcentration,
+  ProductGroup,
+  ProductVariation,
+} from "@prisma/client";
 import { useFavorites } from "@/src/shared/hooks";
 import { concentrations } from "@/../../prisma/constants";
 import { useTranslations } from "use-intl";
@@ -45,10 +49,12 @@ export const ProductCard: React.FC<Props> = ({
 
   const [volume, setVolume] = useState<Volume>(currentVolumesArray[0]);
   const [isFavorite, toggleIsFavorite] = useState(false);
-  const [activeVariation, setActiveVariation] = useState<ProductVariation>(
-    variations[0]
+  const [activeVariationId, setActiveVariationId] = useState<number>(
+    variations[0]?.id
   );
-
+  const activeVariation = variations.find(
+    (variation) => variation.id === activeVariationId
+  );
   const t = useTranslations("Product");
 
   const onToggleFavorite = (e: React.MouseEvent) => {
@@ -78,7 +84,9 @@ export const ProductCard: React.FC<Props> = ({
       await addCartItem({
         productId: id,
         volume:
-          categoryId === 1 && productGroup.id && productGroup.id < 4 ? volume : 1,
+          categoryId === 1 && productGroup.id && productGroup.id < 4
+            ? volume
+            : 1,
         variationId: activeVariation ? activeVariation.id : undefined,
       });
       toast.success(name + " added to cart");
@@ -100,7 +108,7 @@ export const ProductCard: React.FC<Props> = ({
       <Link href={`/product/${id}`}>
         <div className="w-full max-w-[400px] aspect-[4/5] relative">
           <Image
-            src={imageUrl || activeVariation?.imageUrl}
+            src={imageUrl || activeVariation?.imageUrl || ""}
             alt={name}
             fill
             className="object-contain "
@@ -130,8 +138,8 @@ export const ProductCard: React.FC<Props> = ({
 
       {variations.length > 1 && (
         <ChooseVariation
-          setActiveVariation={setActiveVariation}
-          activeVariation={activeVariation}
+          setActiveVariationId={setActiveVariationId}
+          activeVariationId={activeVariationId}
           className="mb-4"
           items={variations}
         />

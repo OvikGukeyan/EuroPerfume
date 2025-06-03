@@ -10,13 +10,17 @@ import { PlayCircle } from "lucide-react";
 type PropType = {
   slides: MediaItem[];
   options?: EmblaOptionsType;
+  setActiveVariationId?: React.Dispatch<React.SetStateAction<number>>;
+  activeVariationId?: number;
   className?: string;
 };
 
 export const ProductCarousel: React.FC<PropType> = ({
   className,
   options,
+  setActiveVariationId,
   slides,
+  activeVariationId,
 }) => {
   // const SLIDE_COUNT = 10;
   // const slides = Array.from(Array(SLIDE_COUNT).keys());
@@ -39,8 +43,17 @@ export const ProductCarousel: React.FC<PropType> = ({
     if (!emblaMainApi || !emblaThumbsApi) return;
     const index = emblaMainApi.selectedScrollSnap();
     setSelectedIndex(index);
+    setActiveVariationId && setActiveVariationId(slides[index].id as number);
     emblaThumbsApi.scrollTo(index);
   }, [emblaMainApi, emblaThumbsApi]);
+
+  useEffect(() => {
+    if (!emblaMainApi || activeVariationId === undefined) return;
+    const activeSlideIndex = slides.findIndex(
+      (slide) => slide.id === activeVariationId
+    );
+    emblaMainApi.scrollTo(activeSlideIndex);
+  }, [emblaMainApi, activeVariationId]);
 
   useEffect(() => {
     if (!emblaMainApi) return;
@@ -102,7 +115,7 @@ export const ProductCarousel: React.FC<PropType> = ({
                   }`}
                 >
                   {slide.type === "video" ? (
-                   <PlayCircle size={32} />
+                    <PlayCircle size={32} />
                   ) : (
                     <Image width={64} height={64} src={slide.url} alt={""} />
                   )}

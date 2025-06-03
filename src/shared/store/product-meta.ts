@@ -88,7 +88,6 @@ export const useProductMetaStore = create<ProductMetaState>()((set) => ({
     try {
       set({ loading: true, error: false });
       const data = await Api.productMeta.fetchProductMeta();
-      console.log(data);
       set({ productMeta: data });
     } catch (error) {
       console.error(error);

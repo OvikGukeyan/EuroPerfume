@@ -8,15 +8,15 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 type Props = {
   className?: string;
   items: ProductVariation[];
-  setActiveVariation: (variation: ProductVariation) => void;
-  activeVariation: ProductVariation;
+  setActiveVariationId: (variationId: number) => void;
+  activeVariationId: number;
 };
 
 export const ChooseVariation: FC<Props> = ({
   className,
   items,
-  setActiveVariation,
-  activeVariation,
+  setActiveVariationId,
+  activeVariationId,
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
@@ -44,8 +44,8 @@ export const ChooseVariation: FC<Props> = ({
       >
         {items.map((item, index) => (
           <Button
-            onClick={() => setActiveVariation(item)}
-            disabled={activeVariation.id === item.id}
+            onClick={() => setActiveVariationId(item.id)}
+            disabled={activeVariationId === item.id}
             variant={"outline"}
             className=" h-8 rounded-none  disabled:bg-slate-300"
             key={index}
