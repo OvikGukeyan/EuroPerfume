@@ -442,31 +442,7 @@ export const CreateProductForm: FC<Props> = ({
                   </FormItem>
                 )}
               />
-              <FormField
-                name="video"
-                control={form.control as Control<CreateProductFormValues>}
-                render={({ field }) => (
-                  <FormItem className="mb-5">
-                    <FormLabel>Video</FormLabel>
-                    <FormControl>
-                      <Input
-                        onChange={async (e) => {
-                          const file = e.target.files?.[0];
-                          if (!file) return;
 
-                          const videoUrl = await handleVideoUpload(file);
-
-                          if (videoUrl) {
-                            field.onChange(videoUrl);
-                          }
-                        }}
-                        type="file"
-                        onBlur={field.onBlur}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
               <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
                 <FormField
                   name="descriptionRu"
@@ -545,6 +521,31 @@ export const CreateProductForm: FC<Props> = ({
             <div className="w-1/2">
               {categoryId === 1 && (
                 <>
+                  <FormField
+                    name="video"
+                    control={form.control as Control<CreateProductFormValues>}
+                    render={({ field }) => (
+                      <FormItem className="mb-5">
+                        <FormLabel>Video</FormLabel>
+                        <FormControl>
+                          <Input
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+
+                              const videoUrl = await handleVideoUpload(file);
+
+                              if (videoUrl) {
+                                field.onChange(videoUrl);
+                              }
+                            }}
+                            type="file"
+                            onBlur={field.onBlur}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     name="perfumer"
                     control={form.control as Control<CreateProductFormValues>}

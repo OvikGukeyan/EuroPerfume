@@ -38,7 +38,7 @@ interface Props {
 }
 export const ChooseProductForm: FC<Props> = ({ product, className }) => {
   const [activeVariationId, setActiveVariationId] = useState<number>(
-    product.variations[0].id
+    product.variations[0]?.id
   );
   const activeVariation = product.variations.find(
     (variation) => variation.id === activeVariationId
