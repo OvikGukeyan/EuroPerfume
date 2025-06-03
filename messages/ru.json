@@ -238,5 +238,15 @@
     "privacy": "Политика конфиденциальности",
     "impressum": "Импрессум",
     "copyright": "EuroPerfume 2024. Все права защищены."
+  },
+
+  "Reviews": {
+    "title": "Отзывы",
+    "noReviews": "Пока нет отзывов"
+  },
+  "ReviewForm": {
+    "title": "Напишите отзыв",
+    "commentPlaceholder": "Ваш отзыв",
+    "submitButton": "Отправить"
   }
 }

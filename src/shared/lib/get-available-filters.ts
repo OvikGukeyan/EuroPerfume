@@ -3,6 +3,7 @@ import { ProductDTO } from "../services/dto/product.dto";
 import { concentrations, genders } from "@/prisma/constants";
 
 export const getAvailableFilters = (products: ProductDTO[]) => {
+
   function getUniqueBy<T>(arr: T[], key: keyof T): T[] {
     const map = new Map<string, T>();
     for (const item of arr) {

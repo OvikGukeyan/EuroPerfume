@@ -11,6 +11,7 @@ import {
 } from "../ui/card";
 import { createReview } from "@/src/app/actions";
 import { cn } from "@/src/lib/utils";
+import { useTranslations } from "next-intl";
 
 
 type Props = {
@@ -18,13 +19,13 @@ type Props = {
   productId?: number;
 };
 export const ReviewForm: FC<Props> =  ({ className, productId }) => {
- 
+ const t = useTranslations("ReviewForm");
 
   return (
-    <Card className={cn("p-2 md:p-5", className)}>
+     <Card className={cn("p-2 md:p-5", className)}>
       <CardHeader>
         <CardTitle>
-          <Title text="Write a review" size="md" className="font-extrabold " />
+          <Title text={t("title")} size="md" className="font-extrabold" />
         </CardTitle>
       </CardHeader>
       <form className="flex flex-col items-start gap-5" action={createReview}>
@@ -33,11 +34,11 @@ export const ReviewForm: FC<Props> =  ({ className, productId }) => {
           <RatingSelect />
         </CardContent>
         <CardContent className="w-full">
-          <Textarea name="comment" required />
+          <Textarea name="comment" placeholder={t("commentPlaceholder")} required />
         </CardContent>
 
         <CardFooter>
-          <SubmitButtonBar   />
+          <SubmitButtonBar  />
         </CardFooter>
       </form>
     </Card>

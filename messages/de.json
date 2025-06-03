@@ -238,5 +238,15 @@
     "privacy": "Datenschutz",
     "impressum": "Impressum",
     "copyright": "EuroPerfume 2024. Alle Rechte vorbehalten."
+  },
+
+  "Reviews": {
+    "title": "Bewertungen",
+    "noReviews": "Noch keine Bewertungen"
+  },
+  "ReviewForm": {
+    "title": "Schreiben Sie eine Bewertung",
+    "commentPlaceholder": "Ihre Bewertung",
+    "submitButton": "Absenden"
   }
 }

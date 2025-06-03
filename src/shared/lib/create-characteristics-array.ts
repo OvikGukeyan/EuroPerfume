@@ -2,7 +2,6 @@ import {
   concentrations,
 } from "@/../../prisma/constants";
 import { NoteType } from "@prisma/client";
-import { useLocale } from "next-intl";
 import { ProductWithTranslations } from "../components/shared/choose-product-form";
 
 type ReturnProps = {
@@ -18,6 +17,7 @@ export const createCharacteristicsArray = (
     (translation) =>
       translation.language.toLocaleLowerCase() === locale.toLocaleLowerCase()
   );
+  const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
   const {
     brand,
     classification,
@@ -43,74 +43,73 @@ export const createCharacteristicsArray = (
   } = product;
   const currentTopNotes = productNotes
     .filter((note) => note.noteType === NoteType.TOP)
-    .map((note) => note.note?.labelRu)
+    .map((note) => note.note[labelLocale])
     .join(", ");
   const currentHeartNotes = productNotes
     .filter((note) => note.noteType === NoteType.HEART)
-    .map((note) => note.note?.labelRu)
+    .map((note) => note.note[labelLocale])
     .join(", ");
   const currentBaseNotes = productNotes
     .filter((note) => note.noteType === NoteType.BASE)
-    .map((note) => note.note?.labelRu)
+    .map((note) => note.note[labelLocale])
     .join(", ");
-  const currentAroma = aromas.map((item) => item.labelRu).join(", ");
-  const currentClassification = classification.map((item) => item.labelRu).join(", ");
+  const currentAroma = aromas.map((item) => item[labelLocale]).join(", ");
+  const currentClassification = classification.map((item) => item[labelLocale]).join(", ");
   const currentConcentration = concentrations.find(
     (item) => item.value === concentration
   )?.name;
 
-  const currentPurpose = purpose.map((item) => item.labelRu).join(", ");
-  const currentFinish = finish.map((item) => item.labelRu).join(", ");
-  const currentTexture = texture.map((item) => item.labelRu).join(", ");
-  const currentFormula = formula.map((item) => item.labelRu).join(", ");
-  const currentEffect = effect.map((item) => item.labelRu).join(", ");
-  const isHypoallergenic = hypoallergenic ? "Да" : "Нет";
-  const currentApplicationMethod = applicationMethod.map((item) => item.labelRu).join(", ");
-  const currentPackagingFormat = packagingFormat.map((item) => item.labelRu).join(", ");
-  const currentSkinType = skinType.map((item) => item.labelRu).join(", ");
+  const currentPurpose = purpose.map((item) => item[labelLocale]).join(", ");
+  const currentFinish = finish.map((item) => item[labelLocale]).join(", ");
+  const currentTexture = texture.map((item) => item[labelLocale]).join(", ");
+  const currentFormula = formula.map((item) => item[labelLocale]).join(", ");
+  const currentEffect = effect.map((item) => item[labelLocale]).join(", ");
+  const isHypoallergenic = hypoallergenic ? (locale === "ru" ? "Да" : "Ja") : (locale === "ru" ? "Нет" : "Nein");
+  const currentApplicationMethod = applicationMethod.map((item) => item[labelLocale]).join(", ");
+  const currentPackagingFormat = packagingFormat.map((item) => item[labelLocale]).join(", ");
+  const currentSkinType = skinType.map((item) => item[labelLocale]).join(", ");
 
   const characteristics = [
-    {name: "Description", value: translation?.description || ""},
-    { name: "Brand", value: brand.name },
-    { name: "Aroma", value: currentAroma },
-    { name: "Classification", value: currentClassification },
-    { name: "Concentration", value: currentConcentration || undefined },
-    { name: "Base Note", value: currentBaseNotes },
-    { name: "Top Note", value: currentTopNotes },
-    { name: "Heart Note", value: currentHeartNotes },
-    { name: "Gender", value: gender || undefined },
-    { name: "Release year", value: releaseYear?.toString() || undefined },
-    { name: "Perfumer", value: perfumer || undefined },
-    { name: "Brand Country", value: translation?.brandCountry },
-    { name: "Manufacturing Country", value: translation?.manufacturingCountry },
-    { name: "Age", value: age?.toString() || undefined },
-    { name: "Series", value: series || undefined },
-    { name: "Purpose", value: currentPurpose || undefined },
-    { name: "Color Palette", value: translation?.colorPalette || undefined },
-    { name: "Finish", value: currentFinish || undefined },
-    { name: "Texture", value: currentTexture || undefined },
-    { name: "Formula", value: currentFormula || undefined },
+    { name: (locale === "ru" ? "Бренд" : "Marke"), value: brand.name },
+    { name: (locale === "ru" ? "Аромат" : "Aroma"), value: currentAroma },
+    { name: (locale === "ru" ? "Классификация" : "Klassifikation"), value: currentClassification },
+    { name: (locale === "ru" ? "Концентрация" : "Konzentration"), value: currentConcentration || undefined },
+    { name: (locale === "ru" ? "Базовая нота" : "Basisnote"), value: currentBaseNotes },
+    { name: (locale === "ru" ? "Топовая нота" : "Topnote"), value: currentTopNotes },
+    { name: (locale === "ru" ? "Сердечная нота" : "Herznote"), value: currentHeartNotes },
+    { name: (locale === "ru" ? "Пол" : "Geschlecht"), value: gender || undefined },
+    { name: (locale === "ru" ? "Год выпуска" : "Jahr"), value: releaseYear?.toString() || undefined },
+    { name: (locale === "ru" ? "Производитель" : "Hersteller"), value: perfumer || undefined },
+    { name: (locale === "ru" ? "Страна бренда" : "Land der Marke"), value: translation?.brandCountry },
+    { name: (locale === "ru" ? "Страна производства" : "Land der Herstellung"), value: translation?.manufacturingCountry },
+    { name: (locale === "ru" ? "Возраст" : "Alter"), value: age?.toString() || undefined },
+    { name: (locale === "ru" ? "Серия" : "Serie"), value: series || undefined },
+    { name: (locale === "ru" ? "Цель" : "Zweck"), value: currentPurpose || undefined },
+    { name: (locale === "ru" ? "Цветовая палитра" : "Farbpalette"), value: translation?.colorPalette || undefined },
+    { name: (locale === "ru" ? "Финиш" : "Finish"), value: currentFinish || undefined },
+    { name: (locale === "ru" ? "Текстура" : "Textur"), value: currentTexture || undefined },
+    { name: (locale === "ru" ? "Формула" : "Formel"), value: currentFormula || undefined },
     {
-      name: "Composition Features",
+      name: (locale === "ru" ? "Состав" : "Zusammenstellung"),
       value: translation?.compositionFeatures || undefined,
     },
     {
-      name: "Active Ingredients",
+      name: (locale === "ru" ? "Активные ингредиенты" : "Aktive Zutaten"),
       value: translation?.activeIngredients || undefined,
     },
-    { name: "Effect", value: currentEffect || undefined },
-    { name: "Effect Duration", value: effectDuration?.toString() || undefined },
-    { name: "Hypoallergenic", value: isHypoallergenic },
-    { name: "Certificates", value: translation?.certificates || undefined },
-    { name: "Ethics", value: translation?.ethics || undefined },
+    { name: (locale === "ru" ? "Эффект" : "Effekt"), value: currentEffect || undefined },
+    { name: (locale === "ru" ? "Продолжительность эффекта" : "Dauer des Effekts"), value: effectDuration?.toString() || undefined },
+    { name: (locale === "ru" ? "Гипоаллергенность" : "Hypoallergeneit"), value: isHypoallergenic },
+    { name: (locale === "ru" ? "Сертификаты" : "Zertifikate"), value: translation?.certificates || undefined },
+    { name: (locale === "ru" ? "Этика" : "Ethik"), value: translation?.ethics || undefined },
     {
-      name: "Application Method",
+      name: (locale === "ru" ? "Метод применения" : "Anwendungsmethode"),
       value: currentApplicationMethod || undefined,
     },
-    { name: "Packaging Format", value: currentPackagingFormat || undefined },
-    { name: "Volume", value: volume?.toString() || undefined },
-    { name: "Skin Type", value: currentSkinType || undefined },
-    { name: "Material", value: translation?.material || undefined },
+    { name: (locale === "ru" ? "Упаковка" : "Packung"), value: currentPackagingFormat || undefined },
+    { name: (locale === "ru" ? "Объем" : "Volumen"), value: volume?.toString() || undefined },
+    { name: (locale === "ru" ? "Тип кожи" : "Köhltyp"), value: currentSkinType || undefined },
+    { name: (locale === "ru" ? "Материал" : "Material"), value: translation?.material || undefined },
   ];
 
   return characteristics.filter(

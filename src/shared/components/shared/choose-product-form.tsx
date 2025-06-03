@@ -56,6 +56,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
   const { averageRating, count } = calcAverageRating(product.reviews);
 
   const locale = useLocale() as "ru" | "de";
+  
 
   const [addCartItem, loading] = useCartStore((state) => [
     state.addCartItem,
@@ -159,7 +160,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
               </TabsList>
               <TabsContent className="w-full min-h-[200px]" value="description">
                 <Text size="md" className="my-4">
-                  {charactiristics.find((c) => c.name === "Description")?.value}
+                  {product.translations.find((t) => t.language.toLocaleLowerCase() === locale.toLocaleLowerCase())?.description}
                 </Text>
               </TabsContent>
               <TabsContent className="w-full" value="characteristics">
