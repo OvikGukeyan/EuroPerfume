@@ -7,7 +7,7 @@ export const imageCompressor = async (file: File, outputType: "image/jpeg" | "im
     useWebWorker: true,
     fileType: outputType, // 👈 Принудительно указываем нужный формат
   };
-
+  
   const compressedBlob = await imageCompression(file, options);
 
   // Изменяем расширение файла под новый формат

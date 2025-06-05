@@ -35,7 +35,7 @@ import {
 } from "@/src/shared/constants/create-product-schema";
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
-import { handleVideoUpload } from "../../lib";
+import { handleVideoUpload, imageCompressor } from "../../lib";
 import { Trash } from "lucide-react";
 import { useProductMeta } from "../../hooks";
 
@@ -188,7 +188,10 @@ export const CreateProductForm: FC<Props> = ({
     try {
       setLoading(true);
       const formData = new FormData();
-
+      const images = data.image as File[];
+      const compressedImages = await Promise.all(
+        images.map((image) => imageCompressor(image, "image/webp"))
+      )
       formData.append("productName", data.productName);
 
       formData.append("price", data.price.toString());
@@ -259,8 +262,8 @@ export const CreateProductForm: FC<Props> = ({
 
       formData.append("size", data.size || "");
 
-      if (data.image && data.image.length > 0) {
-        data.image.forEach((file) => {
+      if (compressedImages && compressedImages.length > 0) {
+        compressedImages.forEach((file) => {
           formData.append("image", file);
         });
       }
@@ -521,7 +524,6 @@ export const CreateProductForm: FC<Props> = ({
             <div className="w-1/2">
               {categoryId === 1 && (
                 <>
-                  
                   <FormField
                     name="perfumer"
                     control={form.control as Control<CreateProductFormValues>}
@@ -543,12 +545,12 @@ export const CreateProductForm: FC<Props> = ({
                     items={concentrations}
                   />
                   <OptionControlPanel
+                    name="aromas"
                     control={form.control}
                     items={productMeta.aromas.map((aroma) => ({
                       ...aroma,
                       id: String(aroma.id),
                     }))}
-                    name="aromas"
                     title="Выберите ароматы"
                     onCreate={createAroma}
                     onDelete={deleteAroma}
@@ -931,30 +933,30 @@ export const CreateProductForm: FC<Props> = ({
 
               {categoryId !== 2 && (
                 <FormField
-                    name="video"
-                    control={form.control as Control<CreateProductFormValues>}
-                    render={({ field }) => (
-                      <FormItem className="mb-5">
-                        <FormLabel>Video</FormLabel>
-                        <FormControl>
-                          <Input
-                            onChange={async (e) => {
-                              const file = e.target.files?.[0];
-                              if (!file) return;
+                  name="video"
+                  control={form.control as Control<CreateProductFormValues>}
+                  render={({ field }) => (
+                    <FormItem className="mb-5">
+                      <FormLabel>Video</FormLabel>
+                      <FormControl>
+                        <Input
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
 
-                              const videoUrl = await handleVideoUpload(file);
+                            const videoUrl = await handleVideoUpload(file);
 
-                              if (videoUrl) {
-                                field.onChange(videoUrl);
-                              }
-                            }}
-                            type="file"
-                            onBlur={field.onBlur}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+                            if (videoUrl) {
+                              field.onChange(videoUrl);
+                            }
+                          }}
+                          type="file"
+                          onBlur={field.onBlur}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               )}
 
               {categoryId === 3 && (
