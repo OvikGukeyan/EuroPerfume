@@ -7,13 +7,13 @@ import { getAvailableFilters } from "../lib";
 
 interface AvailableFilters {
   brands: { text: string; value: string }[] | null;
-  classifications: { text: string; value: string }[] | null;
+  classifications: { ru: string; de: string; value: string }[] | null;
   concentrations: { text: string; value: string }[] | null;
-  genders: { text: string; value: string }[] | null;
-  aromas: { text: string; value: string }[] | null;
-  baseNotes: { text: string; value: string }[] | null;
-  topNotes: { text: string; value: string }[] | null;
-  heartNotes: { text: string; value: string }[] | null;
+  genders: { ru: string; de: string; value: string }[] | null;
+  aromas: { ru: string; de: string; value: string }[] | null;
+  baseNotes: { ru: string; de: string; value: string }[] | null;
+  topNotes: { ru: string; de: string; value: string }[] | null;
+  heartNotes: { ru: string; de: string; value: string }[] | null;
 }
 interface ProductState {
   items: ProductDTO[];

@@ -17,7 +17,7 @@ export const CartButton: FC<Props> = ({ className }) => {
             <Button
             variant='ghost'
                 // loading={loading}
-                className={cn('group relative', {'w-[105px]': loading}, className)}>
+                className={cn('group relative', className)}>
                 <b className='hidden md:block'>{totalAmount} €</b>
                 <span className="hidden md:block h-full w-[1px] bg-black/30 mx-3" />
                 <div className="flex items-center gap-1 transition duration-300 group-hover:opacity-0">

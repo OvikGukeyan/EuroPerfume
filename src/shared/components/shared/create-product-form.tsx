@@ -521,31 +521,7 @@ export const CreateProductForm: FC<Props> = ({
             <div className="w-1/2">
               {categoryId === 1 && (
                 <>
-                  <FormField
-                    name="video"
-                    control={form.control as Control<CreateProductFormValues>}
-                    render={({ field }) => (
-                      <FormItem className="mb-5">
-                        <FormLabel>Video</FormLabel>
-                        <FormControl>
-                          <Input
-                            onChange={async (e) => {
-                              const file = e.target.files?.[0];
-                              if (!file) return;
-
-                              const videoUrl = await handleVideoUpload(file);
-
-                              if (videoUrl) {
-                                field.onChange(videoUrl);
-                              }
-                            }}
-                            type="file"
-                            onBlur={field.onBlur}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+                  
                   <FormField
                     name="perfumer"
                     control={form.control as Control<CreateProductFormValues>}
@@ -951,6 +927,34 @@ export const CreateProductForm: FC<Props> = ({
                     error={metaError}
                   />
                 </>
+              )}
+
+              {categoryId !== 2 && (
+                <FormField
+                    name="video"
+                    control={form.control as Control<CreateProductFormValues>}
+                    render={({ field }) => (
+                      <FormItem className="mb-5">
+                        <FormLabel>Video</FormLabel>
+                        <FormControl>
+                          <Input
+                            onChange={async (e) => {
+                              const file = e.target.files?.[0];
+                              if (!file) return;
+
+                              const videoUrl = await handleVideoUpload(file);
+
+                              if (videoUrl) {
+                                field.onChange(videoUrl);
+                              }
+                            }}
+                            type="file"
+                            onBlur={field.onBlur}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
               )}
 
               {categoryId === 3 && (

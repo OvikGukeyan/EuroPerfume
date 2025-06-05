@@ -81,7 +81,7 @@ export const MenuDrawerItem: FC<Props> = ({
             setProductGroup(null);
             setOpen(false);
           }}
-          className="px-4 py-2 text-xl cursor-pointer"
+          className="px-4 py-2 text-xl cursor-pointer  active:bg-gray-100 hover:bg-gray-100"
         >
           {locale === "ru" ? <p>Показать все</p> : <p>Ales anzeigen</p>}
         </div>
@@ -91,7 +91,7 @@ export const MenuDrawerItem: FC<Props> = ({
               handleSubItemClick(productGroup);
             }}
             key={productGroup.id}
-            className="px-4 py-2 text-xl cursor-pointer"
+            className="px-4 py-2 text-xl cursor-pointer active:bg-gray-100 hover:bg-gray-100"
           >
             {locale === "ru" ? productGroup.labelRu : productGroup.labelDe}
           </div>

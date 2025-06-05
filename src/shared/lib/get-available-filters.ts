@@ -3,7 +3,6 @@ import { ProductDTO } from "../services/dto/product.dto";
 import { concentrations, genders } from "@/prisma/constants";
 
 export const getAvailableFilters = (products: ProductDTO[]) => {
-
   function getUniqueBy<T>(arr: T[], key: keyof T): T[] {
     const map = new Map<string, T>();
     for (const item of arr) {
@@ -26,11 +25,12 @@ export const getAvailableFilters = (products: ProductDTO[]) => {
     products
       .flatMap((p) =>
         p.classification.map((a) => ({
-          text: a.labelRu,
+          ru: a.labelRu,
+          de: a.labelDe,
           value: a.id.toString(),
         }))
       )
-      .filter((item) => item.text.trim() !== ""),
+      .filter((item) => item.ru.trim() !== "" || item.de.trim() !== ""),
     "value"
   );
   const uniqueConcentrations = getUniqueBy(
@@ -54,7 +54,8 @@ export const getAvailableFilters = (products: ProductDTO[]) => {
       p.gender
         ? [
             {
-              text: genders.find((el) => el.value === p.gender)?.label.de || "",
+              ru: genders.find((el) => el.value === p.gender)?.label.ru || "",
+              de: genders.find((el) => el.value === p.gender)?.label.de || "",
               value: p.gender.toString(),
             },
           ]
@@ -68,7 +69,8 @@ export const getAvailableFilters = (products: ProductDTO[]) => {
       p.productNotes
         .filter((pn) => pn.noteType === NoteType.TOP)
         .map((pn) => ({
-          text: pn.note.labelRu,
+          ru: pn.note.labelRu,
+          de: pn.note.labelDe,
           value: pn.note.id.toString(),
         }))
     ),
@@ -79,7 +81,8 @@ export const getAvailableFilters = (products: ProductDTO[]) => {
       p.productNotes
         .filter((pn) => pn.noteType === NoteType.HEART)
         .map((pn) => ({
-          text: pn.note.labelRu,
+          ru: pn.note.labelRu,
+          de: pn.note.labelDe,
           value: pn.note.id.toString(),
         }))
     ),
@@ -90,7 +93,8 @@ export const getAvailableFilters = (products: ProductDTO[]) => {
       p.productNotes
         .filter((pn) => pn.noteType === NoteType.BASE)
         .map((pn) => ({
-          text: pn.note.labelRu,
+          ru: pn.note.labelRu,
+          de: pn.note.labelDe,
           value: pn.note.id.toString(),
         }))
     ),
@@ -98,7 +102,11 @@ export const getAvailableFilters = (products: ProductDTO[]) => {
   );
   const uniqueAromas = getUniqueBy(
     products.flatMap((p) =>
-      p.aromas.map((a) => ({ text: a.labelRu, value: a.id.toString() }))
+      p.aromas.map((a) => ({
+        ru: a.labelRu,
+        de: a.labelDe,
+        value: a.id.toString(),
+      }))
     ),
     "value"
   );

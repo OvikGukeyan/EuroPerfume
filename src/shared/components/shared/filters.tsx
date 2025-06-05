@@ -55,7 +55,10 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           className="mb-5"
           onClickCheckbox={filters.setSelectedGender}
           selected={filters.gender}
-          items={availableFilters?.genders}
+          items={availableFilters?.genders.map((gender) => ({
+            text: gender[locale],
+            value: gender.value,
+          }))}
         />
       )}
 
@@ -67,7 +70,10 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           limit={3}
           onClickCheckbox={filters.setSelectedClassification}
           selected={filters.classification}
-          items={availableFilters.classifications}
+          items={availableFilters.classifications.map((classification) => ({
+            text: classification[locale],
+            value: classification.value,
+          }))}
         />
       )}
 
@@ -122,7 +128,10 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           className="my-5"
           limit={3}
           // defaultItems={items.slice(0, 6)}
-          items={availableFilters.aromas}
+          items={availableFilters.aromas.map((aroma) => ({
+            text: aroma[locale],
+            value: aroma.value,
+          }))}
           onClickCheckbox={filters.setSelectedAromas}
           selected={filters.aromas}
         />
@@ -133,7 +142,10 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           name="topNotes"
           limit={3}
           // defaultItems={items.slice(0, 6)}
-          items={availableFilters.topNotes}
+          items={availableFilters.topNotes.map((note) => ({
+            text: note[locale],
+            value: note.value,
+          }))}
           onClickCheckbox={filters.setTopNotes}
           selected={filters.topNotes}
         />
@@ -146,7 +158,10 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           name="heartNotes"
           limit={3}
           // defaultItems={items.slice(0, 6)}
-          items={availableFilters.heartNotes}
+          items={availableFilters.heartNotes.map((note) => ({
+            text: note[locale],
+            value: note.value,
+          }))}
           onClickCheckbox={filters.setHeartNotes}
           selected={filters.heartNotes}
         />
@@ -158,7 +173,10 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           name="baseNotes"
           limit={3}
           // defaultItems={items.slice(0, 6)}
-          items={availableFilters.baseNotes}
+          items={availableFilters.baseNotes.map((note) => ({
+            text: note[locale],
+            value: note.value,
+          }))}
           onClickCheckbox={filters.setBaseNotes}
           selected={filters.baseNotes}
         />
