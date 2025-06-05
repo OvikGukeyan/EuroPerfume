@@ -64,7 +64,7 @@ export const ProductCarousel: React.FC<PropType> = ({
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-4 w-full min-h-400",
+        "flex flex-col items-center gap-4 w-full min-h-400 ",
         className
       )}
     >
@@ -96,16 +96,15 @@ export const ProductCarousel: React.FC<PropType> = ({
         </div>
       </div>
 
-      <div className="relative w-full max-w-sm overflow-hidden">
+      <div className="relative w-full max-w-sm ">
         <div
-          className="overflow-hidden"
+          style={{ scrollbarWidth: "none" }}
+          className="overflow-hidden "
           ref={emblaThumbsRef}
         >
-          <div
-          style={{ scrollbarWidth: "none" }}
-          className="flex gap-2 overflow-y-hidden ">
+          <div className="flex gap-2">
             {slides.map((slide, index) => (
-              <div key={index} className="flex-shrink-0">
+              <div key={index} className="flex-shrink-0 ">
                 <button
                   onClick={() => onThumbClick(index)}
                   type="button"
