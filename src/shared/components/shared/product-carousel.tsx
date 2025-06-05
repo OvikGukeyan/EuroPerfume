@@ -98,11 +98,12 @@ export const ProductCarousel: React.FC<PropType> = ({
 
       <div className="relative w-full max-w-sm overflow-hidden">
         <div
-          style={{ scrollbarWidth: "none" }}
-          className="overflow-x-auto overflow-y-hidden"
+          className="overflow-hidden"
           ref={emblaThumbsRef}
         >
-          <div className="flex gap-2 overflow-hidden">
+          <div
+          style={{ scrollbarWidth: "none" }}
+          className="flex gap-2 overflow-y-hidden ">
             {slides.map((slide, index) => (
               <div key={index} className="flex-shrink-0">
                 <button
