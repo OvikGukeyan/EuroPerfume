@@ -5,16 +5,16 @@ import { GetSearchParams } from "../lib/find-products";
 import { Aroma } from "@prisma/client";
 
 export interface RecommendationsParams {
-  categoryId: number;
+  categoryId?: number;
   aromas?: Aroma[];
   productGroupId: number;
 }
-export const useRecommendations = (product: ProductDTO) => {
+export const useRecommendations = (recommendationsParams: RecommendationsParams) => {
   const [recommendations, setRecommendations] = useState<ProductDTO[]>([]);
   const params: GetSearchParams = {
-    category: product.categoryId.toString(),
-    aromas: product.aromas.toString() || undefined,
-    productGroup: product.productGroupId.toString(),
+    category: recommendationsParams?.categoryId?.toString() || undefined,
+    aromas: recommendationsParams?.aromas?.toString() || undefined,
+    productGroup: recommendationsParams.productGroupId.toString(),
   };
   useEffect(() => {
     const fetchRecommendations = async () => {

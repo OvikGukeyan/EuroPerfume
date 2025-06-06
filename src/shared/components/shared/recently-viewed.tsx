@@ -9,5 +9,15 @@ type Props = {
 
 export const RecentlyViewed: FC<Props> = ({ className }) => {
   const recentlyViewed = useRecentlyViewed();
-  return <ProductsCarusel className={className} items={recentlyViewed } title="Recently Viewed" />;
+  return (
+    <>
+      {recentlyViewed.length > 0 && (
+        <ProductsCarusel
+          className={className}
+          items={recentlyViewed}
+          title="Recently Viewed"
+        />
+      )}
+    </>
+  );
 };

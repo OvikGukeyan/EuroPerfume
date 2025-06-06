@@ -1,4 +1,4 @@
-import { Container, Header } from "@/src/shared/components";
+import { Container, Footer, Header, Recommendations } from "@/src/shared/components";
 import type { Metadata } from "next";
 import { Suspense } from "react";
 
@@ -21,6 +21,7 @@ export default function CheckoutLayout({
                     <Header hasSearch={false} hasCart={false} className="border-b-gray-200" />
                 </Suspense>
                 {children}
+                <Footer />
             </Container>
         </main>
     );

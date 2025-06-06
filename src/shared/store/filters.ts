@@ -59,10 +59,11 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
   productGroup: null,
   currentPage: 1,
 
-  setCategory: (category: number) => set({ category }),
+  setCategory: (category: number) => set({ category, currentPage: 1 }),
 
-  setProductGroup: (productGroup: number | null) =>
-    set(() => ({ productGroup })),
+  setProductGroup: (productGroup: number | null) => 
+    set(() => ({ productGroup, currentPage: 1 })),
+  
 
   setPrices: (name, value) =>
     set((state) => ({

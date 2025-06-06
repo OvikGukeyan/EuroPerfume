@@ -1,10 +1,7 @@
-import { Recommendations } from './../components/shared/recommendations';
 import { ApiRouts } from "./constants";
 import { axiosInstance } from "./instance";
 import { ProductDTO, ProductsWithPagination } from "./dto/product.dto";
 import { GetSearchParams } from '../lib/find-products';
-import { Product } from '@prisma/client';
-import { RecommendationsParams } from '../hooks/use-recommendations';
 
 export const search = async (query?: string): Promise<ProductDTO[]> => {
   const { data } = await axiosInstance.get<ProductDTO[]>(

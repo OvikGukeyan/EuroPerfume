@@ -67,7 +67,7 @@ export const Header: React.FC<Props> = ({
           <Truck />
           <h3 className="text-sm md:text-base">{t("freeDeliveryInfo")}</h3>
         </div>
-        <LanguageSwitcher className="hidden md:block"/>
+        <LanguageSwitcher className="hidden md:block" />
       </div>
       <header className={cn("", className)}>
         <Separator />
@@ -84,6 +84,7 @@ export const Header: React.FC<Props> = ({
           >
             <Link href="/">
               <Image
+                onClick={filters.resetFilters}
                 src="/assets/logo.png"
                 layout="fill"
                 objectFit="contain"

@@ -102,7 +102,7 @@ export const ProductCarousel: React.FC<PropType> = ({
           className="overflow-hidden "
           ref={emblaThumbsRef}
         >
-          <div className="flex gap-2">
+          <div className="flex gap-2 ">
             {slides.map((slide, index) => (
               <div key={index} className="flex-shrink-0 ">
                 <button
