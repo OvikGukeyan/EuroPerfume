@@ -18,6 +18,7 @@ import {
   SkinType,
   Texture,
 } from "@prisma/client";
+import { AvailableFilters } from "../../store/product";
 export type SafeProduct = Omit<Product, "price"> & {
   price: number;
 };
@@ -45,4 +46,5 @@ export interface ProductDTO extends SafeProduct {
 export interface ProductsWithPagination {
   products: ProductDTO[];
   totalPages: number;
+  availableFilters: AvailableFilters;
 }

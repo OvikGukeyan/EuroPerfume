@@ -79,7 +79,9 @@ export const ProductCard: React.FC<Props> = ({
       toggleIsFavorite(false);
     }
   }, [items, id]);
-  const onSubmit = async () => {
+  const onSubmit = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
     try {
       await addCartItem({
         productId: id,
@@ -159,7 +161,7 @@ export const ProductCard: React.FC<Props> = ({
         </div>
 
         <Button
-          onClick={onSubmit}
+          onClick={(e) => onSubmit(e)}
           variant="outline"
           className="text-base font-bold"
         >

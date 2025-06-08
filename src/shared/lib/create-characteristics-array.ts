@@ -1,5 +1,6 @@
 import {
   concentrations,
+  genders,
 } from "@/../../prisma/constants";
 import { NoteType } from "@prisma/client";
 import { ProductWithTranslations } from "../components/shared/choose-product-form";
@@ -68,6 +69,7 @@ export const createCharacteristicsArray = (
   const currentApplicationMethod = applicationMethod.map((item) => item[labelLocale]).join(", ");
   const currentPackagingFormat = packagingFormat.map((item) => item[labelLocale]).join(", ");
   const currentSkinType = skinType.map((item) => item[labelLocale]).join(", ");
+  const currentGender = genders.find((item) => item.value === gender)?.label[locale];
 
   const characteristics = [
     { name: (locale === "ru" ? "Бренд" : "Marke"), value: brand.name },
@@ -77,9 +79,9 @@ export const createCharacteristicsArray = (
     { name: (locale === "ru" ? "Базовая нота" : "Basisnote"), value: currentBaseNotes },
     { name: (locale === "ru" ? "Топовая нота" : "Topnote"), value: currentTopNotes },
     { name: (locale === "ru" ? "Сердечная нота" : "Herznote"), value: currentHeartNotes },
-    { name: (locale === "ru" ? "Пол" : "Geschlecht"), value: gender || undefined },
+    { name: (locale === "ru" ? "Пол" : "Geschlecht"), value: currentGender || undefined },
     { name: (locale === "ru" ? "Год выпуска" : "Jahr"), value: releaseYear?.toString() || undefined },
-    { name: (locale === "ru" ? "Производитель" : "Hersteller"), value: perfumer || undefined },
+    { name: (locale === "ru" ? "Парфюмер" : "Parfumer"), value: perfumer || undefined },
     { name: (locale === "ru" ? "Страна бренда" : "Land der Marke"), value: translation?.brandCountry },
     { name: (locale === "ru" ? "Страна производства" : "Land der Herstellung"), value: translation?.manufacturingCountry },
     { name: (locale === "ru" ? "Возраст" : "Alter"), value: age?.toString() || undefined },

@@ -5,7 +5,7 @@ import { GetSearchParams } from "../lib/find-products";
 import { deleteProduct, toggleProductAvailability } from "@/src/app/actions";
 import { getAvailableFilters } from "../lib";
 
-interface AvailableFilters {
+export interface AvailableFilters {
   brands: { text: string; value: string }[] | null;
   classifications: { ru: string; de: string; value: string }[] | null;
   concentrations: { text: string; value: string }[] | null;
@@ -37,9 +37,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
   fetchAllProducts: async (params?: GetSearchParams) => {
     try {
       set({ loading: true });
-      const { products, totalPages } = await Api.products.getAll(params);
-
-     const availableFilters = getAvailableFilters(products);
+      const { products, totalPages, availableFilters } = await Api.products.getAll(params);
       set({
         items: products,
         pages: totalPages,

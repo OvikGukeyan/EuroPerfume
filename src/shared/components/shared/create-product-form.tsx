@@ -188,9 +188,9 @@ export const CreateProductForm: FC<Props> = ({
     try {
       setLoading(true);
       const formData = new FormData();
-      const images = data.image as File[];
+      const images = data.image as File[] || [];
       const compressedImages = await Promise.all(
-        images.map((image) => imageCompressor(image, "image/webp"))
+        images?.map((image) => imageCompressor(image, "image/webp"))
       )
       formData.append("productName", data.productName);
 
@@ -281,11 +281,11 @@ export const CreateProductForm: FC<Props> = ({
       formData.append("baseNotes", JSON.stringify(data.baseNotes));
       formData.append("classification", JSON.stringify(data.classification));
 
-      await submitFunction(
+      const res = await submitFunction(
         formData as FormData & CreateProductFormValues,
         product?.id || 0
       );
-
+      console.log(res);
       form.reset();
       toast.success("Product created 📝", { icon: "✅" });
     } catch (error) {

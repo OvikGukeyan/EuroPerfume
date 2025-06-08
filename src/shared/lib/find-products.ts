@@ -1,11 +1,8 @@
 import { prisma } from "@/prisma/prisma-client";
-import {
-  Gender,
-  NoteType,
-  PerfumeConcentration,
-  Prisma,
-} from "@prisma/client";
-import { SafeProduct } from "../services/dto/product.dto";
+import { Gender, NoteType, PerfumeConcentration, Prisma } from "@prisma/client";
+import { ProductDTO, SafeProduct } from "../services/dto/product.dto";
+import { getAvailableFilters } from ".";
+import { AvailableFilters } from "../store/product";
 
 export interface GetSearchParams {
   query?: string;
@@ -29,6 +26,7 @@ export interface GetSearchParams {
 export interface FindProductsResponse {
   products: SafeProduct[];
   totalPages: number;
+  availableFilters: AvailableFilters | null;
 }
 
 const DEFAULT_MIN_PRICE = 0;
@@ -115,7 +113,15 @@ export const findProducts = async (
       gender: genders.length > 0 ? { in: genders as Gender[] } : undefined,
       classification:
         classification.length > 0
-          ? { some: {id: {in: classification.map((classification) => Number(classification))}} }
+          ? {
+              some: {
+                id: {
+                  in: classification.map((classification) =>
+                    Number(classification)
+                  ),
+                },
+              },
+            }
           : undefined,
       concentration: { in: concentration as PerfumeConcentration[] },
       price:
@@ -134,30 +140,36 @@ export const findProducts = async (
       ...(noteFilters.length > 0 && { AND: noteFilters }),
     };
 
-    const [products, totalCount] = await prisma.$transaction([
-      // prisma.category.findMany({
-      //   include: {
-      //     productGroups: {
-      //       include: {
-      //         products: {
-      //           skip: (page - 1) * 10,
-      //           take: 10,
-      //           orderBy: orderBy,
-      //           where: whereClause,
+    const allFilteredProducts = await prisma.product.findMany({
+      where: whereClause,
+      include: {
+        productGroup: true,
+        translations: true,
+        variations: true,
+        brand: true,
+        productNotes: {
+          include: {
+            note: true,
+          },
+        },
+        aromas: true,
+        classification: true,
+        effect: true,
+        purpose: true,
+        skinType: true,
+        packagingFormat: true,
+        finish: true,
+        applicationMethod: true,
+        texture: true,
+        formula: true,
+      },
+    });
 
-      //           include: {
-      //             translations: true,
-      //             variations: true,
-      //             brand: true,
-      //           },
-      //         },
-      //       },
-      //     },
-      //   },
-      // }),
+    const availableFilters = getAvailableFilters(allFilteredProducts as unknown as ProductDTO[]);
+    const [products, totalCount] = await prisma.$transaction([
       prisma.product.findMany({
-        skip: (page - 1) * 10,
-        take: 10,
+        skip: (page - 1) * 12,
+        take: 12,
         orderBy: orderBy,
         where: whereClause,
         include: {
@@ -174,7 +186,7 @@ export const findProducts = async (
           classification: true,
           effect: true,
           purpose: true,
-          skinType: true, 
+          skinType: true,
           packagingFormat: true,
           finish: true,
           applicationMethod: true,
@@ -190,10 +202,10 @@ export const findProducts = async (
       ...product,
       price: product.price.toNumber(),
     }));
-    const totalPages = Math.ceil(totalCount / 10);
-    return { products: safeProducts, totalPages };
+    const totalPages = Math.ceil(totalCount / 12);
+    return { products: safeProducts, totalPages, availableFilters };
   } catch (error) {
     console.error(error);
-    return { products: [], totalPages: 0 };
+    return { products: [], totalPages: 0, availableFilters: null };
   }
 };
