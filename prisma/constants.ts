@@ -81,7 +81,7 @@ export const concentrations = [
     value: PerfumeConcentration.PERFUME,
   },
   {
-    name: "Extract",
+    name: "Extrait de Parfum",
     value: PerfumeConcentration.EXTRAIT,
   },
   {
