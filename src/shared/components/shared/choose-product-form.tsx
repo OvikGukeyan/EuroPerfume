@@ -27,7 +27,7 @@ import { useCartStore } from "../../store";
 import toast from "react-hot-toast";
 import { ProductDTO } from "../../services/dto/product.dto";
 
-export type MediaItem = { type: "image" | "video"; url: string, id?: number };
+export type MediaItem = { type: "image" | "video"; url: string; id?: number };
 
 export interface ProductWithTranslations extends ProductDTO {
   translations: ProductTranslation[];
@@ -42,7 +42,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
   );
   const activeVariation = product.variations.find(
     (variation) => variation.id === activeVariationId
-  )
+  );
   const currentVolumesArray =
     product.price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
 
@@ -56,7 +56,6 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
   const { averageRating, count } = calcAverageRating(product.reviews);
 
   const locale = useLocale() as "ru" | "de";
-  
 
   const [addCartItem, loading] = useCartStore((state) => [
     state.addCartItem,
@@ -99,11 +98,16 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
       ? [{ type: "video" as const, url: product.videoUrl }]
       : []),
   ];
-  const variationsMedia: MediaItem[]  = product.variations.map((variation) => ({
-    type: "image" as const,
-    url: variation.imageUrl,
-    id: variation.id
-  }));
+  const variationsMedia: MediaItem[] = [
+    ...product.variations.map((variation) => ({
+      type: "image" as const,
+      url: variation.imageUrl,
+      id: variation.id,
+    })),
+    ...(product.videoUrl
+      ? [{ type: "video" as const, url: product.videoUrl }]
+      : []),
+  ];
   return (
     <div
       className={cn(
@@ -112,8 +116,12 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
       )}
     >
       <div className="flex  items-center justify-center flex-1 relative w-full lg:w-2/5 bg-[#f2f2f2] p-2 min-h-[400px]">
-        {media.length > 1  || variationsMedia.length > 1 ? (
-          <ProductCarousel slides={media.length > 1 ? media : variationsMedia} setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId}/>
+        {media.length > 1 || variationsMedia.length > 1 ? (
+          <ProductCarousel
+            slides={media.length > 1 ? media : variationsMedia}
+            setActiveVariationId={setActiveVariationId}
+            activeVariationId={activeVariationId}
+          />
         ) : (
           <Image
             layout="fill"
@@ -160,7 +168,13 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
               </TabsList>
               <TabsContent className="w-full min-h-[200px]" value="description">
                 <Text size="md" className="my-4">
-                  {product.translations.find((t) => t.language.toLocaleLowerCase() === locale.toLocaleLowerCase())?.description}
+                  {
+                    product.translations.find(
+                      (t) =>
+                        t.language.toLocaleLowerCase() ===
+                        locale.toLocaleLowerCase()
+                    )?.description
+                  }
                 </Text>
               </TabsContent>
               <TabsContent className="w-full" value="characteristics">

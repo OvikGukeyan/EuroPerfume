@@ -9,3 +9,4 @@ export {useProducts} from './use-products';
 export {useRecommendations} from './use-recommendations';
 export {useRecentlyViewed} from './use-recently-viewed';
 export {useProductMeta} from './use-product-meta';
+export {useVideoUpload} from './use-video-upload';

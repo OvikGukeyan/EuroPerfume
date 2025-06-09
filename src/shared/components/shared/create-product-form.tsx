@@ -35,9 +35,9 @@ import {
 } from "@/src/shared/constants/create-product-schema";
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
-import { handleVideoUpload, imageCompressor } from "../../lib";
-import { Trash } from "lucide-react";
-import { useProductMeta } from "../../hooks";
+import { imageCompressor } from "../../lib";
+import { useProductMeta, useVideoUpload } from "../../hooks";
+import { Ban } from "lucide-react";
 
 interface Props {
   product?: Omit<ProductDTO, "variations" | "reviews">;
@@ -53,7 +53,11 @@ export const CreateProductForm: FC<Props> = ({
   categoryId,
 }) => {
   const [loading, setLoading] = useState(false);
-
+  const {
+    loading: videoLoading,
+    error: videoError,
+    uploadVideo,
+  } = useVideoUpload();
   const {
     productMeta,
     createNote,
@@ -159,6 +163,7 @@ export const CreateProductForm: FC<Props> = ({
       size: product?.size || "",
     },
   });
+
   const topNotes =
     form
       .watch("topNotes")
@@ -188,10 +193,10 @@ export const CreateProductForm: FC<Props> = ({
     try {
       setLoading(true);
       const formData = new FormData();
-      const images = data.image as File[] || [];
+      const images = (data.image as File[]) || [];
       const compressedImages = await Promise.all(
         images?.map((image) => imageCompressor(image, "image/webp"))
-      )
+      );
       formData.append("productName", data.productName);
 
       formData.append("price", data.price.toString());
@@ -285,7 +290,6 @@ export const CreateProductForm: FC<Props> = ({
         formData as FormData & CreateProductFormValues,
         product?.id || 0
       );
-      console.log(res);
       form.reset();
       toast.success("Product created 📝", { icon: "✅" });
     } catch (error) {
@@ -520,27 +524,27 @@ export const CreateProductForm: FC<Props> = ({
                 items={yers}
               />
               <FormField
-                    name="variations"
-                    control={form.control as Control<CreateProductFormValues>}
-                    render={({ field }) => (
-                      <FormItem className="mb-5">
-                        <FormLabel>Variations</FormLabel>
-                        <FormControl>
-                          <Input
-                            multiple
-                            onChange={(e) => {
-                              const files = e.target.files
-                                ? Array.from(e.target.files)
-                                : [];
-                              field.onChange(files);
-                            }}
-                            type="file"
-                            onBlur={field.onBlur}
-                          />
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
+                name="variations"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormLabel>Variations</FormLabel>
+                    <FormControl>
+                      <Input
+                        multiple
+                        onChange={(e) => {
+                          const files = e.target.files
+                            ? Array.from(e.target.files)
+                            : [];
+                          field.onChange(files);
+                        }}
+                        type="file"
+                        onBlur={field.onBlur}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
             </div>
 
             <div className="w-1/2">
@@ -629,7 +633,6 @@ export const CreateProductForm: FC<Props> = ({
 
               {categoryId === 2 && (
                 <>
-                  
                   <OptionControlPanel
                     name="purpose"
                     control={form.control}
@@ -938,17 +941,19 @@ export const CreateProductForm: FC<Props> = ({
                   control={form.control as Control<CreateProductFormValues>}
                   render={({ field }) => (
                     <FormItem className="mb-5">
-                      <FormLabel>Video</FormLabel>
+                      <div className="flex items-center justify-between">
+                        <FormLabel>Video</FormLabel>
+                        {videoError && <Ban/>}
+                      </div>
+
                       <FormControl>
                         <Input
                           onChange={async (e) => {
                             const file = e.target.files?.[0];
                             if (!file) return;
-
-                            const videoUrl = await handleVideoUpload(file);
-
-                            if (videoUrl) {
-                              field.onChange(videoUrl);
+                            const url = await uploadVideo(file);
+                            if (url) {
+                              field.onChange(url);
                             }
                           }}
                           type="file"
@@ -1015,7 +1020,7 @@ export const CreateProductForm: FC<Props> = ({
             </div>
           </div>
 
-          <Button loading={loading} type="submit">
+          <Button loading={loading || videoLoading} type="submit">
             Create
           </Button>
         </form>
