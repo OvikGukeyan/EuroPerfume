@@ -870,6 +870,29 @@ export async function deleteProduct(id: number) {
   }
 }
 
+export async function changeProductPrice(formData: FormData) {
+  try {
+    const user = await getUserSession();
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
+    const { id, price } = Object.fromEntries(formData.entries()) as {
+      id: string;
+      price: string;
+    };
+    if (!id || !price) {
+      throw new Error("Missing required fields");
+    }
+    await prisma.product.update({
+      where: { id: Number(id) },
+      data: { price: Number(price) },
+    });
+  } catch (error) {
+    console.error("Error [CHANGE_PRODUCT_PRICE]", error);
+    throw error;
+  }
+}
+
 export async function deleteProductVariation(id: number) {
   try {
     const user = await getUserSession();

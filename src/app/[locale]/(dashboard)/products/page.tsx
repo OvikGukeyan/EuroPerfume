@@ -1,5 +1,5 @@
 "use client";
-import { Categories, DashboardProduct } from "@/src/shared/components";
+import { Categories, DashboardProduct, PaginationComponent } from "@/src/shared/components";
 import { useCategories, useProducts, useQueryFilters } from "@/src/shared/hooks";
 import { useFiltersStore } from "@/src/shared/store/filters";
 import { useEffect } from "react";
@@ -37,6 +37,7 @@ export default function Products() {
           />
         ))}
       </div>
+      <PaginationComponent />
     </div>
   );
 }

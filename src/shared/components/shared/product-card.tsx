@@ -123,11 +123,12 @@ export const ProductCard: React.FC<Props> = ({
             {isFavorite ? <HeartBlack /> : <Heart />}
           </Button>
         </div>
+
+        <div className="h-28">
+          <Title text={name} size="xs" className="md:text-lg mt-2 font-bold" />
+          <p className="text-sm">{concentratioName || productGroup?.labelRu}</p>
+        </div>
       </Link>
-      <div className="h-28">
-        <Title text={name} size="xs" className="md:text-lg mt-2 font-bold" />
-        <p className="text-sm">{concentratioName || productGroup?.labelRu}</p>
-      </div>
 
       {categoryId === 1 && productGroup?.id && productGroup.id < 4 && (
         <VolumeSelection

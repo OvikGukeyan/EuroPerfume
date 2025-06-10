@@ -4,12 +4,13 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { Title } from ".";
-import { Button, Popover, Switch } from "../ui";
-import { GalleryVerticalEnd, Settings2, Trash2, X } from "lucide-react";
+import { Button, Input, Popover, Switch } from "../ui";
+import { ChevronRight, GalleryVerticalEnd, Settings2, Trash2, X } from "lucide-react";
 import { ProductVariation } from "@prisma/client";
 import { useRouter } from "@/src/i18n/navigation";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
-import { deleteProductVariation } from "@/src/app/actions";
+import { changeProductPrice, deleteProductVariation } from "@/src/app/actions";
+import { useFormStatus } from "react-dom";
 
 interface Props {
   id: number;
@@ -53,7 +54,7 @@ export const DashboardProduct: React.FC<Props> = ({
       </Link>
 
       <div className="h-[80px]">
-        <Title text={name} size="sm" className="mb-1 mt-3 font-bold" />
+        <Title text={name} size="xs" className="mb-1 mt-3 font-bold" />
       </div>
       <Popover>
         <PopoverTrigger asChild>
@@ -87,6 +88,11 @@ export const DashboardProduct: React.FC<Props> = ({
         <span className="text-[20px]">
           price <b>{price} €</b>
         </span>
+        <form action={changeProductPrice} className="flex gap-2">
+          <input type="text" placeholder="0.00" name="price" className="w-10 px-2 border" />
+          <Input type="hidden" name="id" value={id} />
+          <button type="submit"><ChevronRight size={20} /></button>
+        </form>
       </div>
     </div>
   );
