@@ -3,7 +3,7 @@ import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { ProductDTO } from "../../services/dto/product.dto";
 import { cn } from "../../lib/utils";
 import Autoplay from "embla-carousel-autoplay";
-import { ProductCard } from ".";
+import { ProductCard, Title } from ".";
 import Link from "next/link";
 
 type Props = {
@@ -15,8 +15,8 @@ type Props = {
 export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 4000 }), []);
   return (
-    <div className={cn("", className)}>
-      <h2 className="text-3xl text-center font-bold mb-4">{title}</h2>
+    <div className={cn("bg-gray-50", className)}>
+      <Title size="xl" className="font-extrabold text-center" text={title} />
       <Carousel className="w-full" plugins={[autoplayPlugin]}>
         <CarouselContent className="px-2">
           {items.map((item, index) => (

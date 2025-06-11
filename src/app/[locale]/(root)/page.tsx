@@ -7,6 +7,7 @@ import {
   PaginationComponent,
   Carusel,
   TopBar,
+  PopularProducts,
 } from "@/src/shared/components/shared";
 import { getSlides } from "@/src/shared/lib";
 import { Suspense } from "react";
@@ -23,6 +24,7 @@ export default async function Home() {
         <Title size="lg" className="font-extrabold" text="All products" />
       </Container>
       <Container className="mt-10 pb-14">
+
         <div className="flex flex-col xl:flex-row gap-[50px]">
           <FiltersDrawer />
 
@@ -34,6 +36,8 @@ export default async function Home() {
             </div>
           </div>
         </div>
+          <PopularProducts className="col-span-2 lg:col-span-4" />
+        
         <PaginationComponent className="mt-10" />
       </Container>
     </>

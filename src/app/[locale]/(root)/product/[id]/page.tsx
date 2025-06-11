@@ -65,6 +65,7 @@ export default async function Product({
         className="mb-10 mt-5 ml-5 md:ml-0 md:mt-0"
         productName={product.name}
         productCategory={product.category}
+        productGroup={product.productGroup}
       />
       <ChooseProductForm product={safeProduct} />
       <ReviewsComponent className="hidden md:block" product={safeProduct} />

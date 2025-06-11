@@ -1,49 +1,113 @@
 "use client";
 
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { Title, CheckboxFiltersGroup } from ".";
-import { Input, RangeSlider } from "../ui";
-import { Aroma, Brand, Note } from "@prisma/client";
+import { Button, Input, RangeSlider } from "../ui";
 import { useFiltersStore } from "../../store/filters";
 import { cn } from "@/src/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 import { useProductStore } from "../../store/product";
-import { concentrations } from "@/prisma/constants";
+import { set } from "zod";
 interface Props {
-  notes: Note[];
-  brands: Brand[];
-  aromas: Aroma[];
   className?: string;
 }
 
-export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
+export const Filters: FC<Props> = () => {
   const filters = useFiltersStore();
   const [availableFilters] = useProductStore((state) => [
     state.availableFilters,
   ]);
 
+  const [localFilters, setLocalFilters] = useState({
+    brands: filters.brands,
+    gender: filters.gender,
+    prices: {
+      priceFrom: filters.prices.priceFrom,
+      priceTo: filters.prices.priceTo,
+    },
+    classification: filters.classification,
+    aromas: filters.aromas,
+    topNotes: filters.topNotes,
+    heartNotes: filters.heartNotes,
+    baseNotes: filters.baseNotes,
+    concentration: filters.concentration,
+  });
 
+  const updateLocalFilter = <
+    T extends Record<string, string>,
+    K extends keyof T
+  >(
+    setState: React.Dispatch<React.SetStateAction<T>>,
+    key: K,
+    value: string
+  ) => {
+    setState((prev) => {
+      const currentValues = new Set(prev[key] || []);
 
-  
+      if (currentValues.has(value)) {
+        currentValues.delete(value);
+      } else {
+        currentValues.add(value);
+      }
 
+      return { ...prev, [key]: currentValues };
+    });
+  };
+
+  const createFilterUpdater =
+    (setState: React.Dispatch<React.SetStateAction<any>>) =>
+    (key: string, value: string) => {
+      updateLocalFilter(setState, key, value);
+    };
+
+  const applyFilters = () => {
+    filters.setFilters({
+      ...filters,
+      ...localFilters,
+    });
+  };
+
+  const resetFilters = () => {
+    filters.resetFilters();
+    setLocalFilters({
+      brands: new Set(),
+      gender: new Set(),
+      prices: {
+        priceFrom: 0,
+        priceTo: 0,
+      },
+      classification: new Set(),
+      aromas: new Set(),
+      topNotes: new Set(),
+      heartNotes: new Set(),
+      baseNotes: new Set(),
+      concentration: new Set(),
+    });
+  }
   const updatePreces = (prices: number[]) => {
-    filters.setPrices("priceFrom", prices[0]);
-    filters.setPrices("priceTo", prices[1]);
+    setLocalFilters((prev) => ({
+      ...prev,
+      prices: {
+        priceFrom: prices[0],
+        priceTo: prices[1],
+      },
+    }))
   };
   const locale = useLocale() as "ru" | "de";
   const t = useTranslations("Filters");
   return (
     <div className={cn("")}>
       <Title text={t("title")} className="mb-5 font-bold" />
-
+      <Button onClick={applyFilters} className="mb-5 mr-5" >{t("apply")}</Button>
+      <Button onClick={resetFilters} className="mb-5" >{t("reset")}</Button>
       {availableFilters?.brands && (
         <CheckboxFiltersGroup
           title={t("brands")}
           name="brands"
           className="mb-5"
           limit={3}
-          onClickCheckbox={filters.setSelectedBrands}
-          selected={filters.brands}
+          onClickCheckbox={createFilterUpdater(setLocalFilters)}
+          selected={localFilters.brands}
           items={availableFilters.brands}
         />
       )}
@@ -53,8 +117,8 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           title={t("gender")}
           name="gender"
           className="mb-5"
-          onClickCheckbox={filters.setSelectedGender}
-          selected={filters.gender}
+          onClickCheckbox={createFilterUpdater(setLocalFilters)}
+          selected={localFilters.gender}
           items={availableFilters?.genders.map((gender) => ({
             text: gender[locale],
             value: gender.value,
@@ -68,8 +132,8 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           name="categories"
           className="mb-5"
           limit={3}
-          onClickCheckbox={filters.setSelectedClassification}
-          selected={filters.classification}
+          onClickCheckbox={createFilterUpdater(setLocalFilters)}
+          selected={localFilters.classification}
           items={availableFilters.classifications.map((classification) => ({
             text: classification[locale],
             value: classification.value,
@@ -85,9 +149,15 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
             placeholder="0"
             min={0}
             max={500}
-            value={String(filters.prices.priceFrom)}
+            value={String(localFilters.prices.priceFrom)}
             onChange={(e) =>
-              filters.setPrices("priceFrom", Number(e.target.value))
+              setLocalFilters({
+                ...localFilters,
+                prices: {
+                  ...localFilters.prices,
+                  priceFrom: Number(e.target.value),
+                },
+              })
             }
           />
           <Input
@@ -95,9 +165,15 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
             min={0}
             max={500}
             placeholder="500"
-            value={String(filters.prices.priceTo)}
+            value={String(localFilters.prices.priceTo)}
             onChange={(e) =>
-              filters.setPrices("priceTo", Number(e.target.value))
+              setLocalFilters({
+                ...localFilters,
+                prices: {
+                  ...localFilters.prices,
+                  priceTo: Number(e.target.value),
+                },
+              })
             }
           />
         </div>
@@ -105,7 +181,7 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           min={0}
           max={500}
           step={1}
-          value={[filters.prices.priceFrom || 0, filters.prices.priceTo || 500]}
+          value={[localFilters.prices.priceFrom || 0, localFilters.prices.priceTo || 500]}
           onValueChange={updatePreces}
         />
       </div>
@@ -115,8 +191,8 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           title={t("concentration")}
           name="concentration"
           className="mb-5"
-          onClickCheckbox={filters.setSelectedConcentration}
-          selected={filters.concentration}
+          onClickCheckbox={createFilterUpdater(setLocalFilters)}
+          selected={localFilters.concentration}
           limit={3}
           items={availableFilters.concentrations}
         />
@@ -127,13 +203,12 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           name="aromas"
           className="my-5"
           limit={3}
-          // defaultItems={items.slice(0, 6)}
           items={availableFilters.aromas.map((aroma) => ({
             text: aroma[locale],
             value: aroma.value,
           }))}
-          onClickCheckbox={filters.setSelectedAromas}
-          selected={filters.aromas}
+          onClickCheckbox={createFilterUpdater(setLocalFilters)}
+          selected={localFilters.aromas}
         />
       )}
       {availableFilters?.topNotes && (
@@ -141,13 +216,12 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           title={t("topNotes")}
           name="topNotes"
           limit={3}
-          // defaultItems={items.slice(0, 6)}
           items={availableFilters.topNotes.map((note) => ({
             text: note[locale],
             value: note.value,
           }))}
-          onClickCheckbox={filters.setTopNotes}
-          selected={filters.topNotes}
+          onClickCheckbox={createFilterUpdater(setLocalFilters)}
+          selected={localFilters.topNotes}
         />
       )}
 
@@ -157,13 +231,12 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           title={t("heartNotes")}
           name="heartNotes"
           limit={3}
-          // defaultItems={items.slice(0, 6)}
           items={availableFilters.heartNotes.map((note) => ({
             text: note[locale],
             value: note.value,
           }))}
-          onClickCheckbox={filters.setHeartNotes}
-          selected={filters.heartNotes}
+          onClickCheckbox={createFilterUpdater(setLocalFilters)}
+          selected={localFilters.heartNotes}
         />
       )}
 
@@ -172,13 +245,12 @@ export const Filters: FC<Props> = ({ notes, brands, aromas, className }) => {
           title={t("baseNotes")}
           name="baseNotes"
           limit={3}
-          // defaultItems={items.slice(0, 6)}
           items={availableFilters.baseNotes.map((note) => ({
             text: note[locale],
             value: note.value,
           }))}
-          onClickCheckbox={filters.setBaseNotes}
-          selected={filters.baseNotes}
+          onClickCheckbox={createFilterUpdater(setLocalFilters)}
+          selected={localFilters.baseNotes}
         />
       )}
     </div>

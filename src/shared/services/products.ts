@@ -32,3 +32,9 @@ export const getByIds = async (ids: string[]): Promise<ProductDTO[]> => {
 };
 
 
+export const getPopularProducts = async (): Promise<ProductDTO[]> => {
+  const { data } = await axiosInstance.get<ProductDTO[]>(
+    ApiRouts.POPULAR_PRODUCTS
+  );
+  return data;
+};

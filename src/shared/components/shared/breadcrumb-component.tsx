@@ -11,16 +11,17 @@ import {
 } from "../ui/breadcrumb";
 import { cn } from "../../lib/utils";
 import Link from "next/link";
-import { Category } from "@prisma/client";
+import { Category, ProductGroup } from "@prisma/client";
 
 type Props = {
   productName?: string;
   className?: string;
   productCategory?: Category;
+  productGroup?: ProductGroup;
 };
 
 
-export const BreadcrumbComponent: FC<Props> = ({ className, productName, productCategory }) => {
+export const BreadcrumbComponent: FC<Props> = ({ className, productName, productCategory, productGroup }) => {
   return (
     <div className={cn("", className)}>
       <Breadcrumb>
@@ -34,6 +35,12 @@ export const BreadcrumbComponent: FC<Props> = ({ className, productName, product
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
               <Link className="text-xl" href={`/?category=${productCategory?.id}`}>{productCategory?.labelDe}</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link className="text-xl" href={`/?productGroup=${productGroup?.id}`}>{productGroup?.labelDe}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />

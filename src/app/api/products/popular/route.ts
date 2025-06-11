@@ -12,7 +12,12 @@ export async function GET() {
   const existingPopularProducts = await prisma.popularProducts.findFirst({
     where: { date: startOfDay },
     include: {
-      products: true,
+      products: {
+        include: {
+          variations: true,
+          productGroup: true,
+        },
+      },
     },
   });
 

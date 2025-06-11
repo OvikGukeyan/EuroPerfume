@@ -7,6 +7,8 @@ export const calcTotlalAmountWithDelivery = (totlalAmount: number, delivery: Del
     if(totlalAmount < 100 && totlalAmount > 0) {
         deliveryPrice = deliveryTypes.find((type) => type.value === delivery)?.price || 0;
         totalAmountWithDelivery = Number(totlalAmount) + deliveryPrice;
+    }else {
+        totalAmountWithDelivery = Number(totlalAmount);
     }
     return {totalAmountWithDelivery, deliveryPrice}
 }

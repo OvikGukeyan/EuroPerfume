@@ -4,6 +4,8 @@
   },
 
   "Filters": {
+    "apply": "Anwenden",
+    "reset": "Zurücksetzen",
     "title": "Filter",
     "brands": "Marken",
     "gender": "Geschlecht",

@@ -14,7 +14,7 @@ interface Props {
   searchInputPlaceholder?: string;
   className?: string;
   selected?: Set<string>;
-  onClickCheckbox?: (id: string) => void;
+  onClickCheckbox?: (key: string, value: string) => void;
   loading?: boolean;
   name: string;
 }
@@ -77,7 +77,7 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
       <div className="flex flex-col gap-4 max-h-96 pr-2 overflow-auto scrollbar">
         {list?.map((item, index) => (
           <FilterCheckbox
-            onCheckedChange={() => onClickCheckbox?.(item.value)}
+            onCheckedChange={() => onClickCheckbox?.(name, item.value)}
             checked={selected?.has(item.value)}
             key={String(item.value)}
             value={item.value}

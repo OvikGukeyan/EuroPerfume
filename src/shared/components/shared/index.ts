@@ -70,6 +70,7 @@ export {ReviewsComponent} from './reviews-component';
 export {RecentlyViewed} from './recently-viewed';
 export {ProductsCarusel} from './products-carusel';
 export {OptionControlPanel} from './option-control-panel';
+export {PopularProducts} from './popular-products';
 
 export * from './email-templates';
 export * from './form';
