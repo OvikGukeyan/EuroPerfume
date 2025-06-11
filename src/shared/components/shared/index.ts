@@ -71,6 +71,7 @@ export {RecentlyViewed} from './recently-viewed';
 export {ProductsCarusel} from './products-carusel';
 export {OptionControlPanel} from './option-control-panel';
 export {PopularProducts} from './popular-products';
+export {ProductCaruselItem} from './products-carusel-item';
 
 export * from './email-templates';
 export * from './form';

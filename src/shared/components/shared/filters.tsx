@@ -7,7 +7,6 @@ import { useFiltersStore } from "../../store/filters";
 import { cn } from "@/src/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 import { useProductStore } from "../../store/product";
-import { set } from "zod";
 interface Props {
   className?: string;
 }
@@ -84,7 +83,7 @@ export const Filters: FC<Props> = () => {
       concentration: new Set(),
     });
   }
-  const updatePreces = (prices: number[]) => {
+  const updatePrices = (prices: number[]) => {
     setLocalFilters((prev) => ({
       ...prev,
       prices: {
@@ -129,7 +128,7 @@ export const Filters: FC<Props> = () => {
       {availableFilters?.classifications && (
         <CheckboxFiltersGroup
           title={t("classification")}
-          name="categories"
+          name="classification"
           className="mb-5"
           limit={3}
           onClickCheckbox={createFilterUpdater(setLocalFilters)}
@@ -182,7 +181,7 @@ export const Filters: FC<Props> = () => {
           max={500}
           step={1}
           value={[localFilters.prices.priceFrom || 0, localFilters.prices.priceTo || 500]}
-          onValueChange={updatePreces}
+          onValueChange={updatePrices}
         />
       </div>
 
