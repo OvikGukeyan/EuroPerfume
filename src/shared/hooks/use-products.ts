@@ -44,7 +44,7 @@ export const useProducts = () => {
     }
     paramsRef.current = Object.fromEntries(searchParams.entries());
     productsState.fetchAllProducts(searchParams as GetSearchParams);
-  }, [searchParams, isModal]);
+  }, [searchParams, isModal, productsState]);
 
   return productsState;
 };

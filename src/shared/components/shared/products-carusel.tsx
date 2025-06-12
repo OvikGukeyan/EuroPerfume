@@ -32,6 +32,7 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
                   name={item.name}
                   imageUrl={item.imageUrl[0] || item.variations[0].imageUrl}
                   variations={item.variations}
+                  concentration={item.concentration || undefined}
                 />
               </Link>
             </CarouselItem>

@@ -216,12 +216,14 @@ export async function registerUser(body: Prisma.UserCreateInput) {
       }
       throw new Error("User already exists");
     }
+    const saltRounds = 12; 
+    const hashedPassword = hashSync(body.password, saltRounds);
 
     const createdUser = await prisma.user.create({
       data: {
         email: body.email,
         fullName: body.fullName,
-        password: hashSync(body.password, 10),
+        password: hashedPassword,
       },
     });
 

@@ -18,7 +18,7 @@ import {
 } from "@prisma/client";
 import { useFavorites } from "@/src/shared/hooks";
 import { concentrations } from "@/../../prisma/constants";
-import { useTranslations } from "use-intl";
+import { useLocale, useTranslations } from "use-intl";
 
 interface Props {
   id: number;
@@ -104,7 +104,8 @@ export const ProductCard: React.FC<Props> = ({
   const concentratioName = concentrations.find(
     (item) => item.value === concentration
   )?.name;
-
+  const locale = useLocale();
+  const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
   return (
     <div className={className}>
       <Link href={`/product/${id}`}>
@@ -126,7 +127,9 @@ export const ProductCard: React.FC<Props> = ({
 
         <div className="h-28">
           <Title text={name} size="xs" className="md:text-lg mt-2 font-bold" />
-          <p className="text-sm">{concentratioName || productGroup?.labelRu}</p>
+          <p className="text-sm">
+            {concentratioName || productGroup[labelLocale]}
+          </p>
         </div>
       </Link>
 
