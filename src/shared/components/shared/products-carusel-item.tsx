@@ -86,7 +86,7 @@ export const ProductCaruselItem: React.FC<Props> = ({
 
         <div className="h-28">
           <Title text={name} size="xs" className="md:text-lg mt-2 font-bold" />
-          <p className="text-sm">{concentratioName || productGroup[labelLocale]}</p>
+          <p className="text-sm">{concentratioName || productGroup?.[labelLocale]}</p>
         </div>
       </Link>
     </div>
