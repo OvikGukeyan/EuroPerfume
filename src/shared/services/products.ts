@@ -34,7 +34,14 @@ export const getByIds = async (ids: string[]): Promise<ProductDTO[]> => {
 
 export const getPopularProducts = async (): Promise<ProductDTO[]> => {
   const { data } = await axiosInstance.get<ProductDTO[]>(
-    ApiRouts.POPULAR_PRODUCTS
+    `${process.env.NEXT_PUBLIC_BASE_URL}${process.env.NEXT_PUBLIC_API_URL}${ApiRouts.POPULAR_PRODUCTS}`
+  );
+  return data;
+};
+
+export const getNewProducts = async (): Promise<ProductDTO[]> => {
+  const { data } = await axiosInstance.get<ProductDTO[]>(
+    `${process.env.NEXT_PUBLIC_BASE_URL}${process.env.NEXT_PUBLIC_API_URL}${ApiRouts.NEW_PRODUCTS}`
   );
   return data;
 };

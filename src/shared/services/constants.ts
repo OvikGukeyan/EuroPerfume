@@ -4,7 +4,8 @@ export enum ApiRouts {
     SLIDES='/slides',
     SLIDES_REORDER='/slides/reorder',
     BY_IDS='/products/by-ids' ,
-    POPULAR_PRODUCTS='/products/popular'
+    POPULAR_PRODUCTS='/products/popular',
+    NEW_PRODUCTS='/products/new'
 }
 
 export const links = [

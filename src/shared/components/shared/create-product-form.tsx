@@ -286,7 +286,7 @@ export const CreateProductForm: FC<Props> = ({
       formData.append("baseNotes", JSON.stringify(data.baseNotes));
       formData.append("classification", JSON.stringify(data.classification));
 
-      const res = await submitFunction(
+      await submitFunction(
         formData as FormData & CreateProductFormValues,
         product?.id || 0
       );

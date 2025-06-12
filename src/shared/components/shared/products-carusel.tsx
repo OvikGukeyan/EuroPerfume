@@ -1,9 +1,10 @@
+'use client';
 import React, { FC, useMemo } from "react";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { ProductDTO } from "../../services/dto/product.dto";
 import { cn } from "../../lib/utils";
 import Autoplay from "embla-carousel-autoplay";
-import { ProductCard, ProductCaruselItem, Title } from ".";
+import { ProductCaruselItem, Title } from ".";
 import Link from "next/link";
 
 type Props = {
