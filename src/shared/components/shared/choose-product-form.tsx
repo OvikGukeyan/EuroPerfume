@@ -153,19 +153,26 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
             style={{ scrollbarWidth: "none" }}
             className={cn("overflow-scroll  overflow-x-hidden")}
           >
-            <Tabs defaultValue="description" className="w-full">
+            <Tabs defaultValue="characteristics" className="w-full">
               <TabsList className="grid w-full grid-cols-3 md:grid-cols-2 h-16">
-                <TabsTrigger className="h-10" value="description">
-                  {t("description")}
-                </TabsTrigger>
                 <TabsTrigger className="h-10" value="characteristics">
                   {t("characteristics")}
+                </TabsTrigger>
+                <TabsTrigger className="h-10" value="description">
+                  {t("description")}
                 </TabsTrigger>
 
                 <TabsTrigger className="h-10 md:hidden" value="comments">
                   {t("comments")}
                 </TabsTrigger>
               </TabsList>
+              <TabsContent className="w-full" value="characteristics">
+                <ProductCharacteristics
+                  charactiristics={charactiristics.filter(
+                    (c) => c.name !== "Description"
+                  )}
+                />
+              </TabsContent>
               <TabsContent className="w-full min-h-[200px]" value="description">
                 <Text size="md" className="my-4">
                   {
@@ -177,13 +184,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
                   }
                 </Text>
               </TabsContent>
-              <TabsContent className="w-full" value="characteristics">
-                <ProductCharacteristics
-                  charactiristics={charactiristics.filter(
-                    (c) => c.name !== "Description"
-                  )}
-                />
-              </TabsContent>
+
               <TabsContent className="w-full md:hidden" value="comments">
                 <ReviewsComponent product={product} />
               </TabsContent>

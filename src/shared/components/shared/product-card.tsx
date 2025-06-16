@@ -19,6 +19,7 @@ import {
 import { useFavorites } from "@/src/shared/hooks";
 import { concentrations } from "@/../../prisma/constants";
 import { useLocale, useTranslations } from "use-intl";
+import { cn } from "../../lib/utils";
 
 interface Props {
   id: number;
@@ -107,7 +108,7 @@ export const ProductCard: React.FC<Props> = ({
   const locale = useLocale();
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
   return (
-    <div className={className}>
+    <div className={cn("hover:scale-105 transition-all duration-300 active:scale-95", className)}>
       <Link href={`/product/${id}`}>
         <div className="w-full max-w-[400px] aspect-[4/5] relative">
           <Image

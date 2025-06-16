@@ -97,10 +97,8 @@ export const Filters: FC<Props> = () => {
   const isFittersEmpty = Object.values(localFilters).every((value) => {
     if (typeof value === "object" && "priceFrom" in value) {
       return (
-        (!value.priceFrom ||
-        value.priceFrom === 0) &&
-        (!value.priceTo ||
-        value.priceTo === 500)
+        (!value.priceFrom || value.priceFrom === 0) &&
+        (!value.priceTo || value.priceTo === 500)
       );
     }
     return value.size === 0;
@@ -108,23 +106,6 @@ export const Filters: FC<Props> = () => {
 
   return (
     <div className={cn("")}>
-      <div
-        className={`
-    sticky top-0 xl:top-[230px] z-10 transition-all duration-500 
-    ${
-      isFittersEmpty
-        ? "opacity-0 -translate-y-4 pointer-events-none"
-        : "opacity-100 translate-y-0"
-    }
-  `}
-      >
-        <Button onClick={applyFilters} className="mb-5 mr-5">
-          {t("apply")}
-        </Button>
-        <Button onClick={resetFilters} className="mb-5">
-          {t("reset")}
-        </Button>
-      </div>
       <Title text={t("title")} className="mb-5 font-bold" />
 
       {availableFilters?.brands && (
@@ -283,6 +264,23 @@ export const Filters: FC<Props> = () => {
           selected={localFilters.baseNotes}
         />
       )}
+      <div
+        className={`
+    sticky bottom-0 xl:top-[230px] z-10 transition-all duration-500 mt-5
+    ${
+      isFittersEmpty
+        ? "opacity-0 translate-y-4 pointer-events-none"
+        : "opacity-100 -translate-y-4"
+    }
+  `}
+      >
+        <Button onClick={applyFilters} className="mb-5 mr-5">
+          {t("apply")}
+        </Button>
+        <Button onClick={resetFilters} className="mb-5">
+          {t("reset")}
+        </Button>
+      </div>
     </div>
   );
 };
