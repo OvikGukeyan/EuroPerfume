@@ -19,6 +19,7 @@ import {
 import {
   calcTotlalAmountWithDelivery,
   parseProductFormData,
+  sendTelegramMessage,
 } from "../shared/lib";
 import { sendEmail } from "../shared/lib/send-email";
 import {
@@ -165,6 +166,16 @@ export async function createOrder(data: CheckoutFormValues) {
         items: safeCartItems as CartItemDTO[],
       })
     );
+
+    await sendTelegramMessage(
+      `Order #${
+        order.id
+      } : Total amount: ${order.totalAmount.toNumber()}, Delivery type: ${
+        order.deliveryType
+      }, Items: ${safeCartItems
+        .map((item) => item.product.name + " * " + item.quantity)
+        .join(", ")}`
+    );
   } catch (error) {
     console.error("[createOrder] Server error", error);
     throw error;
@@ -216,7 +227,7 @@ export async function registerUser(body: Prisma.UserCreateInput) {
       }
       throw new Error("User already exists");
     }
-    const saltRounds = 12; 
+    const saltRounds = 12;
     const hashedPassword = hashSync(body.password, saltRounds);
 
     const createdUser = await prisma.user.create({

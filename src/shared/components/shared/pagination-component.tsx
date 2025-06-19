@@ -6,6 +6,7 @@ import { useProductStore } from "../../store/product";
 import {
   Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -56,13 +57,10 @@ export const PaginationComponent: FC<Props> = ({ className }) => {
     setCurrentPage(page);
   };
   return (
-    <div className={cn("", className)}>
+    <div className={cn("max-w-[100%] mx-auto", className)}>
       <Pagination>
         <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious href="#" onClick={handlePreviousPageClick} />
-          </PaginationItem>
-          {[...Array(pages)].map((_, index) => (
+          {/* {[...Array(pages)].map((_, index) => (
             <PaginationItem key={index}>
               <PaginationLink
                 isActive={index + 1 === currentPage}
@@ -72,10 +70,77 @@ export const PaginationComponent: FC<Props> = ({ className }) => {
                 {index + 1}
               </PaginationLink>
             </PaginationItem>
-          ))}
-          <PaginationItem>
-            <PaginationNext href="#" onClick={handleNextPageClick} />
-          </PaginationItem>
+          ))} */}
+          {pages > 1 && (
+            <>
+              <PaginationItem>
+                <PaginationPrevious
+                  href="#"
+                  onClick={handlePreviousPageClick}
+                />
+              </PaginationItem>
+              {/* Always show first page */}
+              <PaginationItem>
+                <PaginationLink
+                  isActive={1 === currentPage}
+                  href="#"
+                  onClick={(e) => onPageChange(e, 1)}
+                >
+                  1
+                </PaginationLink>
+              </PaginationItem>
+
+              {/* Left ellipsis */}
+              {currentPage > 3 && (
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              )}
+
+              {/* Middle page numbers */}
+              {Array.from({ length: pages }, (_, i) => i + 1)
+                .filter(
+                  (page) =>
+                    page !== 1 &&
+                    page !== pages &&
+                    Math.abs(page - currentPage) <= 1
+                )
+                .map((page) => (
+                  <PaginationItem key={page}>
+                    <PaginationLink
+                      isActive={page === currentPage}
+                      href="#"
+                      onClick={(e) => onPageChange(e, page)}
+                    >
+                      {page}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+
+              {/* Right ellipsis */}
+              {currentPage < pages - 2 && (
+                <PaginationItem>
+                  <PaginationEllipsis />
+                </PaginationItem>
+              )}
+
+              {/* Always show last page */}
+              {pages > 1 && (
+                <PaginationItem>
+                  <PaginationLink
+                    isActive={pages === currentPage}
+                    href="#"
+                    onClick={(e) => onPageChange(e, pages)}
+                  >
+                    {pages}
+                  </PaginationLink>
+                </PaginationItem>
+              )}
+              <PaginationItem>
+                <PaginationNext href="#" onClick={handleNextPageClick} />
+              </PaginationItem>
+            </>
+          )}
         </PaginationContent>
       </Pagination>
     </div>
