@@ -44,7 +44,7 @@ export const ProductsSelection: FC<Props> = ({
             ))}
           </div>
 
-          <Button variant="outline">{t("showAll")}</Button>
+          <Button className="w-full sm:w-[200px]" variant="outline">{t("showAll")}</Button>
         </div>
       )}
     </>

@@ -21,11 +21,11 @@ export default async function Home() {
     <>
       <Carusel slides={slides} />
       <TopBar />
-        <ProductsSelection
-          getFunction={Api.products.getNewProducts}
-          title={t("newProducts")}
-          className="col-span-2 lg:col-span-4"
-        />
+      <ProductsSelection
+        getFunction={Api.products.getNewProducts}
+        title={t("newProducts")}
+        className="col-span-2 lg:col-span-4"
+      />
       <Container className="mt-10">
         <Title size="lg" className="font-extrabold" text={t("allProducts")} />
       </Container>
@@ -41,13 +41,13 @@ export default async function Home() {
             </div>
           </div>
         </div>
+        <PaginationComponent className="mt-10" />
+
         <ProductsSelection
           getFunction={Api.products.getPopularProducts}
           title={t("popularProducts")}
           className="col-span-2 lg:col-span-4"
         />
-
-        <PaginationComponent className="mt-10" />
       </Container>
     </>
   );
