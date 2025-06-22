@@ -110,8 +110,11 @@ export const getAvailableFilters = (products: ProductDTO[]) => {
     ),
     "value"
   );
+
+  const sortedBrands = uniqueBrands.sort((a, b) => a.text.localeCompare(b.text));
+
   const availableFilters = {
-    brands: uniqueBrands.length > 0 ? uniqueBrands : null,
+    brands: sortedBrands.length > 0 ? sortedBrands : null,
     classifications:
       uniqueClassifications.length > 0 ? uniqueClassifications : null,
     concentrations:

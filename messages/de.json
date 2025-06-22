@@ -1,4 +1,10 @@
 {
+  "Home": {
+    "newProducts": "Neue Produkte",
+    "popularProducts": "Beliebte Produkte",
+    "allProducts": "Alle Produkte"
+  },
+
   "Header": {
     "freeDeliveryInfo": "Kostenloser Versand für Bestellungen über 100 € !"
   },
@@ -250,5 +256,9 @@
     "title": "Schreiben Sie eine Bewertung",
     "commentPlaceholder": "Ihre Bewertung",
     "submitButton": "Absenden"
+  },
+
+  "ProductsSelection": {
+    "showAll": "Alle anzeigen"
   }
 }

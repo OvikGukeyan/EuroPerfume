@@ -56,6 +56,8 @@ export const PaginationComponent: FC<Props> = ({ className }) => {
     }
     setCurrentPage(page);
   };
+
+  
   return (
     <div className={cn("max-w-[100%] mx-auto", className)}>
       <Pagination>

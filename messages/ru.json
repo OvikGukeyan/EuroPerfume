@@ -1,4 +1,10 @@
 {
+  "Home": {
+    "newProducts": "Новинки на сайте",
+    "popularProducts": "Популярные товары",
+    "allProducts": "Все товары"
+  },
+
   "Header": {
     "freeDeliveryInfo": "Бесплатная доставка при заказе от 100 € !"
   },
@@ -250,5 +256,9 @@
     "title": "Напишите отзыв",
     "commentPlaceholder": "Ваш отзыв",
     "submitButton": "Отправить"
+  },
+
+  "ProductsSelection": {
+    "showAll": "Посмотреть все"
   }
 }
