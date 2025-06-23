@@ -18,5 +18,5 @@ export const Api = {
     categories,
     productGroup,
     slides,
-    productMeta
+    productMeta,
 }

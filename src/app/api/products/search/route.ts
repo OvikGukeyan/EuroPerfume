@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 export async function GET(req: NextRequest) {
+    try{
     const query = req.nextUrl.searchParams.get('query') || '';
     const products = await prisma.product.findMany({
         where: {
@@ -18,5 +19,9 @@ export async function GET(req: NextRequest) {
     });
 
 
-    return NextResponse.json(products)
+        return NextResponse.json(products)
+    } catch (error) {
+        console.error("Error fetching products:", error);
+        return new NextResponse("Internal Server Error", { status: 500 });
+    }
 }

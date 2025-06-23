@@ -12,3 +12,6 @@ export {imageCompressor} from './image-compressor';
 export {getAvailableFilters} from './get-available-filters';
 export {updateMetaList} from './update-meta-list';
 export {sendTelegramMessage} from './send-telegram-massage';
+export {getPopularProducts} from './get-popular-products';
+export {getNewProducts} from './get-new-products';
+export {getRecentReviews} from './get-recent-reviews';

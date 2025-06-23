@@ -7,8 +7,9 @@ import {
   Carusel,
   TopBar,
   ProductsSelection,
+  RecentReviews,
 } from "@/src/shared/components/shared";
-import { getSlides } from "@/src/shared/lib";
+import { getNewProducts, getPopularProducts, getSlides } from "@/src/shared/lib";
 import { Api } from "@/src/shared/services/api-client";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
@@ -22,7 +23,7 @@ export default async function Home() {
       <Carusel slides={slides} />
       <TopBar />
       <ProductsSelection
-        getFunction={Api.products.getNewProducts}
+        getFunction={getNewProducts}
         title={t("newProducts")}
         className="col-span-2 lg:col-span-4"
       />
@@ -42,13 +43,12 @@ export default async function Home() {
           </div>
         </div>
         <PaginationComponent className="mt-10" />
-
-        <ProductsSelection
-          getFunction={Api.products.getPopularProducts}
-          title={t("popularProducts")}
-          className="col-span-2 lg:col-span-4"
-        />
       </Container>
+      <ProductsSelection
+        getFunction={getPopularProducts}
+        title={t("popularProducts")}
+      />
+      <RecentReviews />
     </>
   );
 }

@@ -1,11 +1,11 @@
 import React, { FC, use } from "react";
-import { Button, ProductCaruselItem, Title } from "..";
+import { ProductsSelectionList, Title } from "..";
 import { ProductDTO } from "../../services/dto/product.dto";
-import { useTranslations } from "next-intl";
+import { SelectedProductDTO } from "../../lib/get-popular-products";
 
 type Props = {
   title: string;
-  getFunction: () => Promise<ProductDTO[]>;
+  getFunction: () => Promise<SelectedProductDTO[]>;
   className?: string;
 };
 export const ProductsSelection: FC<Props> = ({
@@ -14,7 +14,6 @@ export const ProductsSelection: FC<Props> = ({
   getFunction,
 }) => {
   const products = use(getFunction());
-  const t = useTranslations("ProductsSelection");
 
   return (
     <>
@@ -25,26 +24,12 @@ export const ProductsSelection: FC<Props> = ({
             <div className="h-1 w-12 bg-black"></div>
             <Title
               className="text-2xl sm:text-3xl  md:text-5xl   font-extrabold text-center my-10"
-              text={title}
+              text={title.toUpperCase()}
             />
             <div className="h-1 w-12 bg-black"></div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4  gap-4">
-            {products.slice(0, 4).map((product) => (
-              <ProductCaruselItem
-                key={product.id}
-                productGroup={product.productGroup}
-                id={product.id}
-                name={product.name}
-                imageUrl={product.imageUrl[0] || product.variations[0].imageUrl}
-                variations={product.variations}
-                concentration={product.concentration || undefined}
-              />
-            ))}
-          </div>
-
-          <Button className="w-full sm:w-[200px]" variant="outline">{t("showAll")}</Button>
+          <ProductsSelectionList products={products} />
         </div>
       )}
     </>
