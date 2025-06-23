@@ -47,6 +47,7 @@ export default async function Home() {
       <ProductsSelection
         getFunction={getPopularProducts}
         title={t("popularProducts")}
+        className="mb-5"
       />
       <RecentReviews />
     </>

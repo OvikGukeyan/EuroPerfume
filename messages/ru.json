@@ -260,5 +260,9 @@
 
   "ProductsSelection": {
     "showAll": "Посмотреть все"
+  },
+
+  "RecentReviews": {
+    "title": "Последние отзывы"
   }
 }
