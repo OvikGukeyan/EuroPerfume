@@ -16,7 +16,7 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
   const t = useTranslations("ProductsSelection");
   const productsToShow = isOpen ? products : products.slice(0, 4);
   return (
-    <div className={cn(className, "flex flex-col items-center")}>
+    <div className={cn(className, "w-full flex flex-col items-center")}>
       <div className="w-full grid grid-cols-2 md:grid-cols-4  gap-4">
         {productsToShow.map((product) => (
           <ProductCaruselItem

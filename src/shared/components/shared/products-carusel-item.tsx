@@ -66,7 +66,7 @@ export const ProductCaruselItem: React.FC<Props> = ({
   const locale = useLocale();
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
   return (
-    <div className={cn("bg-white", className)}>
+    <div className={cn("bg-white w-full", className)}>
       <Link href={`/product/${id}`}>
         <div className="w-full max-w-[400px] aspect-[4/5] relative">
           <Image
