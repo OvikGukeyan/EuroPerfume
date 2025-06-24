@@ -10,7 +10,6 @@ import {
   RecentReviews,
 } from "@/src/shared/components/shared";
 import { getNewProducts, getPopularProducts, getSlides } from "@/src/shared/lib";
-import { Api } from "@/src/shared/services/api-client";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 
@@ -25,9 +24,9 @@ export default async function Home() {
       <ProductsSelection
         getFunction={getNewProducts}
         title={t("newProducts")}
-        className="col-span-2 lg:col-span-4"
+        className="col-span-2 lg:col-span-4 my-10"
       />
-      <Container className="mt-10">
+      {/* <Container className="mt-10">
         <Title size="lg" className="font-extrabold" text={t("allProducts").toUpperCase()} />
       </Container>
       <Container className="mt-10 pb-14">
@@ -35,19 +34,17 @@ export default async function Home() {
           <FiltersDrawer />
 
           <div className="flex-1">
-            <div className="flex flex-col gap-16">
               <Suspense fallback={<div>Loading...</div>}>
                 <ProductsGroupList />
               </Suspense>
-            </div>
           </div>
         </div>
         <PaginationComponent className="mt-10" />
-      </Container>
+      </Container> */}
       <ProductsSelection
         getFunction={getPopularProducts}
         title={t("popularProducts")}
-        className="mb-5"
+        className=" my-10"
       />
       <RecentReviews />
     </>

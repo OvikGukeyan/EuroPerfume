@@ -24,7 +24,7 @@ export default function Products() {
 
   return (
     <div>
-      <Categories className="hidden md:block" items={categories} />
+      <Categories className="hidden md:flex" items={categories} />
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-[50px] p-4 md:p-10">
         {items.map((item) => (
