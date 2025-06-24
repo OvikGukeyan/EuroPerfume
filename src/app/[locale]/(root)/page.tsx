@@ -28,7 +28,7 @@ export default async function Home() {
         className="col-span-2 lg:col-span-4"
       />
       <Container className="mt-10">
-        <Title size="lg" className="font-extrabold" text={t("allProducts")} />
+        <Title size="lg" className="font-extrabold" text={t("allProducts").toUpperCase()} />
       </Container>
       <Container className="mt-10 pb-14">
         <div className="flex flex-col xl:flex-row gap-[50px]">

@@ -259,7 +259,8 @@
   },
 
   "ProductsSelection": {
-    "showAll": "Посмотреть все"
+    "showAll": "Посмотреть все",
+    "showLess": "Посмотреть меньше"
   },
 
   "RecentReviews": {

@@ -37,7 +37,7 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
           className="w-full sm:w-[200px] mt-10"
           variant="outline"
         >
-          {t("showAll")}
+          {isOpen ? t("showLess") : t("showAll")}
         </Button>
       )}
     </div>

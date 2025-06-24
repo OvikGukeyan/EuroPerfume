@@ -259,7 +259,8 @@
   },
 
   "ProductsSelection": {
-    "showAll": "Alle anzeigen"
+    "showAll": "Alle anzeigen",
+    "showLess": "Weniger anzeigen"
   },
 
   "RecentReviews": {
