@@ -81,7 +81,7 @@ export const Categories: FC<Props> = ({ items, className }) => {
     //     ))}
     //   </NavigationMenuList>
     // </NavigationMenu>
-    <div className={cn(className, "flex gap-10")}>
+    <div className={cn(className, " gap-10")}>
       {items.map(({ id, labelRu, labelDe, productGroups }) => (
         <HoverCard key={id} openDelay={100} closeDelay={100}>
           <HoverCardTrigger

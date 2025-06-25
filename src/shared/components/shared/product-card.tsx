@@ -107,12 +107,15 @@ export const ProductCard: React.FC<Props> = ({
   )?.name;
   const locale = useLocale();
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
+
+  const image = imageUrl || activeVariation?.imageUrl || "";
+  console.log(image);
   return (
     <div className={cn("md:hover:scale-105 transition-all duration-300 active:scale-95 active:border-2", className)}>
       <Link href={`/product/${id}`}>
         <div className="w-full max-w-[400px] aspect-[4/5] relative">
           <Image
-            src={imageUrl || activeVariation?.imageUrl || ""}
+            src={image}
             alt={name}
             fill
             className="object-contain "

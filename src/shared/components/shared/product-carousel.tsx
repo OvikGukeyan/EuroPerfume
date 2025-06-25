@@ -117,7 +117,7 @@ export const ProductCarousel: React.FC<PropType> = ({
                   {slide.type === "video" ? (
                     <PlayCircle size={32} />
                   ) : (
-                    <Image width={64} height={64} src={slide.url} alt={""} />
+                    <img width={64} height={64} src={slide.url} alt={""} />
                   )}
                 </button>
               </div>
