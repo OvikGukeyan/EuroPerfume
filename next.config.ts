@@ -5,7 +5,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const nextConfig: NextConfig = {
   reactStrictMode: false,
   images: {
-    domains: ['media.dodostatic.net', 'cdn.dodostatic.net', 'cdn.inappstory.ru', "media.douglas.de", "tlppllvnvzjgxgbzlwnh.supabase.co", 'thgjecpmxhqwfoknvjiu.supabase.co'],
+    domains: ["tlppllvnvzjgxgbzlwnh.supabase.co", 'thgjecpmxhqwfoknvjiu.supabase.co'],
   },
   experimental: {
     serverActions: {
