@@ -15,3 +15,4 @@ export {sendTelegramMessage} from './send-telegram-massage';
 export {getPopularProducts} from './get-popular-products';
 export {getNewProducts} from './get-new-products';
 export {getRecentReviews} from './get-recent-reviews';
+export {getStories} from './get-stories';

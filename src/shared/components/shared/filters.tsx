@@ -266,7 +266,7 @@ export const Filters: FC<Props> = () => {
       )}
       <div
         className={`
-    sticky bottom-0 xl:top-[230px] z-10 transition-all duration-500 mt-5
+    sticky bottom-0 xl:top-[230px] z-10 transition-all duration-500 mt-5 flex justify-around
     ${
       isFittersEmpty
         ? "opacity-0 translate-y-4 pointer-events-none"
@@ -274,11 +274,11 @@ export const Filters: FC<Props> = () => {
     }
   `}
       >
-        <Button onClick={applyFilters} className="mb-5 mr-5">
-          {t("apply")}
-        </Button>
         <Button onClick={resetFilters} className="mb-5">
           {t("reset")}
+        </Button>
+        <Button onClick={applyFilters} className="mb-5 ">
+          {t("apply")}
         </Button>
       </div>
     </div>

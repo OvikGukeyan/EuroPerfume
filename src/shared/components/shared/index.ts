@@ -74,6 +74,7 @@ export {ProductsSelection} from './products-selection'
 export {ProductCaruselItem} from './products-carusel-item';
 export {ProductsSelectionList} from './products-selection-list';
 export {RecentReviews} from './recent-reviews';
+export {Stories} from './stories';
 
 export * from './email-templates';
 export * from './form';

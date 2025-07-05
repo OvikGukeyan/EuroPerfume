@@ -9,6 +9,6 @@ export const getSlides = async(): Promise<Slide[]> => {
         return slides;
     } catch (error) {
         console.error("Error [GET_SLIDES]", error);
-        throw error;
+        return [];
     }
 }
