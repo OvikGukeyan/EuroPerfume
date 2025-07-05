@@ -18,7 +18,7 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
   return (
     <div className={cn("", className)}>
       <Title size="xl" className="font-extrabold text-center my-10" text={title} />
-      <Carousel className="w-full" plugins={[autoplayPlugin]}>
+      <Carousel className="w-full" plugins={[autoplayPlugin]} opts={{ align: "start" }}>
         <CarouselContent className="px-2">
           {items.map((item, index) => (
             <CarouselItem

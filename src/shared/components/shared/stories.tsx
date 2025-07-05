@@ -13,8 +13,8 @@ interface Props {
 export const Stories: FC<Props> = ({ items }) => {
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 4000 }), []);
   return (
-    <Carousel className="w-full px-5" plugins={[autoplayPlugin]}>
-      <CarouselContent>
+    <Carousel className="w-full px-5" plugins={[autoplayPlugin]} opts={{ align: "start" }}>
+      <CarouselContent >
         {items.map((item, index) => (
           <CarouselItem key={index} className="w-full basis-1/2 md:basis-1/4 relative">
             <video
