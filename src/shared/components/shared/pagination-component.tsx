@@ -25,22 +25,25 @@ export const PaginationComponent: FC<Props> = ({ className }) => {
   ]);
   const [pages] = useProductStore((state) => [state.pages]);
 
+  const scrollToProducts = () => {
+    setTimeout(() => {
+      const element = document.getElementById("products-section");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 100);
+  };
+
   const handleNextPageClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const element = document.getElementById("products-section");
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    scrollToProducts();
     if (currentPage === pages) return;
     setCurrentPage(currentPage + 1);
   };
 
   const handlePreviousPageClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const element = document.getElementById("products-section");
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    scrollToProducts();
     if (currentPage === 1) return;
     setCurrentPage(currentPage - 1);
   };
@@ -50,14 +53,10 @@ export const PaginationComponent: FC<Props> = ({ className }) => {
     page: number
   ) => {
     e.preventDefault();
-    const element = document.getElementById("products-section");
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    scrollToProducts();
     setCurrentPage(page);
   };
 
-  
   return (
     <div className={cn("max-w-[100%] mx-auto", className)}>
       <Pagination>

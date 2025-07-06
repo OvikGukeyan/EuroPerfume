@@ -11,7 +11,7 @@ interface Props {
   className?: string;
 }
 export const Stories: FC<Props> = ({ items }) => {
-  const autoplayPlugin = useMemo(() => Autoplay({ delay: 4000 }), []);
+  const autoplayPlugin = useMemo(() => Autoplay({ delay: 8000 }), []);
   return (
     <Carousel className="w-full px-5" plugins={[autoplayPlugin]} opts={{ align: "start" }}>
       <CarouselContent >

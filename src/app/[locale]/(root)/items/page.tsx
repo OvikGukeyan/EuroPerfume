@@ -16,13 +16,7 @@ export default async function Items() {
     <div>
       <TopBar />
 
-      <Container className="mt-10">
-        <Title
-          size="lg"
-          className="font-extrabold"
-          text={t("allProducts").toUpperCase()}
-        />
-      </Container>
+      
       <Container className="mt-10 pb-14">
         <div className="flex flex-col xl:flex-row gap-[50px]">
           <FiltersDrawer />
