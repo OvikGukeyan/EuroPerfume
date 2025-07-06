@@ -25,7 +25,7 @@ export const Stories: FC<Props> = ({ items }) => {
             className="w-full basis-1/2 md:basis-1/4 relative"
           >
             <video
-              preload="auto"
+              autoPlay
               src={item.videoUrl || ""}
               loop
               muted
