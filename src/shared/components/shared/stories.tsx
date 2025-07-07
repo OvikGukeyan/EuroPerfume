@@ -26,6 +26,7 @@ export const Stories: FC<Props> = ({ items }) => {
           >
             <video
               autoPlay
+              preload="auto"
               src={item.videoUrl || ""}
               loop
               muted
@@ -41,6 +42,7 @@ export const Stories: FC<Props> = ({ items }) => {
                 e.currentTarget.currentTime = 0;
               }}
               className="w-full h-full object-cover"
+              
             />
             <div className="absolute bottom-0 right-0 text-white p-5">
               <p className="text-sm md:text-xl font-bold">{item.name}</p>
