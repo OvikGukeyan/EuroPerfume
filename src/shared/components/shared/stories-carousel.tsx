@@ -6,7 +6,8 @@ import Autoplay from "embla-carousel-autoplay";
 import { Product } from "@prisma/client";
 import Stories from "react-insta-stories";
 import { cn } from "../../lib/utils";
-import { X } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface Props {
   items: Product[];
@@ -16,7 +17,7 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 8000 }), []);
-
+  const router = useRouter();
   const openStory = (index: number) => {
     setStartIndex(index);
     setIsModalOpen(true);
@@ -64,7 +65,22 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
                 }}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute bottom-0 right-0 text-white p-5">
+              <div
+                className="absolute top-0 left-2 text-white p-5 flex gap-2 items-center cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  router.push(`/product/${item.id}`);
+                }}
+              >
+                <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
+                  <Image
+                    src={item.imageUrl?.[0] || ""}
+                    alt={item.name}
+                    width={60}
+                    height={60}
+                    className="w-[50px] h-[50px]"
+                  />
+                </div>
                 <p className="text-sm md:text-xl font-bold">{item.name}</p>
               </div>
             </CarouselItem>
