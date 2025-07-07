@@ -29,7 +29,7 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
     header: {
       heading: item.name,
       subheading: "Новинка",
-      profileImage: item.imageUrl?.[0] || "",
+      profileImage: item.imageUrl?.[0] || './assets/logo-mobile.png',
     },
   }));
   return (
