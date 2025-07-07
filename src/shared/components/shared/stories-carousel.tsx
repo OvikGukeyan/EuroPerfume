@@ -74,7 +74,7 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
               >
                 <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
                   <Image
-                    src={item.imageUrl?.[0] || ""}
+                    src={item.imageUrl?.[0] || './assets/logo-mobile.png'}
                     alt={item.name}
                     width={60}
                     height={60}
