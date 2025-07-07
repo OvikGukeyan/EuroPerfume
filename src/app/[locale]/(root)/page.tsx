@@ -3,7 +3,7 @@ import {
   TopBar,
   ProductsSelection,
   RecentReviews,
-  Stories,
+  StoriesCarousel,
 } from "@/src/shared/components/shared";
 import { getNewProducts, getPopularProducts, getSlides, getStories } from "@/src/shared/lib";
 import { getTranslations } from "next-intl/server";
@@ -21,7 +21,7 @@ export default async function Home() {
         title={t("newProducts")}
         className="col-span-2 lg:col-span-4 my-10"
       />
-      <Stories items={stories} />
+      <StoriesCarousel items={stories} />
       <ProductsSelection
         getFunction={getPopularProducts}
         title={t("popularProducts")}
