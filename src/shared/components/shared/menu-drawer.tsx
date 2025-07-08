@@ -28,9 +28,10 @@ export const MenuDrawer: FC<Props> = ({ className }) => {
             <Button
               size={"icon"}
               variant="ghost"
-              className="xl:hidden flex items-center gap-2 "
+              className="xl:hidden flex flex-col items-center"
             >
               <Menu />
+              <span className="text-xs">Menü</span>
             </Button>
           </SheetTrigger>
 

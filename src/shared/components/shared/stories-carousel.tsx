@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useMemo, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 import { Product } from "@prisma/client";
@@ -55,9 +55,32 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
     header: {
       heading: item.name,
       subheading: "Новинка",
-      profileImage: item.imageUrl?.[0] || "./assets/logo-mobile.png",
+      profileImage: item.imageUrl?.[0] || "/assets/logo-mobile.png",
     },
+    seeMore: () => null,
+    seeMoreCollapsed: () => (
+      <button
+        onClick={() => {
+          router.push(`/product/${item.id}`);
+        }}
+        className="absolute bottom-5 left-1/2 -translate-x-1/2 z-50 bg-white/10 text-white text-sm font-semibold px-4 py-2 rounded-md backdrop-blur hover:bg-white/20 transition"
+      >
+        Product
+      </button>
+    ),
   }));
+
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isModalOpen]);
   return (
     <div className={cn("w-full", className)}>
       <Carousel
@@ -100,7 +123,7 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
               >
                 <div className="w-[35px] h-[35px] md:w-[50px] md:h-[50px] rounded-full overflow-hidden shrink-0">
                   <Image
-                    src={item.imageUrl?.[0] || "./assets/logo-mobile.png"}
+                    src={item.imageUrl?.[0] || "/assets/logo-mobile.png"}
                     alt={item.name}
                     width={50}
                     height={50}
