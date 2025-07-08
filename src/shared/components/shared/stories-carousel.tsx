@@ -15,8 +15,9 @@ interface Props {
   className?: string;
 }
 export const StoriesCarousel: FC<Props> = ({ items, className }) => {
-  const [touchStartY, setTouchStartY] = useState<number | null>(null);
-  const [touchEndY, setTouchEndY] = useState<number | null>(null);
+  const [touchStartY, setTouchStartY] = useState(0);
+  const [translateY, setTranslateY] = useState(0);
+  const threshold = 100;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
@@ -28,21 +29,21 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
   };
 
   const handleTouchMove = (e: React.TouchEvent) => {
-    setTouchEndY(e.touches[0].clientY);
+    const deltaY = e.touches[0].clientY - touchStartY;
+    if (deltaY > 0) {
+      setTranslateY(deltaY);
+    }
   };
 
   const handleTouchEnd = () => {
-    if (touchStartY !== null && touchEndY !== null) {
-      const distance = touchEndY - touchStartY;
-      if (distance > 100) {
-        // свайп вниз более чем на 100px
-        setIsModalOpen(false);
-      }
+    if (translateY > threshold) {
+      setIsModalOpen(false);
+      setTranslateY(0);
+    } else {
+      setTranslateY(0);
     }
-    // сброс
-    setTouchStartY(null);
-    setTouchEndY(null);
   };
+
   const openStory = (index: number) => {
     setStartIndex(index);
     setIsModalOpen(true);
@@ -72,12 +73,12 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
               onClick={() => openStory(index)}
             >
               <video
+                muted
+                playsInline
                 autoPlay
                 preload="auto"
                 src={item.videoUrl || ""}
                 loop
-                muted
-                playsInline
                 onTouchStart={(e) => e.currentTarget.play()}
                 onTouchEnd={(e) => {
                   e.currentTarget.pause();
@@ -97,16 +98,16 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
                   router.push(`/product/${item.id}`);
                 }}
               >
-                <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
+                <div className="w-[35px] h-[35px] md:w-[50px] md:h-[50px] rounded-full overflow-hidden shrink-0">
                   <Image
                     src={item.imageUrl?.[0] || "./assets/logo-mobile.png"}
                     alt={item.name}
-                    width={60}
-                    height={60}
-                    className="w-[50px] h-[50px]"
+                    width={50}
+                    height={50}
+                    className="w-[35px] h-[35px] md:w-[50px] md:h-[50px] object-cover"
                   />
                 </div>
-                <p className="text-sm md:text-xl font-bold">{item.name}</p>
+                <p className="text-xs md:text-xl font-bold">{item.name}</p>
               </div>
             </CarouselItem>
           ))}
@@ -118,7 +119,8 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50"
+          className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50 transition-transform duration-300 ease-out"
+          style={{ transform: `translateY(${translateY}px)` }}
         >
           <div className="relative w-full h-full md:w-auto md:h-[90vh] bg-black">
             <button
