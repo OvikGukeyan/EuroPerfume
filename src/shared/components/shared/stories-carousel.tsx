@@ -8,16 +8,41 @@ import Stories from "react-insta-stories";
 import { cn } from "../../lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { X } from "lucide-react";
 
 interface Props {
   items: Product[];
   className?: string;
 }
 export const StoriesCarousel: FC<Props> = ({ items, className }) => {
+  const [touchStartY, setTouchStartY] = useState<number | null>(null);
+  const [touchEndY, setTouchEndY] = useState<number | null>(null);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [startIndex, setStartIndex] = useState(0);
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 8000 }), []);
   const router = useRouter();
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartY(e.touches[0].clientY);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEndY(e.touches[0].clientY);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartY !== null && touchEndY !== null) {
+      const distance = touchEndY - touchStartY;
+      if (distance > 100) {
+        // свайп вниз более чем на 100px
+        setIsModalOpen(false);
+      }
+    }
+    // сброс
+    setTouchStartY(null);
+    setTouchEndY(null);
+  };
   const openStory = (index: number) => {
     setStartIndex(index);
     setIsModalOpen(true);
@@ -29,7 +54,7 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
     header: {
       heading: item.name,
       subheading: "Новинка",
-      profileImage: item.imageUrl?.[0] || './assets/logo-mobile.png',
+      profileImage: item.imageUrl?.[0] || "./assets/logo-mobile.png",
     },
   }));
   return (
@@ -74,7 +99,7 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
               >
                 <div className="w-[50px] h-[50px] rounded-full overflow-hidden">
                   <Image
-                    src={item.imageUrl?.[0] || './assets/logo-mobile.png'}
+                    src={item.imageUrl?.[0] || "./assets/logo-mobile.png"}
                     alt={item.name}
                     width={60}
                     height={60}
@@ -89,13 +114,26 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
       </Carousel>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50">
-          <div className="relative">
+        <div
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50"
+        >
+          <div className="relative w-full h-full md:w-auto md:h-[90vh] bg-black">
+            <button
+              className="absolute -top-0 -right-10 z-30 "
+              onClick={() => setIsModalOpen(false)}
+            >
+              <X color="white" />
+            </button>
             <Stories
               onAllStoriesEnd={() => setIsModalOpen(false)}
               stories={storyItems}
               defaultInterval={5000}
               currentIndex={startIndex}
+              width="100%"
+              height="100%"
             />
           </div>
         </div>

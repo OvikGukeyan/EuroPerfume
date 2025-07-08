@@ -21,7 +21,7 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
       <div
         className={cn(
           "w-full grid grid-cols-2 md:grid-cols-4 gap-4 transition-all duration-700 overflow-hidden",
-          isOpen ? "md:max-h-[1000px]" : "md:max-h-[400px]"
+          isOpen ? "md:max-h-[1800px]" : "md:max-h-[400px]"
         )}
       >
         {productsToShow.map((product) => (
