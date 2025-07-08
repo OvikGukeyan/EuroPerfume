@@ -60,7 +60,12 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
     seeMore: () => null,
     seeMoreCollapsed: () => (
       <button
-        onClick={() => {
+        onClick={(e) => {
+          e.stopPropagation();
+          router.push(`/product/${item.id}`);
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation();
           router.push(`/product/${item.id}`);
         }}
         className="absolute bottom-5 left-1/2 -translate-x-1/2 z-50 bg-white/10 text-white text-sm font-semibold px-4 py-2 rounded-md backdrop-blur hover:bg-white/20 transition"
