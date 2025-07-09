@@ -54,7 +54,7 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
     type: "video",
     header: {
       heading: item.name,
-      subheading: "Новинка",
+      subheading: item.concentration || item.gender || '',
       profileImage: item.imageUrl?.[0] || "/assets/logo-mobile.png",
     },
     seeMore: () => null,
@@ -150,7 +150,7 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
           className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50 transition-transform duration-300 ease-out"
           style={{ transform: `translateY(${translateY}px)` }}
         >
-          <div className="relative w-full h-full md:w-auto md:max-w-[450px] md:h-[90vh] bg-black">
+          <div className="relative w-full h-full md:w-[450px] md:max-w-[450px] md:h-[90vh] bg-black">
             <button
               className="absolute -top-0 -right-10 z-30 "
               onClick={() => setIsModalOpen(false)}
