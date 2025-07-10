@@ -95,6 +95,11 @@ export const AppSidebar: FC<Props> = ({ className }) => {
                           <SidebarMenuButton>Other</SidebarMenuButton>
                         </SidebarMenuSubItem>
                       </Link>
+                      <Link href={"/create-promocode"}>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuButton>Promocode</SidebarMenuButton>
+                        </SidebarMenuSubItem>
+                      </Link>
                     </SidebarMenuSub>
                   </CollapsibleContent>
                 </SidebarMenuItem>

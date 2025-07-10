@@ -15,6 +15,7 @@ import { redirect } from "next/navigation";
 import {
   CheckoutFormValues,
   CreateProductFormValues,
+  CreatePromocodeValues,
 } from "../shared/constants";
 import {
   calcTotlalAmountWithDelivery,
@@ -1116,5 +1117,28 @@ export async function deleteSlide(id: number) {
     throw error;
   } finally {
     redirect("/create-slide");
+  }
+}
+
+export async function createPromocode(formData: CreatePromocodeValues) {
+  try {
+    const user = await getUserSession();
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
+
+    const code = formData.code;
+    const discount = formData.discount;
+    const expirationDate = formData.expirationDate;
+    await prisma.promoCode.create({
+      data: {
+        code: code,
+        discount: discount,
+        expiresAt: new Date(expirationDate),
+      },
+    });
+  } catch (error) {
+    console.error("Error [CREATE_PROMOCODE]", error);
+    throw error;
   }
 }

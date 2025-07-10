@@ -79,7 +79,8 @@
       "totalPriceLabel": "Общая сумма:",
       "orderPrice": "Сумма заказа",
       "delivery": "Доставка",
-      "submitButton": "Подтвердить заказ"
+      "submitButton": "Подтвердить заказ",
+      "promocode": "Промокод"
     }
   },
 

@@ -24,6 +24,8 @@ import { useRouter } from "@/src/i18n/navigation";
 
 export default function Checkout() {
   const [submitting, setSubmitting] = useState(false);
+  const [promoCode, setPromoCode] = useState("");
+  const [discount, setDiscount] = useState(0);
   const {
     totalAmount,
     items,
@@ -61,7 +63,7 @@ export default function Checkout() {
 
   const delivery = form.watch("deliveryType");
   const { totalAmountWithDelivery, deliveryPrice } =
-    calcTotlalAmountWithDelivery(totalAmount, delivery);
+    calcTotlalAmountWithDelivery(totalAmount, delivery, discount);
 
   useEffect(() => {
     async function fetchUserInfo() {
@@ -81,7 +83,7 @@ export default function Checkout() {
   const onSubmit = async (data: CheckoutFormValues) => {
     try {
       setSubmitting(true);
-      const order = await createOrder(data);
+      await createOrder(data);
       toast.success("Order created successfully! ", {
         icon: "✅",
       });
@@ -136,12 +138,16 @@ export default function Checkout() {
                 totalAmount={totalAmount}
                 deliveryPrice={deliveryPrice}
                 totalAmountWithDelivery={totalAmountWithDelivery}
+                control={form.control}
               />
             </div>
           </div>
         </form>
       </FormProvider>
-      <Recommendations className="my-20 py-20 px-2 md:px-10 rounded-3xl bg-white" searchParams={{ productGroupId: 2}} />
+      <Recommendations
+        className="my-20 py-20 px-2 md:px-10 rounded-3xl bg-white"
+        searchParams={{ productGroupId: 2 }}
+      />
     </div>
   );
 }

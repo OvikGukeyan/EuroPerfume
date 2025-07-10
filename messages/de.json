@@ -79,7 +79,8 @@
       "totalPriceLabel": "Gesamtpreis:",
       "orderPrice": "Bestellwert",
       "delivery": "Lieferung",
-      "submitButton": "Bestellung abschicken"
+      "submitButton": "Bestellung abschicken",
+      "promocode": "Promokode"
     }
   },
 
