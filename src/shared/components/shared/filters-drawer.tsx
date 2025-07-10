@@ -22,7 +22,7 @@ export const FiltersDrawer = async () => {
 
         <Sheet >
           <SheetTrigger  asChild >
-            <Button className="xl:hidden flex items-center gap-2 ">
+            <Button variant="tertiary" className="xl:hidden flex items-center gap-2">
               <span className="hidden md:block">Filters</span> 
               <SlidersHorizontal size={20} />
             </Button>

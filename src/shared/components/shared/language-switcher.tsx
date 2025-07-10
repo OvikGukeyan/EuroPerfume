@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "@/src/i18n/navigation";
 import { FC } from "react";
 import { cn } from "../../lib/utils";
+import { useSearchParams } from "next/navigation";
 
 interface Props {
   className?: string;
@@ -11,10 +12,15 @@ interface Props {
 export const LanguageSwitcher: FC<Props> = ({ className }) => {
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const changeLanguage = (newLocale: "ru" | "de") => {
-    router.push(pathname, { locale: newLocale });
-  };
+const changeLanguage = (newLocale: "ru" | "de") => {
+  const query = searchParams.toString(); 
+
+  const url = query ? `${pathname}?${query}` : pathname;
+
+  router.push(url, { locale: newLocale });
+};
 
   return (
     <div className={cn("flex gap-3 ", className)}>

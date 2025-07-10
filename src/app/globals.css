@@ -28,6 +28,10 @@ html {
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
 
+    --tertiary: 169 49% 75%;
+    --tertiary-foreground: 0 0% 98%;
+    --tertiary-hover: 169 49% 65%;
+
     --muted: 0 0% 96.1%;
     --muted-foreground: 0 0% 45.1%;
 
@@ -140,8 +144,6 @@ html {
 #nprogress .spinner-icon {
   @apply border-t-primary border-l-primary !important;
 }
-
-
 
 @layer base {
   * {

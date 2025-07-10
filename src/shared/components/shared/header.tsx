@@ -62,7 +62,7 @@ export const Header: React.FC<Props> = ({
 
   return (
     <>
-      <div className="flex justify-between items-center px-3">
+      <div className="flex justify-between items-center px-3 bg-tertiary ">
         <div className="flex items-center gap-2 h-10   md:px-5 ">
           <Truck />
           <h3 className="text-sm md:text-base">{t("freeDeliveryInfo")}</h3>

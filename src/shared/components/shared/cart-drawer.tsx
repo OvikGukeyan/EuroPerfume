@@ -119,6 +119,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                     loading={loading || redirecting || itemLoading}
                     type="submit"
                     className="w-full h-12 text-base"
+                    variant='tertiary'
                   >
                     {t("checkout")}
                     <ArrowRight className="w-5 ml-2" />

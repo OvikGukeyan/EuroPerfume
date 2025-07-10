@@ -3,7 +3,6 @@ import {
   FiltersDrawer,
   PaginationComponent,
   ProductsGroupList,
-  Title,
   TopBar,
 } from "@/src/shared/components";
 import { getTranslations } from "next-intl/server";
