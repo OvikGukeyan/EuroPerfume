@@ -24,8 +24,6 @@ import { useRouter } from "@/src/i18n/navigation";
 
 export default function Checkout() {
   const [submitting, setSubmitting] = useState(false);
-  const [promoCode, setPromoCode] = useState("");
-  const [discount, setDiscount] = useState(0);
   const {
     totalAmount,
     items,
@@ -58,9 +56,12 @@ export default function Checkout() {
       postOffice: "",
       packstationNumber: "",
       shippingMethod: ShippingMethods.BILLING_ADDRESS,
+      promocode: "",
+      discount: 0,
     },
   });
 
+  const discount = form.watch("discount");
   const delivery = form.watch("deliveryType");
   const { totalAmountWithDelivery, deliveryPrice } =
     calcTotlalAmountWithDelivery(totalAmount, delivery, discount);
@@ -95,6 +96,20 @@ export default function Checkout() {
       toast.error("Failed to create order", {
         icon: "🚨",
       });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const onPromocodeSubmit = async () => {
+    try {
+      setSubmitting(true);
+      const promoCode = form.watch("promocode") || "";
+      const data = await Api.promocode.validatePromocode(promoCode);
+      form.setValue("discount", data.discount);
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong", { icon: "❌" });
     } finally {
       setSubmitting(false);
     }
@@ -139,6 +154,8 @@ export default function Checkout() {
                 deliveryPrice={deliveryPrice}
                 totalAmountWithDelivery={totalAmountWithDelivery}
                 control={form.control}
+                onPromocodeSubmit={onPromocodeSubmit}
+                discount={discount}
               />
             </div>
           </div>

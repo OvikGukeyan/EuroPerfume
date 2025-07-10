@@ -349,6 +349,8 @@ model Order {
   email             String
   phone             String
   comment           String?
+  promocode         String?
+  discount          Int?
   shippingMethod    ShippingMethods
   deliveryType      DeliveryTypes
   contactForm       ContactForms
@@ -370,13 +372,13 @@ model OrderItem {
 }
 
 model PromoCode {
-  id          String   @id @default(uuid())
-  code        String   @unique
-  discount    Int      
-  isActive    Boolean  @default(true)
-  expiresAt   DateTime?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        String    @id @default(uuid())
+  code      String    @unique
+  discount  Int
+  isActive  Boolean   @default(true)
+  expiresAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model VerificationCode {

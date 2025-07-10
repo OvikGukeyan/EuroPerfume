@@ -65,9 +65,10 @@ export async function createOrder(data: CheckoutFormValues) {
       throw new Error("Cart is empty!");
     }
 
-    const { deliveryPrice } = calcTotlalAmountWithDelivery(
+    const {  totalAmountWithDelivery, deliveryPrice } = calcTotlalAmountWithDelivery(
       userCart.totalAmount.toNumber(),
-      data.deliveryType
+      data.deliveryType,
+      data.discount
     );
     const fullName = data.firstName + " " + data.lastName;
     const deliveryFullNmae =
@@ -95,9 +96,11 @@ export async function createOrder(data: CheckoutFormValues) {
           : data.address,
         comment: data.comment,
         token: cartToken,
-        totalAmount: userCart.totalAmount.toNumber() + deliveryPrice,
+        totalAmount: totalAmountWithDelivery,
         deliveryType: data.deliveryType,
         contactForm: data.contactForm,
+        promocode: data.promocode,
+        discount: data.discount,
         status: OrderStatus.PENDING,
         items: {
           create: userCart.items.map((item) => ({

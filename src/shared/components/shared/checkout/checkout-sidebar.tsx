@@ -1,5 +1,11 @@
 import React, { FC } from "react";
-import { ArrowRight, Package, Truck } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Package,
+  TicketPercent,
+  Truck,
+} from "lucide-react";
 import { OrderDetails, WhiteBlock } from "..";
 import { Button, FormInput, Skeleton } from "../..";
 import { useTranslations } from "next-intl";
@@ -14,7 +20,9 @@ interface Props {
   totalAmount: number;
   deliveryPrice: number;
   totalAmountWithDelivery: number;
-  control: Control<CheckoutFormValues>
+  control: Control<CheckoutFormValues>;
+  onPromocodeSubmit: () => void;
+  discount?: number;
 }
 
 export const CheckoutSidebar: FC<Props> = ({
@@ -24,7 +32,9 @@ export const CheckoutSidebar: FC<Props> = ({
   itemLoading,
   deliveryPrice,
   totalAmountWithDelivery,
-  control
+  control,
+  onPromocodeSubmit,
+  discount,
 }) => {
   const t = useTranslations("Checkout.sidebar");
 
@@ -63,22 +73,49 @@ export const CheckoutSidebar: FC<Props> = ({
         }
       />
 
-      <FormField
-        name="promocode"
-        control={control as Control<CheckoutFormValues>}
-        render={({ field }) => (
-          <FormItem className="mb-5">
-            <FormControl>
-              <FormInput
-                label={t("promocode")}
-                {...field}
-                placeholder={t("promocode")}
-                type="number"
-              />
-            </FormControl>
-          </FormItem>
-        )}
-      />
+      {discount && discount > 0 ? (
+        <OrderDetails
+          title={
+            <div className="flex items-center">
+              <TicketPercent size={18} className="mr-2 text-gray-400" />
+              {t("discount")}
+            </div>
+          }
+          value={loading ? <Skeleton className="h-6 w-16" /> : discount + " %"}
+        />
+      ) : null}
+
+      <div className="flex justify-between ">
+        <FormField
+          name="promocode"
+          control={control as Control<CheckoutFormValues>}
+          render={({ field }) => (
+            <FormItem className="mb-5">
+              <FormControl>
+                <FormInput
+                  {...field}
+                  placeholder={t("promocode")}
+                  type="text"
+                />
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
+        <Button
+          onClick={onPromocodeSubmit}
+          disabled={!totalAmount}
+          className=" h-12 rounded-2xl  text-base font-bold"
+          variant="outline"
+          type="button"
+        >
+          {discount && discount > 0 ? (
+            <BadgeCheck width={30} height={30} />
+          ) : (
+            "Apply"
+          )}
+        </Button>
+      </div>
 
       <Button
         loading={loading || itemLoading}

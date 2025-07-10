@@ -4,6 +4,7 @@ export enum ApiRouts {
     SLIDES='/slides',
     SLIDES_REORDER='/slides/reorder',
     BY_IDS='/products/by-ids' ,
+    CHECK_PROMOCODE='/promocode/validate'
 }
 
 export const links = [

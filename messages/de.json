@@ -80,7 +80,8 @@
       "orderPrice": "Bestellwert",
       "delivery": "Lieferung",
       "submitButton": "Bestellung abschicken",
-      "promocode": "Promokode"
+      "promocode": "Promokode",
+      "discount": "Rabatt"
     }
   },
 

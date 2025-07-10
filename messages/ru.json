@@ -80,7 +80,8 @@
       "orderPrice": "Сумма заказа",
       "delivery": "Доставка",
       "submitButton": "Подтвердить заказ",
-      "promocode": "Промокод"
+      "promocode": "Промокод",
+      "discount": "Скидка"
     }
   },
 

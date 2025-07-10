@@ -26,6 +26,7 @@ export const checkoutFormSchema = z
     contactForm: z.nativeEnum(ContactForms),
     shippingMethod: z.nativeEnum(ShippingMethods),
     promocode: z.string().optional(),
+    discount: z.number().optional(),
   })
   .superRefine((data, ctx) => {
     const { shippingMethod } = data;
