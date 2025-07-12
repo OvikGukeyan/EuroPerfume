@@ -11,7 +11,7 @@ export const calcTotlalAmountWithDelivery = (
   const totalAmountWithDiscount = discount
     ? totlalAmount - totlalAmount * (discount / 100)
     : totlalAmount;
-  if (totalAmountWithDiscount < 100 && totalAmountWithDiscount > 0) {
+  if (totlalAmount < 100 && totlalAmount > 0) {
     deliveryPrice =
       deliveryTypes.find((type) => type.value === delivery)?.price || 0;
     totalAmountWithDelivery = Number(totalAmountWithDiscount) + deliveryPrice;
