@@ -1,16 +1,16 @@
 "use client";
 
-
 import { createSlide } from "@/src/app/actions";
 import { Button, Input, Title } from "@/src/shared/components";
 import { Label } from "@/src/shared/components/ui/label";
 import { imageCompressor } from "@/src/shared/lib";
+import React, { Usable, use } from "react";
 import { useState } from "react";
-import { set } from "zod";
 
-export default function CreateSlide() {
+export default function CreateSlide({ params }: { params: Usable<{ id: string }> }) {
   const [loading, setLoading] = useState(false);
 
+  const { id } = use(params);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
@@ -27,6 +27,8 @@ export default function CreateSlide() {
       newFormData.append("link", form.get("link") as string);
       newFormData.append("desctopImg", compressedDesctopImg);
       newFormData.append("mobileImg", compressedMobileImg);
+      newFormData.append("location", id);
+
   
       await createSlide(newFormData);
     } catch (error) {

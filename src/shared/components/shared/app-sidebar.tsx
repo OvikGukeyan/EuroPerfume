@@ -41,9 +41,14 @@ export const AppSidebar: FC<Props> = ({ className }) => {
     { name: "Products", icon: <Settings2 />, href: "/products" },
 
     {
-      name: "Create New Slde",
+      name: "Create Top Slde",
       icon: <Plus />,
-      href: "/create-slide",
+      href: "/create-slide/1",
+    },
+     {
+      name: "Create Bottom Slde",
+      icon: <Plus />,
+      href: "/create-slide/2",
     },
     {
       name: "Slides",

@@ -19,7 +19,7 @@ export default async function Home() {
   const t = await getTranslations("Home");
   return (
     <>
-      <Carusel slides={slides} />
+      <Carusel slides={slides.filter((s) => s.location === 1)} />
       <TopBar />
       <ProductsSelection
         getFunction={getNewProducts}
@@ -32,7 +32,7 @@ export default async function Home() {
         title={t("popularProducts")}
         className=" my-10"
       />
-      <Carusel slides={slides} />
+      <Carusel slides={slides.filter((s) => s.location === 2)} />
 
       <RecentReviews />
     </>

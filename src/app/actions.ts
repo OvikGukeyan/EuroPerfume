@@ -1040,7 +1040,7 @@ export async function createSlide(formData: FormData) {
 
     const name = formData.get("name") as string;
     const link = formData.get("link") as string;
-
+    const location = formData.get("location") as string;
     const desctopImg = formData.get("desctopImg") as File;
     const mobileImg = formData.get("mobileImg") as File;
     const images: File[] = [desctopImg, mobileImg];
@@ -1070,6 +1070,7 @@ export async function createSlide(formData: FormData) {
         href: link,
         desctopImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}images/${uploadResults[0].data?.path}`,
         mobileImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}images/${uploadResults[1].data?.path}`,
+        location: Number(location),
       },
     });
   } catch (error) {
