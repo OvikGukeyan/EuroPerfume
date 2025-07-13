@@ -4,12 +4,15 @@ import { createSlide } from "@/src/app/actions";
 import { Button, Input, Title } from "@/src/shared/components";
 import { Label } from "@/src/shared/components/ui/label";
 import { imageCompressor } from "@/src/shared/lib";
+import { useSearchParams } from "next/navigation";
 import React, { Usable, use } from "react";
 import { useState } from "react";
 
-export default function CreateSlide({ params }: { params: { id: string } }) {
+export default function CreateSlide() {
   const [loading, setLoading] = useState(false);
-
+  const params = useSearchParams();
+  const id = params.get("id") as string;
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
@@ -26,7 +29,7 @@ export default function CreateSlide({ params }: { params: { id: string } }) {
       newFormData.append("link", form.get("link") as string);
       newFormData.append("desctopImg", compressedDesctopImg);
       newFormData.append("mobileImg", compressedMobileImg);
-      newFormData.append("location", params.id);
+      newFormData.append("location", id);
 
   
       await createSlide(newFormData);
