@@ -2,7 +2,6 @@
 import React, { FC, useEffect, useState } from "react";
 import { Categories, SortPopup, Container, SearchInput } from ".";
 import { cn } from "@/src/shared/lib/utils";
-import { Category, ProductGroup } from "@prisma/client";
 import { useCategories } from "@/src/shared/hooks";
 
 interface Props {

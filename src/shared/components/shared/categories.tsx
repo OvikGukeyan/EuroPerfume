@@ -25,62 +25,6 @@ export const Categories: FC<Props> = ({ items, className }) => {
   ]);
   const locale = useLocale() as "ru" | "de";
   return (
-    // <NavigationMenu className={cn(className)}>
-    //   <NavigationMenuList className="gap-0 md:gap-5">
-    //     {items.map(({ id, labelRu, labelDe, productGroups }) => (
-    //       <NavigationMenuItem key={id}>
-    //         <NavigationMenuTrigger
-    //           onClick={() => {
-    //             setCategory(id);
-    //             setProductGroup(null);
-    //           }}
-    //           className="text-md font-bold tracking-narrow md:tracking-wider"
-    //         >
-    //           {locale === "ru" ? labelRu : labelDe}
-    //         </NavigationMenuTrigger>
-    //         {productGroups.length > 0 && (
-    //           <NavigationMenuContent className="z-60 ">
-    //             <div className="flex  items-start min-w-[500px] min-h-[100px] p-5 gap-10">
-    //               <NavigationMenuLink
-    //               className="relative cursor-pointer group font-semibold "
-    //                 onClick={() => {
-    //                   setProductGroup(null);
-    //                   setCategory(id);
-    //                 }}
-    //               >
-    //                 <p className="text-xl">
-    //                   {locale === "ru" ? (
-    //                     <p>Все</p>
-    //                   ) : (
-    //                     <p>Ales</p>
-    //                   )}
-    //                 </p>
-    //                 <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
-    //               </NavigationMenuLink>
-    //               {productGroups.map((productGroup) => (
-    //                 <NavigationMenuLink
-    //                   key={productGroup.id}
-    //                   className="relative cursor-pointer group font-semibold "
-    //                   onClick={() => {
-    //                     setProductGroup(productGroup.id);
-    //                     setCategory(productGroup.categoryId);
-    //                   }}
-    //                 >
-    //                   <p className="text-xl">
-    //                     {locale === "ru"
-    //                       ? productGroup.labelRu
-    //                       : productGroup.labelDe}
-    //                   </p>
-    //                   <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
-    //                 </NavigationMenuLink>
-    //               ))}
-    //             </div>
-    //           </NavigationMenuContent>
-    //         )}
-    //       </NavigationMenuItem>
-    //     ))}
-    //   </NavigationMenuList>
-    // </NavigationMenu>
     <div className={cn(className, " gap-10")}>
       {items.map(({ id, labelRu, labelDe, productGroups }) => (
         <HoverCard key={id} openDelay={100} closeDelay={100}>

@@ -3,7 +3,7 @@ import { ProductCard, ProductCardSkeleton, Title } from ".";
 import { cn } from "@/src/shared/lib/utils";
 import { useProducts } from "@/src/shared/hooks";
 import { useFiltersStore } from "../../store/filters";
-import { useCategoryStore } from "../../store";
+import { useCategoryStore, useProductGroupStore } from "../../store";
 import { useLocale } from "next-intl";
 
 interface Props {
@@ -12,28 +12,35 @@ interface Props {
 
 export const ProductsGroupList: React.FC<Props> = ({ className }) => {
   const { items: products, loading } = useProducts();
-  const [activeId, categories] = useCategoryStore((state) => [
-    state.activeId,
-    state.categories,
-  ]);
+  const [categories] = useCategoryStore((state) => [state.categories]);
+
+  // const [productGroups] = useProductGroupStore((state) => [
+  //   state.productGroups,
+  // ]);
+  const productGroups = categories.flatMap((category) => category.productGroups);
 
   const [category, productGroup] = useFiltersStore((state) => [
     state.category,
     state.productGroup,
-  ])
-
+  ]);
+  console.log(productGroup, productGroups);
   const activeCategory = categories.find((item) => item.id === category);
+  const activeProductGroup = productGroups.find(
+    (item) => item.id === productGroup
+  );
 
   const locale = useLocale();
-  const title = locale === 'ru' ? activeCategory?.labelRu : activeCategory?.labelDe
-console.log(category)
+  const title =
+    (locale === "ru" ? activeCategory?.labelRu : activeCategory?.labelDe)?.toUpperCase();
+  const subTitle =
+    (locale === "ru" ? activeProductGroup?.labelRu : activeProductGroup?.labelDe)?.toUpperCase();
   return (
     <div>
       <div className="flex items-center justify-center gap-4 w-full">
         <div className="h-1 w-12 bg-black"></div>
         <Title
           className="text-2xl sm:text-3xl  md:text-5xl   font-extrabold text-center my-10"
-          text={title || ''}
+          text={title && title + " " + subTitle || ""}
         />
         <div className="h-1 w-12 bg-black"></div>
       </div>

@@ -44,10 +44,6 @@ export const ChooseVariation: FC<Props> = ({
         "w-full relative flex items-center px-0 md:px-5",
         className
       )}
-      onTouchStart={(e) => {
-        e.stopPropagation();
-        e.preventDefault;
-      }}
     >
       <button
         className="absolute left-0 hidden md:block"
