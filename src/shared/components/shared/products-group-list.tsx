@@ -14,10 +14,9 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
   const { items: products, loading } = useProducts();
   const [categories] = useCategoryStore((state) => [state.categories]);
 
-  // const [productGroups] = useProductGroupStore((state) => [
-  //   state.productGroups,
-  // ]);
-  const productGroups = categories.flatMap((category) => category.productGroups);
+  const productGroups = categories.flatMap(
+    (category) => category.productGroups
+  );
 
   const [category, productGroup] = useFiltersStore((state) => [
     state.category,
@@ -30,17 +29,25 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
   );
 
   const locale = useLocale();
-  const title =
-    (locale === "ru" ? activeCategory?.labelRu : activeCategory?.labelDe)?.toUpperCase();
-  const subTitle =
-    (locale === "ru" ? activeProductGroup?.labelRu : activeProductGroup?.labelDe)?.toUpperCase();
+  const title = activeCategory
+    ? (locale === "ru"
+        ? activeCategory?.labelRu
+        : activeCategory?.labelDe
+      )?.toUpperCase()
+    : "";
+  const subTitle = activeProductGroup
+    ? (locale === "ru"
+        ? activeProductGroup?.labelRu
+        : activeProductGroup?.labelDe
+      )?.toUpperCase()
+    : "";
   return (
     <div>
       <div className="flex items-center justify-center gap-4 w-full">
         <div className="h-1 w-12 bg-black"></div>
         <Title
           className="text-2xl sm:text-3xl  md:text-5xl   font-extrabold text-center my-10"
-          text={title && title + " " + subTitle || ""}
+          text={title + " " + subTitle}
         />
         <div className="h-1 w-12 bg-black"></div>
       </div>
