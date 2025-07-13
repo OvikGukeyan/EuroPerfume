@@ -269,10 +269,10 @@ export const Filters: FC<Props> = () => {
           "sticky bottom-0 xl:top-[230px] z-10 transition-all duration-500 mt-10 flex justify-around"
         }
       >
-        <Button variant="tertiary"  onClick={resetFilters} className="mb-5">
+        <Button   onClick={resetFilters} className="mb-5 ">
           {t("reset")}
         </Button>
-        <Button variant="tertiary" onClick={applyFilters} className="mb-5 ">
+        <Button  onClick={applyFilters} className="mb-5 ">
           {t("apply")}
         </Button>
       </div>

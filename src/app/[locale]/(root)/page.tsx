@@ -5,7 +5,12 @@ import {
   RecentReviews,
   StoriesCarousel,
 } from "@/src/shared/components/shared";
-import { getNewProducts, getPopularProducts, getSlides, getStories } from "@/src/shared/lib";
+import {
+  getNewProducts,
+  getPopularProducts,
+  getSlides,
+  getStories,
+} from "@/src/shared/lib";
 import { getTranslations } from "next-intl/server";
 
 export default async function Home() {
@@ -27,6 +32,8 @@ export default async function Home() {
         title={t("popularProducts")}
         className=" my-10"
       />
+      <Carusel slides={slides} />
+
       <RecentReviews />
     </>
   );

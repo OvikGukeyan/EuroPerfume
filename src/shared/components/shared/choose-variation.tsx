@@ -39,8 +39,20 @@ export const ChooseVariation: FC<Props> = ({
   };
 
   return (
-    <div className={cn("w-full relative flex items-center px-0 md:px-5", className)}>
-      <button className="absolute left-0 hidden md:block" onClick={() => scroll("left")}>
+    <div
+      className={cn(
+        "w-full relative flex items-center px-0 md:px-5",
+        className
+      )}
+      onTouchStart={(e) => {
+        e.stopPropagation();
+        e.preventDefault;
+      }}
+    >
+      <button
+        className="absolute left-0 hidden md:block"
+        onClick={() => scroll("left")}
+      >
         <ChevronLeft size={15} />
       </button>
       <div
@@ -60,7 +72,10 @@ export const ChooseVariation: FC<Props> = ({
           </Button>
         ))}
       </div>
-      <button className="absolute right-0 hidden md:block" onClick={() => scroll("right")}>
+      <button
+        className="absolute right-0 hidden md:block"
+        onClick={() => scroll("right")}
+      >
         <ChevronRight size={15} />
       </button>
     </div>
