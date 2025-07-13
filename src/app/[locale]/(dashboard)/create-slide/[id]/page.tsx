@@ -7,10 +7,9 @@ import { imageCompressor } from "@/src/shared/lib";
 import React, { Usable, use } from "react";
 import { useState } from "react";
 
-export default function CreateSlide({ params }: { params: Usable<{ id: string }> }) {
+export default function CreateSlide({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(false);
 
-  const { id } = use(params);
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
       e.preventDefault();
@@ -27,7 +26,7 @@ export default function CreateSlide({ params }: { params: Usable<{ id: string }>
       newFormData.append("link", form.get("link") as string);
       newFormData.append("desctopImg", compressedDesctopImg);
       newFormData.append("mobileImg", compressedMobileImg);
-      newFormData.append("location", id);
+      newFormData.append("location", params.id);
 
   
       await createSlide(newFormData);
