@@ -39,7 +39,7 @@ export default function CreateSlide() {
       setLoading(false);
     }
   };
-
+console.log(id)
   return (
     <div className=" px-10 mb-10">
       <Title className="mb-5" text="Create new Slide" />
