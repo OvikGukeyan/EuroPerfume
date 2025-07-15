@@ -1120,7 +1120,7 @@ export async function deleteSlide(id: number) {
     console.error("Error [DELETE_SLIDER]", error);
     throw error;
   } finally {
-    redirect("/create-slide");
+    redirect("/create-slide/1");
   }
 }
 

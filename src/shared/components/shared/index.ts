@@ -76,6 +76,7 @@ export {ProductsSelectionList} from './products-selection-list';
 export {RecentReviews} from './recent-reviews';
 export {StoriesCarousel} from './stories-carousel';
 export {CreatePromocodeForm} from './create-promocode-form';
+export {CreateSlideForm} from './create-slide-form';
 
 export * from './email-templates';
 export * from './form';
