@@ -170,8 +170,8 @@ export const findProducts = async (
     );
     const [products, totalCount] = await prisma.$transaction([
       prisma.product.findMany({
-        skip: (page - 1) * 12,
-        take: 12,
+        skip: (page - 1) * 24,
+        take: 24,
         orderBy: orderBy,
         where: whereClause,
         include: {
@@ -205,7 +205,7 @@ export const findProducts = async (
       price: product.price.toNumber(),
       discountPrice: product.discountPrice?.toNumber() || null,
     }));
-    const totalPages = Math.ceil(totalCount / 12);
+    const totalPages = Math.ceil(totalCount / 24);
     return { products: safeProducts, totalPages, availableFilters };
   } catch (error) {
     console.error(error);

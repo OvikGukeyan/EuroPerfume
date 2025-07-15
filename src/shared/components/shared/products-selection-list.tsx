@@ -14,7 +14,7 @@ interface Props {
 export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("ProductsSelection");
-  const productsToShow = isOpen ? products : products.slice(0, 4);
+  const productsToShow = isOpen ? products : products.slice(0, 6);
 
   return (
     <div className={cn(className, "w-full flex flex-col items-center  py-10")}>
