@@ -90,6 +90,7 @@ export const DashboardProduct: React.FC<Props> = ({
         </span>
         <form action={changeProductPrice} className="flex gap-2">
           <input type="text" placeholder="0.00" name="price" className="w-10 px-2 border" />
+          <input type="text" placeholder="0.00" name="discountPrice" className="w-10 px-2 border border-red-500" />
           <Input type="hidden" name="id" value={id} />
           <button type="submit"><ChevronRight size={20} /></button>
         </form>

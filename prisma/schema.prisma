@@ -79,8 +79,9 @@ model Product {
   brand         Brand                 @relation(fields: [brandId], references: [id])
   brandId       Int
 
-  price       Decimal
-  releaseYear Int?
+  price         Decimal
+  discountPrice Decimal?
+  releaseYear   Int?
 
   available      Boolean
   cartItems      CartItem[]

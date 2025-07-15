@@ -43,6 +43,7 @@ export default async function Update({
   const safeProduct = {
     ...product,
     price: product.price.toNumber(),
+    discountPrice: product.discountPrice?.toNumber() || null,
   };
 
   return (

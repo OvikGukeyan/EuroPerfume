@@ -53,10 +53,8 @@ export default async function Product({
 
   const safeProduct = {
     ...product,
-    price:
-      typeof product.price === "object" && "toNumber" in product.price
-        ? product.price.toNumber()
-        : product.price,
+    price: product.price.toNumber(),
+    discountPrice: product.discountPrice?.toNumber() || null,
   };
 
   return (

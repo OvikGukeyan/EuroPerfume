@@ -165,7 +165,9 @@ export const findProducts = async (
       },
     });
 
-    const availableFilters = getAvailableFilters(allFilteredProducts as unknown as ProductDTO[]);
+    const availableFilters = getAvailableFilters(
+      allFilteredProducts as unknown as ProductDTO[]
+    );
     const [products, totalCount] = await prisma.$transaction([
       prisma.product.findMany({
         skip: (page - 1) * 12,
@@ -201,6 +203,7 @@ export const findProducts = async (
     const safeProducts = products.map((product) => ({
       ...product,
       price: product.price.toNumber(),
+      discountPrice: product.discountPrice?.toNumber() || null,
     }));
     const totalPages = Math.ceil(totalCount / 12);
     return { products: safeProducts, totalPages, availableFilters };

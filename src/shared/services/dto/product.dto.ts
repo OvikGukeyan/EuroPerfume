@@ -19,8 +19,9 @@ import {
   Texture,
 } from "@prisma/client";
 import { AvailableFilters } from "../../store/product";
-export type SafeProduct = Omit<Product, "price"> & {
+export type SafeProduct = Omit<Product, "price" | "discountPrice"> & {
   price: number;
+  discountPrice: number | null;
 };
 export interface ProductDTO extends SafeProduct {
   productGroup: ProductGroup;

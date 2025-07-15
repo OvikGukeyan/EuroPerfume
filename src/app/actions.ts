@@ -65,11 +65,12 @@ export async function createOrder(data: CheckoutFormValues) {
       throw new Error("Cart is empty!");
     }
 
-    const {  totalAmountWithDelivery, deliveryPrice } = calcTotlalAmountWithDelivery(
-      userCart.totalAmount.toNumber(),
-      data.deliveryType,
-      data.discount
-    );
+    const { totalAmountWithDelivery, deliveryPrice } =
+      calcTotlalAmountWithDelivery(
+        userCart.totalAmount.toNumber(),
+        data.deliveryType,
+        data.discount
+      );
     const fullName = data.firstName + " " + data.lastName;
     const deliveryFullNmae =
       data.deliveryFirstName && data.deliveryFirstName.length > 0
@@ -893,16 +894,22 @@ export async function changeProductPrice(formData: FormData) {
     if (!user || user.role !== UserRole.ADMIN) {
       throw new Error("Access denied");
     }
-    const { id, price } = Object.fromEntries(formData.entries()) as {
+    const { id, price, discountPrice } = Object.fromEntries(
+      formData.entries()
+    ) as {
       id: string;
       price: string;
+      discountPrice: string;
     };
-    if (!id || !price) {
+    if (!id || (!price && !discountPrice)) {
       throw new Error("Missing required fields");
     }
     await prisma.product.update({
       where: { id: Number(id) },
-      data: { price: Number(price) },
+      data: {
+        price: price ? Number(price) : undefined,
+        discountPrice: discountPrice ? Number(discountPrice) : undefined,
+      },
     });
   } catch (error) {
     console.error("Error [CHANGE_PRODUCT_PRICE]", error);

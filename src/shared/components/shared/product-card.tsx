@@ -31,6 +31,7 @@ interface Props {
   categoryId?: number;
   variations: ProductVariation[];
   concentration?: PerfumeConcentration;
+  discountPrice?: number;
   className?: string;
 }
 
@@ -39,6 +40,7 @@ export const ProductCard: React.FC<Props> = ({
   className,
   name,
   price,
+  discountPrice,
   id,
   categoryId,
   productGroup,
@@ -102,6 +104,10 @@ export const ProductCard: React.FC<Props> = ({
     categoryId === 1 && productGroup?.id && productGroup.id < 4
       ? calcPrice(volume, price)
       : price;
+  const finalDiscountPrice =
+    discountPrice && categoryId === 1 && productGroup?.id && productGroup.id < 4
+      ? calcPrice(volume, discountPrice)
+      : discountPrice;
   const concentratioName = concentrations.find(
     (item) => item.value === concentration
   )?.name;
@@ -109,17 +115,17 @@ export const ProductCard: React.FC<Props> = ({
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
 
   const image = imageUrl || activeVariation?.imageUrl || "";
-  
+
   return (
-    <div className={cn("md:hover:scale-105 transition-all duration-300 md:active:scale-95 md:active:border-2", className)}>
+    <div
+      className={cn(
+        "md:hover:scale-105 transition-all duration-300 md:active:scale-95 md:active:border-2",
+        className
+      )}
+    >
       <Link href={`/product/${id}`}>
         <div className="w-full max-w-[400px] aspect-[4/5] relative">
-          <Image
-            src={image}
-            alt={name}
-            fill
-            className="object-contain "
-          />
+          <Image src={image} alt={name} fill className="object-contain " />
           <Button
             className="absolute top-3 right-1 md:right-5 hover:bg-transparent p-2"
             onClick={(e) => onToggleFavorite(e)}
@@ -127,6 +133,13 @@ export const ProductCard: React.FC<Props> = ({
           >
             {isFavorite ? <HeartBlack /> : <Heart />}
           </Button>
+          <div>
+            {discountPrice && (
+              <p className="absolute top-0 left-3 md:left-5 text-sm text-white bg-red-500 px-2">
+                SALE
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="h-28">
@@ -159,13 +172,15 @@ export const ProductCard: React.FC<Props> = ({
         <div className="flex flex-col">
           <p className="text-[20px] ">
             <span className="hidden md:inline">{t("price")}</span>{" "}
-            <b>{finalPrice} €</b>
+            {discountPrice ? (
+              <>
+                <span className="line-through text-base mr-2">{finalPrice} €</span>
+                <b className="text-red-500">{finalDiscountPrice} €</b>
+              </>
+            ) : (
+              <b>{finalPrice} €</b>
+            )}
           </p>
-          {/* { categoryId === 1  && (productGroupId && productGroupId  < 4) &&
-          <p className="text-[15px] text-slate-500 ">
-          <span className="hidden md:inline"></span> <b>{price} € pro g</b>
-        </p>
-        } */}
         </div>
 
         <Button

@@ -31,6 +31,8 @@ export const updateCartTotalAmount = async (token: string) => {
       product: {
         ...item.product,
         price: item.product.price.toNumber(),
+        discountPrice:
+          item.product.discountPrice && item.product.discountPrice.toNumber(),
       },
     })),
   };

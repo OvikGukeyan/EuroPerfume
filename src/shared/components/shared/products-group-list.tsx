@@ -42,14 +42,16 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
     : "";
   return (
     <div>
-      <div className="flex items-center justify-center gap-4 w-full">
-        <div className="h-1 w-12 bg-black"></div>
-        <Title
-          className="text-2xl sm:text-3xl  md:text-5xl   font-extrabold text-center my-10"
-          text={subTitle}
-        />
-        <div className="h-1 w-12 bg-black"></div>
-      </div>
+      {subTitle && (
+        <div className="flex items-center justify-center gap-4 w-full">
+          <div className="h-1 w-12 bg-black"></div>
+          <Title
+            className="text-2xl sm:text-3xl  md:text-5xl   font-extrabold text-center my-10"
+            text={subTitle}
+          />
+          <div className="h-1 w-12 bg-black"></div>
+        </div>
+      )}
       <div
         id="products-section"
         className={cn(
@@ -71,6 +73,7 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
                 variations={product.variations}
                 concentration={product.concentration || undefined}
                 productGroup={product.productGroup}
+                discountPrice={product.discountPrice || undefined}
               />
             ))}
       </div>
