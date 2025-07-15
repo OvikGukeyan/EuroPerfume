@@ -68,7 +68,7 @@ export const ProductCaruselItem: React.FC<Props> = ({
   return (
     <div className={cn(" w-full md:hover:scale-105 transition-all duration-300 active:scale-95 active:border-2 bg-gray-50", className)}>
       <Link href={`/product/${id}`}>
-        <div className="w-full max-w-[400px] aspect-[4/5] relative">
+        <div className="w-full max-w-[400px] aspect-[4/5] relative bg-white">
           <Image
             src={imageUrl || variations?.[0]?.imageUrl || ""}
             alt={name}
