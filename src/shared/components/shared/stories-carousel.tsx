@@ -97,7 +97,7 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
           {items.map((item, index) => (
             <CarouselItem
               key={index}
-              className="w-full basis-1/2 md:basis-1/4 relative"
+              className="w-full basis-1/2 md:basis-1/4 lg:basis-1/5 relative"
               onClick={() => openStory(index)}
             >
               <video
