@@ -22,19 +22,18 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
     state.category,
     state.productGroup,
   ]);
-  console.log(productGroup, productGroups);
-  const activeCategory = categories.find((item) => item.id === category);
+  // const activeCategory = categories.find((item) => item.id === category);
   const activeProductGroup = productGroups.find(
     (item) => item.id === productGroup
   );
 
   const locale = useLocale();
-  const title = activeCategory
-    ? (locale === "ru"
-        ? activeCategory?.labelRu
-        : activeCategory?.labelDe
-      )?.toUpperCase()
-    : "";
+  // const title = activeCategory
+  //   ? (locale === "ru"
+  //       ? activeCategory?.labelRu
+  //       : activeCategory?.labelDe
+  //     )?.toUpperCase()
+  //   : "";
   const subTitle = activeProductGroup
     ? (locale === "ru"
         ? activeProductGroup?.labelRu
@@ -47,7 +46,7 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
         <div className="h-1 w-12 bg-black"></div>
         <Title
           className="text-2xl sm:text-3xl  md:text-5xl   font-extrabold text-center my-10"
-          text={title + " " + subTitle}
+          text={subTitle}
         />
         <div className="h-1 w-12 bg-black"></div>
       </div>

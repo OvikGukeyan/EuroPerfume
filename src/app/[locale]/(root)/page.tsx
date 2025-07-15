@@ -18,7 +18,7 @@ export default async function Home() {
   const stories = await getStories();
   const t = await getTranslations("Home");
   return (
-    <>
+    <div className="bg-gray-50">
       <Carusel slides={slides.filter((s) => s.location === 1)} />
       <TopBar />
       <ProductsSelection
@@ -35,6 +35,6 @@ export default async function Home() {
       <Carusel slides={slides.filter((s) => s.location === 2)} />
 
       <RecentReviews />
-    </>
+    </div>
   );
 }
