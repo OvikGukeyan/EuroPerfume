@@ -25,6 +25,7 @@ interface Props {
   available?: boolean;
   variations: ProductVariation[];
   concentration?: PerfumeConcentration;
+  discountPrice?: number
   className?: string;
 }
 
@@ -36,6 +37,7 @@ export const ProductCaruselItem: React.FC<Props> = ({
   productGroup,
   variations,
   concentration,
+  discountPrice
 }) => {
   const [isFavorite, toggleIsFavorite] = useState(false);
 
@@ -82,6 +84,13 @@ export const ProductCaruselItem: React.FC<Props> = ({
           >
             {isFavorite ? <HeartBlack /> : <Heart />}
           </Button>
+          <div>
+            {discountPrice && (
+              <p className="absolute top-0 left-3 md:left-5 text-sm text-white bg-red-500 px-2">
+                SALE
+              </p>
+            )}
+          </div>
         </div>
 
         <div className="h-28">

@@ -15,8 +15,14 @@ export const getNewProducts = async (): Promise<SelectedProductDTO[]> => {
             productGroup: true,
           },
         });
+
+        const safeProducts = newProducts.map((product) => ({
+          ...product,
+          discountPrice: product.discountPrice && product.discountPrice?.toNumber(),
+          price: product.price.toNumber(),
+        }))
     
-        return newProducts;
+        return safeProducts;
       } catch (error) {
         console.error("Error fetching new products:", error);
         return [];

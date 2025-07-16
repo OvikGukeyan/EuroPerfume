@@ -1,7 +1,8 @@
 import { prisma } from "@/prisma/prisma-client";
 import { Product, ProductGroup, ProductVariation } from "@prisma/client";
+import { SafeProduct } from "../services/dto/product.dto";
 
-export interface SelectedProductDTO extends Product {
+export interface SelectedProductDTO extends SafeProduct {
   variations: ProductVariation[];
   productGroup: ProductGroup;
 }
@@ -27,8 +28,15 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       },
     });
 
+  
+
     if (existingPopularProducts) {
-      return existingPopularProducts.products;
+      const safeProducts = existingPopularProducts.products.map((product) => ({
+        ...product,
+        discountPrice: product.discountPrice && product.discountPrice?.toNumber(),
+        price: product.price.toNumber(),
+      }))
+      return safeProducts;
     }
 
     const popularProducts = await prisma.orderItem.groupBy({
@@ -66,7 +74,13 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       },
     });
 
-    return newPopularProducts?.products || [];
+    const safeProducts = newPopularProducts?.products.map((product) => ({
+      ...product,
+      discountPrice: product.discountPrice && product.discountPrice?.toNumber(),
+      price: product.price.toNumber(),
+    }))
+
+    return safeProducts || [];
   } catch (error) {
     console.error("Error fetching popular products:", error);
     return [];

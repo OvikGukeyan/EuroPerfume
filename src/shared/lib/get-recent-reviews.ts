@@ -22,7 +22,16 @@ export const getRecentReviews = async (): Promise<RecentReviewDTO[]> => {
         },
       },
     });
-    return reviews as RecentReviewDTO[];
+
+    const safeReviews = reviews.map((review) => ({
+        ...review,
+        product: {
+            ...review.product,
+            discountPrice: review.product?.discountPrice && review.product.discountPrice?.toNumber(),
+            price: review.product?.price.toNumber(),
+        }
+    }))
+    return safeReviews as RecentReviewDTO[];
   } catch (error) {
     console.error("Error fetching recent reviews:", error);
     return [];
