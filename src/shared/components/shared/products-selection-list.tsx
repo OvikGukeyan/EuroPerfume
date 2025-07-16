@@ -14,14 +14,14 @@ interface Props {
 export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("ProductsSelection");
-  const productsToShow = isOpen ? products : products.slice(0, 6);
+  const productsToShow = isOpen ? products : products.slice(0, 12);
 
   return (
     <div className={cn(className, "w-full flex flex-col items-center  py-10")}>
       <div
         className={cn(
           "w-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 transition-all duration-700 overflow-hidden",
-          isOpen ? "md:max-h-[1800px]" : "md:max-h-[400px]"
+          isOpen ? "md:max-h-[2300px]" : "md:max-h-[1100px]"
         )}
       >
         {productsToShow.map((product) => (

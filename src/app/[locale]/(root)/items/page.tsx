@@ -12,7 +12,7 @@ export default async function Items() {
   const t = await getTranslations("Home");
 
   return (
-    <div>
+    <div className="bg-gray-50">
       <TopBar />
 
       

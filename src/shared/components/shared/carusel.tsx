@@ -1,7 +1,13 @@
 "use client";
 
 import React, { FC, useMemo } from "react";
-import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "../ui/carousel";
 import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
 import { Slide } from "@prisma/client";
@@ -39,6 +45,8 @@ export const Carusel: FC<Props> = ({ slides }) => {
           </CarouselItem>
         ))}
       </CarouselContent>
+      <CarouselPrevious className="left-5  hidden md:flex" />
+      <CarouselNext className="right-5 hidden md:flex" />
     </Carousel>
   );
 };

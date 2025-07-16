@@ -35,7 +35,7 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       by: ["productId"],
       _sum: { quantity: true },
       orderBy: { _sum: { quantity: "desc" } },
-      take: 12,
+      take: 24,
     });
 
     const popularProductIds = popularProducts.map((p) => p.productId);

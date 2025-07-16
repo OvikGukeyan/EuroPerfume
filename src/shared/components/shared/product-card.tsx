@@ -124,7 +124,7 @@ export const ProductCard: React.FC<Props> = ({
       )}
     >
       <Link href={`/product/${id}`}>
-        <div className="w-full max-w-[400px] aspect-[4/5] relative">
+        <div className="w-full max-w-[400px] aspect-[4/5] relative bg-white">
           <Image src={image} alt={name} fill className="object-contain " />
           <Button
             className="absolute top-3 right-1 md:right-5 hover:bg-transparent p-2"

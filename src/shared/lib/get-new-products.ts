@@ -9,7 +9,7 @@ export const getNewProducts = async (): Promise<SelectedProductDTO[]> => {
           orderBy: {
             createdAt: "desc",
           },
-          take: 12,
+          take: 24,
           include: {
             variations: true,
             productGroup: true,
