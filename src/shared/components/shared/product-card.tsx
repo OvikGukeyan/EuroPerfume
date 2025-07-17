@@ -7,7 +7,7 @@ import { ChooseVariation, Title, VolumeSelection } from ".";
 import { Button } from "../ui";
 import { Heart, Plus, ShoppingCart } from "lucide-react";
 import toast from "react-hot-toast";
-import { useCartStore } from "@/src/shared/store";
+import { useCartStore, useFavoritesStore } from "@/src/shared/store";
 import { Volume, volumes } from "@/src/shared/constants/perfume";
 import { calcPrice } from "@/src/shared/lib";
 import { HeartBlack } from "@/src/shared/icons";
@@ -16,11 +16,9 @@ import {
   ProductGroup,
   ProductVariation,
 } from "@prisma/client";
-import { useFavorites } from "@/src/shared/hooks";
 import { concentrations } from "@/../../prisma/constants";
 import { useLocale, useTranslations } from "use-intl";
 import { cn } from "../../lib/utils";
-import { is } from "date-fns/locale";
 
 interface Props {
   id: number;
@@ -34,6 +32,8 @@ interface Props {
   concentration?: PerfumeConcentration;
   discountPrice?: number;
   isBestseller?: boolean;
+  isFavorite: boolean;
+  toggleIsFavorite: (id: number) => void;
   className?: string;
 }
 
@@ -49,12 +49,13 @@ export const ProductCard: React.FC<Props> = ({
   variations,
   concentration,
   isBestseller,
+  isFavorite,
+  toggleIsFavorite
 }) => {
   const currentVolumesArray =
     price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
 
   const [volume, setVolume] = useState<Volume>(currentVolumesArray[0]);
-  const [isFavorite, toggleIsFavorite] = useState(false);
   const [activeVariationId, setActiveVariationId] = useState<number>(
     variations[0]?.id
   );
@@ -66,25 +67,17 @@ export const ProductCard: React.FC<Props> = ({
   const onToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    toggleIsFavorite(!isFavorite);
+    toggleIsFavorite(id);
 
-    addFavoritesItem(id);
   };
 
-  const { items, addFavoritesItem } = useFavorites();
 
   const [addCartItem, loading] = useCartStore((state) => [
     state.addCartItem,
     state.loading,
   ]);
 
-  useEffect(() => {
-    if (items.some((item) => item.productId === id)) {
-      toggleIsFavorite(true);
-    } else {
-      toggleIsFavorite(false);
-    }
-  }, [items, id]);
+ 
   const onSubmit = async (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();

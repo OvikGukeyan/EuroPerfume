@@ -1,8 +1,9 @@
 import React, { FC, use } from "react";
 import { ProductsSelectionList, Title } from "..";
-import { ProductDTO } from "../../services/dto/product.dto";
 import { SelectedProductDTO } from "../../lib/get-popular-products";
 import { cn } from "../../lib/utils";
+import {  FavoritesItemDTO } from "../../services/dto/favorites.dto";
+
 
 type Props = {
   title: string;
@@ -15,7 +16,7 @@ export const ProductsSelection: FC<Props> = ({
   getFunction,
 }) => {
   const products = use(getFunction());
-
+  
   return (
     <>
       {products.length > 0 && (
@@ -30,7 +31,7 @@ export const ProductsSelection: FC<Props> = ({
             <div className="h-1 w-12 bg-black"></div>
           </div>
 
-          <ProductsSelectionList products={products} />
+          <ProductsSelectionList products={products}/>
         </div>
       )}
     </>

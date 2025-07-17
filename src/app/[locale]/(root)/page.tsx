@@ -16,6 +16,7 @@ import { getTranslations } from "next-intl/server";
 export default async function Home() {
   const slides = await getSlides();
   const stories = await getStories();
+
   const t = await getTranslations("Home");
   return (
     <div className="bg-gray-50">

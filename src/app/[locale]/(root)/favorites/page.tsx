@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 export default function Favorites() {
-  const { items } = useFavorites();
+  const { items, addFavoritesItem } = useFavorites();
   return (
     <Container>
       {items.length > 0 ? (
@@ -20,6 +20,8 @@ export default function Favorites() {
               imageUrl={item.imageUrl || ''} 
               variations={[]}
               price={item.price}
+              isFavorite={true}
+              toggleIsFavorite={addFavoritesItem}
             />
           ))}
         </div>

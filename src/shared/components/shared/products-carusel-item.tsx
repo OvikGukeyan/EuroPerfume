@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Title } from ".";
 import { Button } from "../ui";
 import { Heart } from "lucide-react";
@@ -12,9 +12,8 @@ import {
   ProductGroup,
   ProductVariation,
 } from "@prisma/client";
-import { useFavorites } from "@/src/shared/hooks";
 import { concentrations } from "@/../../prisma/constants";
-import { useLocale, useTranslations } from "use-intl";
+import { useLocale } from "use-intl";
 import { cn } from "../../lib/utils";
 
 interface Props {
@@ -26,6 +25,9 @@ interface Props {
   variations: ProductVariation[];
   concentration?: PerfumeConcentration;
   discountPrice?: number
+  isBestseller?: boolean
+  isFavorite: boolean
+  toggleIsFavorite: (id: number) => void
   className?: string;
 }
 
@@ -37,29 +39,22 @@ export const ProductCaruselItem: React.FC<Props> = ({
   productGroup,
   variations,
   concentration,
-  discountPrice
+  discountPrice,
+  isBestseller,
+  isFavorite,
+  toggleIsFavorite
 }) => {
-  const [isFavorite, toggleIsFavorite] = useState(false);
 
-  const t = useTranslations("Product");
 
   const onToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    toggleIsFavorite(!isFavorite);
+    toggleIsFavorite(id);
 
-    addFavoritesItem(id);
   };
 
-  const { items, addFavoritesItem } = useFavorites();
 
-  useEffect(() => {
-    if (items.some((item) => item.productId === id)) {
-      toggleIsFavorite(true);
-    } else {
-      toggleIsFavorite(false);
-    }
-  }, [items, id]);
+  
 
   const concentratioName = concentrations.find(
     (item) => item.value === concentration
@@ -67,6 +62,7 @@ export const ProductCaruselItem: React.FC<Props> = ({
 
   const locale = useLocale();
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
+
   return (
     <div className={cn(" w-full md:hover:scale-105 transition-all duration-300 active:scale-95 active:border-2 bg-gray-50", className)}>
       <Link href={`/product/${id}`}>
@@ -88,6 +84,13 @@ export const ProductCaruselItem: React.FC<Props> = ({
             {discountPrice && (
               <p className="absolute top-0 left-3 md:left-5 text-sm text-white bg-red-500 px-2">
                 SALE
+              </p>
+            )}
+          </div>
+          <div>
+            {isBestseller && (
+              <p className="absolute bottom-0 right-3 md:right-5 text-sm text-white bg-black px-2">
+                BESTSELLER
               </p>
             )}
           </div>

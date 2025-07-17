@@ -162,7 +162,7 @@ export default function Checkout() {
         </form>
       </FormProvider>
       <Recommendations
-        className="my-20 py-20 px-2 md:px-10 rounded-3xl bg-white"
+        className="my-20 py-20 px-2 md:px-10 rounded-3xl bg-gray-50"
         searchParams={{ productGroupId: 2 }}
       />
     </div>

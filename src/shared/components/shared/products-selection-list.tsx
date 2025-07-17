@@ -5,6 +5,8 @@ import { Button } from "..";
 import { useTranslations } from "next-intl";
 import { cn } from "../../lib/utils";
 import { SelectedProductDTO } from "../../lib/get-popular-products";
+import { FavoritesDTO, FavoritesItemDTO } from "../../services/dto/favorites.dto";
+import { useFavorites } from "../../hooks";
 
 interface Props {
   className?: string;
@@ -16,6 +18,7 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
   const t = useTranslations("ProductsSelection");
   const productsToShow = isOpen ? products : products.slice(0, 12);
 
+  const { items: favorites, addFavoritesItem } = useFavorites();
   return (
     <div className={cn(className, "w-full flex flex-col items-center  py-10")}>
       <div
@@ -34,6 +37,9 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
             variations={product.variations}
             concentration={product.concentration || undefined}
             discountPrice={product.discountPrice || undefined}
+            isBestseller={!!product.isBestseller}
+            isFavorite={favorites.some((item) => item.productId === product.id)}
+            toggleIsFavorite={addFavoritesItem}
           />
         ))}
       </div>

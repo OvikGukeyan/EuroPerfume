@@ -1,9 +1,9 @@
 "use client";
 import { ProductCard, ProductCardSkeleton, Title } from ".";
 import { cn } from "@/src/shared/lib/utils";
-import { useProducts } from "@/src/shared/hooks";
+import { useFavorites, useProducts } from "@/src/shared/hooks";
 import { useFiltersStore } from "../../store/filters";
-import { useCategoryStore, useProductGroupStore } from "../../store";
+import { useCategoryStore } from "../../store";
 import { useLocale } from "next-intl";
 
 interface Props {
@@ -13,6 +13,7 @@ interface Props {
 export const ProductsGroupList: React.FC<Props> = ({ className }) => {
   const { items: products, loading } = useProducts();
   const [categories] = useCategoryStore((state) => [state.categories]);
+  const { items, addFavoritesItem } = useFavorites();
 
   const productGroups = categories.flatMap(
     (category) => category.productGroups
@@ -74,7 +75,9 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
                 concentration={product.concentration || undefined}
                 productGroup={product.productGroup}
                 discountPrice={product.discountPrice || undefined}
-                isBestseller={!!product.isBestseller }
+                isBestseller={!!product.isBestseller}
+                isFavorite={items.some((item) => item.productId === product.id)}
+                toggleIsFavorite={addFavoritesItem}
               />
             ))}
       </div>
