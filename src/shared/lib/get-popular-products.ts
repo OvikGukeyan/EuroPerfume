@@ -28,14 +28,13 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       },
     });
 
-  
-
     if (existingPopularProducts) {
       const safeProducts = existingPopularProducts.products.map((product) => ({
         ...product,
-        discountPrice: product.discountPrice && product.discountPrice?.toNumber(),
+        discountPrice:
+          product.discountPrice && product.discountPrice?.toNumber(),
         price: product.price.toNumber(),
-      }))
+      }));
       return safeProducts;
     }
 
@@ -55,13 +54,15 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       },
       select: { id: true },
     });
-
-    const data = await prisma.popularProducts.create({
-      data: {
-        date: startOfDay,
-        products: { connect: availableProducts },
-      },
-    });
+    await prisma.$transaction([
+      prisma.popularProducts.deleteMany(),
+      prisma.popularProducts.create({
+        data: {
+          date: startOfDay,
+          products: { connect: availableProducts },
+        },
+      }),
+    ]);
     const newPopularProducts = await prisma.popularProducts.findFirst({
       where: { date: startOfDay },
       include: {
@@ -74,11 +75,21 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       },
     });
 
+    await prisma.$transaction([
+      prisma.product.updateMany({
+        data: { isBestseller: false },
+      }),
+      prisma.product.updateMany({
+        where: { id: { in: popularProductIds } },
+        data: { isBestseller: true },
+      }),
+    ]);
+
     const safeProducts = newPopularProducts?.products.map((product) => ({
       ...product,
       discountPrice: product.discountPrice && product.discountPrice?.toNumber(),
       price: product.price.toNumber(),
-    }))
+    }));
 
     return safeProducts || [];
   } catch (error) {

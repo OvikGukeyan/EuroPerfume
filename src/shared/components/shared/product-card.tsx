@@ -20,6 +20,7 @@ import { useFavorites } from "@/src/shared/hooks";
 import { concentrations } from "@/../../prisma/constants";
 import { useLocale, useTranslations } from "use-intl";
 import { cn } from "../../lib/utils";
+import { is } from "date-fns/locale";
 
 interface Props {
   id: number;
@@ -32,6 +33,7 @@ interface Props {
   variations: ProductVariation[];
   concentration?: PerfumeConcentration;
   discountPrice?: number;
+  isBestseller?: boolean;
   className?: string;
 }
 
@@ -46,6 +48,7 @@ export const ProductCard: React.FC<Props> = ({
   productGroup,
   variations,
   concentration,
+  isBestseller,
 }) => {
   const currentVolumesArray =
     price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
@@ -137,6 +140,13 @@ export const ProductCard: React.FC<Props> = ({
             {discountPrice && (
               <p className="absolute top-0 left-3 md:left-5 text-sm text-white bg-red-500 px-2">
                 SALE
+              </p>
+            )}
+          </div>
+          <div>
+            {isBestseller && (
+              <p className="absolute bottom-0 right-3 md:right-5 text-sm text-white bg-black px-2">
+                BESTSELLER
               </p>
             )}
           </div>

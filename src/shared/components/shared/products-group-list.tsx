@@ -74,6 +74,7 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
                 concentration={product.concentration || undefined}
                 productGroup={product.productGroup}
                 discountPrice={product.discountPrice || undefined}
+                isBestseller={!!product.isBestseller }
               />
             ))}
       </div>
