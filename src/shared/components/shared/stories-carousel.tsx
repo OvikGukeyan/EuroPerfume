@@ -126,7 +126,7 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
                   router.push(`/product/${item.id}`);
                 }}
               >
-                <div className="w-[35px] h-[35px] md:w-[50px] md:h-[50px] rounded-full overflow-hidden shrink-0">
+                <div className="w-[35px] h-[35px] md:w-[50px] md:h-[50px] self-start rounded-full overflow-hidden shrink-0">
                   <Image
                     src={item.imageUrl?.[0] || "/assets/logo-mobile.png"}
                     alt={item.name}

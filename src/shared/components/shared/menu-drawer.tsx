@@ -67,7 +67,7 @@ export const MenuDrawer: FC<Props> = ({ className }) => {
 
             <SocialMediaBar className="mt-5"/>
             
-            <div className="flex justify-end mt-2">
+            <div className="flex justify-end items-center mt-2 min-h-[100px] bg-white sticky -bottom-12 left-0">
               <LanguageSwitcher />
             </div>
           </SheetContent>

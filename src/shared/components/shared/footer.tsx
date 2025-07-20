@@ -19,7 +19,7 @@ export const Footer: FC<Props> = ({ className }) => {
 
   return (
     <div className={cn("flex flex-col p-3 md:p-5 border-t bg-gray-50", className)}>
-      <SocialMediaBar />
+      <SocialMediaBar className="py-10"/>
       <Separator className="my-10" />
 
       <div className="flex flex-col gap-7 md:flex-row items-center justify-between ">

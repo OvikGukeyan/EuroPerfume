@@ -10,7 +10,7 @@ type Props = {
 export const SocialMediaBar: FC<Props> = ({ className }) => {
   const t = useTranslations("SocialMedia");
   return (
-    <div className={cn("flex flex-col items-center  gap-14 py-10 bg-white", className)}>
+    <div className={cn("flex flex-col items-center  gap-14 bg-white", className)}>
       <div className="text-center">
         <p className="text-lg font-semibold">{t("follow")}</p>
       </div>
