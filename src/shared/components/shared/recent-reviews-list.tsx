@@ -4,9 +4,11 @@ import { cn } from '../../lib/utils';
 import { Rating } from './rating';
 import { ProductCaruselItem, Separator } from '..';
 import { useFavorites } from '../../hooks';
+import { Review, User } from '@prisma/client';
+import { SelectedProductDTO } from '../../lib/get-popular-products';
 
 type Props = {
-    reviews: any[];
+    reviews: (Review & {product: SelectedProductDTO, user: User})[];
   className?: string;
 };
 
@@ -28,6 +30,8 @@ export const RecentReviewsList: FC<Props> = ({ className, reviews }) => {
                   variations={review.product.variations}
                   isFavorite={favorites.some((item) => item.productId === review.product.id)}
                   toggleIsFavorite={addFavoritesItem}
+                  discountPrice={review.product.discountPrice || undefined}
+                  isBestseller={!!review.product.isBestseller}
                 />
                 <div>
                   <Rating className="mb-5" value={review.rating} withNumber />

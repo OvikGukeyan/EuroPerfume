@@ -89,7 +89,7 @@ export const ProductCaruselItem: React.FC<Props> = ({
           </div>
           <div>
             {isBestseller && (
-              <p className="absolute bottom-0 right-3 md:right-5 text-sm text-white bg-black px-2">
+              <p className="absolute bottom-0 right-3 md:right-5 text-sm text-white bg-green-500 px-2">
                 BESTSELLER
               </p>
             )}
