@@ -194,6 +194,7 @@ export const findProducts = async (
           applicationMethod: true,
           texture: true,
           formula: true,
+          reviews: true,
         },
       }),
       prisma.product.count({

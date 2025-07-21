@@ -2,23 +2,25 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ChooseVariation, Title, VolumeSelection } from ".";
 import { Button } from "../ui";
 import { Heart, Plus, ShoppingCart } from "lucide-react";
 import toast from "react-hot-toast";
-import { useCartStore, useFavoritesStore } from "@/src/shared/store";
+import { useCartStore } from "@/src/shared/store";
 import { Volume, volumes } from "@/src/shared/constants/perfume";
-import { calcPrice } from "@/src/shared/lib";
+import { calcAverageRating, calcPrice } from "@/src/shared/lib";
 import { HeartBlack } from "@/src/shared/icons";
 import {
   PerfumeConcentration,
   ProductGroup,
   ProductVariation,
+  Review,
 } from "@prisma/client";
 import { concentrations } from "@/../../prisma/constants";
 import { useLocale, useTranslations } from "use-intl";
 import { cn } from "../../lib/utils";
+import { Rating } from "./rating";
 
 interface Props {
   id: number;
@@ -34,6 +36,7 @@ interface Props {
   isBestseller?: boolean;
   isFavorite: boolean;
   toggleIsFavorite: (id: number) => void;
+  reviews?: Review[];
   className?: string;
 }
 
@@ -50,7 +53,8 @@ export const ProductCard: React.FC<Props> = ({
   concentration,
   isBestseller,
   isFavorite,
-  toggleIsFavorite
+  toggleIsFavorite,
+  reviews,
 }) => {
   const currentVolumesArray =
     price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
@@ -64,20 +68,18 @@ export const ProductCard: React.FC<Props> = ({
   );
   const t = useTranslations("Product");
 
+  const { averageRating, count } = calcAverageRating(reviews as Review[]);
   const onToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     toggleIsFavorite(id);
-
   };
-
 
   const [addCartItem, loading] = useCartStore((state) => [
     state.addCartItem,
     state.loading,
   ]);
 
- 
   const onSubmit = async (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
@@ -152,6 +154,7 @@ export const ProductCard: React.FC<Props> = ({
           </p>
         </div>
       </Link>
+  
 
       {categoryId === 1 && productGroup?.id && productGroup.id < 4 && (
         <VolumeSelection
@@ -170,14 +173,21 @@ export const ProductCard: React.FC<Props> = ({
           items={variations}
         />
       )}
-
+    {reviews && reviews.length > 0 && <Rating
+        className="my-5"
+        value={averageRating}
+        withNumber
+        reviewsCount={count}
+      />}
       <div className="flex justify-between items-center ">
         <div className="flex flex-col">
           <p className="text-[20px] ">
             <span className="hidden md:inline">{t("price")}</span>{" "}
             {discountPrice ? (
               <>
-                <span className="line-through text-base mr-2">{finalPrice} €</span>
+                <span className="line-through text-base mr-2">
+                  {finalPrice} €
+                </span>
                 <b className="text-red-500">{finalDiscountPrice} €</b>
               </>
             ) : (

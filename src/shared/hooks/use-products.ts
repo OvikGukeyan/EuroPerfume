@@ -23,28 +23,23 @@ function shallowEqual(
   return true;
 }
 export const useProducts = () => {
-  const pathname = usePathname();
-  const isModal = pathname.startsWith("/product/");
-  
-
   const searchParams = useSearchParams();
   const productsState = useProductStore((state) => state);
   const paramsRef = useRef<Record<string, string> | null>(undefined);
 
   useEffect(() => {
     if (
-      isModal ||
-      (paramsRef.current &&
+      paramsRef.current &&
         shallowEqual(
           paramsRef.current,
           Object.fromEntries(searchParams.entries())
-        ))
+        )
     ) {
       return;
     }
     paramsRef.current = Object.fromEntries(searchParams.entries());
     productsState.fetchAllProducts(searchParams as GetSearchParams);
-  }, [searchParams, isModal, productsState]);
+  }, [searchParams,  productsState]);
 
   return productsState;
 };
