@@ -146,7 +146,14 @@ export const ProductCard: React.FC<Props> = ({
             )}
           </div>
         </div>
-
+        {reviews && (
+          <Rating
+            className="my-5 justify-center"
+            value={averageRating}
+            withNumber
+            reviewsCount={count}
+          />
+        )}
         <div className="h-28">
           <Title text={name} size="xs" className="md:text-lg mt-2 font-bold" />
           <p className="text-sm">
@@ -154,7 +161,6 @@ export const ProductCard: React.FC<Props> = ({
           </p>
         </div>
       </Link>
-  
 
       {categoryId === 1 && productGroup?.id && productGroup.id < 4 && (
         <VolumeSelection
@@ -173,12 +179,7 @@ export const ProductCard: React.FC<Props> = ({
           items={variations}
         />
       )}
-    {reviews && reviews.length > 0 && <Rating
-        className="my-5"
-        value={averageRating}
-        withNumber
-        reviewsCount={count}
-      />}
+
       <div className="flex justify-between items-center ">
         <div className="flex flex-col">
           <p className="text-[20px] ">

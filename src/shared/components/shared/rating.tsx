@@ -22,7 +22,6 @@ export const Rating: FC<Props> = ({
   withNumber,
   reviewsCount,
 }) => {
-  // Кэшируем динамически импортированный компонент, чтобы избежать его пересоздания при каждом ререндере
   const ReactStarsMemo = useMemo(() => ReactStarsDynamic, []);
 
   return (

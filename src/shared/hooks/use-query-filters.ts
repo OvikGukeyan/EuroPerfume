@@ -8,7 +8,7 @@ export const useQueryFilters = (filters: Filters) => {
   const previousQuery = useRef<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
-
+  const isFilterPage = pathname === "/items" || pathname === "/products";
   useEffect(() => {
     const params = {
       ...filters.prices,
@@ -30,7 +30,6 @@ export const useQueryFilters = (filters: Filters) => {
     };
 
     const query = qs.stringify(params, { arrayFormat: "comma" });
-    // Если запрос не изменился — ничего не делаем
     if (isMounted.current && previousQuery.current !== query) {
       previousQuery.current = query;
 
@@ -43,4 +42,10 @@ export const useQueryFilters = (filters: Filters) => {
 
     isMounted.current = true;
   }, [filters, pathname, router]);
+
+  useEffect(() => {
+    if (!isFilterPage) {
+      previousQuery.current = null;
+    }
+  }, [pathname, isFilterPage]);
 };

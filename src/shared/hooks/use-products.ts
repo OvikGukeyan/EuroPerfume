@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { useProductStore } from "../store/product";
 import { GetSearchParams } from "../lib/find-products";
 import { useSearchParams } from "next/navigation";
-import { usePathname } from "@/src/i18n/navigation";
 
 function shallowEqual(
   obj1: Record<string, string>,
@@ -30,16 +29,16 @@ export const useProducts = () => {
   useEffect(() => {
     if (
       paramsRef.current &&
-        shallowEqual(
-          paramsRef.current,
-          Object.fromEntries(searchParams.entries())
-        )
+      shallowEqual(
+        paramsRef.current,
+        Object.fromEntries(searchParams.entries())
+      )
     ) {
       return;
     }
     paramsRef.current = Object.fromEntries(searchParams.entries());
     productsState.fetchAllProducts(searchParams as GetSearchParams);
-  }, [searchParams,  productsState]);
+  }, [searchParams, productsState]);
 
   return productsState;
 };

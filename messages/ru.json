@@ -1,7 +1,8 @@
 {
   "Home": {
     "newProducts": "Новинки на сайте",
-    "popularProducts": "Популярные товары"
+    "popularProducts": "Популярные товары",
+    "discountedProducts": "Скидки"
   },
 
   "Header": {

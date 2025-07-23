@@ -449,7 +449,55 @@ export const CreateProductForm: FC<Props> = ({
                   </FormItem>
                 )}
               />
+              <FormField
+                name="video"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <div className="flex items-center justify-between">
+                      <FormLabel>Video</FormLabel>
+                      {videoError && <Ban />}
+                    </div>
 
+                    <FormControl>
+                      <Input
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          const url = await uploadVideo(file);
+                          if (url) {
+                            field.onChange(url);
+                          }
+                        }}
+                        type="file"
+                        onBlur={field.onBlur}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                name="variations"
+                control={form.control as Control<CreateProductFormValues>}
+                render={({ field }) => (
+                  <FormItem className="mb-5">
+                    <FormLabel>Variations</FormLabel>
+                    <FormControl>
+                      <Input
+                        multiple
+                        onChange={(e) => {
+                          const files = e.target.files
+                            ? Array.from(e.target.files)
+                            : [];
+                          field.onChange(files);
+                        }}
+                        type="file"
+                        onBlur={field.onBlur}
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
               <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
                 <FormField
                   name="descriptionRu"
@@ -522,28 +570,6 @@ export const CreateProductForm: FC<Props> = ({
                 name="releaseYear"
                 control={form.control}
                 items={yers}
-              />
-              <FormField
-                name="variations"
-                control={form.control as Control<CreateProductFormValues>}
-                render={({ field }) => (
-                  <FormItem className="mb-5">
-                    <FormLabel>Variations</FormLabel>
-                    <FormControl>
-                      <Input
-                        multiple
-                        onChange={(e) => {
-                          const files = e.target.files
-                            ? Array.from(e.target.files)
-                            : [];
-                          field.onChange(files);
-                        }}
-                        type="file"
-                        onBlur={field.onBlur}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
               />
             </div>
 
@@ -933,36 +959,6 @@ export const CreateProductForm: FC<Props> = ({
                     error={metaError}
                   />
                 </>
-              )}
-
-              {categoryId !== 2 && (
-                <FormField
-                  name="video"
-                  control={form.control as Control<CreateProductFormValues>}
-                  render={({ field }) => (
-                    <FormItem className="mb-5">
-                      <div className="flex items-center justify-between">
-                        <FormLabel>Video</FormLabel>
-                        {videoError && <Ban/>}
-                      </div>
-
-                      <FormControl>
-                        <Input
-                          onChange={async (e) => {
-                            const file = e.target.files?.[0];
-                            if (!file) return;
-                            const url = await uploadVideo(file);
-                            if (url) {
-                              field.onChange(url);
-                            }
-                          }}
-                          type="file"
-                          onBlur={field.onBlur}
-                        />
-                      </FormControl>
-                    </FormItem>
-                  )}
-                />
               )}
 
               {categoryId === 3 && (

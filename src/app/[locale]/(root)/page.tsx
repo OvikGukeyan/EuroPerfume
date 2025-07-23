@@ -6,6 +6,7 @@ import {
   StoriesCarousel,
 } from "@/src/shared/components/shared";
 import {
+  getDiscountedItems,
   getNewProducts,
   getPopularProducts,
   getSlides,
@@ -26,6 +27,11 @@ export default async function Home() {
         getFunction={getNewProducts}
         title={t("newProducts")}
         className="col-span-2 lg:col-span-4 my-10"
+      />
+      <ProductsSelection
+        getFunction={getDiscountedItems}
+        title={t("discountedProducts")}
+        className=" my-10"
       />
       <StoriesCarousel items={stories} />
       <ProductsSelection

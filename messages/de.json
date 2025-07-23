@@ -1,7 +1,8 @@
 {
   "Home": {
     "newProducts": "Neue Produkte",
-    "popularProducts": "Beliebte Produkte"
+    "popularProducts": "Beliebte Produkte",
+    "discountedProducts": "Rabatte"
   },
 
   "Header": {
