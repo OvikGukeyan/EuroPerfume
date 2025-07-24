@@ -13,6 +13,7 @@ export const getNewProducts = async (): Promise<SelectedProductDTO[]> => {
           include: {
             variations: true,
             productGroup: true,
+            reviews: true,
           },
         });
 

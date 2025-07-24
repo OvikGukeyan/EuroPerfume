@@ -11,10 +11,13 @@ import {
   PerfumeConcentration,
   ProductGroup,
   ProductVariation,
+  Review,
 } from "@prisma/client";
 import { concentrations } from "@/../../prisma/constants";
 import { useLocale } from "use-intl";
 import { cn } from "../../lib/utils";
+import { Rating } from "./rating";
+import { calcAverageRating } from "../../lib";
 
 interface Props {
   id: number;
@@ -24,10 +27,11 @@ interface Props {
   available?: boolean;
   variations: ProductVariation[];
   concentration?: PerfumeConcentration;
-  discountPrice?: number
-  isBestseller?: boolean
-  isFavorite: boolean
-  toggleIsFavorite: (id: number) => void
+  discountPrice?: number;
+  isBestseller?: boolean;
+  isFavorite: boolean;
+  toggleIsFavorite: (id: number) => void;
+  reviews?: Review[];
   className?: string;
 }
 
@@ -42,19 +46,16 @@ export const ProductCaruselItem: React.FC<Props> = ({
   discountPrice,
   isBestseller,
   isFavorite,
-  toggleIsFavorite
+  toggleIsFavorite,
+  reviews,
 }) => {
-
-
   const onToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
     toggleIsFavorite(id);
-
   };
 
-
-  
+  const { averageRating, count } = calcAverageRating(reviews as Review[]);
 
   const concentratioName = concentrations.find(
     (item) => item.value === concentration
@@ -64,7 +65,12 @@ export const ProductCaruselItem: React.FC<Props> = ({
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
 
   return (
-    <div className={cn(" w-full md:hover:scale-105 transition-all duration-300 active:scale-95 active:border-2 bg-gray-50", className)}>
+    <div
+      className={cn(
+        " w-full md:hover:scale-105 transition-all duration-300 active:scale-95 active:border-2 bg-gray-50",
+        className
+      )}
+    >
       <Link href={`/product/${id}`}>
         <div className="w-full max-w-[400px] aspect-[4/5] relative bg-white">
           <Image
@@ -95,10 +101,20 @@ export const ProductCaruselItem: React.FC<Props> = ({
             )}
           </div>
         </div>
+        {reviews && (
+          <Rating
+            className="my-5 justify-center"
+            value={averageRating}
+            withNumber
+            reviewsCount={count}
+          />
+        )}
 
         <div className="h-28">
           <Title text={name} size="xs" className="md:text-lg mt-2 font-bold" />
-          <p className="text-sm">{concentratioName || productGroup?.[labelLocale]}</p>
+          <p className="text-sm">
+            {concentratioName || productGroup?.[labelLocale]}
+          </p>
         </div>
       </Link>
     </div>

@@ -271,5 +271,12 @@
 
   "RecentReviews": {
     "title": "Последние отзывы"
+  },
+
+  "RecentlyViewed": {
+    "title": "Недавно просмотренные"
+  },
+  "YouMayLike": {
+    "title": "Вам может понравиться"
   }
 }

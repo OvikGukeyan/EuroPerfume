@@ -1,8 +1,6 @@
 import React, { FC, use } from "react";
 import { getRecentReviews } from "../../lib";
-import { ProductCaruselItem } from ".";
-import { Rating } from "./rating";
-import { RecentReviewsList, Separator, Title } from "..";
+import { RecentReviewsList, Title } from "..";
 import { useTranslations } from "next-intl";
 import { cn } from "../../lib/utils";
 

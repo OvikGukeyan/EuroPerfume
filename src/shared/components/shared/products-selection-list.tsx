@@ -5,7 +5,6 @@ import { Button } from "..";
 import { useTranslations } from "next-intl";
 import { cn } from "../../lib/utils";
 import { SelectedProductDTO } from "../../lib/get-popular-products";
-import { FavoritesDTO, FavoritesItemDTO } from "../../services/dto/favorites.dto";
 import { useFavorites } from "../../hooks";
 
 interface Props {
@@ -40,6 +39,7 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
             isBestseller={!!product.isBestseller}
             isFavorite={favorites.some((item) => item.productId === product.id)}
             toggleIsFavorite={addFavoritesItem}
+            reviews={product.reviews}
           />
         ))}
       </div>

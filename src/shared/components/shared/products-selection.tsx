@@ -2,7 +2,6 @@ import React, { FC, use } from "react";
 import { ProductsSelectionList, Title } from "..";
 import { SelectedProductDTO } from "../../lib/get-popular-products";
 import { cn } from "../../lib/utils";
-import {  FavoritesItemDTO } from "../../services/dto/favorites.dto";
 
 
 type Props = {

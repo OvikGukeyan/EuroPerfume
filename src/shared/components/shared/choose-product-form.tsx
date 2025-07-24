@@ -13,7 +13,7 @@ import {
   ReviewsComponent,
 } from ".";
 import { Volume, volumes } from "@/src/shared/constants/perfume";
-import { ProductTranslation, ProductVariation } from "@prisma/client";
+import { ProductTranslation } from "@prisma/client";
 import {
   calcAverageRating,
   calcPrice,
@@ -52,7 +52,13 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
     product.categoryId === 1 && product.productGroup.id < 4
       ? calcPrice(volume, product.price)
       : product.price;
-
+  const finalDiscountPrice =
+    product.discountPrice &&
+    product.categoryId === 1 &&
+    product.productGroup?.id &&
+    product.productGroup.id < 4
+      ? calcPrice(volume, product.discountPrice)
+      : product.discountPrice;
   const { averageRating, count } = calcAverageRating(product.reviews);
 
   const locale = useLocale() as "ru" | "de";
@@ -219,7 +225,18 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
           onClick={onSubmit}
           className="h-[55px] px-10 text-base rounded-[18px] w-full mt-6 "
         >
-          {t("addToCartFor")} {finalPrice} €
+          <span className="mr-1">{t("addToCartFor")}</span>
+          
+          {product.discountPrice ? (
+            <>
+              <span className="line-through text-base mr-2">
+                {finalPrice} €
+              </span>
+              <b className="text-red-500">{finalDiscountPrice} €</b>
+            </>
+          ) : (
+            <b>{finalPrice} €</b>
+          )}
         </Button>
       </div>
     </div>

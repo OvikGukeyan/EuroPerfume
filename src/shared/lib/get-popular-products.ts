@@ -1,10 +1,11 @@
 import { prisma } from "@/prisma/prisma-client";
-import { Product, ProductGroup, ProductVariation } from "@prisma/client";
+import { Product, ProductGroup, ProductVariation, Review } from "@prisma/client";
 import { SafeProduct } from "../services/dto/product.dto";
 
 export interface SelectedProductDTO extends SafeProduct {
   variations: ProductVariation[];
   productGroup: ProductGroup;
+  reviews: Review[];
 }
 
 export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
@@ -23,6 +24,7 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
           include: {
             variations: true,
             productGroup: true,
+            reviews: true,
           },
         },
       },
@@ -70,6 +72,7 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
           include: {
             variations: true,
             productGroup: true,
+            reviews: true,
           },
         },
       },
