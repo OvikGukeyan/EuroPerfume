@@ -71,7 +71,7 @@ export const ProductCaruselItem: React.FC<Props> = ({
         className
       )}
     >
-      <Link href={`/product/${id}`}>
+      <a href={`/product/${id}`}>
         <div className="w-full max-w-[400px] aspect-[4/5] relative bg-white">
           <Image
             src={imageUrl || variations?.[0]?.imageUrl || ""}
@@ -116,7 +116,7 @@ export const ProductCaruselItem: React.FC<Props> = ({
             {concentratioName || productGroup?.[labelLocale]}
           </p>
         </div>
-      </Link>
+      </a>
     </div>
   );
 };
