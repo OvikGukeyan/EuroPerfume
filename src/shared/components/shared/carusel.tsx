@@ -24,7 +24,7 @@ export const Carusel: FC<Props> = ({ slides }) => {
       <CarouselContent>
         {slides.map((slide, index) => (
           <CarouselItem key={index} className="w-full">
-            <Link href={slide.href}>
+            <a href={slide.href}>
               <div className="relative w-full aspect-[3.6/4] md:aspect-[10/3.5]">
                 <picture className="w-full h-full">
                   <source media="(max-width: 767px)" srcSet={slide.mobileImg} />
@@ -41,7 +41,7 @@ export const Carusel: FC<Props> = ({ slides }) => {
                   />
                 </picture>
               </div>
-            </Link>
+            </a>
           </CarouselItem>
         ))}
       </CarouselContent>

@@ -26,6 +26,7 @@ export const useProducts = () => {
   const productsState = useProductStore((state) => state);
   const paramsRef = useRef<Record<string, string> | null>(undefined);
 
+
   useEffect(() => {
     if (
       paramsRef.current &&
@@ -36,9 +37,12 @@ export const useProducts = () => {
     ) {
       return;
     }
+
     paramsRef.current = Object.fromEntries(searchParams.entries());
     productsState.fetchAllProducts(searchParams as GetSearchParams);
   }, [searchParams, productsState]);
+
+
 
   return productsState;
 };

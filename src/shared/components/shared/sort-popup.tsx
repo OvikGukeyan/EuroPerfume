@@ -5,6 +5,7 @@ import React, { FC } from "react";
 import { Select } from "..";
 import { SelectContent, SelectItem, SelectTrigger } from "../ui/select";
 import { useFiltersStore } from "@/src/shared/store/filters";
+import { useLocale } from "next-intl";
 
 interface Props {
   className?: string;
@@ -17,22 +18,36 @@ export const SortPopup: FC<Props> = ({ className }) => {
   const [currentValue, setCurrentValue] = React.useState("nameAsc");
   const sortItems = [
     {
-      name: "Name: a - z",
+      name: {
+        de: "Name: a - z",
+        ru: "Имя: a - я",
+      },
       value: "nameAsc",
     },
     {
-      name: "Name: z - a",
+      name: {
+        de: "Name: z - a",
+        ru: "Имя: я - a",
+      },
       value: "nameDesc",
     },
     {
-      name: "Price: low to high",
+      name: {
+        de: "Price: low to high",
+        ru: "Цена: низкая - высокая",
+      },
       value: "priceAsc",
     },
     {
-      name: "Price: high to low",
+      name: {
+        de: "Price: high to low",
+        ru: "Цена: высокая - низкая",
+      },
       value: "priceDesc",
     },
   ];
+
+  const locale = useLocale() as "ru" | "de";
   const onChange = (value: string) => {
 
     setOrderBy(value)
@@ -44,13 +59,13 @@ export const SortPopup: FC<Props> = ({ className }) => {
         <SelectTrigger className="inline-flex items-center gap-1 bg-gray-50 px-3 h-[48px] rounded-md cursor-pointer">
           <ArrowUpDown size={16} />
           <b className="text-primary">
-            {sortItems.find((item) => item.value === currentValue)?.name}
+            {sortItems.find((item) => item.value === currentValue)?.name[locale]}
           </b>
         </SelectTrigger>
         <SelectContent>
           {sortItems.map((item) => (
             <SelectItem key={item.value} value={item.value}>
-              {item.name}
+              {item.name[locale]}
             </SelectItem>
           ))}
         </SelectContent>

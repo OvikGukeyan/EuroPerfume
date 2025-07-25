@@ -50,23 +50,23 @@ export const MenuDrawer: FC<Props> = ({ className }) => {
                 />
               ))}
             </div>
-            <Separator className="mb-5" />
+            <Separator />
             <div className="flex flex-col gap-3">
               {links.map((link) => (
                 <Link
                   onClick={() => setOpen(false)}
                   href={link.href}
                   key={link.href}
-                  className="text-lg font-semibold text-slate-500"
+                  className="text-sm font-semibold text-slate-500"
                 >
                   {link.label[locale]}
                 </Link>
               ))}
             </div>
-            <Separator className="my-5" />
+            <Separator className="my-2" />
 
-            <SocialMediaBar className="mt-5"/>
-            
+            <SocialMediaBar className="mt-2" />
+
             <div className="flex justify-end items-center mt-2 min-h-[100px] bg-white sticky -bottom-12 left-0">
               <LanguageSwitcher />
             </div>

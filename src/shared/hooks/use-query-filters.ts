@@ -32,10 +32,11 @@ export const useQueryFilters = (filters: Filters) => {
     const query = qs.stringify(params, { arrayFormat: "comma" });
     if (isMounted.current && previousQuery.current !== query) {
       previousQuery.current = query;
-
       if (pathname === `/items` || pathname === `/products`) {
+
         window.history.pushState(null, "", `${pathname}?${query}`);
       } else if (query) {
+
         router.push(`/items?${query}`);
       }
     }
