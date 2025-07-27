@@ -33,9 +33,8 @@ export const useQueryFilters = (filters: Filters) => {
     if (isMounted.current && previousQuery.current !== query) {
       previousQuery.current = query;
       if (pathname === `/items` || pathname === `/products`) {
-
         window.history.pushState(null, "", `${pathname}?${query}`);
-      } else if (query) {
+      } else if (query.length > 0) {
 
         router.push(`/items?${query}`);
       }

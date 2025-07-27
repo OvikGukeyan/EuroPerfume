@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/src/shared/lib/utils";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { Button, Separator } from "../ui";
 import {
   Title,
@@ -26,6 +26,8 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCartStore } from "../../store";
 import toast from "react-hot-toast";
 import { ProductDTO } from "../../services/dto/product.dto";
+import { se } from "date-fns/locale";
+import { set } from "date-fns";
 
 export type MediaItem = { type: "image" | "video"; url: string; id?: number };
 
@@ -37,6 +39,8 @@ interface Props {
   className?: string;
 }
 export const ChooseProductForm: FC<Props> = ({ product, className }) => {
+  const reviewsRef = useRef<HTMLDivElement>(null);
+  const [activeTab, setActiveTab] = useState("description");
   const [activeVariationId, setActiveVariationId] = useState<number>(
     product.variations[0]?.id
   );
@@ -114,6 +118,24 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
       ? [{ type: "video" as const, url: product.videoUrl }]
       : []),
   ];
+
+  const handleRatingClick = () => {
+    setTimeout(() => {
+      const reviewsEl = document.getElementById("reviews");
+      const isVisible = reviewsEl && reviewsEl.offsetParent !== null;
+      if (!isVisible) {
+        setActiveTab("comments");
+      }
+      const targetOffset = isVisible
+        ? reviewsEl.offsetTop
+        : reviewsRef.current?.offsetTop || 0;
+
+      window.scrollTo({
+        top: targetOffset,
+        behavior: "smooth",
+      });
+    }, 200);
+  };
   return (
     <div
       className={cn(
@@ -159,7 +181,13 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
             style={{ scrollbarWidth: "none" }}
             className={cn("overflow-scroll  overflow-x-hidden")}
           >
-            <Tabs defaultValue="characteristics" className="w-full">
+            <Tabs
+              value={activeTab}
+              onValueChange={setActiveTab}
+              defaultValue="characteristics"
+              className="w-full"
+              ref={reviewsRef}
+            >
               <TabsList className="grid w-full grid-cols-3 md:grid-cols-2 h-16">
                 <TabsTrigger className="h-10" value="characteristics">
                   {t("characteristics")}
@@ -198,15 +226,14 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
           </div>
 
           <Separator />
-
-          <a href={`/product/${product.id}`}>
+          <div onClick={handleRatingClick}>
             <Rating
               className="my-5"
               value={averageRating}
               withNumber
               reviewsCount={count}
             />
-          </a>
+          </div>
 
           {product.categoryId === 1 && product.productGroupId < 4 && (
             <VolumeSelection
@@ -226,7 +253,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
           className="h-[55px] px-10 text-base rounded-[18px] w-full mt-6 "
         >
           <span className="mr-1">{t("addToCartFor")}</span>
-          
+
           {product.discountPrice ? (
             <>
               <span className="line-through text-base mr-2">

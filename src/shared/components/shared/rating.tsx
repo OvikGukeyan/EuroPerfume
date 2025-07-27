@@ -25,7 +25,7 @@ export const Rating: FC<Props> = ({
   const ReactStarsMemo = useMemo(() => ReactStarsDynamic, []);
 
   return (
-    <div className={cn("flex gap-2", className)}>
+    <div  className={cn("flex gap-2", className)}>
       <ReactStarsMemo
         count={5}
         value={value}

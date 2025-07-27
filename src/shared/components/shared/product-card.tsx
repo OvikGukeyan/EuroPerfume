@@ -21,6 +21,7 @@ import { concentrations } from "@/../../prisma/constants";
 import { useLocale, useTranslations } from "use-intl";
 import { cn } from "../../lib/utils";
 import { Rating } from "./rating";
+import { useRouter } from "next/navigation";
 
 interface Props {
   id: number;
@@ -56,6 +57,7 @@ export const ProductCard: React.FC<Props> = ({
   toggleIsFavorite,
   reviews,
 }) => {
+  const router = useRouter();
   const currentVolumesArray =
     price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
 
@@ -113,7 +115,7 @@ export const ProductCard: React.FC<Props> = ({
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
 
   const image = imageUrl || activeVariation?.imageUrl || "";
-
+ 
   return (
     <div
       className={cn(
@@ -146,14 +148,19 @@ export const ProductCard: React.FC<Props> = ({
             )}
           </div>
         </div>
-        {reviews && (
+      </Link>
+
+      {reviews && (
+        <Link href={`/product-reviews/${id}`}>
           <Rating
             className="my-5 justify-center"
             value={averageRating}
             withNumber
             reviewsCount={count}
           />
-        )}
+        </Link>
+      )}
+      <Link href={`/product/${id}`}>
         <div className="h-28">
           <Title text={name} size="xs" className="md:text-lg mt-2 font-bold" />
           <p className="text-sm">

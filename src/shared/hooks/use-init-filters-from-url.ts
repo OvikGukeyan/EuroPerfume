@@ -47,7 +47,7 @@ export const useInitFiltersFromUrl = () => {
       productGroup: Number(searchParams.get("productGroup")) || null,
     };
 
-    // Обновляем глобальное состояние фильтров
     useFiltersStore.getState().setFilters(newFilters);
+    console.log('newFilters', newFilters);
   }, []);
 };

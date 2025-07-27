@@ -101,15 +101,18 @@ export const ProductCaruselItem: React.FC<Props> = ({
             )}
           </div>
         </div>
-        {reviews && (
+      </a>
+      {reviews && (
+        <Link href={`/product-reviews/${id}`}>
           <Rating
             className="my-5 justify-center"
             value={averageRating}
             withNumber
             reviewsCount={count}
           />
-        )}
-
+        </Link>
+      )}
+      <a href={`/product/${id}`}>
         <div className="h-28">
           <Title text={name} size="xs" className="md:text-lg mt-2 font-bold" />
           <p className="text-sm">

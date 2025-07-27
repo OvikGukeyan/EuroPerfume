@@ -13,7 +13,7 @@ type Props = {
 export const ReviewsComponent: FC<Props> = ({ product, className }) => {
   const t = useTranslations('Reviews');
   return (
-    <div className={cn("px-4 md:px-0", className)}>
+    <div id="reviews" className={cn("px-4 md:px-0", className)}>
       {product.reviews.length > 0 ? (
         <>
           <Title text={t("title")} size="lg" className="font-extrabold my-10" />

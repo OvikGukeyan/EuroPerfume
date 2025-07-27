@@ -995,9 +995,9 @@ export async function createReview(formData: FormData) {
     const data: any = {
       text,
       rating,
-      user: {
+      user:  { 
         connect: {
-          id: Number(user.id),
+          id: Number(user?.id),
         },
       },
     };
