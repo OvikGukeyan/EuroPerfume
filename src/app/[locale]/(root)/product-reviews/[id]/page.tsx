@@ -16,48 +16,48 @@ export default async function Reviews({
 }) {
   const productId = Number((await params).id);
 
-  const reviews = await prisma.review.findMany({
+  const product = await prisma.product.findFirst({
     where: {
-      productId,
+      id: productId,
     },
     include: {
-      user: true,
-      product: {
+      variations: true,
+      reviews: {
         include: {
-          variations: true,
+          user: true,
         },
       },
     },
   });
 
   const t = await getTranslations("Reviews");
+
+  if (!product) return null;
   return (
     <Container>
       <Link href={`/product/${productId}`}>
         <div className="flex gap-10">
           <Image
             src={
-              reviews[0].product?.imageUrl[0] ||
-              reviews[0].product?.variations[0].imageUrl ||
-              ""
+              product?.variations?.[0]?.imageUrl || product?.imageUrl?.[0] || ""
             }
-            alt={reviews[0].product?.name || ""}
+            alt={product?.name || ""}
             width={100}
             height={100}
           />
 
           <Title
-            text={reviews[0].product?.name || ""}
+            text={product?.name || ""}
             size="lg"
             className="font-extrabold my-10"
           />
         </div>
       </Link>
 
-      {reviews.length > 0 ? (
+      {product.reviews.length > 0 ? (
         <>
           <Title text={t("title")} size="lg" className="font-extrabold my-10" />
-          <ReviewsList reviews={reviews} className="mb-10" />
+          <ReviewsList reviews={product.reviews} className="mb-10" />
         </>
       ) : (
         <Title
@@ -66,7 +66,7 @@ export default async function Reviews({
           className="font-extrabold my-10"
         />
       )}
-      <ReviewForm />
+      <ReviewForm productId={product.id} />
     </Container>
   );
 }
