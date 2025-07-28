@@ -261,7 +261,8 @@
   "ReviewForm": {
     "title": "Schreiben Sie eine Bewertung",
     "commentPlaceholder": "Ihre Bewertung",
-    "submitButton": "Absenden"
+    "submitButton": "Absenden",
+    "success": "Vielen Dank für Ihre Bewertung!"
   },
 
   "ProductsSelection": {

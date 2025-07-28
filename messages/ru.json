@@ -261,7 +261,8 @@
   "ReviewForm": {
     "title": "Напишите отзыв",
     "commentPlaceholder": "Ваш отзыв",
-    "submitButton": "Отправить"
+    "submitButton": "Отправить",
+    "success": "Спасибо за отзыв!"
   },
 
   "ProductsSelection": {

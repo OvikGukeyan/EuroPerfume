@@ -32,6 +32,7 @@ import { CartItemDTO } from "../shared/services/dto/cart.dto";
 import { getUserSession } from "../shared/lib/get-user-session";
 import { supabase } from "../lib/supabase";
 import { MetaValues } from "../shared/store";
+import { NextResponse } from "next/server";
 
 export async function createOrder(data: CheckoutFormValues) {
   try {
@@ -980,13 +981,13 @@ export async function toggleProductAvailability(
   }
 }
 
-export async function createReview(formData: FormData) {
+export async function createReview(prevState: any, formData: FormData) {
   try {
     const user = await getUserSession();
 
-    if (!user) {
-      throw new Error("User not found");
-    }
+    // if (!user) {
+    //   throw new Error("User not found");
+    // }
 
     const text = formData.get("comment") as string;
     const rating = Number(formData.get("rating"));
@@ -997,7 +998,7 @@ export async function createReview(formData: FormData) {
       rating,
       user:  { 
         connect: {
-          id: Number(user?.id),
+          id: Number(user?.id) || 5,
         },
       },
     };
@@ -1011,6 +1012,7 @@ export async function createReview(formData: FormData) {
     }
 
     await prisma.review.create({ data });
+    return { success: true, message: "Review submitted successfully" };
   } catch (error) {
     console.error("Error [CREATE_REVIEW]", error);
     throw error;
