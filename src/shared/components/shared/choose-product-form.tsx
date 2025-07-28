@@ -40,7 +40,7 @@ interface Props {
 }
 export const ChooseProductForm: FC<Props> = ({ product, className }) => {
   const reviewsRef = useRef<HTMLDivElement>(null);
-  const [activeTab, setActiveTab] = useState("description");
+  const [activeTab, setActiveTab] = useState("characteristics");
   const [activeVariationId, setActiveVariationId] = useState<number>(
     product.variations[0]?.id
   );
