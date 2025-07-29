@@ -121,8 +121,7 @@ export const CheckoutSidebar: FC<Props> = ({
         loading={loading || itemLoading}
         type="submit"
         disabled={!totalAmount}
-        className="w-full h-14 rounded-2xl mt-6 text-base font-bold"
-        variant="tertiary"
+        className="w-full h-14 rounded-2xl mt-6 text-base font-bold bg-green-500"
       >
         {t("submitButton")}
         <ArrowRight className="w-5 ml-2" />

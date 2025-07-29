@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React, { FC, useActionState } from "react";
 import { RatingSelect, SubmitButtonBar, Title } from ".";
 import { Textarea } from "..";
@@ -13,17 +13,17 @@ import { createReview } from "@/src/app/actions";
 import { cn } from "@/src/lib/utils";
 import { useTranslations } from "next-intl";
 
-
 type Props = {
   className?: string;
   productId?: number;
 };
-const initialState = { success: false, message: "" };
-export const ReviewForm: FC<Props> =  ({ className, productId }) => {
- const t = useTranslations("ReviewForm");
-const [state, formAction, isPending] = useActionState(createReview, initialState);
+export const ReviewForm: FC<Props> = ({ className, productId }) => {
+  const t = useTranslations("ReviewForm");
+  
+  const [state, formAction] = useActionState(createReview, { success: false });
+
   return (
-     <Card className={cn("p-2 md:p-5", className)}>
+    <Card className={cn("p-2 md:p-5", className)}>
       {state.success && <p className="text-green-600">{t("success")}</p>}
       <CardHeader>
         <CardTitle>
@@ -36,11 +36,15 @@ const [state, formAction, isPending] = useActionState(createReview, initialState
           <RatingSelect />
         </CardContent>
         <CardContent className="w-full">
-          <Textarea name="comment" placeholder={t("commentPlaceholder")} required />
+          <Textarea
+            name="comment"
+            placeholder={t("commentPlaceholder")}
+            required
+          />
         </CardContent>
 
         <CardFooter>
-          <SubmitButtonBar  />
+          <SubmitButtonBar />
         </CardFooter>
       </form>
     </Card>

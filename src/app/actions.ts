@@ -1012,7 +1012,7 @@ export async function createReview(prevState: any, formData: FormData) {
     }
 
     await prisma.review.create({ data });
-    return { success: true, message: "Review submitted successfully" };
+    return { success: true };
   } catch (error) {
     console.error("Error [CREATE_REVIEW]", error);
     throw error;
