@@ -48,7 +48,6 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
         <Button
           onClick={() => setIsOpen(!isOpen)}
           className="w-full sm:w-[200px] mt-10"
-          variant="outline"
         >
           {isOpen ? t("showLess") : t("showAll")}
         </Button>
