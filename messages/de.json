@@ -83,6 +83,10 @@
       "submitButton": "Bestellung abschicken",
       "promocode": "Promokode",
       "discount": "Rabatt"
+    },
+    "AdressInput": {
+      "City": "Bitte Stadt eingeben",
+      "Address": "Bitte Adresse eingeben"
     }
   },
 

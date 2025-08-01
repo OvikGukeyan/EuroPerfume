@@ -83,6 +83,10 @@
       "submitButton": "Подтвердить заказ",
       "promocode": "Промокод",
       "discount": "Скидка"
+    },
+    "AddressInput": {
+      "City": "Введите город",
+      "Address": "Введите адрес"
     }
   },
 

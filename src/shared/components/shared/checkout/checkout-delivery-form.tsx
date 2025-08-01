@@ -2,7 +2,7 @@
 
 import React, { FC } from "react";
 import {
-  AdressInput,
+  AddressInput,
   ErrorText,
   FormInput,
   FormTextarea,
@@ -103,7 +103,7 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
                 placeholder={t("personal.lastName")}
               />
 
-              <AdressInput className="md:col-span-2" name="deliveryAddress" />
+              <AddressInput className="md:col-span-2" name="deliveryAddress" />
               <FormInput
                 name="deliveryZip"
                 className="text-base"
@@ -136,7 +136,7 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
                     <>
                       <Autocomplete
                         apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-                        placeholder="Enter city or postal code"
+                        placeholder={t("AddressInput.City")}
                         options={{
                           types: ["(regions)"],
                           componentRestrictions: { country: "de" },
@@ -184,7 +184,7 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
                     <>
                       <Autocomplete
                         apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
-                        placeholder="Enter city or postal code"
+                        placeholder={t("AddressInput.City")}
                         options={{
                           types: ["(regions)"],
                           componentRestrictions: { country: "de" },

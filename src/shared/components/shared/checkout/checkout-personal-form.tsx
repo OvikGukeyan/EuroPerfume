@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import {
-  AdressInput,
-  ErrorText,
+  AddressInput,
   FormInput,
   RadioInput,
   Title,
@@ -48,7 +47,7 @@ export const CheckoutPersonalForm: FC<Props> = ({ className, totalAmount }) => {
           className="text-base"
           placeholder={t("phone")}
         />
-        <AdressInput className="md:col-span-2" name="address" />
+        <AddressInput className="md:col-span-2" name="address" />
         <FormInput
           name="zip"
           className="text-base"
