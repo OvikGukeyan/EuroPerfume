@@ -1,4 +1,6 @@
+import { OrderStatuses } from "@/prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
+import { getTranslations } from "next-intl/server";
 
 export default async function Order({
   params,
@@ -19,6 +21,7 @@ export default async function Order({
       user: true,
     },
   });
+  const t = await getTranslations("Checkout");
   return (
    <div className="my-4 px-7">
   <ul className="md:columns-2">
@@ -43,7 +46,7 @@ export default async function Order({
       Тип доставки: <span className="font-bold mr-2 w-1/2">{order?.deliveryType}</span>
     </li>
     <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-      Статус заказа: <span className="font-bold mr-2 w-1/2">{order?.status}</span>
+      Статус заказа: <span className="font-bold mr-2 w-1/2">{OrderStatuses[order?.status as keyof typeof OrderStatuses]}</span>
     </li>
     <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
       Телефон: <span className="font-bold mr-2 w-1/2">{order?.phone}</span>
@@ -67,7 +70,7 @@ export default async function Order({
       Имя получателя: <span className="font-bold mr-2 w-1/2">{order?.deliveryFullNmae}</span>
     </li>
     <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-      Способ доставки: <span className="font-bold mr-2 w-1/2">{order?.shippingMethod}</span>
+      Способ доставки: <span className="font-bold mr-2 w-1/2">{t(`delivery.${order?.shippingMethod}`)}</span>
     </li>
     <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
       Индекс доставки: <span className="font-bold mr-2 w-1/2">{order?.deliveryZip}</span>
@@ -88,7 +91,7 @@ export default async function Order({
       Почтовый номер: <span className="font-bold mr-2 w-1/2">{order?.postNumber}</span>
     </li>
     <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-      Дата оформления: <span className="font-bold mr-2 w-1/2">{order?.createdAt.toDateString()}</span>
+      Дата оформления: <span className="font-bold mr-2 w-1/2">{order?.createdAt.toISOString()}</span>
     </li>
   </ul>
 </div>

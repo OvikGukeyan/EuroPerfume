@@ -47,25 +47,11 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
           className="w-full"
         >
           <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto md:h-16 px-2 md:px-4">
-            <TabsTrigger
-              className="h-10 text-wrap"
-              value={ShippingMethods.BILLING_ADDRESS}
-            >
-              {t("delivery.billingAddress")}
+           {Object.values(ShippingMethods).map((method) => (
+            <TabsTrigger key={method} value={method} className="h-full">
+              {t(`delivery.${method}`)}
             </TabsTrigger>
-            <TabsTrigger
-              className="h-10 text-wrap"
-              value={ShippingMethods.DIFFERENT_ADDRESS}
-            >
-              {t("delivery.differentAddress")}
-            </TabsTrigger>
-
-            <TabsTrigger className="h-10 text-wrap" value={ShippingMethods.PACKSTATION}>
-              {t("delivery.packstation")}
-            </TabsTrigger>
-            <TabsTrigger className="h-10 text-wrap" value={ShippingMethods.POST_OFFICE}>
-              {t("delivery.postOffice")}
-            </TabsTrigger>
+           ))}
           </TabsList>
           <TabsContent value={ShippingMethods.BILLING_ADDRESS}>
             <Title
