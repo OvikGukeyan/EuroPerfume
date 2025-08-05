@@ -9,6 +9,7 @@ export const checkoutFormSchema = z
     phone: z.string().min(10, { message: "Invalid phone number" }),
     address: z.string().min(5, { message: "Invalid address" }),
     city: z.string().min(2, { message: "Invalid city" }),
+    country: z.string().min(2, { message: "Invalid country" }),
     zip: z.string().min(5, { message: "Invalid zip code" }),
 
     // Опциональные поля (валидируются вручную)
@@ -16,6 +17,7 @@ export const checkoutFormSchema = z
     deliveryLastName: z.string().optional(),
     deliveryAddress: z.string().optional(),
     deliveryCity: z.string().optional(),
+    deliveryCountry: z.string().optional(),
     deliveryZip: z.string().optional(),
     postNumber: z.string().optional(),
     postOffice: z.string().optional(),
@@ -47,6 +49,9 @@ export const checkoutFormSchema = z
       if (!data.deliveryCity?.trim()) {
         ctx.addIssue({ code: "custom", message: "City is required", path: ["deliveryCity"] });
       }
+      if (!data.deliveryCountry?.trim()) {
+        ctx.addIssue({ code: "custom", message: "Country is required", path: ["deliveryCountry"] });
+      }
     }
 
     if (shippingMethod === ShippingMethods.PACKSTATION) {
@@ -62,6 +67,9 @@ export const checkoutFormSchema = z
       if (!data.deliveryCity?.trim()) {
         ctx.addIssue({ code: "custom", message: "City is required", path: ["deliveryCity"] });
       }
+       if (!data.deliveryCountry?.trim()) {
+        ctx.addIssue({ code: "custom", message: "Country is required", path: ["deliveryCountry"] });
+      }
     }
 
     if (shippingMethod === ShippingMethods.POST_OFFICE) {
@@ -73,6 +81,9 @@ export const checkoutFormSchema = z
       }
       if (!data.deliveryCity?.trim()) {
         ctx.addIssue({ code: "custom", message: "City is required", path: ["deliveryCity"] });
+      }
+       if (!data.deliveryCountry?.trim()) {
+        ctx.addIssue({ code: "custom", message: "Country is required", path: ["deliveryCountry"] });
       }
     }
   });

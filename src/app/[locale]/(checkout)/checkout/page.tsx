@@ -45,6 +45,8 @@ export default function Checkout() {
       phone: "",
       address: "",
       deliveryAddress: "",
+      country: "Deutschland",
+      deliveryCountry: "Deutschland",
       city: "",
       deliveryCity: "",
       zip: "",

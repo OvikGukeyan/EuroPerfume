@@ -9,7 +9,7 @@ import {
 import { cn } from "@/src/shared/lib/utils";
 import { contactForms } from "@/../../prisma/constants";
 import { useTranslations } from "next-intl";
-import { Controller, useFormContext } from "react-hook-form";
+import {  useFormContext } from "react-hook-form";
 interface Props {
   totalAmount: number;
   className?: string;
@@ -48,11 +48,7 @@ export const CheckoutPersonalForm: FC<Props> = ({ className, totalAmount }) => {
           placeholder={t("phone")}
         />
         <AddressInput className="md:col-span-2" name="address" />
-        <FormInput
-          name="zip"
-          className="text-base"
-          placeholder={t("zip")}
-        />
+        
         <div>
           <Title text={t("contactForm")} size="xs" className="mb-3" />
           <RadioInput name="contactForm" items={contactForms} />

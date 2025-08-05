@@ -85,6 +85,8 @@
       "discount": "Rabatt"
     },
     "AdressInput": {
+      "zip": "PLZ",
+      "Country": "Bitte Land eingeben",
       "City": "Bitte Stadt eingeben",
       "Address": "Bitte Adresse eingeben"
     }

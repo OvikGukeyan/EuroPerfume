@@ -26,8 +26,6 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCartStore } from "../../store";
 import toast from "react-hot-toast";
 import { ProductDTO } from "../../services/dto/product.dto";
-import { se } from "date-fns/locale";
-import { set } from "date-fns";
 
 export type MediaItem = { type: "image" | "video"; url: string; id?: number };
 
@@ -136,6 +134,11 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
       });
     }, 200);
   };
+
+  const description = product.translations.find(
+    (t) => t.language.toLocaleLowerCase() === locale.toLocaleLowerCase()
+  )?.description || '';
+
   return (
     <div
       className={cn(
@@ -209,13 +212,16 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
               </TabsContent>
               <TabsContent className="w-full min-h-[200px]" value="description">
                 <Text size="md" className="my-4">
-                  {
-                    product.translations.find(
-                      (t) =>
-                        t.language.toLocaleLowerCase() ===
-                        locale.toLocaleLowerCase()
-                    )?.description
-                  }
+                  {description
+                    .split(/\n\s*\n/)
+                    .map((paragraph, idx) => (
+                      <p
+                        key={idx}
+                        className="mb-4 leading-relaxed text-gray-800"
+                      >
+                        {paragraph.trim()}
+                      </p>
+                    ))}
                 </Text>
               </TabsContent>
 

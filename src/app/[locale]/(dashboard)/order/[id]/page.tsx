@@ -57,6 +57,9 @@ export default async function Order({
     <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
       Почтовый индекс: <span className="font-bold mr-2 w-1/2">{order?.zip}</span>
     </li>
+     <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
+      Страна: <span className="font-bold mr-2 w-1/2">{order?.country}</span>
+    </li>
     <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
       Город: <span className="font-bold mr-2 w-1/2">{order?.city}</span>
     </li>
@@ -74,6 +77,9 @@ export default async function Order({
     </li>
     <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
       Индекс доставки: <span className="font-bold mr-2 w-1/2">{order?.deliveryZip}</span>
+    </li>
+     <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
+      Страна доставки: <span className="font-bold mr-2 w-1/2">{order?.deliveryCountry}</span>
     </li>
     <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
       Город доставки: <span className="font-bold mr-2 w-1/2">{order?.deliveryCity}</span>
