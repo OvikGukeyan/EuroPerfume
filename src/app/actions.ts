@@ -1147,11 +1147,13 @@ export async function createPromocode(formData: CreatePromocodeValues) {
     const code = formData.code;
     const discount = formData.discount;
     const expirationDate = formData.expirationDate;
+    const disposable = formData.disposable;
     await prisma.promoCode.create({
       data: {
         code: code,
         discount: discount,
         expiresAt: new Date(expirationDate),
+        disposable
       },
     });
   } catch (error) {

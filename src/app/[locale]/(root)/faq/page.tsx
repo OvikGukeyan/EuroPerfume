@@ -6,7 +6,7 @@ export default function Faq() {
   const t = useTranslations('Faq');
 
   return (
-    <div className="flex flex-col items-start justify-center max-w-3xl mx-auto my-10 md:mt-40 px-4">
+    <div className="flex flex-col  items-start justify-center max-w-4xl mx-auto my-10 md:mt-40 px-4">
       <h1 className="text-3xl font-bold mb-8">{t('title')}</h1>
 
       {[0, 1, 2, 3].map((i) => (

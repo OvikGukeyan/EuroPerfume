@@ -18,6 +18,14 @@ export async function POST(req: Request) {
     return NextResponse.json({ valid: false }, { status: 404 });
   }
 
+  if(promo.disposable) {
+    await prisma.promoCode.delete({
+      where: {
+        id: promo.id
+      }
+    })
+  }
+
   return NextResponse.json({
     valid: true,
     discount: promo.discount,

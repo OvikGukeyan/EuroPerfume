@@ -84,7 +84,7 @@
       "promocode": "Promokode",
       "discount": "Rabatt"
     },
-    "AdressInput": {
+    "AddressInput": {
       "zip": "PLZ",
       "Country": "Bitte Land eingeben",
       "City": "Bitte Stadt eingeben",

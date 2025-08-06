@@ -48,6 +48,5 @@ export const useInitFiltersFromUrl = () => {
     };
 
     useFiltersStore.getState().setFilters(newFilters);
-    console.log('newFilters', newFilters);
   }, []);
 };

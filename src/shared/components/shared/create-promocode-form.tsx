@@ -6,13 +6,14 @@ import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import { CreatePromocodeValues, CreatePromocodeSchema } from "../../constants";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormInput } from ".";
-import { Button, Popover } from "..";
+import { Button, Checkbox, Popover } from "..";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 import { ChevronDownIcon } from "lucide-react";
 import { Calendar } from "../ui/calendar";
 import { se } from "date-fns/locale";
 import { createPromocode } from "@/src/app/actions";
 import toast from "react-hot-toast";
+import { Label } from "../ui/label";
 
 type Props = {
   className?: string;
@@ -26,6 +27,7 @@ export const CreatePromocodeForm: FC<Props> = ({ className }) => {
       code: "",
       discount: undefined,
       expirationDate: undefined,
+      disposable: false,
     },
   });
 
@@ -34,13 +36,15 @@ export const CreatePromocodeForm: FC<Props> = ({ className }) => {
       setLoading(true);
       await createPromocode(data);
       form.reset();
+      toast.success("Промокод успешно создан", { icon: "✅" });
     } catch (error) {
-      console.log("Error [CREATE_PROMOCODE]", error);
+      console.error("Error [CREATE_PROMOCODE]", error);
       toast.error("Something went wrong", { icon: "❌" });
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
+  
   return (
     <div className={cn("w-[400px]", className)}>
       <Form {...form}>
@@ -111,9 +115,30 @@ export const CreatePromocodeForm: FC<Props> = ({ className }) => {
                       selected={field.value}
                       onSelect={field.onChange}
                       captionLayout="dropdown"
+                      startMonth={new Date()}
+                      endMonth={new Date(2030, 11, 31)}
                     />
                   </PopoverContent>
                 </Popover>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            name="disposable"
+            control={form.control as Control<CreatePromocodeValues>}
+            render={({ field }) => (
+              <FormItem className="mb-5">
+                <FormControl>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox
+                      id="toggle-2"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                    <Label htmlFor="toggle">Одноразовый</Label>
+                  </div>
+                </FormControl>
               </FormItem>
             )}
           />

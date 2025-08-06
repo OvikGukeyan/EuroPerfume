@@ -6,7 +6,7 @@ export default function ReturnAndExchange() {
   const t = useTranslations("Return");
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 text-gray-800">
+    <div className="max-w-4xl mx-auto px-4 py-8 text-gray-800">
       <h1 className="text-3xl font-semibold mb-6">{t("title")}</h1>
 
       <p className="mb-4">{t("greeting")}</p>
