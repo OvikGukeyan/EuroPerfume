@@ -13,7 +13,7 @@ import { useClickAway, useDebounce } from "react-use";
 interface Props {
   className?: string;
 }
-const russianToGermanLayout = (input: string) => {
+export const russianToGermanLayout = (input: string) => {
   const layoutMap: { [key: string]: string } = {
     а: "a",
     б: "b",
@@ -87,7 +87,7 @@ const russianToGermanLayout = (input: string) => {
     .map((char) => layoutMap[char] || char)
     .join("");
 };
-const ruToDeLayoutQWERTZ = (input: string) => {
+export const ruToDeLayoutQWERTZ = (input: string) => {
   const map: { [key: string]: string } = {
     й: "q",
     ц: "w",
@@ -204,7 +204,6 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
   );
   return (
     <>
-      {/* {focused && <div className="fixed top-0 left-0 bottom-0 right-0 bg-black/50 z-30" />} */}
       <div
         ref={ref}
         className={cn(
