@@ -1,5 +1,5 @@
 "use client";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { cn } from "@/src/lib/utils";
 import {
   Table,
@@ -12,7 +12,7 @@ import {
 } from "../ui/table";
 import { OrderStatus } from "@prisma/client";
 import { Button, Select } from "../ui";
-import { Trash2 } from "lucide-react";
+import { Search, Trash2 } from "lucide-react";
 import {
   SelectContent,
   SelectItem,
@@ -28,10 +28,27 @@ type Props = {
 };
 
 export const OrdersTable: FC<Props> = ({ className }) => {
+  const [searchQuery, setSearchQuery] = useState("");
   const { items, removeOrder, changeOrderStatus, loading } = useOrders();
   const router = useRouter();
   return (
     <div className={cn("", className)}>
+      <div
+      
+        className={cn(
+          "flex rounded-2xl flex-1 justify-between relative h-12 z-30",
+          className
+        )}
+      >
+        <Search className="absolute top-1/2 translate-y-[-50%] left-3 h-5 text-gray-400" />
+        <input
+          className="rounded-md outline-none w-full bg-gray-100 pl-11"
+          type="text"
+         
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
       <Table>
         <TableCaption>A list of your recent orders.</TableCaption>
         <TableHeader>
@@ -46,7 +63,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {items.map((order) => (
+          {items.filter((order) => order.id.toString().includes(searchQuery)).map((order) => (
             <TableRow
               onClick={() => router.push(`/order/${order.id}`)}
               key={order.id}
@@ -73,7 +90,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                     changeOrderStatus(order.id, value as OrderStatus);
                   }}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger onClick={(e) => e.stopPropagation()}>
                     <SelectValue placeholder={order.status} />
                   </SelectTrigger>
                   <SelectContent>
