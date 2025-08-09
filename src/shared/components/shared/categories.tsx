@@ -41,7 +41,9 @@ export const Categories: FC<Props> = ({ items, className }) => {
             <Separator />
 
             <div
-              className="grid grid-flow-col auto-rows-auto gap-x-10 gap-y-5 mt-5"
+              className={`grid gap-4 mt-5 ${
+                productGroups.length > 4 ? "grid-cols-2" : "grid-cols-1"
+              }`}
               style={{ gridTemplateRows: "repeat(5, auto)" }}
             >
               <div className="relative cursor-pointer group font-semibold w-fit">
@@ -56,24 +58,23 @@ export const Categories: FC<Props> = ({ items, className }) => {
                 </p>
                 <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
               </div>
-
-              {productGroups.map((group) => (
-                <div
-                  className="relative cursor-pointer group font-semibold w-fit"
-                  key={group.id}
-                >
-                  <p
-                    onClick={() => {
-                      setProductGroup(group.id);
-                      setCategory(group.categoryId);
-                    }}
-                    className="text-xl font-bold tracking-wider cursor-pointer"
+                {productGroups.map((group) => (
+                  <div
+                    className="relative cursor-pointer group font-semibold w-fit"
+                    key={group.id}
                   >
-                    {locale === "ru" ? group.labelRu : group.labelDe}
-                  </p>
-                  <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
-                </div>
-              ))}
+                    <p
+                      onClick={() => {
+                        setProductGroup(group.id);
+                        setCategory(group.categoryId);
+                      }}
+                      className="text-xl font-bold tracking-wider cursor-pointer"
+                    >
+                      {locale === "ru" ? group.labelRu : group.labelDe}
+                    </p>
+                    <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+                  </div>
+                ))}
             </div>
           </HoverCardContent>
         </HoverCard>

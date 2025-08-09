@@ -107,7 +107,7 @@ export async function createOrder(data: CheckoutFormValues) {
         contactForm: data.contactForm,
         promocode: data.promocode,
         discount: data.discount,
-        status: OrderStatus.PENDING,
+        status: OrderStatus.NEW,
         items: {
           create: userCart.items.map((item) => ({
             name: item.product.name,

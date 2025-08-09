@@ -408,6 +408,7 @@ model Slide {
 }
 
 enum OrderStatus {
+  NEW
   PENDING
   SUCCEEDED
   CENCELLED

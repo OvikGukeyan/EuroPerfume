@@ -68,6 +68,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
               onClick={() => router.push(`/order/${order.id}`)}
               key={order.id}
               className={
+                (order.status === OrderStatus.NEW && "bg-blue-300") ||
                 (order.status === OrderStatus.PENDING && "bg-yellow-100") ||
                 (order.status === OrderStatus.CENCELLED && "bg-red-100") ||
                 (order.status === OrderStatus.SUCCEEDED && "bg-green-100") ||
