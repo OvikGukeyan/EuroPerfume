@@ -1,10 +1,15 @@
 import React, { FC } from "react";
 import { cn } from "@/src/lib/utils";
 import { ReviewComponent } from ".";
-import { Product, Review, User } from "@prisma/client";
+import { Product, ProductVariation, Review, User } from "@prisma/client";
+import { ProductDTO } from "../../services/dto/product.dto";
 
+
+type ProductWithVariations = Product & {
+  variations: ProductVariation[]
+}
 type Props = {
-  reviews:  (Review & { user: User; product?: Product })[];
+  reviews:  (Review & { user: User; product?: ProductWithVariations })[];
   className?: string;
  
 };
@@ -27,7 +32,7 @@ export const ReviewsList: FC<Props> = ({ className, reviews }) => {
           createdAt={review.createdAt}
           productId={review.productId || undefined}
           productName={ review?.product && review?.product.name }
-          imageUrl={review?.product && review?.product.imageUrl[0] || undefined}
+          imageUrl={review?.product && review?.product.imageUrl[0] || review?.product?.variations[0].imageUrl || undefined}
         />
       ))}
     </div>

@@ -14,6 +14,7 @@ export default async function Reviews() {
       product: {
         include: {
           variations: true,
+          
         },
       },
     },

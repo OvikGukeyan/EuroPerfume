@@ -31,7 +31,7 @@ export const ReviewComponent: FC<Props> = ({
 }) => {
   return (
     <div className={cn("", className)}>
-      {productId && productName && imageUrl && (
+      {(productId && productName && imageUrl) && (
         <Link href={`/product/${productId}`}>
           <div className="flex gap-10 mb-2">
             <Image src={imageUrl} alt={productName} width={100} height={50} />
