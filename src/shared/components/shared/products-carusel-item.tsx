@@ -71,7 +71,7 @@ export const ProductCaruselItem: React.FC<Props> = ({
         className
       )}
     >
-      <a href={`/product/${id}`}>
+      <Link href={`/product/${id}`}>
         <div className="w-full max-w-[400px] aspect-[4/5] relative bg-white">
           <Image
             src={imageUrl || variations?.[0]?.imageUrl || ""}
@@ -101,7 +101,7 @@ export const ProductCaruselItem: React.FC<Props> = ({
             )}
           </div>
         </div>
-      </a>
+      </Link>
       {reviews && (
         <Link href={`/product-reviews/${id}`}>
           <Rating
@@ -112,14 +112,14 @@ export const ProductCaruselItem: React.FC<Props> = ({
           />
         </Link>
       )}
-      <a href={`/product/${id}`}>
+      <Link href={`/product/${id}`}>
         <div className="h-28">
           <Title text={name} size="xs" className="md:text-lg mt-2 font-bold" />
           <p className="text-sm">
             {concentratioName || productGroup?.[labelLocale]}
           </p>
         </div>
-      </a>
+      </Link>
     </div>
   );
 };

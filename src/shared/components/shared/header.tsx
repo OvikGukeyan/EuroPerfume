@@ -37,7 +37,6 @@ export const Header: React.FC<Props> = ({
   const router = useRouter();
   useInitFiltersFromUrl();
   const filters = useFiltersStore();
-  useQueryFilters(filters);
   useEffect(() => {
     const paid = searchParams.has("paid");
     const failed = searchParams.has("faild");

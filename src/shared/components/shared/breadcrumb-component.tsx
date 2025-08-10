@@ -28,19 +28,19 @@ export const BreadcrumbComponent: FC<Props> = ({ className, productName, product
         <BreadcrumbList>
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <a className="text-xl" href={"/"}>Home</a>
+              <Link className="text-xl" href={"/"}>Home</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <a className="text-xl" href={`/items/?category=${productCategory?.id}`}>{productCategory?.labelDe}</a>
+              <Link className="text-xl" href={`/items/?category=${productCategory?.id}`}>{productCategory?.labelDe}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />
           <BreadcrumbItem>
             <BreadcrumbLink asChild>
-              <a className="text-xl" href={`/items/?productGroup=${productGroup?.id}`}>{productGroup?.labelDe}</a>
+              <Link className="text-xl" href={`/items/?productGroup=${productGroup?.id}`}>{productGroup?.labelDe}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator />

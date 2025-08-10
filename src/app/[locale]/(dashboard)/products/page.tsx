@@ -55,13 +55,9 @@ export default function Products() {
     250,
     [searchQuery]
   );
-  console.log(products);
   const { items, deleteProduct, loading, switchAvailability } = useProducts();
 
   const { categories } = useCategories();
-
-  const filters = useFiltersStore();
-  useQueryFilters(filters);
 
   const list = products.length > 0 ? products : items;
   return (

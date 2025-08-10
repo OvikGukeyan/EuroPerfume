@@ -11,7 +11,12 @@ type Props = {
 };
 
 export const ReviewsComponent: FC<Props> = ({ product, className }) => {
-  const t = useTranslations('Reviews');
+  const t = useTranslations("Reviews");
+  // const { reviews, ...rest } = product;
+  // const reviewsWithProduct = product.reviews.map((review) => ({
+  //   ...review,
+  //   product: rest,
+  // }));
   return (
     <div id="reviews" className={cn("px-4 md:px-0", className)}>
       {product.reviews.length > 0 ? (

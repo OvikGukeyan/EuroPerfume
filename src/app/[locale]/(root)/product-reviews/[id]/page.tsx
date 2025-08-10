@@ -57,7 +57,10 @@ export default async function Reviews({
       {product.reviews.length > 0 ? (
         <>
           <Title text={t("title")} size="lg" className="font-extrabold my-10" />
-          <ReviewsList reviews={product.reviews} className="mb-10" />
+          <ReviewsList
+            reviews={product.reviews}
+            className="mb-10"
+          />
         </>
       ) : (
         <Title

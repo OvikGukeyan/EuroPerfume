@@ -12,6 +12,7 @@ import {
   HoverCardTrigger,
 } from "../ui/hover-card";
 import { Separator } from "..";
+import { useQueryFilters } from "../../hooks";
 
 interface Props {
   className?: string;
@@ -19,10 +20,10 @@ interface Props {
 }
 
 export const Categories: FC<Props> = ({ items, className }) => {
-  const [setCategory, setProductGroup] = useFiltersStore((state) => [
-    state.setCategory,
-    state.setProductGroup,
-  ]);
+  const filters = useFiltersStore();
+
+  useQueryFilters(filters);
+
   const locale = useLocale() as "ru" | "de";
   return (
     <div className={cn(className, " gap-10")}>
@@ -30,8 +31,8 @@ export const Categories: FC<Props> = ({ items, className }) => {
         <HoverCard key={id} openDelay={100} closeDelay={100}>
           <HoverCardTrigger
             onClick={() => {
-              setCategory(id);
-              setProductGroup(null);
+              filters.setCategory(id);
+              filters.setProductGroup(null);
             }}
             className="cursor-pointer text-xl font-bold tracking-narrow md:tracking-wider"
           >
@@ -50,31 +51,31 @@ export const Categories: FC<Props> = ({ items, className }) => {
                 <p
                   className="text-xl font-bold tracking-wider cursor-pointer"
                   onClick={() => {
-                    setProductGroup(null);
-                    setCategory(id);
+                    filters.setProductGroup(null);
+                    filters.setCategory(id);
                   }}
                 >
                   {locale === "ru" ? <p>Все</p> : <p>Ales</p>}
                 </p>
                 <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
               </div>
-                {productGroups.map((group) => (
-                  <div
-                    className="relative cursor-pointer group font-semibold w-fit"
-                    key={group.id}
+              {productGroups.map((group) => (
+                <div
+                  className="relative cursor-pointer group font-semibold w-fit"
+                  key={group.id}
+                >
+                  <p
+                    onClick={() => {
+                      filters.setProductGroup(group.id);
+                      filters.setCategory(group.categoryId);
+                    }}
+                    className="text-xl font-bold tracking-wider cursor-pointer"
                   >
-                    <p
-                      onClick={() => {
-                        setProductGroup(group.id);
-                        setCategory(group.categoryId);
-                      }}
-                      className="text-xl font-bold tracking-wider cursor-pointer"
-                    >
-                      {locale === "ru" ? group.labelRu : group.labelDe}
-                    </p>
-                    <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
-                  </div>
-                ))}
+                    {locale === "ru" ? group.labelRu : group.labelDe}
+                  </p>
+                  <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
+                </div>
+              ))}
             </div>
           </HoverCardContent>
         </HoverCard>

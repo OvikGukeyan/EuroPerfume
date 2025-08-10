@@ -30,18 +30,21 @@ export const useQueryFilters = (filters: Filters) => {
     };
 
     const query = qs.stringify(params, { arrayFormat: "comma" });
+    
     if (isMounted.current && previousQuery.current !== query) {
       previousQuery.current = query;
-      if (pathname === `/items` || pathname === `/products`) {
-        window.history.pushState(null, "", `${pathname}?${query}`);
-      } else if (query.length > 0) {
+      if (isFilterPage) {
+        // window.history.pushState(null, "", `${pathname}?${query}`);
+        router.push(`${pathname}?${query}`);
 
+      } else if (query.length > 0) {
         router.push(`/items?${query}`);
       }
+
     }
 
     isMounted.current = true;
-  }, [filters, pathname, router]);
+  }, [filters, pathname, router, isFilterPage]);
 
   useEffect(() => {
     if (!isFilterPage) {
