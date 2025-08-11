@@ -1,7 +1,7 @@
 "use client";
 import React, { FC, useActionState } from "react";
 import { RatingSelect, SubmitButtonBar, Title } from ".";
-import { Textarea } from "..";
+import { Input, Textarea } from "..";
 import {
   Card,
   CardContent,
@@ -19,7 +19,7 @@ type Props = {
 };
 export const ReviewForm: FC<Props> = ({ className, productId }) => {
   const t = useTranslations("ReviewForm");
-  
+
   const [state, formAction] = useActionState(createReview, { success: false });
 
   return (
@@ -41,6 +41,10 @@ export const ReviewForm: FC<Props> = ({ className, productId }) => {
             placeholder={t("commentPlaceholder")}
             required
           />
+        </CardContent>
+
+        <CardContent className="w-full">
+          <Input name="images" multiple type="file" accept="image/*" />
         </CardContent>
 
         <CardFooter>

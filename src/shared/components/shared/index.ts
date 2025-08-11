@@ -78,6 +78,7 @@ export {StoriesCarousel} from './stories-carousel';
 export {CreatePromocodeForm} from './create-promocode-form';
 export {CreateSlideForm} from './create-slide-form';
 export {RecentReviewsList} from './recent-reviews-list';
+export {DialogCarousel} from './dialog-carousel';
 
 export * from './email-templates';
 export * from './form';

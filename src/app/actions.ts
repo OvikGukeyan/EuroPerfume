@@ -996,11 +996,27 @@ export async function createReview(prevState: any, formData: FormData) {
     const text = formData.get("comment") as string;
     const rating = Number(formData.get("rating"));
     const productId = formData.get("productId");
+    const images = formData.getAll("images") as File[];
+
+    const imageUploads = await Promise.all(
+      images.map(async (file, index) => {
+        const fileName = `${index}-${file.name}--${new Date().toISOString()}`;
+        const { data, error } = await supabase.storage
+          .from("review-images")
+          .upload(fileName, file, {
+            contentType: file.type,
+            upsert: true,
+          });
+        if (error) throw error;
+        return process.env.NEXT_PUBLIC_SUPABASE_URL + "images/" + data?.path;
+      })
+    );
 
     const data: any = {
       text,
       rating,
-      user:  { 
+      imageUrl: imageUploads,
+      user: {
         connect: {
           id: Number(user?.id) || 5,
         },
@@ -1153,7 +1169,7 @@ export async function createPromocode(formData: CreatePromocodeValues) {
         code: code,
         discount: discount,
         expiresAt: new Date(expirationDate),
-        disposable
+        disposable,
       },
     });
   } catch (error) {

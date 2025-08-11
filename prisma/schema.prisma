@@ -315,6 +315,7 @@ model Review {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   text      String
   rating    Int
+  imageUrl  String[]
   replye    Reply?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

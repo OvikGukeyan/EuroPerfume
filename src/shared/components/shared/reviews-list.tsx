@@ -27,12 +27,13 @@ export const ReviewsList: FC<Props> = ({ className, reviews }) => {
         <ReviewComponent
           key={review.id}
           text={review.text}
+          images={review.imageUrl}
           userName={review.user.fullName}
           rating={review.rating}
           createdAt={review.createdAt}
           productId={review.productId || undefined}
           productName={ review?.product && review?.product.name }
-          imageUrl={review?.product && review?.product.imageUrl[0] || review?.product?.variations[0].imageUrl || undefined}
+          productImage={review?.product && review?.product.imageUrl[0] || review?.product?.variations[0].imageUrl || undefined}
         />
       ))}
     </div>
