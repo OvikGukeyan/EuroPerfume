@@ -3,7 +3,7 @@ import React, { FC } from "react";
 import { Title } from ".";
 import { Button } from "..";
 import { Trash2 } from "lucide-react";
-import { Slide } from "@prisma/client";
+import { Slide, SlideImage } from "@prisma/client";
 import Image from "next/image";
 import { deleteSlide } from "@/src/app/actions";
 import { cn } from "@/src/lib/utils";
@@ -12,7 +12,7 @@ import { useSortable } from "@dnd-kit/sortable";
 
 type Props = {
   className?: string;
-  slide: Slide;
+  slide: Slide & {images: SlideImage[]};
 };
 
 export const DeshboardSlide: FC<Props> = ({ className, slide }) => {
@@ -27,6 +27,7 @@ export const DeshboardSlide: FC<Props> = ({ className, slide }) => {
   const onClickDelete = async () => {
     deleteSlide(slide.id);
   };
+  console.log(slide.images);
   return (
     <div
       ref={setNodeRef}
@@ -38,7 +39,7 @@ export const DeshboardSlide: FC<Props> = ({ className, slide }) => {
         className
       )}
     >
-      <Image width={300} height={300} src={slide.desctopImg} alt={slide.name} />
+      <Image width={300} height={300} src={slide.images[0].desctopImg} alt={slide.name} />
 
       <Title text={slide.name} size="lg" className="font-bold" />
 

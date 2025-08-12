@@ -2,7 +2,11 @@ import { prisma } from "@/prisma/prisma-client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-    const slides = await prisma.slide.findMany();
+    const slides = await prisma.slide.findMany({
+        include: {
+            images: true
+        }
+    });
     return NextResponse.json(slides);
 }
 

@@ -32,7 +32,6 @@ import { CartItemDTO } from "../shared/services/dto/cart.dto";
 import { getUserSession } from "../shared/lib/get-user-session";
 import { supabase } from "../lib/supabase";
 import { MetaValues } from "../shared/store";
-import { NextResponse } from "next/server";
 
 export async function createOrder(data: CheckoutFormValues) {
   try {
@@ -1023,7 +1022,7 @@ export async function createReview(prevState: any, formData: FormData) {
     const data: any = {
       text,
       rating,
-      imageUrl: uploadResults ,
+      imageUrl: uploadResults,
       user: {
         connect: {
           id: Number(user?.id) || 5,
@@ -1053,9 +1052,32 @@ export async function deleteReview(id: number) {
     if (!user || user.role !== UserRole.ADMIN) {
       throw new Error("Access denied");
     }
-    await prisma.review.delete({
+
+    const review = await prisma.review.findUnique({
       where: { id },
     });
+
+    if (!review) {
+      throw new Error("Review not found");
+    }
+
+    if (review.imageUrl.length > 0) {
+      const getRelativePath = (url: string) =>
+        url.split("/storage/v1/object/public/review-images/")[1];
+
+      const relativePaths = review?.imageUrl.map(getRelativePath);
+      const removalResults = await supabase.storage
+        .from("images")
+        .remove(relativePaths);
+
+      if (removalResults.error) {
+        throw new Error(removalResults.error.message);
+      }
+
+      await prisma.review.delete({
+        where: { id },
+      });
+    }
   } catch (error) {
     console.error("Error [DELETE_REVIEW]", error);
     throw error;
@@ -1118,14 +1140,21 @@ export async function createSlide(formData: FormData) {
     const name = formData.get("name") as string;
     const link = formData.get("link") as string;
     const location = formData.get("location") as string;
-    const desctopImg = formData.get("desctopImg") as File;
-    const mobileImg = formData.get("mobileImg") as File;
-    const images: File[] = [desctopImg, mobileImg];
+    const desctopImgRu = formData.get("desctopImgRu") as File;
+    const mobileImgRu = formData.get("mobileImgRu") as File;
+    const desctopImgDe = formData.get("desctopImgDe") as File;
+    const mobileImgDe = formData.get("mobileImgDe") as File;
+    const images: File[] = [
+      desctopImgRu,
+      mobileImgRu,
+      desctopImgDe,
+      mobileImgDe,
+    ];
 
     const uploadPromises = images.map((image, index) => {
       const fileName = `image--${new Date().toISOString()}` + index;
       return supabase.storage
-        .from("images")
+        .from("slides")
         .upload(fileName, image, { contentType: image.type });
     });
 
@@ -1145,8 +1174,20 @@ export async function createSlide(formData: FormData) {
       data: {
         name: name,
         href: link,
-        desctopImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}images/${uploadResults[0].data?.path}`,
-        mobileImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}images/${uploadResults[1].data?.path}`,
+        images: {
+          create: [
+            {
+              language: Languages.RU,
+              desctopImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}slides/${uploadResults[0].data?.path}`,
+              mobileImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}slides/${uploadResults[1].data?.path}`,
+            },
+            {
+              language: Languages.DE,
+              desctopImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}slides/${uploadResults[2].data?.path}`,
+              mobileImg: `${process.env.NEXT_PUBLIC_SUPABASE_URL}slides/${uploadResults[3].data?.path}`,
+            },
+          ],
+        },
         location: Number(location),
       },
     });
@@ -1167,6 +1208,9 @@ export async function deleteSlide(id: number) {
 
     const slide = await prisma.slide.findUnique({
       where: { id },
+      include: {
+        images: true,
+      },
     });
 
     if (!slide) {
@@ -1174,13 +1218,15 @@ export async function deleteSlide(id: number) {
     }
 
     const getRelativePath = (url: string) =>
-      url.split("/storage/v1/object/public/images/")[1];
+      url.split("/storage/v1/object/public/slides/")[1];
 
     const removalResults = await supabase.storage
-      .from("images")
+      .from("slides")
       .remove([
-        getRelativePath(slide.desctopImg),
-        getRelativePath(slide.mobileImg),
+        getRelativePath(slide.images[0].desctopImg),
+        getRelativePath(slide.images[0].mobileImg),
+        getRelativePath(slide.images[1].desctopImg),
+        getRelativePath(slide.images[1].mobileImg),
       ]);
 
     if (removalResults.error) {

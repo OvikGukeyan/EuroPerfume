@@ -12,6 +12,7 @@ import {
   getSlides,
   getStories,
 } from "@/src/shared/lib";
+import { Slide, SlideImage } from "@prisma/client";
 import { getTranslations } from "next-intl/server";
 
 export default async function Home() {
@@ -21,7 +22,7 @@ export default async function Home() {
   const t = await getTranslations("Home");
   return (
     <div className="bg-gray-50">
-      <Carusel slides={slides.filter((s) => s.location === 1)} />
+      <Carusel slides={slides.filter((s) => s.location === 1) as (Slide & { images: SlideImage[] })[]}/>
       <TopBar />
       <ProductsSelection
         getFunction={getNewProducts}
@@ -39,7 +40,7 @@ export default async function Home() {
         title={t("popularProducts")}
         className=" my-10"
       />
-      <Carusel slides={slides.filter((s) => s.location === 2)} />
+      <Carusel slides={slides.filter((s) => s.location === 2) as (Slide & { images: SlideImage[] })[]} />
 
       <RecentReviews />
     </div>

@@ -12,13 +12,13 @@ import {
   arrayMove,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { Slide } from "@prisma/client";
+import { Slide, SlideImage } from "@prisma/client";
 import React, { FC, useState } from "react";
 import { DeshboardSlide } from ".";
 import { reorderSlides } from "../../services/slides";
 
 type Props = {
-  slides: Slide[];
+  slides: (Slide & { images: SlideImage[] })[];
   className?: string;
 };
 export const DragAndDrop: FC<Props> = ({ slides, className }) => {

@@ -316,7 +316,7 @@ model Review {
   text      String
   rating    Int
   imageUrl  String[]
-  reply    Reply?
+  reply     Reply?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -399,13 +399,22 @@ model VerificationCode {
 }
 
 model Slide {
-  id         Int    @id @default(autoincrement())
-  name       String
+  id       Int          @id @default(autoincrement())
+  name     String
+  images   SlideImage[]
+  href     String
+  location Int
+  order    Int          @default(0)
+}
+
+model SlideImage {
+  id         Int       @id @default(autoincrement())
+  language   Languages
   desctopImg String
   mobileImg  String
-  href       String
-  location   Int
-  order      Int    @default(0)
+
+  slideId Int
+  Slide   Slide @relation(fields: [slideId], references: [id], onDelete: Cascade)
 }
 
 enum OrderStatus {
