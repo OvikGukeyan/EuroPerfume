@@ -1,15 +1,17 @@
 import React, { FC } from "react";
 import { cn } from "@/src/lib/utils";
 import { ReviewComponent } from ".";
-import { Product, ProductVariation, Review, User } from "@prisma/client";
+import { Product, ProductVariation, Reply, Review, User } from "@prisma/client";
 import { ProductDTO } from "../../services/dto/product.dto";
 
 
 type ProductWithVariations = Product & {
   variations: ProductVariation[]
 }
+
+export type reviewExtended = Review & { user: User; reply?: Reply; product?: ProductWithVariations }
 type Props = {
-  reviews:  (Review & { user: User; product?: ProductWithVariations })[];
+  reviews:  reviewExtended[];
   className?: string;
  
 };
@@ -26,9 +28,11 @@ export const ReviewsList: FC<Props> = ({ className, reviews }) => {
       {reviews.map((review) => (
         <ReviewComponent
           key={review.id}
+          id={review.id}
           text={review.text}
           images={review.imageUrl}
           userName={review.user.fullName}
+          reply={review.reply}
           rating={review.rating}
           createdAt={review.createdAt}
           productId={review.productId || undefined}

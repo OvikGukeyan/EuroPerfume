@@ -316,7 +316,7 @@ model Review {
   text      String
   rating    Int
   imageUrl  String[]
-  replye    Reply?
+  reply    Reply?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

@@ -996,26 +996,34 @@ export async function createReview(prevState: any, formData: FormData) {
     const text = formData.get("comment") as string;
     const rating = Number(formData.get("rating"));
     const productId = formData.get("productId");
-    const images = formData.getAll("images") as File[];
-
-    const imageUploads = await Promise.all(
-      images.map(async (file, index) => {
-        const fileName = `${index}-${file.name}--${new Date().toISOString()}`;
-        const { data, error } = await supabase.storage
-          .from("review-images")
-          .upload(fileName, file, {
-            contentType: file.type,
-            upsert: true,
-          });
-        if (error) throw error;
-        return process.env.NEXT_PUBLIC_SUPABASE_URL + "images/" + data?.path;
-      })
+    const images = formData.getAll("images");
+    const files: File[] = images.filter(
+      (v): v is File =>
+        v instanceof File && v.size > 0 && v.type.startsWith("image/")
     );
+    let uploadResults: string[] | undefined;
+
+    if (files.length > 0) {
+      const imageUploads = await Promise.all(
+        files.map(async (file, index) => {
+          const fileName = `${index}-${file.name}--${new Date().toISOString()}`;
+          const { data, error } = await supabase.storage
+            .from("review-images")
+            .upload(fileName, file, {
+              contentType: file.type,
+              upsert: true,
+            });
+          if (error) throw error;
+          return process.env.NEXT_PUBLIC_SUPABASE_URL + "images/" + data?.path;
+        })
+      );
+      uploadResults = imageUploads;
+    }
 
     const data: any = {
       text,
       rating,
-      imageUrl: imageUploads,
+      imageUrl: uploadResults ,
       user: {
         connect: {
           id: Number(user?.id) || 5,
@@ -1035,6 +1043,46 @@ export async function createReview(prevState: any, formData: FormData) {
     return { success: true };
   } catch (error) {
     console.error("Error [CREATE_REVIEW]", error);
+    throw error;
+  }
+}
+
+export async function deleteReview(id: number) {
+  try {
+    const user = await getUserSession();
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
+    await prisma.review.delete({
+      where: { id },
+    });
+  } catch (error) {
+    console.error("Error [DELETE_REVIEW]", error);
+    throw error;
+  }
+}
+
+export async function createReply(formData: FormData) {
+  try {
+    const user = await getUserSession();
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
+    const text = formData.get("reply") as string;
+    const reviewId = formData.get("reviewId");
+
+    await prisma.reply.create({
+      data: {
+        text,
+        review: {
+          connect: {
+            id: Number(reviewId),
+          },
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error [CREATE_REPLY]", error);
     throw error;
   }
 }
