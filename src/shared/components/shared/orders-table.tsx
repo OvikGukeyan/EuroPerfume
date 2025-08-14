@@ -27,6 +27,8 @@ type Props = {
   className?: string;
 };
 
+
+
 export const OrdersTable: FC<Props> = ({ className }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { items, removeOrder, changeOrderStatus, loading } = useOrders();
@@ -53,13 +55,13 @@ export const OrdersTable: FC<Props> = ({ className }) => {
         <TableCaption>A list of your recent orders.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Items</TableHead>
-            <TableHead>Total Amount</TableHead>
-            <TableHead>Customer name</TableHead>
-            <TableHead>phone</TableHead>
-            <TableHead>contact form</TableHead>
-            <TableHead>delivery type</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>Товары</TableHead>
+            <TableHead>Сумма</TableHead>
+            <TableHead>Имя</TableHead>
+            <TableHead>Телефон</TableHead>
+            <TableHead>Способ связи</TableHead>
+            <TableHead>Тип доставки</TableHead>
+            <TableHead>Статус</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

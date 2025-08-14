@@ -1,6 +1,6 @@
 {
   "Home": {
-    "newProducts": "Neue Produkte",
+    "newProducts": "Neue auf der Website",
     "popularProducts": "Beliebte Produkte",
     "discountedProducts": "Rabatte"
   },
@@ -273,7 +273,7 @@
 
   "ProductsSelection": {
     "showAll": "Alle anzeigen",
-    "showLess": "Weniger anzeigen"
+    "showLess": "Zurück"
   },
 
   "RecentReviews": {
