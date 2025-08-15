@@ -3,7 +3,6 @@
 import { cn } from "@/src/shared/lib/utils";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import {
   AuthModal,
   CartButton,
@@ -16,9 +15,9 @@ import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { Heart, Truck } from "lucide-react";
 import { Button, Separator } from "../ui";
-import { useInitFiltersFromUrl, useQueryFilters } from "@/src/shared/hooks";
+import { useInitFiltersFromUrl } from "@/src/shared/hooks";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/src/i18n/navigation";
+import { Link, useRouter } from "@/src/i18n/navigation";
 import { useFiltersStore } from "../../store/filters";
 interface Props {
   hasSearch?: boolean;

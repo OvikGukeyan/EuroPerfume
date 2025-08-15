@@ -23,13 +23,12 @@ import {
   Plus,
   Settings2,
 } from "lucide-react";
-import Link from "next/link";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "../ui/collapsible";
-import { usePathname } from "@/src/i18n/navigation";
+import { Link, usePathname } from "@/src/i18n/navigation";
 
 type Props = {
   className?: string;

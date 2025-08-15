@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import { Title } from ".";
 import { Button } from "../ui";
@@ -18,6 +17,7 @@ import { useLocale } from "use-intl";
 import { cn } from "../../lib/utils";
 import { Rating } from "./rating";
 import { calcAverageRating } from "../../lib";
+import { Link } from "@/src/i18n/navigation";
 
 interface Props {
   id: number;

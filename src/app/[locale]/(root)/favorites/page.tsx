@@ -1,9 +1,9 @@
 "use client";
+import { Link } from "@/src/i18n/navigation";
 import { Button, Container, ProductCard, Title } from "@/src/shared/components";
 import { useFavorites } from "@/src/shared/hooks";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 
 export default function Favorites() {
   const { items, addFavoritesItem } = useFavorites();

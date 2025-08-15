@@ -3,8 +3,8 @@ import { useSession } from "next-auth/react";
 import React, { FC } from "react";
 import { Button } from "../ui";
 import { CircleUser, User, UserRoundCheck } from "lucide-react";
-import Link from "next/link";
 import { cn } from "@/src/shared/lib/utils";
+import { Link } from "@/src/i18n/navigation";
 
 
 interface Props {

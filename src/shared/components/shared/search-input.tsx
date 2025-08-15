@@ -1,12 +1,12 @@
 "use client";
 
+import { Link } from "@/src/i18n/navigation";
 import { cn } from "@/src/shared/lib/utils";
 import { Api } from "@/src/shared/services/api-client";
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
 import { Search } from "lucide-react";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import Link from "next/link";
 import React, { useRef, useState } from "react";
 import { useClickAway, useDebounce } from "react-use";
 

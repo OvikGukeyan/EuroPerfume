@@ -10,8 +10,8 @@ import {
   BreadcrumbSeparator,
 } from "../ui/breadcrumb";
 import { cn } from "../../lib/utils";
-import Link from "next/link";
 import { Category, ProductGroup } from "@prisma/client";
+import { Link } from "@/src/i18n/navigation";
 
 type Props = {
   productName?: string;

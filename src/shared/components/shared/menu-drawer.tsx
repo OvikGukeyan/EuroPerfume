@@ -7,9 +7,9 @@ import { Button, Separator } from "..";
 import { Menu } from "lucide-react";
 
 import { useCategories } from "@/src/shared/hooks";
-import Link from "next/link";
 import { links } from "@/src/shared/services/constants";
 import { useLocale } from "next-intl";
+import { Link } from "@/src/i18n/navigation";
 
 type Props = {
   className?: string;

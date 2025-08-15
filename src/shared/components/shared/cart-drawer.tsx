@@ -11,12 +11,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "../ui/sheet";
-import Link from "next/link";
 import { Button } from "../ui";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { CartDrawerItem, FreeShippingProgress, Title } from ".";
 import { useCart } from "@/src/shared/hooks";
 import { useTranslations } from "use-intl";
+import { Link } from "@/src/i18n/navigation";
 
 export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
   const {

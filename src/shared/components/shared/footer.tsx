@@ -6,8 +6,9 @@ import Image from "next/image";
 import { Separator } from "../ui";
 import { SocialMediaBar } from "./social-media-bar";
 import { links } from "@/src/shared/services/constants";
-import Link from "next/link";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale, useTranslations,  } from "next-intl";
+import { Link } from "@/src/i18n/navigation";
+
 
 type Props = {
   className?: string;

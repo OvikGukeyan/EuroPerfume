@@ -1,4 +1,5 @@
 import { prisma } from "@/prisma/prisma-client";
+import { Link } from "@/src/i18n/navigation";
 import {
   Container,
   ReviewForm,
@@ -7,7 +8,6 @@ import {
 } from "@/src/shared/components";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
-import Link from "next/link";
 
 export default async function Reviews({
   params,

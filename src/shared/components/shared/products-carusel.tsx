@@ -5,8 +5,8 @@ import { ProductDTO } from "../../services/dto/product.dto";
 import { cn } from "../../lib/utils";
 import Autoplay from "embla-carousel-autoplay";
 import { ProductCaruselItem, Title } from ".";
-import Link from "next/link";
 import { useFavorites } from "../../hooks";
+import { Link } from "@/src/i18n/navigation";
 
 type Props = {
   items: ProductDTO[];

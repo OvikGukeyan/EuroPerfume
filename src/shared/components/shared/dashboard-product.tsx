@@ -1,16 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import React from "react";
 import { Title } from ".";
 import { Button, Input, Popover, Switch } from "../ui";
 import { ChevronRight, GalleryVerticalEnd, Settings2, Trash2, X } from "lucide-react";
 import { ProductVariation } from "@prisma/client";
-import { useRouter } from "@/src/i18n/navigation";
+import { Link, useRouter } from "@/src/i18n/navigation";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 import { changeProductPrice, deleteProductVariation } from "@/src/app/actions";
-import { useFormStatus } from "react-dom";
 
 interface Props {
   id: number;

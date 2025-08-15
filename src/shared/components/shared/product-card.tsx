@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import React, { useState } from "react";
 import { ChooseVariation, Title, VolumeSelection } from ".";
 import { Button } from "../ui";
@@ -22,6 +21,7 @@ import { useLocale, useTranslations } from "use-intl";
 import { cn } from "../../lib/utils";
 import { Rating } from "./rating";
 import { useRouter } from "next/navigation";
+import { Link } from "@/src/i18n/navigation";
 
 interface Props {
   id: number;

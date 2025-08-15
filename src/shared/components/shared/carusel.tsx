@@ -11,8 +11,8 @@ import {
 import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
 import { Languages, Slide, SlideImage } from "@prisma/client";
-import Link from "next/link";
 import { useLocale } from "next-intl";
+import { Link } from "@/src/i18n/navigation";
 
 interface Props {
   slides: (Slide & { images: SlideImage[] })[];

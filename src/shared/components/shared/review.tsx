@@ -5,12 +5,12 @@ import { cn } from "@/src/lib/utils";
 import { DialogCarousel, SubmitButtonBar, Title } from ".";
 import { Separator, Textarea } from "../ui";
 import { Rating } from "./rating";
-import Link from "next/link";
 import Image from "next/image";
 import { Reply, Trash } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { createReply, deleteReview } from "@/src/app/actions";
 import { Reply as ReplyType } from "@prisma/client";
+import { Link } from "@/src/i18n/navigation";
 
 type Props = {
   className?: string;
