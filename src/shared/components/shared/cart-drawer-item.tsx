@@ -12,7 +12,7 @@ interface Props extends CartItemProps {
     onClickCountButton: (type: 'plus' | 'minus') => void;
     onClickRemove: () => void;
     variation?: string;
-    productGroup?: string;
+    productGroupLabel?: string;
     className?: string;
 }
 export const CartDrawerItem: FC<Props> = ({
@@ -22,7 +22,7 @@ export const CartDrawerItem: FC<Props> = ({
     quantity,
     disabled,
     variation,
-    productGroup,
+    productGroupLabel,
     onClickCountButton,
     onClickRemove,
     className,
@@ -34,7 +34,7 @@ export const CartDrawerItem: FC<Props> = ({
             <CartDetail.Image src={imageUrl} />
 
             <div className='flex-1'>
-                <CartDetail.Info name={name} info={variation || productGroup || ''} />
+                <CartDetail.Info name={name} info={variation || productGroupLabel || ''} />
 
                 <hr className='my-3' />
 

@@ -28,7 +28,7 @@ export const useQueryFilters = (filters: Filters) => {
       category: filters.category || undefined,
       productGroup: filters.productGroup || undefined,
     };
-
+console.log("params", params);
     const query = qs.stringify(params, { arrayFormat: "comma" });
     
     if (isMounted.current && previousQuery.current !== query) {

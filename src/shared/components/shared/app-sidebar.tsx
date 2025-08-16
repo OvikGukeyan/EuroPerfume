@@ -37,30 +37,30 @@ type Props = {
 export const AppSidebar: FC<Props> = ({ className }) => {
   const pathName = usePathname();
   const tools = [
-    { name: "Products", icon: <Settings2 />, href: "/products" },
+    { name: "Продукты", icon: <Settings2 />, href: "/products" },
 
     {
-      name: "Create Top Slde",
+      name: "Создать Верхний Слайд",
       icon: <Plus />,
       href: "/create-slide/1",
     },
      {
-      name: "Create Bottom Slde",
+      name: "Создать Нижний Слайд",
       icon: <Plus />,
       href: "/create-slide/2",
     },
     {
-      name: "Slides",
+      name: "Слайды",
       icon: <GalleryHorizontalEnd />,
       href: "/slides",
     },
     {
-      name: "Orders",
+      name: "Заказы",
       icon: <Folders />,
       href: "/orders",
     },
     {
-      name: "Home",
+      name: "Главная",
       icon: <House />,
       href: "/",
     },

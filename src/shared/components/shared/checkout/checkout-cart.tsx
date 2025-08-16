@@ -18,7 +18,8 @@ interface Props {
   onClickCountButton: (
     id: number,
     quantity: number,
-    type: "plus" | "minus"
+    type: "plus" | "minus",
+    productGroup: number
   ) => void;
   loading?: boolean;
   itemLoading?: boolean;
@@ -64,7 +65,7 @@ export const CheckoutCart: FC<Props> = ({
                 disabled={item.disabled}
                 variation={item.variationName}
                 onClickCountButton={(type) =>
-                  onClickCountButton(item.id, item.quantity, type)
+                  onClickCountButton(item.id, item.quantity, type, item.productGroup?.id || 2)
                 }
                 onClickRemove={() => removeCartItem(item.id)}
               />

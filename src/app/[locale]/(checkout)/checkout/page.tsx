@@ -120,8 +120,14 @@ export default function Checkout() {
   const onClickCountButton = (
     id: number,
     quantity: number,
-    type: "plus" | "minus"
+    type: "plus" | "minus",
+    productGroup: number,
   ) => {
+    const isDraft = productGroup < 4;
+    if (isDraft && quantity < 3 && type === "minus") {
+      return;
+    }
+
     const newQuantity = type === "plus" ? quantity + 1 : quantity - 1;
     updateItemQuantity(id, newQuantity);
   };

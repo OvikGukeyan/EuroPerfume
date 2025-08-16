@@ -22,6 +22,7 @@ import {
 import { useOrders } from "@/src/shared/hooks";
 import { OrderItemsPopover } from "./order-items-popover";
 import { useRouter } from "@/src/i18n/navigation";
+import { OrderStatuses } from "@/prisma/constants";
 
 type Props = {
   className?: string;
@@ -33,6 +34,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { items, removeOrder, changeOrderStatus, loading } = useOrders();
   const router = useRouter();
+
   return (
     <div className={cn("", className)}>
       <div
@@ -94,15 +96,15 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                   }}
                 >
                   <SelectTrigger onClick={(e) => e.stopPropagation()}>
-                    <SelectValue placeholder={order.status} />
+                    <SelectValue placeholder={OrderStatuses[order.status as keyof typeof OrderStatuses || "NEW"]} />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={OrderStatus.PENDING}>PENDING</SelectItem>
+                  <SelectContent onClick={(e) => e.stopPropagation()}>
+                    <SelectItem value={OrderStatus.PENDING}>В обработке</SelectItem>
                     <SelectItem value={OrderStatus.SUCCEEDED}>
-                      SUCCEEDED
+                      Выполнен
                     </SelectItem>
                     <SelectItem value={OrderStatus.CENCELLED}>
-                      CENCELLED
+                      Отменен
                     </SelectItem>
                   </SelectContent>
                 </Select>

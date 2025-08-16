@@ -20,7 +20,6 @@ import { concentrations } from "@/../../prisma/constants";
 import { useLocale, useTranslations } from "use-intl";
 import { cn } from "../../lib/utils";
 import { Rating } from "./rating";
-import { useRouter } from "next/navigation";
 import { Link } from "@/src/i18n/navigation";
 
 interface Props {
@@ -57,11 +56,9 @@ export const ProductCard: React.FC<Props> = ({
   toggleIsFavorite,
   reviews,
 }) => {
-  const router = useRouter();
-  const currentVolumesArray =
-    price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
 
-  const [volume, setVolume] = useState<Volume>(currentVolumesArray[0]);
+
+  const [volume, setVolume] = useState<Volume>(volumes[0]);
   const [activeVariationId, setActiveVariationId] = useState<number>(
     variations[0]?.id
   );
@@ -172,7 +169,7 @@ export const ProductCard: React.FC<Props> = ({
       {categoryId === 1 && productGroup?.id && productGroup.id < 4 && (
         <VolumeSelection
           className="mb-4"
-          volumes={currentVolumesArray}
+          volumes={[...volumes]}
           volume={volume}
           setVolume={setVolume}
         />

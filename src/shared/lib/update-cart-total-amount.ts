@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma/prisma-client";
 import { calcCartItemTotalPrice } from "./calc-cart-item-total-price";
+import { productGroups } from "@/prisma/constants";
 
 export const updateCartTotalAmount = async (token: string) => {
   const userCart = await prisma.cart.findFirst({
@@ -60,7 +61,7 @@ export const updateCartTotalAmount = async (token: string) => {
           createdAt: "desc",
         },
         include: {
-          product: true,
+          product: {include: {productGroup: true}},
           variation: true,
         },
       },

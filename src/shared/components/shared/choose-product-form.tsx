@@ -45,10 +45,8 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
   const activeVariation = product.variations.find(
     (variation) => variation.id === activeVariationId
   );
-  const currentVolumesArray =
-    product.price < 8 ? volumes.slice(1) : (volumes as unknown as Volume[]);
 
-  const [volume, setVolume] = useState<Volume>(currentVolumesArray[0]);
+  const [volume, setVolume] = useState<Volume>(volumes[0]);
 
   const finalPrice =
     product.categoryId === 1 && product.productGroup.id < 4
@@ -245,7 +243,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
             <VolumeSelection
               volume={volume}
               setVolume={setVolume}
-              volumes={currentVolumesArray}
+              volumes={[...volumes]}
               className="my-4"
             />
           )}

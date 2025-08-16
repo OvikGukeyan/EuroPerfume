@@ -32,8 +32,13 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
   const onClickCountButton = (
     id: number,
     quantity: number,
-    type: "plus" | "minus"
+    type: "plus" | "minus",
+    productGroup: number,
   ) => {
+    const isDraft = productGroup < 4;
+    if (isDraft && quantity < 3 && type === "minus") {
+      return;
+    }
     const newQuantity = type === "plus" ? quantity + 1 : quantity - 1;
     updateItemQuantity(id, newQuantity);
   };
@@ -91,9 +96,9 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                     price={item.price}
                     quantity={item.quantity}
                     disabled={item.disabled}
-                    productGroup={item.productGroup}
+                    productGroupLabel={item.productGroup?.labelRu}
                     onClickCountButton={(type) =>
-                      onClickCountButton(item.id, item.quantity, type)
+                      onClickCountButton(item.id, item.quantity, type,  item.productGroup?.id as number)
                     }
                     variation={item.variationName}
                     onClickRemove={() => removeCartItem(item.id)}
