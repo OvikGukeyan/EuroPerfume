@@ -79,6 +79,8 @@ export {CreatePromocodeForm} from './create-promocode-form';
 export {CreateSlideForm} from './create-slide-form';
 export {RecentReviewsList} from './recent-reviews-list';
 export {DialogCarousel} from './dialog-carousel';
+export { SelectedFiltersBar } from './selected-filters-bar';
+export { SelectedFiltersContainer } from './selected-filters-container';
 
 export * from './email-templates';
 export * from './form';

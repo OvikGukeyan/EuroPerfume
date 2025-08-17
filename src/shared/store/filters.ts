@@ -44,7 +44,6 @@ interface FiltersStore extends Filters {
 }
 
 export const useFiltersStore = create<FiltersStore>((set, get) => ({
-  // Начальное состояние фильтров
   gender: new Set<string>(),
   concentration: new Set<string>(),
   brands: new Set<string>(),

@@ -39,7 +39,6 @@ export const ReviewComponent: FC<Props> = ({
   productImage,
   createdAt,
 }) => {
-  console.log(images);
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const { data: session } = useSession();
   const admin = session?.user?.role === "ADMIN";

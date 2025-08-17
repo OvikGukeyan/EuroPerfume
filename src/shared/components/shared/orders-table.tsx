@@ -101,7 +101,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                   <SelectContent onClick={(e) => e.stopPropagation()}>
                     <SelectItem value={OrderStatus.PENDING}>В обработке</SelectItem>
                     <SelectItem value={OrderStatus.SUCCEEDED}>
-                      Выполнен
+                      Доставлен
                     </SelectItem>
                     <SelectItem value={OrderStatus.CENCELLED}>
                       Отменен

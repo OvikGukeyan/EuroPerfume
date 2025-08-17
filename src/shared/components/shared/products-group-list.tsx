@@ -1,5 +1,5 @@
 "use client";
-import { ProductCard, ProductCardSkeleton, Title } from ".";
+import { ProductCard, ProductCardSkeleton, SelectedFiltersContainer, Title } from ".";
 import { cn } from "@/src/shared/lib/utils";
 import { useFavorites, useProducts } from "@/src/shared/hooks";
 import { useFiltersStore } from "../../store/filters";
@@ -53,6 +53,8 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
           <div className="h-1 w-12 bg-black"></div>
         </div>
       )}
+      <SelectedFiltersContainer />
+
       <div
         id="products-section"
         className={cn(

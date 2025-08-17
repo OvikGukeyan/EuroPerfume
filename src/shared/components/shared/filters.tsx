@@ -1,17 +1,18 @@
 "use client";
 
-import React, { FC, useState } from "react";
-import { Title, CheckboxFiltersGroup } from ".";
+import React, { FC, useEffect, useState } from "react";
+import { Title, CheckboxFiltersGroup, SelectedFiltersContainer } from ".";
 import { Button, Input, RangeSlider } from "../ui";
 import { useFiltersStore } from "../../store/filters";
 import { cn } from "@/src/lib/utils";
 import { useLocale, useTranslations } from "next-intl";
 import { useProductStore } from "../../store/product";
 interface Props {
+  onDone?: () => void;
   className?: string;
 }
 
-export const Filters: FC<Props> = () => {
+export const Filters: FC<Props> = ({ onDone, className }) => {
   const filters = useFiltersStore();
   const [availableFilters] = useProductStore((state) => [
     state.availableFilters,
@@ -31,6 +32,23 @@ export const Filters: FC<Props> = () => {
     baseNotes: filters.baseNotes,
     concentration: filters.concentration,
   });
+
+  useEffect(() => {
+    setLocalFilters({
+      brands: filters.brands,
+      gender: filters.gender,
+      prices: {
+        priceFrom: filters.prices.priceFrom,
+        priceTo: filters.prices.priceTo,
+      },
+      classification: filters.classification,
+      aromas: filters.aromas,
+      topNotes: filters.topNotes,
+      heartNotes: filters.heartNotes,
+      baseNotes: filters.baseNotes,
+      concentration: filters.concentration,
+    });
+  }, [filters]);
 
   const updateLocalFilter = <
     T extends Record<string, string>,
@@ -64,6 +82,10 @@ export const Filters: FC<Props> = () => {
       ...filters,
       ...localFilters,
     });
+
+    if (onDone) {
+      onDone();
+    }
   };
 
   const resetFilters = () => {
@@ -94,20 +116,10 @@ export const Filters: FC<Props> = () => {
   };
   const locale = useLocale() as "ru" | "de";
   const t = useTranslations("Filters");
-  // const isLocalFittersEmpty = Object.values(localFilters).every((value) => {
-  //   if (typeof value === "object" && "priceFrom" in value) {
-  //     return (
-  //       (!value.priceFrom || value.priceFrom === 0) &&
-  //       (!value.priceTo || value.priceTo === 500)
-  //     );
-  //   }
-  //   return value.size === 0;
-  // });
 
   return (
-    <div className={cn("")}>
+    <div className={cn("", className)}>
       <Title text={t("title")} className="mb-5 font-bold" />
-
       {availableFilters?.brands && (
         <CheckboxFiltersGroup
           title={t("brands")}
@@ -269,10 +281,10 @@ export const Filters: FC<Props> = () => {
           "sticky bottom-0 xl:top-[230px] z-10 transition-all duration-500 mt-10 flex justify-around"
         }
       >
-        <Button   onClick={resetFilters} className="mb-5 ">
+        <Button onClick={resetFilters} className="mb-5 ">
           {t("reset")}
         </Button>
-        <Button  onClick={applyFilters} className="mb-5 ">
+        <Button onClick={applyFilters} className="mb-5 ">
           {t("apply")}
         </Button>
       </div>

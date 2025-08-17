@@ -27,7 +27,6 @@ export const DeshboardSlide: FC<Props> = ({ className, slide }) => {
   const onClickDelete = async () => {
     deleteSlide(slide.id);
   };
-  console.log(slide.images);
   return (
     <div
       ref={setNodeRef}
