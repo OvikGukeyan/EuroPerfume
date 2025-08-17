@@ -83,6 +83,8 @@ export const Filters: FC<Props> = ({ onDone, className }) => {
       ...localFilters,
     });
 
+    filters.setCurrentPage(1);
+
     if (onDone) {
       onDone();
     }

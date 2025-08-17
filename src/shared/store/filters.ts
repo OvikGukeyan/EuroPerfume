@@ -67,49 +67,48 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
   setPrices: (name, value) =>
     set((state) => ({
       prices: { ...state.prices, [name]: value },
-      currentPage: 1
     })),
 
   setSelectedGender: (key) =>
     set((state) => {
       const newSet = new Set(state.gender);
       newSet.has(key) ? newSet.delete(key) : newSet.add(key);
-      return { gender: newSet, currentPage: 1 };
+      return { gender: newSet };
     }),
 
   setSelectedConcentration: (key) =>
     set((state) => {
       const newSet = new Set(state.concentration);
       newSet.has(key) ? newSet.delete(key) : newSet.add(key);
-      return { concentration: newSet, currentPage: 1 };
+      return { concentration: newSet };
     }),
 
   setSelectedBrands: (key) =>
     set((state) => {
       const newSet = new Set(state.brands);
       newSet.has(key) ? newSet.delete(key) : newSet.add(key);
-      return { brands: newSet, currentPage: 1 };
+      return { brands: newSet };
     }),
 
   setSelectedClassification: (key) =>
     set((state) => {
       const newSet = new Set(state.classification);
       newSet.has(key) ? newSet.delete(key) : newSet.add(key);
-      return { classification: newSet, currentPage: 1 };
+      return { classification: newSet };
     }),
 
   setTopNotes: (key) =>
     set((state) => {
       const newSet = new Set(state.topNotes);
       newSet.has(key) ? newSet.delete(key) : newSet.add(key);
-      return { topNotes: newSet, currentPage: 1 };
+      return { topNotes: newSet };
     }),
 
   setHeartNotes: (key) =>
     set((state) => {
       const newSet = new Set(state.heartNotes);
       newSet.has(key) ? newSet.delete(key) : newSet.add(key);
-      return { heartNotes: newSet, currentPage: 1 };
+      return { heartNotes: newSet };
     }),
 
 
@@ -117,14 +116,14 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
     set((state) => {
       const newSet = new Set(state.baseNotes);
       newSet.has(key) ? newSet.delete(key) : newSet.add(key);
-      return { baseNotes: newSet, currentPage: 1 };
+      return { baseNotes: newSet };
     }),
 
   setSelectedAromas: (key) =>
     set((state) => {
       const newSet = new Set(state.aromas);
       newSet.has(key) ? newSet.delete(key) : newSet.add(key);
-      return { aromas: newSet, currentPage: 1 };
+      return { aromas: newSet };
     }),
 
   setOrderBy: (value: string) => {
@@ -142,7 +141,7 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
           return {};
       }
     })();
-    set({ orderBy: orderBy, currentPage: 1 });
+    set({ orderBy: orderBy });
   },
 
   setCurrentPage: (page) => set(() => ({ currentPage: page })),
