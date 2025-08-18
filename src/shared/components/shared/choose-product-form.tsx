@@ -48,15 +48,11 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
 
   const [volume, setVolume] = useState<Volume>(volumes[0]);
 
-  const finalPrice =
-    product.categoryId === 1 && product.productGroup.id < 4
-      ? calcPrice(volume, product.price)
-      : product.price;
+  const finalPrice = product.productGroup.onTap
+    ? calcPrice(volume, product.price)
+    : product.price;
   const finalDiscountPrice =
-    product.discountPrice &&
-    product.categoryId === 1 &&
-    product.productGroup?.id &&
-    product.productGroup.id < 4
+    product.discountPrice && product.productGroup.onTap
       ? calcPrice(volume, product.discountPrice)
       : product.discountPrice;
   const { averageRating, count } = calcAverageRating(product.reviews);
@@ -81,12 +77,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
     try {
       await addCartItem({
         productId: product.id,
-        volume:
-          product.categoryId === 1 &&
-          product.productGroupId &&
-          product.productGroupId < 4
-            ? volume
-            : 1,
+        volume: product.productGroup.onTap ? volume : 1,
         variationId: activeVariation?.id,
       });
       toast.success(product.name + " added to cart");
@@ -133,9 +124,10 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
     }, 200);
   };
 
-  const description = product.translations.find(
-    (t) => t.language.toLocaleLowerCase() === locale.toLocaleLowerCase()
-  )?.description || '';
+  const description =
+    product.translations.find(
+      (t) => t.language.toLocaleLowerCase() === locale.toLocaleLowerCase()
+    )?.description || "";
 
   return (
     <div
@@ -210,16 +202,11 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
               </TabsContent>
               <TabsContent className="w-full min-h-[200px]" value="description">
                 <Text size="md" className="my-4">
-                  {description
-                    .split(/\n\s*\n/)
-                    .map((paragraph, idx) => (
-                      <p
-                        key={idx}
-                        className="mb-4 leading-relaxed text-gray-800"
-                      >
-                        {paragraph.trim()}
-                      </p>
-                    ))}
+                  {description.split(/\n\s*\n/).map((paragraph, idx) => (
+                    <p key={idx} className="mb-4 leading-relaxed text-gray-800">
+                      {paragraph.trim()}
+                    </p>
+                  ))}
                 </Text>
               </TabsContent>
 
@@ -239,7 +226,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
             />
           </div>
 
-          {product.categoryId === 1 && product.productGroupId < 4 && (
+          {product.productGroup.onTap && (
             <VolumeSelection
               volume={volume}
               setVolume={setVolume}

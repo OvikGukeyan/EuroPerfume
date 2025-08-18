@@ -56,8 +56,6 @@ export const ProductCard: React.FC<Props> = ({
   toggleIsFavorite,
   reviews,
 }) => {
-
-
   const [volume, setVolume] = useState<Volume>(volumes[0]);
   const [activeVariationId, setActiveVariationId] = useState<number>(
     variations[0]?.id
@@ -85,10 +83,7 @@ export const ProductCard: React.FC<Props> = ({
     try {
       await addCartItem({
         productId: id,
-        volume:
-          categoryId === 1 && productGroup.id && productGroup.id < 4
-            ? volume
-            : 1,
+        volume: productGroup.onTap ? volume : 1,
         variationId: activeVariation ? activeVariation.id : undefined,
       });
       toast.success(name + " added to cart");
@@ -97,12 +92,9 @@ export const ProductCard: React.FC<Props> = ({
       toast.error("Something went wrong");
     }
   };
-  const finalPrice =
-    categoryId === 1 && productGroup?.id && productGroup.id < 4
-      ? calcPrice(volume, price)
-      : price;
+  const finalPrice = productGroup.onTap ? calcPrice(volume, price) : price;
   const finalDiscountPrice =
-    discountPrice && categoryId === 1 && productGroup?.id && productGroup.id < 4
+    discountPrice && productGroup.onTap
       ? calcPrice(volume, discountPrice)
       : discountPrice;
   const concentratioName = concentrations.find(
@@ -112,7 +104,7 @@ export const ProductCard: React.FC<Props> = ({
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
 
   const image = imageUrl || activeVariation?.imageUrl || "";
- 
+
   return (
     <div
       className={cn(
@@ -166,7 +158,7 @@ export const ProductCard: React.FC<Props> = ({
         </div>
       </Link>
 
-      {categoryId === 1 && productGroup?.id && productGroup.id < 4 && (
+      {productGroup.onTap && (
         <VolumeSelection
           className="mb-4"
           volumes={[...volumes]}

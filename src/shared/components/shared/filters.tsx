@@ -1,7 +1,7 @@
 "use client";
 
 import React, { FC, useEffect, useState } from "react";
-import { Title, CheckboxFiltersGroup, SelectedFiltersContainer } from ".";
+import { Title, CheckboxFiltersGroup } from ".";
 import { Button, Input, RangeSlider } from "../ui";
 import { useFiltersStore } from "../../store/filters";
 import { cn } from "@/src/lib/utils";
@@ -17,13 +17,14 @@ export const Filters: FC<Props> = ({ onDone, className }) => {
   const [availableFilters] = useProductStore((state) => [
     state.availableFilters,
   ]);
+  const bounds = availableFilters?.prices ?? { priceFrom: 0, priceTo: 500 };
 
   const [localFilters, setLocalFilters] = useState({
     brands: filters.brands,
     gender: filters.gender,
     prices: {
-      priceFrom: filters.prices.priceFrom,
-      priceTo: filters.prices.priceTo,
+      priceFrom: bounds.priceFrom,
+      priceTo: bounds.priceTo,
     },
     classification: filters.classification,
     aromas: filters.aromas,
@@ -38,8 +39,15 @@ export const Filters: FC<Props> = ({ onDone, className }) => {
       brands: filters.brands,
       gender: filters.gender,
       prices: {
-        priceFrom: filters.prices.priceFrom,
-        priceTo: filters.prices.priceTo,
+        priceFrom:
+          filters.prices.priceFrom &&
+          filters.prices.priceFrom > bounds.priceFrom
+            ? filters.prices.priceFrom
+            : bounds.priceFrom,
+        priceTo:
+          filters.prices.priceTo && filters.prices.priceTo < bounds.priceTo
+            ? filters.prices.priceTo
+            : bounds.priceTo,
       },
       classification: filters.classification,
       aromas: filters.aromas,
@@ -48,7 +56,7 @@ export const Filters: FC<Props> = ({ onDone, className }) => {
       baseNotes: filters.baseNotes,
       concentration: filters.concentration,
     });
-  }, [filters]);
+  }, [filters, bounds.priceFrom, bounds.priceTo]);
 
   const updateLocalFilter = <
     T extends Record<string, string>,
@@ -77,6 +85,23 @@ export const Filters: FC<Props> = ({ onDone, className }) => {
       updateLocalFilter(setState, key, value);
     };
 
+  const setPriceRange = (from: number, to: number) => {
+    const clampedFrom = Math.max(
+      bounds.priceFrom,
+      Math.min(from, bounds.priceTo)
+    );
+    const clampedTo = Math.max(bounds.priceFrom, Math.min(to, bounds.priceTo));
+    setLocalFilters((prev) => ({
+      ...prev,
+      prices: {
+        priceFrom: clampedFrom,
+        priceTo: Math.max(clampedFrom, clampedTo),
+      },
+    }));
+  };
+
+  const updatePrices = (range: number[]) => setPriceRange(range[0], range[1]);
+
   const applyFilters = () => {
     filters.setFilters({
       ...filters,
@@ -95,10 +120,7 @@ export const Filters: FC<Props> = ({ onDone, className }) => {
     setLocalFilters({
       brands: new Set(),
       gender: new Set(),
-      prices: {
-        priceFrom: 0,
-        priceTo: 0,
-      },
+      prices: { priceFrom: bounds.priceFrom, priceTo: bounds.priceTo },
       classification: new Set(),
       aromas: new Set(),
       topNotes: new Set(),
@@ -107,18 +129,9 @@ export const Filters: FC<Props> = ({ onDone, className }) => {
       concentration: new Set(),
     });
   };
-  const updatePrices = (prices: number[]) => {
-    setLocalFilters((prev) => ({
-      ...prev,
-      prices: {
-        priceFrom: prices[0],
-        priceTo: prices[1],
-      },
-    }));
-  };
+
   const locale = useLocale() as "ru" | "de";
   const t = useTranslations("Filters");
-
   return (
     <div className={cn("", className)}>
       <Title text={t("title")} className="mb-5 font-bold" />
@@ -168,45 +181,33 @@ export const Filters: FC<Props> = ({ onDone, className }) => {
         <div className="flex gap-3 mb-5">
           <Input
             type="number"
-            placeholder="0"
-            min={0}
-            max={500}
-            value={String(localFilters.prices.priceFrom)}
-            onChange={(e) =>
-              setLocalFilters({
-                ...localFilters,
-                prices: {
-                  ...localFilters.prices,
-                  priceFrom: Number(e.target.value),
-                },
-              })
-            }
+            min={bounds.priceFrom}
+            max={bounds.priceTo}
+            value={String(localFilters.prices.priceFrom ?? "")}
+            onChange={(e) => {
+              const next = Number(e.target.value);
+              if (!Number.isFinite(next)) return;
+              setPriceRange(next, localFilters.prices.priceTo);
+            }}
           />
+
           <Input
             type="number"
-            min={0}
-            max={500}
-            placeholder="500"
-            value={String(localFilters.prices.priceTo)}
-            onChange={(e) =>
-              setLocalFilters({
-                ...localFilters,
-                prices: {
-                  ...localFilters.prices,
-                  priceTo: Number(e.target.value),
-                },
-              })
-            }
+            min={bounds.priceFrom}
+            max={bounds.priceTo}
+            value={String(localFilters.prices.priceTo ?? "")}
+            onChange={(e) => {
+              const next = Number(e.target.value);
+              if (!Number.isFinite(next)) return;
+              setPriceRange(localFilters.prices.priceFrom, next);
+            }}
           />
         </div>
         <RangeSlider
-          min={0}
-          max={500}
+          min={bounds.priceFrom}
+          max={bounds.priceTo}
           step={1}
-          value={[
-            localFilters.prices.priceFrom || 0,
-            localFilters.prices.priceTo || 500,
-          ]}
+          value={[localFilters.prices.priceFrom, localFilters.prices.priceTo]}
           onValueChange={updatePrices}
         />
       </div>

@@ -14,6 +14,7 @@ export interface AvailableFilters {
   baseNotes: { ru: string; de: string; value: string }[] | null;
   topNotes: { ru: string; de: string; value: string }[] | null;
   heartNotes: { ru: string; de: string; value: string }[] | null;
+  prices: { priceFrom: number; priceTo: number } | null;
 }
 interface ProductState {
   items: ProductDTO[];

@@ -39,6 +39,7 @@ model ProductGroup {
   labelRu    String    @unique
   labelDe    String    @unique
   products   Product[]
+  onTap      Boolean?
   category   Category  @relation(fields: [categoryId], references: [id])
   categoryId Int
 }

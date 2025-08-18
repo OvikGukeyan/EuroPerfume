@@ -111,7 +111,12 @@ export const getAvailableFilters = (products: ProductDTO[]) => {
     "value"
   );
 
-  const sortedBrands = uniqueBrands.sort((a, b) => a.text.localeCompare(b.text));
+  const sortedBrands = uniqueBrands.sort((a, b) =>
+    a.text.localeCompare(b.text)
+  );
+
+  const lowestPrice = Math.min(...products.map((p) => p.price), 1000);
+  const highestPrice = Math.max(...products.map((p) => p.price), 0);
 
   const availableFilters = {
     brands: sortedBrands.length > 0 ? sortedBrands : null,
@@ -124,6 +129,10 @@ export const getAvailableFilters = (products: ProductDTO[]) => {
     aromas: uniqueAromas.length > 0 ? uniqueAromas : null,
     heartNotes: uniqueHeartNotes.length > 0 ? uniqueHeartNotes : null,
     baseNotes: uniqueBaseNotes.length > 0 ? uniqueBaseNotes : null,
+    prices: {
+      priceFrom: lowestPrice,
+      priceTo: highestPrice,
+    },
   };
   return availableFilters;
 };
