@@ -58,11 +58,25 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
   productGroup: null,
   currentPage: 1,
 
-  setCategory: (category: number) => set({ category, currentPage: 1 }),
+  setCategory: (category: number) =>
+    set({
+      category,
+      currentPage: 1,
+      gender: new Set<string>(),
+      concentration: new Set<string>(),
+      brands: new Set<string>(),
+      classification: new Set<string>(),
+      topNotes: new Set<string>(),
+      heartNotes: new Set<string>(),
+      baseNotes: new Set<string>(),
+      aromas: new Set<string>(),
+      prices: {},
+      orderBy: {},
+      productGroup: null,
+    }),
 
-  setProductGroup: (productGroup: number | null) => 
+  setProductGroup: (productGroup: number | null) =>
     set(() => ({ productGroup, currentPage: 1 })),
-  
 
   setPrices: (name, value) =>
     set((state) => ({
@@ -110,7 +124,6 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
       newSet.has(key) ? newSet.delete(key) : newSet.add(key);
       return { heartNotes: newSet };
     }),
-
 
   setBaseNotes: (key) =>
     set((state) => {
