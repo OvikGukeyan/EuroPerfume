@@ -72,7 +72,6 @@ export const useFiltersStore = create<FiltersStore>((set, get) => ({
       aromas: new Set<string>(),
       prices: {},
       orderBy: {},
-      productGroup: null,
     }),
 
   setProductGroup: (productGroup: number | null) =>
