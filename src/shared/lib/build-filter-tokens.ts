@@ -29,7 +29,7 @@ export function buildFilterTokens(
 
   if(f.brands.size > 0){
     f.brands.forEach((val) => {
-        const label = availableFilters.brands ? availableFilters.brands.find((f) => f.value === val)?.text : val;
+        const label = availableFilters?.brands ? availableFilters?.brands.find((f) => f.value === val)?.text : val;
         add({ type: "brand", value: val, label: label || val, key: `brand:${val}` });
     })
   }
