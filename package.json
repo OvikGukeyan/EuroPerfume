@@ -64,6 +64,7 @@
     "react-hook-form": "^7.54.2",
     "react-hot-toast": "^2.4.1",
     "react-insta-stories": "^2.8.0",
+    "react-markdown": "^10.1.0",
     "react-stars": "^2.2.5",
     "react-use": "^17.5.1",
     "resend": "^4.0.1-alpha.0",

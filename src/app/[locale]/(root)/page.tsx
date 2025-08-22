@@ -4,6 +4,7 @@ import {
   ProductsSelection,
   RecentReviews,
   StoriesCarousel,
+  ChatBotDrawer,
 } from "@/src/shared/components/shared";
 import {
   getDiscountedItems,
@@ -20,9 +21,15 @@ export default async function Home() {
   const stories = await getStories();
 
   const t = await getTranslations("Home");
+  const topSlides = slides.filter((s) => s.location === 1) as (Slide & {
+    images: SlideImage[];
+  })[];
+  const bottomSlides = slides.filter((s) => s.location === 2) as (Slide & {
+    images: SlideImage[];
+  })[];
   return (
     <div className="bg-gray-50">
-      <Carusel slides={slides.filter((s) => s.location === 1) as (Slide & { images: SlideImage[] })[]}/>
+      <Carusel slides={topSlides} />
       <TopBar />
       <ProductsSelection
         getFunction={getNewProducts}
@@ -40,8 +47,8 @@ export default async function Home() {
         title={t("popularProducts")}
         className=" my-10"
       />
-      <Carusel slides={slides.filter((s) => s.location === 2) as (Slide & { images: SlideImage[] })[]} />
-
+      <Carusel slides={bottomSlides} />
+      {/* <ChatBotDrawer /> */}
       <RecentReviews />
     </div>
   );

@@ -81,6 +81,7 @@ export {RecentReviewsList} from './recent-reviews-list';
 export {DialogCarousel} from './dialog-carousel';
 export { SelectedFiltersBar } from './selected-filters-bar';
 export { SelectedFiltersContainer } from './selected-filters-container';
+export {ChatBotDrawer} from './chat-bot';
 
 export * from './email-templates';
 export * from './form';

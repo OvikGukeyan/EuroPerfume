@@ -22,6 +22,10 @@ export const Carusel: FC<Props> = ({ slides }) => {
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 4000 }), []);
   const locale = useLocale();
   const language = locale === "de" ? Languages.DE : Languages.RU;
+  
+  if (!slides.length) {
+    return null;
+  }
   return (
     <Carousel className="w-full" plugins={[autoplayPlugin]}>
       <CarouselContent>
