@@ -18,6 +18,7 @@ export const Filters: FC<Props> = ({ onDone, className }) => {
     state.availableFilters,
   ]);
   const bounds = availableFilters?.prices ?? { priceFrom: 0, priceTo: 500 };
+  const [priceDirty, setPriceDirty] = useState(false);
 
   const [localFilters, setLocalFilters] = useState({
     brands: filters.brands,
@@ -56,6 +57,9 @@ export const Filters: FC<Props> = ({ onDone, className }) => {
       baseNotes: filters.baseNotes,
       concentration: filters.concentration,
     });
+    if (filters.prices.priceFrom == null && filters.prices.priceTo == null) {
+      setPriceDirty(false);
+    }
   }, [filters, bounds.priceFrom, bounds.priceTo]);
 
   const updateLocalFilter = <
@@ -98,14 +102,21 @@ export const Filters: FC<Props> = ({ onDone, className }) => {
         priceTo: Math.max(clampedFrom, clampedTo),
       },
     }));
+    setPriceDirty(true);
   };
 
   const updatePrices = (range: number[]) => setPriceRange(range[0], range[1]);
 
   const applyFilters = () => {
+    const shouldApplyPrices =
+      priceDirty ||
+      filters.prices.priceFrom != null ||
+      filters.prices.priceTo != null;
+
     filters.setFilters({
       ...filters,
       ...localFilters,
+      prices: shouldApplyPrices ? localFilters.prices : {},
     });
 
     filters.setCurrentPage(1);

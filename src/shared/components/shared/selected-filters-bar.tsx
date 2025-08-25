@@ -2,6 +2,7 @@
 import { X } from "lucide-react";
 import { Button } from "@/src/shared/components/ui/button";
 import { cn } from "@/src/shared/lib/utils";
+import { useTranslations } from "next-intl";
 
 export type FilterToken =
   | { type: "price"; value: { priceFrom?: number; priceTo?: number }; label: string; key: string }
@@ -20,6 +21,7 @@ export function SelectedFiltersBar({
   onClearAll?: () => void;
   className?: string;
 }) {
+  const t = useTranslations("SelectedFiltersBar");
   if (!tokens.length) return null;
   return (
     <div className={cn("flex flex-wrap gap-2 items-center border rounded-lg p-3 bg-white", className)}>
@@ -42,7 +44,7 @@ export function SelectedFiltersBar({
       ))}
       {onClearAll && (
         <Button type="button" variant="ghost" className="ml-auto h-8 px-2 text-sm" onClick={onClearAll}>
-          Сбросить всё
+          {t("clearAll")}
         </Button>
       )}
     </div>

@@ -284,5 +284,9 @@
   },
   "YouMayLike": {
     "title": "Vielleicht interessiert"
+  },
+
+  "SelectedFiltersBar": {
+    "clearAll": "Alle entfernen"
   }
 }

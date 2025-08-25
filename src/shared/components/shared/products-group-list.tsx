@@ -23,18 +23,12 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
     state.category,
     state.productGroup,
   ]);
-  // const activeCategory = categories.find((item) => item.id === category);
   const activeProductGroup = productGroups.find(
     (item) => item.id === productGroup
   );
 
   const locale = useLocale();
-  // const title = activeCategory
-  //   ? (locale === "ru"
-  //       ? activeCategory?.labelRu
-  //       : activeCategory?.labelDe
-  //     )?.toUpperCase()
-  //   : "";
+
   const subTitle = activeProductGroup
     ? (locale === "ru"
         ? activeProductGroup?.labelRu

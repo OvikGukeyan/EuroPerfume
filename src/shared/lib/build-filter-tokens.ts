@@ -36,7 +36,7 @@ export function buildFilterTokens(
 
   if(f.classification.size > 0){
     f.classification.forEach((val) => {
-      const label = availableFilters.classifications ? availableFilters.classifications.find((f) => f.value === val)?.[locale] : val;
+      const label = availableFilters?.classifications ? availableFilters?.classifications.find((f) => f.value === val)?.[locale] : val;
       add({ type: "classification", value: val, label: label || val, key: `classification:${val}` });
     })
   }

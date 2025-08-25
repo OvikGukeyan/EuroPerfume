@@ -285,5 +285,9 @@
   },
   "YouMayLike": {
     "title": "Вам может понравиться"
+  },
+
+  "SelectedFiltersBar": {
+    "clearAll": "Очистить все"
   }
 }
