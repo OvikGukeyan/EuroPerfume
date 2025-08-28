@@ -21,6 +21,7 @@ export const getRecentReviews = async (): Promise<RecentReviewDTO[]> => {
           include: {
             variations: true,
             productGroup: true,
+            brand: true,
           },
         },
       },

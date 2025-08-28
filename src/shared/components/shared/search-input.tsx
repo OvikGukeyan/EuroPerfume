@@ -239,11 +239,14 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
               >
                 <Image
                   src={product.imageUrl[0] || product.variations[0].imageUrl}
-                  width={25}
-                  height={25}
+                  width={30}
+                  height={30}
                   alt={product.name}
                 />
-                <span>{product.name}</span>
+                <div className="flex flex-col gap-1">
+                  <span>{product.brand.name}</span>
+                  <span>{product.name}</span>
+                </div>
               </Link>
             ))}
           </div>

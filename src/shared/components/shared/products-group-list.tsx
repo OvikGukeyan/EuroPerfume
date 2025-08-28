@@ -75,6 +75,7 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
                 isFavorite={items.some((item) => item.productId === product.id)}
                 toggleIsFavorite={addFavoritesItem}
                 reviews={product.reviews}
+                brand={product.brand}
               />
             ))}
       </div>

@@ -7,6 +7,7 @@ import { Button } from "../ui";
 import { Heart } from "lucide-react";
 import { HeartBlack } from "@/src/shared/icons";
 import {
+  Brand,
   PerfumeConcentration,
   ProductGroup,
   ProductVariation,
@@ -32,6 +33,7 @@ interface Props {
   isFavorite: boolean;
   toggleIsFavorite: (id: number) => void;
   reviews?: Review[];
+  brand: Brand;
   className?: string;
 }
 
@@ -48,6 +50,7 @@ export const ProductCaruselItem: React.FC<Props> = ({
   isFavorite,
   toggleIsFavorite,
   reviews,
+  brand,
 }) => {
   const onToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -114,7 +117,12 @@ export const ProductCaruselItem: React.FC<Props> = ({
       )}
       <Link href={`/product/${id}`}>
         <div className="h-28">
-          <Title text={name} size="xs" className="md:text-lg mt-2 font-bold" />
+          <Title
+            text={brand.name}
+            size="xs"
+            className="md:text-lg mt-2 font-bold"
+          />
+          <Title text={name} size="xs" className="md:text-md mt-1 font-bold" />
           <p className="text-sm">
             {concentratioName || productGroup?.[labelLocale]}
           </p>

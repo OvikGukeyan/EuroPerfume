@@ -13,6 +13,7 @@ export const getDiscountedItems = async (): Promise<SelectedProductDTO[]> => {
         variations: true,
         productGroup: true,
         reviews: true,
+        brand: true,
       },
       take: 24,
     });

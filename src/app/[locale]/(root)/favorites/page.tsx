@@ -13,6 +13,7 @@ export default function Favorites() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-[50px] p-10">
           {items.map((item) => (
             <ProductCard
+              brand={item.brand}
               productGroup={item.productGroup}
               key={item.id}
               id={item.productId}

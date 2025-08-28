@@ -60,6 +60,7 @@ export const Filters: FC<Props> = ({ onDone, className }) => {
     if (filters.prices.priceFrom == null && filters.prices.priceTo == null) {
       setPriceDirty(false);
     }
+    
   }, [filters, bounds.priceFrom, bounds.priceTo]);
 
   const updateLocalFilter = <

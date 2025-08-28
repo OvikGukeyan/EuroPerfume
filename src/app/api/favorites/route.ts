@@ -24,6 +24,7 @@ export async function GET(req: NextRequest) {
               include: {
                 variations: true,
                 productGroup: true,
+                brand: true,
               },
             },
           },

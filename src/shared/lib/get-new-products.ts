@@ -14,6 +14,7 @@ export const getNewProducts = async (): Promise<SelectedProductDTO[]> => {
             variations: true,
             productGroup: true,
             reviews: true,
+            brand: true,
           },
         });
 

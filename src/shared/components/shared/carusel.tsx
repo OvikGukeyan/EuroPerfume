@@ -19,7 +19,7 @@ interface Props {
   className?: string;
 }
 export const Carusel: FC<Props> = ({ slides }) => {
-  const autoplayPlugin = useMemo(() => Autoplay({ delay: 4000 }), []);
+  const autoplayPlugin = useMemo(() => Autoplay({ delay: 6000 }), []);
   const locale = useLocale();
   const language = locale === "de" ? Languages.DE : Languages.RU;
   
