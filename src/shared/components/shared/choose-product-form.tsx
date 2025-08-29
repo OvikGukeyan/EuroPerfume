@@ -156,8 +156,13 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
       <div className="w-full flex flex-col justify-between lg:w-3/5  bg-[#f2f2f2] p-1 md:p-7">
         <div>
           <Title
-            text={product.name}
+            text={product.brand.name}
             size="md"
+            className="font-extrabold mb-2"
+          />
+          <Title
+            text={product.name}
+            size="sm"
             className="font-extrabold mb-2"
           />
 

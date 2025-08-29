@@ -11,6 +11,7 @@ export async function GET(req: NextRequest) {
         },
         include: {
             variations: true,
+            brand: true,
         },
     });
     return NextResponse.json(products);
