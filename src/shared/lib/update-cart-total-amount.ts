@@ -52,7 +52,7 @@ export const updateCartTotalAmount = async (token: string) => {
     0
   );
 
-  return await prisma.cart.update({
+  const cart = await prisma.cart.update({
     where: {
       id: userCart.id,
     },
@@ -71,4 +71,20 @@ export const updateCartTotalAmount = async (token: string) => {
       },
     },
   });
+
+  const safeCart = {
+    ...cart,
+    totalAmount: cart.totalAmount.toNumber(),
+    items: cart.items.map((item) => ({
+      ...item,
+      product: {
+        ...item.product,
+        price: item.product.price.toNumber(),
+        discountPrice:
+          item.product.discountPrice && item.product.discountPrice.toNumber(),
+      },
+    })),
+  };
+
+  return safeCart;
 };
