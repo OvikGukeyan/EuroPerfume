@@ -1,9 +1,10 @@
 import { Nunito } from "next/font/google";
 import "../globals.css";
-import { Providers } from "@/src/shared/components";
+import { CookieConsentModal, Providers } from "@/src/shared/components";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/src/i18n/routing";
+import { cookies } from "next/headers";
 
 const nunito = Nunito({
   subsets: ["cyrillic"],
@@ -22,6 +23,8 @@ export default async function RootLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
+  const consentCookie = (await cookies()).get('cookie-consent')?.value ?? null
+
   return (
     <html lang="en">
       <head>
@@ -32,7 +35,9 @@ export default async function RootLayout({
         <NextIntlClientProvider>
           <Providers>{children}</Providers>
         </NextIntlClientProvider>
+        {/* <CookieConsentModal  /> */}
       </body>
+
     </html>
   );
 }
