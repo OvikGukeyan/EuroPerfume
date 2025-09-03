@@ -74,7 +74,7 @@
       "zip": "PLZ",
       "postNumber": "Postnummer",
       "packstationNumber": "Packstationnummer",
-      "officeNumber": "Postfilialenummer" 
+      "officeNumber": "Postfilialenummer"
     },
     "sidebar": {
       "totalPriceLabel": "Gesamtpreis:",
@@ -256,7 +256,7 @@
     "copyright": "EuroPerfume 2024. Alle Rechte vorbehalten."
   },
 
-  "SocialMedia":{
+  "SocialMedia": {
     "follow": "Folgen Sie unsere Social-Media-Plattformen"
   },
 
@@ -288,5 +288,39 @@
 
   "SelectedFiltersBar": {
     "clearAll": "Alle entfernen"
+  },
+
+  "CookiesInfo": {
+    "title": "Verwendung von Cookies",
+    "necessary": {
+      "title": "Notwendige Cookies",
+      "description": "Wir verwenden nur notwendige Cookies, die für das einwandfreie Funktionieren der Website erforderlich sind.",
+      "items": [
+        "Gewährleisten die Sicherheit",
+        "Speichern Ihre Einstellungen",
+        "Unterstützen die stabile Funktion der Grundfunktionen"
+      ]
+    },
+    "experience": {
+      "title": "Verbesserung der Benutzererfahrung",
+      "description": "Cookies helfen uns, die Nutzung der Website komfortabler zu gestalten.",
+      "items": [
+        "Beschleunigen das Laden von Seiten",
+        "Speichern ausgewählte Einstellungen bei erneuten Besuchen"
+      ]
+    },
+    "privacy": {
+      "title": "Datenschutz",
+      "description": "Wir verwenden keine externen Marketing- oder Analyse-Cookies. Ihre Daten werden nicht an Werbenetzwerke weitergegeben."
+    }
+  },
+
+  "CookieConsent": {
+    "title": "Cookies",
+    "p1": "Wir verwenden nur unbedingt erforderliche Cookies, die für den ordnungsgemäßen Betrieb der Website notwendig sind. Sie gewährleisten Sicherheit, speichern Ihre Einstellungen und unterstützen die stabile Funktion der Kernfeatures.",
+    "p2": "Darüber hinaus nutzen wir Cookies, um Ihre Nutzererfahrung zu verbessern – z. B. schnellere Ladezeiten und das Beibehalten Ihrer Einstellungen bei erneuten Besuchen.",
+    "p3": "Wir verwenden keine externen Marketing- oder Analyse-Cookies; Ihre Daten werden nicht an Werbenetzwerke weitergegeben.",
+    "more": "Mehr erfahren",
+    "accept": "Zustimmen"
   }
 }

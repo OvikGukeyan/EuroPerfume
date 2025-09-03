@@ -42,5 +42,13 @@ export const links = [
         de: "AGB",
       },
       href: "/agb",
+    },
+
+    {
+      label: {
+        ru: "Cookies",
+        de: "Cookies",
+      },
+      href: "/cookies-info",
     }
   ];

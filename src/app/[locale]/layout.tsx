@@ -23,7 +23,7 @@ export default async function RootLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
-  const consentCookie = (await cookies()).get('cookie-consent')?.value ?? null
+  const consentCookie = (await cookies()).get("cookie-consent")?.value ?? null;
 
   return (
     <html lang="en">
@@ -33,11 +33,12 @@ export default async function RootLayout({
 
       <body className={nunito.className}>
         <NextIntlClientProvider>
-          <Providers>{children}</Providers>
+          <Providers>
+            {children}
+            <CookieConsentModal />
+          </Providers>
         </NextIntlClientProvider>
-        {/* <CookieConsentModal  /> */}
       </body>
-
     </html>
   );
 }
