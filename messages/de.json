@@ -321,6 +321,11 @@
     "p2": "Darüber hinaus nutzen wir Cookies, um Ihre Nutzererfahrung zu verbessern – z. B. schnellere Ladezeiten und das Beibehalten Ihrer Einstellungen bei erneuten Besuchen.",
     "p3": "Wir verwenden keine externen Marketing- oder Analyse-Cookies; Ihre Daten werden nicht an Werbenetzwerke weitergegeben.",
     "more": "Mehr erfahren",
-    "accept": "Zustimmen"
+    "accept": "Zustimmen",
+    "moreInfo": {
+      "0": "Wir verwenden Cookies, um die Leistung der Website zu optimieren.",
+      "1": "Cookies helfen uns, Ihre Einstellungen zwischen den Besuchen zu speichern.",
+      "2": "Sie können Cookies jederzeit in den Einstellungen Ihres Browsers löschen."
+    }
   }
 }

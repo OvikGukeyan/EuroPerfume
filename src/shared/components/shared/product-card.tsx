@@ -154,7 +154,7 @@ export const ProductCard: React.FC<Props> = ({
       <Link href={`/product/${id}`}>
         <div className="h-32">
           <Title text={brand.name} size="xs" className="md:text-lg mt-2 font-bold" />
-          <Title text={name} size="xs" className="md:text-md mt-1 font-bold" />
+          <Title text={name} size="xs" className="md:text-md mt-1 font-semibold" />
           <p className="text-sm">
             {concentratioName || productGroup?.[labelLocale]}
           </p>
