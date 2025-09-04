@@ -44,11 +44,11 @@ export const links = [
       href: "/agb",
     },
 
-    {
-      label: {
-        ru: "Cookies",
-        de: "Cookies",
-      },
-      href: "/cookies-info",
-    }
+    // {
+    //   label: {
+    //     ru: "Cookies",
+    //     de: "Cookies",
+    //   },
+    //   href: "/cookies-info",
+    // }
   ];

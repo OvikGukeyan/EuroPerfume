@@ -45,7 +45,7 @@ export const productGroups = [
   },
   {
     labelRu: "Атомайзеры",
-    labelDe: "Atomizer",
+    labelDe: "Parfümzerstäuber",
     id: 4,
     categoryId: 1,
   },
