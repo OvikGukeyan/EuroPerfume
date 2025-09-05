@@ -74,7 +74,7 @@ export function CookieConsentModal() {
             </Button>
           )}
           <Button
-            className="bg-tertiary hover:bg-tertiary-hover"
+            className="bg-green-500 hover:bg-tertiary-hover"
             onClick={handleAccept}
           >
             {t("accept")}
