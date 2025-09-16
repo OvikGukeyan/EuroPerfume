@@ -83,6 +83,7 @@ export { SelectedFiltersBar } from './selected-filters-bar';
 export { SelectedFiltersContainer } from './selected-filters-container';
 export {ChatBotDrawer} from './chat-bot';
 export {CookieConsentModal} from './cookie-consent-modal';
+export {SubmitPriceButton} from './submit-price-button';
 
 export * from './email-templates';
 export * from './form';

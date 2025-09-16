@@ -36,6 +36,7 @@ export const ProductGroupSelect: FC<Props> = ({
       )}
     >
       <FormSelect
+        title="Группу продуктов"
         name="productGroupId"
         control={control}
         items={productGroups

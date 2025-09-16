@@ -317,9 +317,9 @@ export const CreateProductForm: FC<Props> = ({
                   <FormItem className="mb-5">
                     <FormControl>
                       <FormInput
-                        label={"Product Name"}
+                        label={"Название продукта"}
                         {...field}
-                        placeholder="Product Name"
+                        placeholder="Название продукта"
                       />
                     </FormControl>
                   </FormItem>
@@ -334,9 +334,9 @@ export const CreateProductForm: FC<Props> = ({
                     <FormItem className="mb-5">
                       <FormControl>
                         <FormInput
-                          label={"Brand Country Ru"}
+                          label={"Страна бренда Ru"}
                           {...field}
-                          placeholder="Brand Country"
+                          placeholder="Страна бренда"
                         />
                       </FormControl>
                     </FormItem>
@@ -350,9 +350,9 @@ export const CreateProductForm: FC<Props> = ({
                     <FormItem className="mb-5">
                       <FormControl>
                         <FormInput
-                          label={"Brand Country De"}
+                          label={"Страна бренда De"}
                           {...field}
-                          placeholder="Brand Country"
+                          placeholder="Страна бренда"
                         />
                       </FormControl>
                     </FormItem>
@@ -368,9 +368,9 @@ export const CreateProductForm: FC<Props> = ({
                     <FormItem className="mb-5">
                       <FormControl>
                         <FormInput
-                          label={"Manufacturing Country Ru"}
+                          label={"Страна производства Ru"}
                           {...field}
-                          placeholder="Manufacturing Country"
+                          placeholder="Страна производства"
                         />
                       </FormControl>
                     </FormItem>
@@ -384,9 +384,9 @@ export const CreateProductForm: FC<Props> = ({
                     <FormItem className="mb-5">
                       <FormControl>
                         <FormInput
-                          label={"Manufacturing Country De"}
+                          label={"Страна производства De"}
                           {...field}
-                          placeholder="Manufacturing Country"
+                          placeholder="Страна производства"
                         />
                       </FormControl>
                     </FormItem>
@@ -401,9 +401,9 @@ export const CreateProductForm: FC<Props> = ({
                   <FormItem className="mb-5">
                     <FormControl>
                       <FormInput
-                        label={"Series"}
+                        label={"Серия продукта"}
                         {...field}
-                        placeholder="Product Series"
+                        placeholder="Серия продукта"
                       />
                     </FormControl>
                   </FormItem>
@@ -418,9 +418,9 @@ export const CreateProductForm: FC<Props> = ({
                     <FormControl>
                       <FormInput
                         type="number"
-                        label={"age"}
+                        label={"Возраст"}
                         {...field}
-                        placeholder="age"
+                        placeholder="Возраст"
                       />
                     </FormControl>
                   </FormItem>
@@ -432,7 +432,7 @@ export const CreateProductForm: FC<Props> = ({
                 control={form.control as Control<CreateProductFormValues>}
                 render={({ field }) => (
                   <FormItem className="mb-5">
-                    <FormLabel>Image</FormLabel>
+                    <FormLabel>Изображения</FormLabel>
                     <FormControl>
                       <Input
                         multiple
@@ -455,7 +455,7 @@ export const CreateProductForm: FC<Props> = ({
                 render={({ field }) => (
                   <FormItem className="mb-5">
                     <div className="flex items-center justify-between">
-                      <FormLabel>Video</FormLabel>
+                      <FormLabel>Видео</FormLabel>
                       {videoError && <Ban />}
                     </div>
 
@@ -481,7 +481,7 @@ export const CreateProductForm: FC<Props> = ({
                 control={form.control as Control<CreateProductFormValues>}
                 render={({ field }) => (
                   <FormItem className="mb-5">
-                    <FormLabel>Variations</FormLabel>
+                    <FormLabel>Вариации</FormLabel>
                     <FormControl>
                       <Input
                         multiple
@@ -506,9 +506,9 @@ export const CreateProductForm: FC<Props> = ({
                     <FormItem className="mb-5">
                       <FormControl>
                         <FormTextarea
-                          label="Description Ru"
+                          label="Описание Ru"
                           {...field}
-                          placeholder="Description"
+                          placeholder="Описание"
                         />
                       </FormControl>
                     </FormItem>
@@ -521,9 +521,9 @@ export const CreateProductForm: FC<Props> = ({
                     <FormItem className="mb-5">
                       <FormControl>
                         <FormTextarea
-                          label="Description De"
+                          label="Описание De"
                           {...field}
-                          placeholder="Description"
+                          placeholder="Описание"
                         />
                       </FormControl>
                     </FormItem>
@@ -535,7 +535,7 @@ export const CreateProductForm: FC<Props> = ({
                 control={form.control as Control<CreateProductFormValues>}
                 render={({ field }) => (
                   <FormItem className="mb-5">
-                    <FormLabel>Price</FormLabel>
+                    <FormLabel>Цена</FormLabel>
                     <FormControl>
                       <Input type="number" {...field} placeholder="Price" />
                     </FormControl>
@@ -544,6 +544,7 @@ export const CreateProductForm: FC<Props> = ({
               />
 
               <FormSelect
+                title="Пол"
                 name="gender"
                 control={form.control}
                 items={genders.map((item) => ({
@@ -567,6 +568,7 @@ export const CreateProductForm: FC<Props> = ({
                 error={metaError}
               />
               <FormSelect
+                title="Год выпуска"
                 name="releaseYear"
                 control={form.control}
                 items={yers}
@@ -583,15 +585,16 @@ export const CreateProductForm: FC<Props> = ({
                       <FormItem className="mb-5">
                         <FormControl>
                           <FormInput
-                            label={"Perfumer"}
+                            label={"Перфумер"}
                             {...field}
-                            placeholder="Perfumer"
+                            placeholder="Перфумер"
                           />
                         </FormControl>
                       </FormItem>
                     )}
                   />
                   <FormSelect
+                    title="Концентрация"
                     name="concentration"
                     control={form.control}
                     items={concentrations}
@@ -687,6 +690,7 @@ export const CreateProductForm: FC<Props> = ({
                   />
 
                   <FormSelect
+                    title="Гипоаллергенность"
                     name="hypoallergenic"
                     control={form.control}
                     items={[
@@ -703,9 +707,9 @@ export const CreateProductForm: FC<Props> = ({
                         <FormItem className="mb-5">
                           <FormControl>
                             <FormInput
-                              label={"Color Palette Ru"}
+                              label={"Цветовая палитра Ru"}
                               {...field}
-                              placeholder="Color Palette"
+                              placeholder="Цветовая палитра"
                             />
                           </FormControl>
                         </FormItem>
@@ -719,9 +723,9 @@ export const CreateProductForm: FC<Props> = ({
                         <FormItem className="mb-5">
                           <FormControl>
                             <FormInput
-                              label={"Color Palette De"}
+                              label={"Цветовая палитра De"}
                               {...field}
-                              placeholder="Color Palette"
+                              placeholder="Цветовая палитра"
                             />
                           </FormControl>
                         </FormItem>
@@ -750,9 +754,9 @@ export const CreateProductForm: FC<Props> = ({
                         <FormItem className="mb-5">
                           <FormControl>
                             <FormInput
-                              label={"Composition Features Ru"}
+                              label={"Особенности композиции Ru"}
                               {...field}
-                              placeholder="Composition Features"
+                              placeholder="Особенности композиции"
                             />
                           </FormControl>
                         </FormItem>
@@ -766,9 +770,9 @@ export const CreateProductForm: FC<Props> = ({
                         <FormItem className="mb-5">
                           <FormControl>
                             <FormInput
-                              label={"Composition Features De"}
+                              label={"Особенности композиции De"}
                               {...field}
-                              placeholder="Composition Features"
+                              placeholder="Особенности композиции"
                             />
                           </FormControl>
                         </FormItem>
@@ -784,9 +788,9 @@ export const CreateProductForm: FC<Props> = ({
                         <FormItem className="mb-5">
                           <FormControl>
                             <FormInput
-                              label={"Active Ingredients Ru"}
+                              label={"Активные ингредиенты Ru"}
                               {...field}
-                              placeholder="Active Ingredients"
+                              placeholder="Активные ингредиенты"
                             />
                           </FormControl>
                         </FormItem>
@@ -800,9 +804,9 @@ export const CreateProductForm: FC<Props> = ({
                         <FormItem className="mb-5">
                           <FormControl>
                             <FormInput
-                              label={"Active Ingredients De"}
+                              label={"Активные ингредиенты De"}
                               {...field}
-                              placeholder="Active Ingredients"
+                              placeholder="Активные ингредиенты"
                             />
                           </FormControl>
                         </FormItem>
@@ -818,9 +822,9 @@ export const CreateProductForm: FC<Props> = ({
                         <FormItem className="mb-5">
                           <FormControl>
                             <FormInput
-                              label={"Certificates Ru"}
+                              label={"Сертификаты Ru"}
                               {...field}
-                              placeholder="Certificates"
+                              placeholder="Сертификаты"
                             />
                           </FormControl>
                         </FormItem>
@@ -834,9 +838,9 @@ export const CreateProductForm: FC<Props> = ({
                         <FormItem className="mb-5">
                           <FormControl>
                             <FormInput
-                              label={"Certificates De"}
+                              label={"Сертификаты De"}
                               {...field}
-                              placeholder="Certificates"
+                              placeholder="Сертификаты"
                             />
                           </FormControl>
                         </FormItem>
@@ -852,9 +856,9 @@ export const CreateProductForm: FC<Props> = ({
                         <FormItem className="mb-5">
                           <FormControl>
                             <FormInput
-                              label={"Ethics Ru"}
+                              label={"Этика Ru"}
                               {...field}
-                              placeholder="Ethics"
+                              placeholder="Этика"
                             />
                           </FormControl>
                         </FormItem>
@@ -868,9 +872,9 @@ export const CreateProductForm: FC<Props> = ({
                         <FormItem className="mb-5">
                           <FormControl>
                             <FormInput
-                              label={"Ethics De"}
+                              label={"Этика De"}
                               {...field}
-                              placeholder="Ethics"
+                              placeholder="Этика"
                             />
                           </FormControl>
                         </FormItem>
@@ -882,7 +886,7 @@ export const CreateProductForm: FC<Props> = ({
                     control={form.control as Control<CreateProductFormValues>}
                     render={({ field }) => (
                       <FormItem className="mb-5">
-                        <FormLabel>Effect Duration</FormLabel>
+                        <FormLabel>Длительность эффекта</FormLabel>
                         <FormControl>
                           <Input type="number" {...field} />
                         </FormControl>
@@ -970,9 +974,9 @@ export const CreateProductForm: FC<Props> = ({
                       <FormItem className="mb-5">
                         <FormControl>
                           <FormInput
-                            label={"Size"}
+                            label={"Размер"}
                             {...field}
-                            placeholder="Size"
+                            placeholder="Размер"
                           />
                         </FormControl>
                       </FormItem>
@@ -986,9 +990,9 @@ export const CreateProductForm: FC<Props> = ({
                         <FormItem className="mb-5">
                           <FormControl>
                             <FormInput
-                              label={"Material Ru"}
+                              label={"Материал Ru"}
                               {...field}
-                              placeholder="Material"
+                              placeholder="Материал"
                             />
                           </FormControl>
                         </FormItem>
@@ -1002,9 +1006,9 @@ export const CreateProductForm: FC<Props> = ({
                         <FormItem className="mb-5">
                           <FormControl>
                             <FormInput
-                              label={"Material De"}
+                              label={"Материал De"}
                               {...field}
-                              placeholder="Material"
+                              placeholder="Материал"
                             />
                           </FormControl>
                         </FormItem>

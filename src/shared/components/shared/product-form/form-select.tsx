@@ -20,8 +20,9 @@ interface Props {
   control: Control<CreateProductFormValues>;
   items: { name: string; value: string }[];
   name: keyof CreateProductFormValues;
+  title: string;
 }
-export const FormSelect: FC<Props> = ({ control, items, name }) => {
+export const FormSelect: FC<Props> = ({ control, items, name, title }) => {
   const [searchValue, setSearchValue] = React.useState("");
   return (
     <FormField
@@ -30,7 +31,7 @@ export const FormSelect: FC<Props> = ({ control, items, name }) => {
       render={({ field }) => {
         return (
           <FormItem className="mb-5">
-            <FormLabel>{`Select a ${name}`}</FormLabel>
+            <FormLabel>{`Введите ${title}`}</FormLabel>
             <Select
               onValueChange={field.onChange}
               value={field.value ? field.value.toString() : ""}

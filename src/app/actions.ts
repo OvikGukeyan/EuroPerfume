@@ -909,13 +909,14 @@ export async function changeProductPrice(formData: FormData) {
     if (!id || (!price && !discountPrice)) {
       throw new Error("Missing required fields");
     }
-    await prisma.product.update({
+    const res = await prisma.product.update({
       where: { id: Number(id) },
       data: {
         price: price ? Number(price) : undefined,
         discountPrice: discountPrice ? Number(discountPrice) : undefined,
       },
     });
+    console.log("Product updated:", res);
   } catch (error) {
     console.error("Error [CHANGE_PRODUCT_PRICE]", error);
     throw error;
