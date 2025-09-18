@@ -167,7 +167,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
           />
 
           <Separator />
-          {product.variations.length > 1 && (
+          {product.variations.length && (
             <ChooseVariation
               setActiveVariationId={setActiveVariationId}
               activeVariationId={activeVariationId}

@@ -4,6 +4,7 @@ import { cn } from "@/src/lib/utils";
 import { ProductVariation } from "@prisma/client";
 import { Button } from "../ui";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { it } from "node:test";
 
 type Props = {
   className?: string;
@@ -45,12 +46,12 @@ export const ChooseVariation: FC<Props> = ({
         className
       )}
     >
-      <button
+     {items.length > 1 && <button
         className="absolute left-0 hidden md:block"
         onClick={() => scroll("left")}
       >
         <ChevronLeft size={15} />
-      </button>
+      </button>}
       <div
         ref={scrollContainerRef}
         style={{ scrollbarWidth: "none" }}
@@ -68,12 +69,12 @@ export const ChooseVariation: FC<Props> = ({
           </Button>
         ))}
       </div>
-      <button
+      { items.length > 1 &&<button
         className="absolute right-0 hidden md:block"
         onClick={() => scroll("right")}
       >
         <ChevronRight size={15} />
-      </button>
+      </button>}
     </div>
   );
 };
