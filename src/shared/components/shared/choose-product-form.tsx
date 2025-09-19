@@ -129,14 +129,19 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
       (t) => t.language.toLocaleLowerCase() === locale.toLocaleLowerCase()
     )?.description || "";
 
+  const activeIngredients =
+    product.translations.find(
+      (t) => t.language.toLocaleLowerCase() === locale.toLocaleLowerCase()
+    )?.activeIngredients || "";
+
   return (
     <div
       className={cn(
-        "flex flex-col lg:flex-row flex-1 max-w-[100vw]",
+        "flex flex-col lg:flex-row flex-1 max-w-[100vw] bg-[#f2f2f2] ",
         className
       )}
     >
-      <div className="flex  items-center justify-center flex-1 relative w-full lg:w-2/5 bg-[#f2f2f2] p-2 min-h-[400px]">
+      <div className="flex  items-center justify-center flex-1 relative w-full  lg:w-2/5 bg-[#f2f2f2] p-2  min-h-[500px] self-start">
         {media.length > 1 || variationsMedia.length > 1 ? (
           <ProductCarousel
             slides={media.length > 1 ? media : variationsMedia}
@@ -167,7 +172,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
           />
 
           <Separator />
-          {product.variations.length && (
+          {product.variations.length > 0 && (
             <ChooseVariation
               setActiveVariationId={setActiveVariationId}
               activeVariationId={activeVariationId}
@@ -186,28 +191,45 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
               className="w-full"
               ref={reviewsRef}
             >
-              <TabsList className="grid w-full grid-cols-3 md:grid-cols-2 h-16">
+              <TabsList
+                className={cn(
+                  "grid w-full gap-4 h-24 mb-7",
+                  activeIngredients.length ? "grid-cols-2 md:grid-cols-3": "md:grid-cols-2 grid-cols-3",
+                )}
+              >
                 <TabsTrigger className="h-10" value="characteristics">
                   {t("characteristics")}
                 </TabsTrigger>
                 <TabsTrigger className="h-10" value="description">
                   {t("description")}
                 </TabsTrigger>
-
+                {activeIngredients && (
+                  <TabsTrigger className="h-10" value="activeIngredients">
+                    {t("activeIngredients")}
+                  </TabsTrigger>
+                )}
                 <TabsTrigger className="h-10 md:hidden" value="comments">
                   {t("comments")}
                 </TabsTrigger>
               </TabsList>
               <TabsContent className="w-full" value="characteristics">
-                <ProductCharacteristics
-                  charactiristics={charactiristics.filter(
-                    (c) => c.name !== "Description"
-                  )}
-                />
+                <ProductCharacteristics charactiristics={charactiristics} />
               </TabsContent>
               <TabsContent className="w-full min-h-[200px]" value="description">
                 <Text size="md" className="my-4">
                   {description.split(/\n\s*\n/).map((paragraph, idx) => (
+                    <p key={idx} className="mb-4 leading-relaxed text-gray-800">
+                      {paragraph.trim()}
+                    </p>
+                  ))}
+                </Text>
+              </TabsContent>
+              <TabsContent
+                className="w-full min-h-[200px]"
+                value="activeIngredients"
+              >
+                <Text size="md" className="my-4">
+                  {activeIngredients.split(/\n\s*\n/).map((paragraph, idx) => (
                     <p key={idx} className="mb-4 leading-relaxed text-gray-800">
                       {paragraph.trim()}
                     </p>

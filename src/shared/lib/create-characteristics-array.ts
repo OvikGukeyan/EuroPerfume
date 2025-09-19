@@ -95,10 +95,7 @@ export const createCharacteristicsArray = (
       name: (locale === "ru" ? "Состав" : "Zusammenstellung"),
       value: translation?.compositionFeatures || undefined,
     },
-    {
-      name: (locale === "ru" ? "Активные ингредиенты" : "Aktive Zutaten"),
-      value: translation?.activeIngredients || undefined,
-    },
+    
     { name: (locale === "ru" ? "Эффект" : "Effekt"), value: currentEffect || undefined },
     { name: (locale === "ru" ? "Продолжительность эффекта" : "Dauer des Effekts"), value: effectDuration?.toString() || undefined },
     { name: (locale === "ru" ? "Гипоаллергенность" : "Hypoallergeneit"), value: isHypoallergenic },
@@ -112,6 +109,7 @@ export const createCharacteristicsArray = (
     { name: (locale === "ru" ? "Объем" : "Volumen"), value: volume?.toString() || undefined },
     { name: (locale === "ru" ? "Тип кожи" : "Köhltyp"), value: currentSkinType || undefined },
     { name: (locale === "ru" ? "Материал" : "Material"), value: translation?.material || undefined },
+  
   ];
 
   return characteristics.filter(

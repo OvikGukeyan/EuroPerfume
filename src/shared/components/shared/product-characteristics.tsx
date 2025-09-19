@@ -23,7 +23,7 @@ export const ProductCharacteristics: FC<Props> = ({
           {charactiristics.map((characteristic) => (
             <li
               key={characteristic.name}
-              className="break-inside-avoid flex justify-between  px-2 py-1 even:bg-gray-100 odd:bg-white"
+              className="break-inside-avoid flex justify-between  px-2 py-1 even:bg-gray-100 odd:bg-white "
             >
               <span className="font-bold mr-2 w-1/2">
                 {characteristic.name}:{" "}

@@ -36,8 +36,11 @@ export const Footer: FC<Props> = ({ className }) => {
       <div className="flex items-center justify-between gap-5 mt-20">
         <h5>EuroPerfume 2024. Alle Rechte vorbehalten.</h5>
         <div className="flex gap-3">
-          <Link href="/privacy-policy">
+          <Link href="/data-protection">
             <p>Datenschutz</p>
+          </Link>
+          <Link href="/cookies-info">
+            <p>Cookies</p>
           </Link>
           <Link href="/impressum">
             <p>Impressum</p>
