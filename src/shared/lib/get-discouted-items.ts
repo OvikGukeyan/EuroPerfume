@@ -8,6 +8,7 @@ export const getDiscountedItems = async (): Promise<SelectedProductDTO[]> => {
         discountPrice: {
           not: null,
         },
+        available: true,
       },
       include: {
         variations: true,

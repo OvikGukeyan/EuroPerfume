@@ -6,6 +6,9 @@ import { SelectedProductDTO } from "./get-popular-products";
 export const getNewProducts = async (): Promise<SelectedProductDTO[]> => {
     try {
         const newProducts = await prisma.product.findMany({
+          where: {
+            available: true,
+          },
           orderBy: {
             createdAt: "desc",
           },
