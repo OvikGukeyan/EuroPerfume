@@ -34,7 +34,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { items, removeOrder, changeOrderStatus, loading } = useOrders();
   const router = useRouter();
-
+  console.log(items);
   return (
     <div className={cn("", className)}>
       <div
@@ -84,7 +84,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                   <OrderItemsPopover order={order} />
                 </div>
               </TableCell>
-              <TableCell>{order.totalAmount}</TableCell>
+              <TableCell>{order.totalAmount} </TableCell>
               <TableCell>{order.fullName}</TableCell>
               <TableCell>{order.phone}</TableCell>
               <TableCell>{order.contactForm}</TableCell>

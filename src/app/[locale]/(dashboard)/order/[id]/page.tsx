@@ -16,6 +16,11 @@ export default async function Order({
       items: {
         include: {
           variation: true,
+          product: {
+            include: {
+              brand: true,
+            },
+          },
         },
       },
       user: true,
@@ -40,7 +45,7 @@ export default async function Order({
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Общая сумма:{" "}
           <span className="font-bold mr-2 w-1/2">
-            {Number(order?.totalAmount)}
+            {Number(order?.totalAmount)} €
           </span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
@@ -50,6 +55,7 @@ export default async function Order({
               .map(
                 item => (
                   <div className="flex justify-between" key={item.id}>
+                    <p>{item.product?.brand?.name}</p>
                     <p>{item.name}</p>
                     <p>{item.variation && item.variation.name}</p>
                     <p>{item.quantity}</p>

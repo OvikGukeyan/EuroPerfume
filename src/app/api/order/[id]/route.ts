@@ -23,7 +23,7 @@ export async function PATCH(req: NextRequest,  { params }: { params: Promise<{ i
             return NextResponse.json({ message: 'Order not found!' })
         }
 
-        await prisma.order.update({
+        const updatedOrder = await prisma.order.update({
             where: {
                 id
             },
@@ -32,9 +32,9 @@ export async function PATCH(req: NextRequest,  { params }: { params: Promise<{ i
             }
         })
 
-
         return NextResponse.json({
-            message: 'Order updated'
+            message: 'Order updated',
+            status: updatedOrder.status
         })
     } catch (error) {
         console.log('[ORDER PATCH] Server error', error);
