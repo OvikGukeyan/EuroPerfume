@@ -19,6 +19,7 @@ import { useInitFiltersFromUrl } from "@/src/shared/hooks";
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/src/i18n/navigation";
 import { useFiltersStore } from "../../store/filters";
+import { SHOP_SETTINGS } from "@/src/config/shop";
 interface Props {
   hasSearch?: boolean;
   hasCart?: boolean;
@@ -63,7 +64,7 @@ export const Header: React.FC<Props> = ({
       <div className="flex justify-between items-center px-3 bg-tertiary ">
         <div className="flex items-center gap-2 h-10   md:px-5 ">
           <Truck />
-          <h3 className="text-sm md:text-base">{t("freeDeliveryInfo")}</h3>
+          <h3 className="text-sm md:text-base">{t("freeDeliveryInfo", { amount: SHOP_SETTINGS.FREE_DELIVERY_AMOUNT })}</h3>
         </div>
         <LanguageSwitcher className="hidden md:block" />
       </div>

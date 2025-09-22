@@ -12,6 +12,7 @@ import { useTranslations } from "next-intl";
 import { FormControl, FormField, FormItem } from "../../ui/form";
 import { Control } from "react-hook-form";
 import { CheckoutFormValues } from "@/src/shared/constants";
+import { SHOP_SETTINGS } from "@/src/config/shop";
 
 interface Props {
   className?: string;
@@ -36,6 +37,8 @@ export const CheckoutSidebar: FC<Props> = ({
   onPromocodeSubmit,
   discount,
 }) => {
+  const isMinOrderAmount = totalAmount >= SHOP_SETTINGS.MIN_ORDER_EUR;
+
   const t = useTranslations("Checkout.sidebar");
 
   return (
@@ -116,11 +119,17 @@ export const CheckoutSidebar: FC<Props> = ({
           )}
         </Button>
       </div>
-
+      {!isMinOrderAmount && (
+        <div >
+          <p className="text-sm text-red-500">
+            {t("minOrder", { amount: SHOP_SETTINGS.MIN_ORDER_EUR })}
+          </p>
+        </div>
+      )}
       <Button
         loading={loading || itemLoading}
         type="submit"
-        disabled={!totalAmount}
+        disabled={!totalAmount || !isMinOrderAmount}
         className="w-full h-14 rounded-2xl mt-6 text-base font-bold bg-green-500"
       >
         {t("submitButton")}

@@ -6,7 +6,7 @@
   },
 
   "Header": {
-    "freeDeliveryInfo": "Kostenloser Versand für Bestellungen über 100 € !"
+    "freeDeliveryInfo": "Kostenloser Versand für Bestellungen über {amount} € !"
   },
 
   "Filters": {
@@ -44,7 +44,8 @@
     "total": "Gesamt",
     "checkout": "Zur Kasse",
     "freeShipping": "Kostenloser Versand",
-    "freeShippingRemaining": "Nur noch {amount} € bis zum kostenlosen Versand"
+    "freeShippingRemaining": "Nur noch {amount} € bis zum kostenlosen Versand",
+    "minOrder": "Mindestbestellwert {amount} €"
   },
 
   "Checkout": {
@@ -83,7 +84,8 @@
       "delivery": "Lieferung",
       "submitButton": "Bestellung abschicken",
       "promocode": "Promokode",
-      "discount": "Rabatt"
+      "discount": "Rabatt",
+      "minOrder": "Mindestbestellwert {amount} €"
     },
     "AddressInput": {
       "zip": "PLZ",

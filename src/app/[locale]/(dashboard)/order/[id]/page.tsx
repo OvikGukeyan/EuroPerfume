@@ -39,43 +39,41 @@ export default async function Order({
     <div className="my-4 px-7">
       <ul className="md:columns-2">
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Номер заказа:{" "}
+          Номер заказа:
           <span className="font-bold mr-2 w-1/2">{order?.id}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Общая сумма:{" "}
+          Общая сумма:
           <span className="font-bold mr-2 w-1/2">
             {Number(order?.totalAmount)} €
           </span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Товары:{" "}
+          Товары:
           <div className="flex flex-col font-bold mr-2 w-1/2">
-            {order?.items
-              .map(
-                item => (
-                  <div className="flex justify-between" key={item.id}>
-                    <p>{item.product?.brand?.name}</p>
-                    <p>{item.name}</p>
-                    <p>{item.variation && item.variation.name}</p>
-                    <p>{item.quantity}</p>
-                  </div>
-                )
-                  
-              )
-              }
+            {order?.items.map((item) => (
+              <div className="flex justify-between" key={item.id}>
+                <div className="flex flex-col">
+                  <p>{item.product?.brand?.name}</p>
+                  <p>{item.name}</p>
+                  <p>{item.variation && item.variation.name}</p>
+                </div>
+
+                <p>{item.quantity}</p>
+              </div>
+            ))}
           </div>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Имя покупателя:{" "}
+          Имя покупателя:
           <span className="font-bold mr-2 w-1/2">{order?.fullName}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Тип доставки:{" "}
+          Тип доставки:
           <span className="font-bold mr-2 w-1/2">{order?.deliveryType}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Статус заказа:{" "}
+          Статус заказа:
           <span className="font-bold mr-2 w-1/2">
             {OrderStatuses[order?.status as keyof typeof OrderStatuses]}
           </span>
@@ -84,11 +82,11 @@ export default async function Order({
           Телефон: <span className="font-bold mr-2 w-1/2">{order?.phone}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Электронная почта:{" "}
+          Электронная почта:
           <span className="font-bold mr-2 w-1/2">{order?.email}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Почтовый индекс:{" "}
+          Почтовый индекс:
           <span className="font-bold mr-2 w-1/2">{order?.zip}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
@@ -101,56 +99,54 @@ export default async function Order({
           Адрес: <span className="font-bold mr-2 w-1/2">{order?.address}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Комментарий:{" "}
+          Комментарий:
           <span className="font-bold mr-2 w-1/2">{order?.comment}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Имя получателя:{" "}
+          Имя получателя:
           <span className="font-bold mr-2 w-1/2">
             {order?.deliveryFullNmae}
           </span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Способ доставки:{" "}
+          Способ доставки:
           <span className="font-bold mr-2 w-1/2">
             {t(`delivery.${order?.shippingMethod}`)}
           </span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Индекс доставки:{" "}
+          Индекс доставки:
           <span className="font-bold mr-2 w-1/2">{order?.deliveryZip}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Страна доставки:{" "}
+          Страна доставки:
           <span className="font-bold mr-2 w-1/2">{order?.deliveryCountry}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Город доставки:{" "}
+          Город доставки:
           <span className="font-bold mr-2 w-1/2">{order?.deliveryCity}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Адрес доставки:{" "}
+          Адрес доставки:
           <span className="font-bold mr-2 w-1/2">{order?.deliveryAddress}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Форма связи:{" "}
+          Форма связи:
           <span className="font-bold mr-2 w-1/2">{order?.contactForm}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Номер Packstation:{" "}
+          Номер Packstation:
           <span className="font-bold mr-2 w-1/2">
             {order?.packstationNumber}
           </span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Почтовый номер:{" "}
+          Почтовый номер:
           <span className="font-bold mr-2 w-1/2">{order?.postNumber}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Дата оформления:{" "}
-          <span className="font-bold mr-2 w-1/2">
-            {convertedDate}
-          </span>
+          Дата оформления:
+          <span className="font-bold mr-2 w-1/2">{convertedDate}</span>
         </li>
       </ul>
     </div>

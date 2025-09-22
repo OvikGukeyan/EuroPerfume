@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import { cn } from "@/src/lib/utils";
 import { Progress } from "..";
 import { useTranslations } from "next-intl";
+import { SHOP_SETTINGS } from "@/src/config/shop";
 
 type Props = {
   className?: string;
@@ -9,9 +10,8 @@ type Props = {
 };
 
 export const FreeShippingProgress: FC<Props> = ({ className, totalAmount }) => {
-  const freeShippingAmount = 100;
-  const isFreeShipping = totalAmount >= freeShippingAmount;
-  const currentProgress = (totalAmount * 100) / freeShippingAmount;
+  const isFreeShipping = totalAmount >= SHOP_SETTINGS.FREE_DELIVERY_AMOUNT;
+  const currentProgress = (totalAmount * 100) / SHOP_SETTINGS.FREE_DELIVERY_AMOUNT;
   const t = useTranslations("Cart");
   return (
     <div
@@ -24,7 +24,7 @@ export const FreeShippingProgress: FC<Props> = ({ className, totalAmount }) => {
         {!isFreeShipping && (
           <span className="text-red-500">
             {t("freeShippingRemaining", {
-              amount: freeShippingAmount - totalAmount,
+              amount: SHOP_SETTINGS.FREE_DELIVERY_AMOUNT - totalAmount,
             })}
           </span>
         )}

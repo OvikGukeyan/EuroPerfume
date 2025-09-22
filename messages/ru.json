@@ -6,7 +6,7 @@
   },
 
   "Header": {
-    "freeDeliveryInfo": "Бесплатная доставка при заказе от 100 € !"
+    "freeDeliveryInfo": "Бесплатная доставка при заказе от {amount} € !"
   },
 
   "Filters": {
@@ -44,7 +44,8 @@
     "total": "Итого",
     "checkout": "Оформить заказ",
     "freeShipping": "Бесплатная доставка",
-    "freeShippingRemaining": "До бесплатной доставки осталось {amount} €"
+    "freeShippingRemaining": "До бесплатной доставки осталось {amount} €",
+    "minOrder": "Минимальная сумма заказа {amount} €"
   },
 
   "Checkout": {
@@ -83,7 +84,8 @@
       "delivery": "Доставка",
       "submitButton": "Подтвердить заказ",
       "promocode": "Промокод",
-      "discount": "Скидка"
+      "discount": "Скидка",
+      "minOrder": "Минимальная сумма заказа {amount} €"
     },
     "AddressInput": {
       "zip": "Почтовый индекс",

@@ -17,6 +17,8 @@ import { CartDrawerItem, FreeShippingProgress, Title } from ".";
 import { useCart } from "@/src/shared/hooks";
 import { useTranslations } from "use-intl";
 import { Link } from "@/src/i18n/navigation";
+import { is } from "date-fns/locale";
+import { SHOP_SETTINGS } from "@/src/config/shop";
 
 export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
   const {
@@ -33,7 +35,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
     id: number,
     quantity: number,
     type: "plus" | "minus",
-    productGroup: number,
+    productGroup: number
   ) => {
     const isDraft = productGroup < 4;
     if (isDraft && quantity < 3 && type === "minus") {
@@ -43,6 +45,9 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
     updateItemQuantity(id, newQuantity);
   };
 
+
+  const isMinOrderAmount = totalAmount >= SHOP_SETTINGS.MIN_ORDER_EUR;
+
   const t = useTranslations("Cart");
   return (
     <Sheet>
@@ -50,10 +55,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
       <SheetContent className="flex flex-col justify-between pb-0 bg-[#F4F1EE]">
         {totalAmount > 0 && (
           <SheetHeader>
-            <SheetTitle>
-            {t('title', { count: items.length })}
-            
-            </SheetTitle>
+            <SheetTitle>{t("title", { count: items.length })}</SheetTitle>
           </SheetHeader>
         )}
 
@@ -98,7 +100,12 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                     disabled={item.disabled}
                     productGroupLabel={item.productGroup?.labelRu}
                     onClickCountButton={(type) =>
-                      onClickCountButton(item.id, item.quantity, type,  item.productGroup?.id as number)
+                      onClickCountButton(
+                        item.id,
+                        item.quantity,
+                        type,
+                        item.productGroup?.id as number
+                      )
                     }
                     variation={item.variationName}
                     onClickRemove={() => removeCartItem(item.id)}
@@ -109,6 +116,9 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
 
             <SheetFooter className="-mx-6 bg-white p-8">
               <div className="w-full">
+               { !isMinOrderAmount && <div className="mb-4">
+                  <p className="text-sm text-red-500">{t("minOrder", { amount: SHOP_SETTINGS.MIN_ORDER_EUR })}</p>
+                </div>}
                 <div className="flex mb-4">
                   <span className="flex flex-1 text-lg text-neutral-500">
                     <span>{t("total")}</span>
@@ -124,6 +134,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                     loading={loading || redirecting || itemLoading}
                     type="submit"
                     className="w-full h-12 text-base bg-green-500"
+                    disabled={!isMinOrderAmount}
                   >
                     {t("checkout")}
                     <ArrowRight className="w-5 ml-2" />
