@@ -53,7 +53,7 @@ export default async function Order({
           <div className="flex flex-col font-bold mr-2 w-1/2">
             {order?.items.map((item) => (
               <div className="flex justify-between" key={item.id}>
-                <div className="flex flex-col">
+                <div className="flex flex-col text-sm">
                   <p>{item.product?.brand?.name}</p>
                   <p>{item.name}</p>
                   <p>{item.variation && item.variation.name}</p>
