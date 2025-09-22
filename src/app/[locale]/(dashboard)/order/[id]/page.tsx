@@ -36,7 +36,7 @@ export default async function Order({
 
   const t = await getTranslations("Checkout");
   return (
-    <div className="my-4 px-7">
+    <div className="my-4 md:px-7">
       <ul className="md:columns-2">
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Номер заказа:
@@ -52,7 +52,7 @@ export default async function Order({
           Товары:
           <div className="flex flex-col font-bold mr-2 w-1/2">
             {order?.items.map((item) => (
-              <div className="flex justify-between" key={item.id}>
+              <div className="flex justify-between items-center border-b" key={item.id}>
                 <div className="flex flex-col text-sm">
                   <p>{item.product?.brand?.name}</p>
                   <p>{item.name}</p>
