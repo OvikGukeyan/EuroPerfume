@@ -4,7 +4,7 @@ import { Carousel, CarouselContent, CarouselItem } from "../ui/carousel";
 import { ProductDTO } from "../../services/dto/product.dto";
 import { cn } from "../../lib/utils";
 import Autoplay from "embla-carousel-autoplay";
-import { ProductCaruselItem, Title } from ".";
+import { ProductSelectionItem, Title } from ".";
 import { useFavorites } from "../../hooks";
 import { Link } from "@/src/i18n/navigation";
 
@@ -34,10 +34,10 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
           {items.map((item, index) => (
             <CarouselItem
               key={index}
-              className="w-full basis-1/2 md:basis-1/3 lg:basis-1/4 pt-3"
+              className="w-full basis-1/2 md:basis-1/3 lg:basis-1/4 py-5"
             >
               <Link href={`/product/${item.id}`}>
-                <ProductCaruselItem
+                <ProductSelectionItem
                   brand={item.brand}
                   productGroup={item.productGroup}
                   id={item.id}
@@ -46,6 +46,7 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
                   variations={item.variations}
                   concentration={item.concentration || undefined}
                   discountPrice={item.discountPrice || undefined}
+                  price={item.price}
                   isBestseller={!!item.isBestseller}
                   isFavorite={favorites.some(
                     (favorite) => favorite.productId === item.id

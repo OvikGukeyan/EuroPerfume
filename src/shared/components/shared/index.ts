@@ -71,7 +71,7 @@ export {RecentlyViewed} from './recently-viewed';
 export {ProductsCarusel} from './products-carusel';
 export {OptionControlPanel} from './option-control-panel';
 export {ProductsSelection} from './products-selection'
-export {ProductCaruselItem} from './products-carusel-item';
+export {ProductSelectionItem} from './products-selection-item';
 export {ProductsSelectionList} from './products-selection-list';
 export {RecentReviews} from './recent-reviews';
 export {StoriesCarousel} from './stories-carousel';

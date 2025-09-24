@@ -1,6 +1,6 @@
 "use client";
 import React, { FC, useState } from "react";
-import { ProductCaruselItem } from ".";
+import { ProductSelectionItem } from ".";
 import { Button } from "..";
 import { useTranslations } from "next-intl";
 import { cn } from "../../lib/utils";
@@ -22,12 +22,12 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
     <div className={cn(className, "w-full flex flex-col items-center  py-10")}>
       <div
         className={cn(
-          "w-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 transition-all duration-700 overflow-hidden pt-3",
+          "w-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 transition-all duration-700 overflow-hidden p-5",
           isOpen ? "md:max-h-[2300px]" : "md:max-h-[1100px]"
         )}
       >
         {productsToShow.map((product) => (
-          <ProductCaruselItem
+          <ProductSelectionItem
             key={product.id}
             productGroup={product.productGroup}
             id={product.id}
@@ -41,6 +41,7 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
             toggleIsFavorite={addFavoritesItem}
             reviews={product.reviews}
             brand={product.brand}
+            price={product.price}
           />
         ))}
       </div>

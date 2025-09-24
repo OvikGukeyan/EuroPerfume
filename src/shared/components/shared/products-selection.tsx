@@ -20,7 +20,7 @@ export const ProductsSelection: FC<Props> = ({
     <>
       {products.length > 0 && (
         
-        <div className={cn( "flex flex-col items-center px-5", className)}>
+        <div className={cn( "flex flex-col items-center px-5 ", className)}>
           <div className="flex items-center justify-center gap-4 w-full">
             <div className="h-1 w-12 bg-black"></div>
             <Title

@@ -19,6 +19,7 @@ import { cn } from "../../lib/utils";
 import { Rating } from "./rating";
 import { calcAverageRating } from "../../lib";
 import { Link } from "@/src/i18n/navigation";
+import { on } from "events";
 
 interface Props {
   id: number;
@@ -34,10 +35,11 @@ interface Props {
   toggleIsFavorite: (id: number) => void;
   reviews?: Review[];
   brand: Brand;
+  price: number;
   className?: string;
 }
 
-export const ProductCaruselItem: React.FC<Props> = ({
+export const ProductSelectionItem: React.FC<Props> = ({
   imageUrl,
   className,
   name,
@@ -50,6 +52,7 @@ export const ProductCaruselItem: React.FC<Props> = ({
   isFavorite,
   toggleIsFavorite,
   reviews,
+  price,
   brand,
 }) => {
   const onToggleFavorite = (e: React.MouseEvent) => {
@@ -67,6 +70,12 @@ export const ProductCaruselItem: React.FC<Props> = ({
   const locale = useLocale();
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
 
+  const itemPrice = discountPrice ? discountPrice : price;
+
+  const finalPrice = productGroup.onTap ? itemPrice * 2 + 1 : price;
+
+  const finalDiscountPrice =
+    discountPrice && productGroup.onTap ? itemPrice * 2 + 1 : discountPrice;
   return (
     <div
       className={cn(
@@ -116,15 +125,39 @@ export const ProductCaruselItem: React.FC<Props> = ({
         </Link>
       )}
       <Link href={`/product/${id}`}>
-        <div className="h-28">
-          <Title
-            text={brand.name}
-            size="xs"
-            className="md:text-lg mt-2 font-bold"
-          />
-          <Title text={name} size="xs" className="md:text-md mt-1 font-semibold" />
-          <p className="text-sm">
-            {concentratioName || productGroup?.[labelLocale]}
+        <div className="h-36 flex flex-col justify-between ">
+          <div className="flex-1">
+            <Title
+              text={brand.name}
+              size="xs"
+              className="md:text-lg mt-2 font-bold"
+            />
+            <Title
+              text={name}
+              size="xs"
+              className="md:text-md mt-1 font-semibold"
+            />
+            <p className="text-sm">
+              {concentratioName || productGroup?.[labelLocale]}
+            </p>
+          </div>
+
+          <p className="text-[20px] ">
+            <span className="hidden md:inline"></span>{" "}
+            {discountPrice ? (
+              <>
+                <span className="line-through text-base mr-2">
+                  {finalPrice} €
+                </span>
+                <b className="text-red-500">{finalDiscountPrice} € </b>
+                <span className="text-base">{productGroup.onTap && " (2ml)"}</span>
+              </>
+            ) : (
+              <>
+                <b>{finalPrice} €</b>
+                <span className="text-base ">{productGroup.onTap && " (2ml)"}</span>
+              </>
+            )}
           </p>
         </div>
       </Link>

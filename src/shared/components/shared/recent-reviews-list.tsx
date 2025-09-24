@@ -2,7 +2,7 @@
 import React, { FC } from "react";
 import { cn } from "../../lib/utils";
 import { Rating } from "./rating";
-import { ProductCaruselItem, Separator } from "..";
+import { ProductSelectionItem, Separator } from "..";
 import { useFavorites } from "../../hooks";
 import { Review, User } from "@prisma/client";
 import { SelectedProductDTO } from "../../lib/get-popular-products";
@@ -24,8 +24,9 @@ export const RecentReviewsList: FC<Props> = ({ className, reviews }) => {
     >
       {reviews.map((review) => (
         <div key={review.id}>
-          <ProductCaruselItem
+          <ProductSelectionItem
             brand={review.product.brand}
+            price={review.product.price}
             productGroup={review.product.productGroup}
             id={review.product.id}
             name={review.product.name}
