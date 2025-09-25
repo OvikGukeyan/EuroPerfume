@@ -10,6 +10,7 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import { Category, ProductGroup } from "@prisma/client";
 import { useFiltersStore } from "@/src/shared/store/filters";
 import { useRouter } from "next/navigation";
+import { Link } from "@/src/i18n/navigation";
 
 type Props = {
   category: Category & { productGroups: ProductGroup[] };
@@ -34,7 +35,6 @@ export const MenuDrawerItem: FC<Props> = ({
   const handleItemClick = (
     category: Category & { productGroups: ProductGroup[] }
   ) => {
-
     if (category.productGroups.length === 0 || !category.productGroups) {
       setCategory(category.id);
       setProductGroup(null);
@@ -46,7 +46,6 @@ export const MenuDrawerItem: FC<Props> = ({
     setCategory(productGroup.categoryId);
     setOpen(false);
   };
-
 
   return (
     <Collapsible
@@ -75,26 +74,33 @@ export const MenuDrawerItem: FC<Props> = ({
       </div>
 
       <CollapsibleContent className="pl-5 space-y-2">
-        <div
-          onClick={() => {
-            setCategory(category.id);
-            setProductGroup(null);
-            setOpen(false);
-          }}
-          className="px-4 py-2 text-xl cursor-pointer  active:bg-gray-100 hover:bg-gray-100"
-        >
-          {locale === "ru" ? <p>Показать все</p> : <p>Ales anzeigen</p>}
-        </div>
-        {category.productGroups.map((productGroup) => (
+        <Link className="text-xl" href={`/items/?category=${category.id}`}>
           <div
             onClick={() => {
-              handleSubItemClick(productGroup);
+              setCategory(category.id);
+              setProductGroup(null);
+              setOpen(false);
             }}
-            key={productGroup.id}
-            className="px-4 py-2 text-xl cursor-pointer active:bg-gray-100 hover:bg-gray-100"
+            className="px-4 py-2 text-xl cursor-pointer  active:bg-gray-100 hover:bg-gray-100"
           >
-            {locale === "ru" ? productGroup.labelRu : productGroup.labelDe}
+            {locale === "ru" ? <p>Показать все</p> : <p>Ales anzeigen</p>}
           </div>
+        </Link>
+        {category.productGroups.map((productGroup) => (
+          <Link
+            key={productGroup.id}
+            className="text-xl"
+            href={`/items/?productGroup=${productGroup.id}`}
+          >
+            <div
+              onClick={() => {
+                handleSubItemClick(productGroup);
+              }}
+              className="px-4 py-2 text-xl cursor-pointer active:bg-gray-100 hover:bg-gray-100"
+            >
+              {locale === "ru" ? productGroup.labelRu : productGroup.labelDe}
+            </div>
+          </Link>
         ))}
       </CollapsibleContent>
     </Collapsible>
