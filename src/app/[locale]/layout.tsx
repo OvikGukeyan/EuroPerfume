@@ -5,6 +5,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/src/i18n/routing";
 import { cookies } from "next/headers";
+import Script from "next/script";
 
 const nunito = Nunito({
   subsets: ["cyrillic"],
@@ -32,6 +33,18 @@ export default async function RootLayout({
       </head>
 
       <body className={nunito.className}>
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-YWQF5HZNPJ"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-YWQF5HZNPJ');
+          `}
+        </Script>
         <NextIntlClientProvider>
           <Providers>
             {children}

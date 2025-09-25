@@ -1,54 +1,75 @@
 export enum ApiRouts {
-    SEARCH_PRODUCTS='/products/search',
-    PRODUCTS='/products',
-    SLIDES='/slides',
-    SLIDES_REORDER='/slides/reorder',
-    BY_IDS='/products/by-ids' ,
-    CHECK_PROMOCODE='/promocode/validate'
+  SEARCH_PRODUCTS = "/products/search",
+  PRODUCTS = "/products",
+  SLIDES = "/slides",
+  SLIDES_REORDER = "/slides/reorder",
+  BY_IDS = "/products/by-ids",
+  CHECK_PROMOCODE = "/promocode/validate",
 }
 
 export const links = [
-    {
-      label: {
-        ru: "Доставка и оплата",
-        de: "Lieferung und Zahlung",
-      },
-      href: "/delivery-and-payment",
+  {
+    label: {
+      ru: "Доставка и оплата",
+      de: "Lieferung und Zahlung",
     },
-    {
-      label: {
-        ru: "Возврат и обмен",
-        de: "Rückgabe und Austausch",
-      },
-      href: "/return-and-exchange",
+    href: "/delivery-and-payment",
+  },
+  {
+    label: {
+      ru: "Возврат и обмен",
+      de: "Rückgabe und Austausch",
     },
-    {
-      label: {
-        ru: "Отзывы",
-        de: "Bewertungen",
-      },
-      href: "/reviews",
+    href: "/return-and-exchange",
+  },
+  {
+    label: {
+      ru: "Отзывы",
+      de: "Bewertungen",
     },
-    {
-      label: {
-        ru: "FAQ",
-        de: "FAQ",
-      },
-      href: "/faq",
+    href: "/reviews",
+  },
+  {
+    label: {
+      ru: "FAQ",
+      de: "FAQ",
     },
-    {
-      label: {
-        ru: "AGB",
-        de: "AGB",
-      },
-      href: "/agb",
+    href: "/faq",
+  },
+  {
+    label: {
+      ru: "AGB",
+      de: "AGB",
     },
+    href: "/agb",
+  },
 
-    // {
-    //   label: {
-    //     ru: "Cookies",
-    //     de: "Cookies",
-    //   },
-    //   href: "/cookies-info",
-    // }
-  ];
+  {
+    label: {
+      ru: "Cookies",
+      de: "Cookies",
+    },
+    href: "/cookies-info",
+  },
+  {
+    label: {
+      ru: "Impressum",
+      de: "Impressum",
+    },
+    href: "/impressum",
+  },
+  {
+    label: {
+      ru: "Datenschutz",
+      de: "Datenschutz",
+    },
+    href: "/data-protection",
+  },
+  {
+    label: {
+      ru: "О нас",
+      de: "Über uns",
+    },
+    href: "/about-us",
+  },
+];

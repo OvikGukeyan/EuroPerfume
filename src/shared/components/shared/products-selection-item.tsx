@@ -70,12 +70,12 @@ export const ProductSelectionItem: React.FC<Props> = ({
   const locale = useLocale();
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
 
-  const itemPrice = discountPrice ? discountPrice : price;
 
-  const finalPrice = productGroup.onTap ? itemPrice * 2 + 1 : price;
+  const finalPrice = productGroup.onTap ? price * 2 + 1 : price;
 
   const finalDiscountPrice =
-    discountPrice && productGroup.onTap ? itemPrice * 2 + 1 : discountPrice;
+    discountPrice && productGroup.onTap ? discountPrice * 2 + 1 : discountPrice;
+
   return (
     <div
       className={cn(
@@ -150,12 +150,16 @@ export const ProductSelectionItem: React.FC<Props> = ({
                   {finalPrice} €
                 </span>
                 <b className="text-red-500">{finalDiscountPrice} € </b>
-                <span className="text-base">{productGroup.onTap && " (2ml)"}</span>
+                <span className="text-base">
+                  {productGroup.onTap && " (2ml)"}
+                </span>
               </>
             ) : (
               <>
                 <b>{finalPrice} €</b>
-                <span className="text-base ">{productGroup.onTap && " (2ml)"}</span>
+                <span className="text-base ">
+                  {productGroup.onTap && " (2ml)"}
+                </span>
               </>
             )}
           </p>

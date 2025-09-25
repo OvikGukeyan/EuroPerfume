@@ -22,6 +22,7 @@ export async function GET(req: NextRequest) {
             },
           },
         ],
+        available: true,
       },
       include: {
         variations: true,

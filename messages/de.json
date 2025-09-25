@@ -330,5 +330,66 @@
       "1": "Cookies helfen uns, Ihre Einstellungen zwischen den Besuchen zu speichern.",
       "2": "Sie können Cookies jederzeit in den Einstellungen Ihres Browsers löschen."
     }
+  },
+
+  "AboutUs": {
+    "title": "ÜBER UNS",
+    "intro": {
+      "p1": "Euro Perfume ist ein Online-Shop für originale Parfüms und Kosmetik, gegründet in Deutschland. In unserem Katalog finden Sie über 300 Produkte führender Nischen- und Luxusmarken. Wir aktualisieren unser Sortiment regelmäßig, damit Sie als Erste neue und limitierte Kollektionen entdecken können, die nur selten im freien Verkauf erhältlich sind.",
+      "p2": "Wir arbeiten ausschließlich mit Originalprodukten direkt von offiziellen Lieferanten."
+    },
+    "brands": {
+      "title": "Marken in unserem Shop",
+      "description": "Zu den Marken, die in unserem Shop vertreten sind, gehören:",
+      "items": {
+        "0": "Maison Francis Kurkdjian",
+        "1": "Amouage",
+        "2": "Xerjoff",
+        "3": "Creed",
+        "4": "Kilian",
+        "5": "Byredo",
+        "6": "Tiziana Terenzi",
+        "7": "Montale",
+        "8": "Mancera"
+      },
+      "more": "…und viele weitere."
+    },
+    "cosmetics": {
+      "title": "Premium-Kosmetik",
+      "description": "Neben Parfüms führen wir auch Premium-Kosmetik, die eine perfekte Ergänzung zu Ihrer täglichen Pflege darstellt."
+    },
+    "decants": {
+      "title": "Unser besonderes Angebot – Parfüm zum Probieren",
+      "description": "Bei Euro Perfume können Sie Düfte in Atomizern ab 2 ml erwerben. Dies ist eine praktische Möglichkeit, seltene und teure Kompositionen kennenzulernen, Trends zu testen und Ihren perfekten Duft zu finden, ohne für eine volle Flasche zu viel zu bezahlen."
+    },
+    "why": {
+      "title": "Warum Euro Perfume wählen",
+      "items": {
+        "0": "Nur originale Produkte aus Europa",
+        "1": "Spezialisierung auf Nischenparfüms",
+        "2": "Praktische Probiergrößen ab 2 ml",
+        "3": "Lieferung in ganz Deutschland und Europa",
+        "4": "Treueprogramm für Stammkunden"
+      }
+    },
+    "loyalty": {
+      "title": "Treueprogramm",
+      "p1": "Stammkunden erhalten 10 % Rabatt auf alle Bestellungen.",
+      "p2": "Der Rabatt gilt für das gesamte Sortiment unseres Shops."
+    },
+    "shipping": {
+      "title": "Lieferung",
+      "intro": "Wir liefern Bestellungen in ganz Deutschland und Europa:",
+      "items": {
+        "0": "über DHL und andere zuverlässige Dienste",
+        "1": "direkt per Kurier an Ihre Haustür",
+        "2": "oder an eine für Sie bequeme Packstation"
+      }
+    },
+    "consultation": {
+      "title": "Beratung",
+      "description": "Unsere Spezialisten helfen Ihnen, Parfüm oder Kosmetik nach Ihren Vorlieben auszuwählen. Schreiben Sie uns – wir zeigen Ihnen, welche Düfte Ihren Stil perfekt unterstreichen."
+    },
+    "closing": "Euro Perfume – eine Welt der originalen Parfüms und Kosmetik im praktischen Online-Format. Genießen Sie stressfreies Einkaufen und entdecken Sie neue Düfte, die unvergesslich sind."
   }
 }
