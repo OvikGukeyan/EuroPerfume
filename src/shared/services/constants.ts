@@ -31,25 +31,25 @@ export const links = [
   },
   {
     label: {
+      ru: "О нас",
+      de: "Über uns",
+    },
+    href: "/about-us",
+  },
+  {
+    label: {
       ru: "FAQ",
       de: "FAQ",
     },
     href: "/faq",
   },
-  {
-    label: {
-      ru: "AGB",
-      de: "AGB",
-    },
-    href: "/agb",
-  },
 
   {
     label: {
-      ru: "Cookies",
-      de: "Cookies",
+      ru: "Datenschutz",
+      de: "Datenschutz",
     },
-    href: "/cookies-info",
+    href: "/data-protection",
   },
   {
     label: {
@@ -60,16 +60,16 @@ export const links = [
   },
   {
     label: {
-      ru: "Datenschutz",
-      de: "Datenschutz",
+      ru: "Cookies",
+      de: "Cookies",
     },
-    href: "/data-protection",
+    href: "/cookies-info",
   },
   {
     label: {
-      ru: "О нас",
-      de: "Über uns",
+      ru: "AGB",
+      de: "AGB",
     },
-    href: "/about-us",
+    href: "/agb",
   },
 ];

@@ -24,17 +24,17 @@ export const Footer: FC<Props> = ({ className }) => {
       <SocialMediaBar className="py-10" />
       <Separator className="my-10" />
 
-      <div className="flex flex-col gap-7 justify-between ">
+      <div className="flex flex-col gap-10 justify-between ">
         <Image src="/assets/logo.png" width={120} height={40} alt="logo" />
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-y-4 gap-x-6 ">
+        <div className="flex flex-col gap-5 max-h-[230px] flex-wrap px-0 md:px-5">
           {links.map((link) => (
             <Link  key={link.href} href={link.href}>
-              <h3 className="text-md font-semibold">{link.label[locale]}</h3>
+              <h3 className="text-md  ">{link.label[locale]}</h3>
             </Link>
           ))}
         </div>
       </div>
-      <div className="flex items-center justify-between gap-5 mt-20">
+      <div className="flex items-center justify-between gap-5 mt-10">
         <h5>EuroPerfume 2024. Alle Rechte vorbehalten.</h5>
       </div>
     </div>
