@@ -1,8 +1,12 @@
 import { prisma } from "@/prisma/prisma-client";
+import { getUserSession } from "@/src/shared/lib/get-user-session";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
+    const user = await getUserSession();
+    const isAdmin = user?.role === "ADMIN";
+
     const query = req.nextUrl.searchParams.get("query") || "";
     const products = await prisma.product.findMany({
       where: {
@@ -22,7 +26,7 @@ export async function GET(req: NextRequest) {
             },
           },
         ],
-        available: true,
+        available: isAdmin ? undefined : true,
       },
       include: {
         variations: true,
