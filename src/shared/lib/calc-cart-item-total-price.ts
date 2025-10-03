@@ -9,7 +9,7 @@ export const calcCartItemTotalPrice = (item: CartItemDTO): number => {
       (item.quantity <= 30 && price * item.quantity + 3) ||
       (item.quantity <= 40 && price * item.quantity + 4) ||
       price * item.quantity + 5;
-    return totalPrice;
+    return Number(totalPrice.toFixed(2));
   }
-  return price * item.quantity;
+  return Number((price * item.quantity).toFixed(2));
 };
