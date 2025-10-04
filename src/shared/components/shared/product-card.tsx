@@ -110,7 +110,7 @@ export const ProductCard: React.FC<Props> = ({
   return (
     <div
       className={cn(
-        "md:hover:scale-105 transition-all duration-300 md:active:scale-95 md:active:border-2",
+        "md:hover:scale-105 transition-all duration-300 md:active:scale-95 md:active:border-2 ",
         className
       )}
     >

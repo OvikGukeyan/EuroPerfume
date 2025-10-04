@@ -6,7 +6,6 @@ import { cn } from "../../lib/utils";
 import Autoplay from "embla-carousel-autoplay";
 import { ProductSelectionItem, Title } from ".";
 import { useFavorites } from "../../hooks";
-import { Link } from "@/src/i18n/navigation";
 
 type Props = {
   items: ProductDTO[];
@@ -36,7 +35,6 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
               key={index}
               className="w-full basis-1/2 md:basis-1/3 lg:basis-1/4 py-5"
             >
-              <Link href={`/product/${item.id}`}>
                 <ProductSelectionItem
                   brand={item.brand}
                   productGroup={item.productGroup}
@@ -53,7 +51,6 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
                   )}
                   toggleIsFavorite={addFavoritesItem}
                 />
-              </Link>
             </CarouselItem>
           ))}
         </CarouselContent>

@@ -76,7 +76,7 @@ export const ByProductDialog: FC<Props> = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="w-full" variant="outline">
+        <Button  className="w-full" variant="outline">
           {t("by")}
         </Button>
       </DialogTrigger>
@@ -121,7 +121,7 @@ export const ByProductDialog: FC<Props> = ({
           <ChooseVariation
             setActiveVariationId={setActiveVariationId}
             activeVariationId={activeVariationId}
-            className="mb-4"
+            className="mb-4 w-full overflow-x-auto"
             items={variations}
           />
         )}
