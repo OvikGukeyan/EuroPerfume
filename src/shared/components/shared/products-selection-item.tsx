@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import React from "react";
-import { Title } from ".";
+import { ByProductDialog, Title } from ".";
 import { Button } from "../ui";
 import { Heart } from "lucide-react";
 import { HeartBlack } from "@/src/shared/icons";
@@ -19,7 +19,6 @@ import { cn } from "../../lib/utils";
 import { Rating } from "./rating";
 import { calcAverageRating } from "../../lib";
 import { Link } from "@/src/i18n/navigation";
-import { on } from "events";
 
 interface Props {
   id: number;
@@ -69,7 +68,6 @@ export const ProductSelectionItem: React.FC<Props> = ({
 
   const locale = useLocale();
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
-
 
   const finalPrice = productGroup.onTap ? price * 2 + 1 : price;
 
@@ -125,7 +123,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
         </Link>
       )}
       <Link href={`/product/${id}`}>
-        <div className="h-36 flex flex-col justify-between ">
+        <div className="h-36 flex flex-col justify-between mb-5">
           <div className="flex-1">
             <Title
               text={brand.name}
@@ -165,6 +163,16 @@ export const ProductSelectionItem: React.FC<Props> = ({
           </p>
         </div>
       </Link>
+      <ByProductDialog
+        id={id}
+        variations={variations}
+        price={price}
+        discountPrice={discountPrice}
+        brand={brand}
+        imageUrl={imageUrl}
+        name={name}
+        productGroup={productGroup}
+      />
     </div>
   );
 };

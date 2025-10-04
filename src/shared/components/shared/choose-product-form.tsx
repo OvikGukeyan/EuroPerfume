@@ -11,6 +11,7 @@ import {
   ChooseVariation,
   ProductCarousel,
   ReviewsComponent,
+  ShareButton,
 } from ".";
 import { Volume, volumes } from "@/src/shared/constants/perfume";
 import { ProductTranslation } from "@prisma/client";
@@ -157,7 +158,13 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
           />
         )}
       </div>
-
+      {/* <ShareButton
+        title={product.name}
+        text="Посмотри, какой классный аромат!"
+        // url можно не передавать — возьмётся текущий.
+        utm={{ source: "share", medium: "product", campaign: "referral" }}
+        className="mt-2"
+      /> */}
       <div className="w-full flex flex-col justify-between lg:w-3/5  bg-[#f2f2f2] p-1 md:p-7">
         <div>
           <Title
@@ -194,7 +201,9 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
               <TabsList
                 className={cn(
                   "grid w-full gap-4 h-24 mb-7",
-                  activeIngredients.length ? "grid-cols-2 md:grid-cols-3": "md:grid-cols-2 grid-cols-3",
+                  activeIngredients.length
+                    ? "grid-cols-2 md:grid-cols-3"
+                    : "md:grid-cols-2 grid-cols-3"
                 )}
               >
                 <TabsTrigger className="h-10" value="characteristics">

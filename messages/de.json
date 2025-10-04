@@ -391,5 +391,12 @@
       "description": "Unsere Spezialisten helfen Ihnen, Parfüm oder Kosmetik nach Ihren Vorlieben auszuwählen. Schreiben Sie uns – wir zeigen Ihnen, welche Düfte Ihren Stil perfekt unterstreichen."
     },
     "closing": "Euro Perfume – eine Welt der originalen Parfüms und Kosmetik im praktischen Online-Format. Genießen Sie stressfreies Einkaufen und entdecken Sie neue Düfte, die unvergesslich sind."
+  },
+
+  "ByProductDialog": {
+    "by": "Kaufen",
+    "addToCart": "In den Warenkorb",
+    "checkout": "Zur Kasse",
+    "price": "Preis:"
   }
 }
