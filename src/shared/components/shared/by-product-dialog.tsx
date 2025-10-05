@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import { calcPrice } from "../../lib";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { ShoppingCart } from "lucide-react";
 
 interface Props {
   id: number;
@@ -76,18 +77,19 @@ export const ByProductDialog: FC<Props> = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button  className="w-full" variant="outline">
+        <Button  className="w-full bg-gray-200 text-black flex gap-3 hover:text-white" >
+            <ShoppingCart size={16}/>
           {t("by")}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        {/* <DialogHeader>
-            <DialogTitle>Edit profile</DialogTitle>
-            <DialogDescription>
+        <DialogHeader>
+            <DialogTitle>{t("title")}</DialogTitle>
+            {/* <DialogDescription>
               Make changes to your profile here. Click save when you&apos;re
               done.
-            </DialogDescription>
-          </DialogHeader> */}
+            </DialogDescription> */}
+          </DialogHeader>
         <div className="flex items-center gap-5 my-5">
           <Image src={imageUrl} alt={name} width={70} height={70} />
           <div className="flex flex-col">
@@ -128,7 +130,7 @@ export const ByProductDialog: FC<Props> = ({
         <DialogFooter>
           <div className="flex flex-col gap-5 w-full">
             <DialogClose asChild>
-              <Button onClick={(e) => onSubmit(e)} variant="outline">
+              <Button onClick={(e) => onSubmit(e)}  className=" bg-green-500">
                 {t("addToCart")}
               </Button>
             </DialogClose>

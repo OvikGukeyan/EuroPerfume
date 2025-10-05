@@ -397,6 +397,7 @@
     "by": "Kaufen",
     "addToCart": "In den Warenkorb",
     "checkout": "Zur Kasse",
-    "price": "Preis:"
+    "price": "Preis:",
+    "title": "Herzlichen Glückwunsch! Sie haben das Produkt erfolgreich gekauft!"
   }
 }
