@@ -123,8 +123,8 @@ export const ProductSelectionItem: React.FC<Props> = ({
         </Link>
       )}
       <Link href={`/product/${id}`}>
-        <div className="h-36 flex flex-col justify-between mb-5">
-          <div className="flex-1">
+        <div className="h-40 flex flex-col justify-between mb-5">
+          <div className="flex-1 ">
             <Title
               text={brand.name}
               size="xs"
