@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
     const user = await getUserSession();
     const isAdmin = user?.role === "ADMIN";
 
+    const limit = req.nextUrl.searchParams.get("limit") || "5";
     const query = req.nextUrl.searchParams.get("query") || "";
     const products = await prisma.product.findMany({
       where: {
@@ -32,7 +33,7 @@ export async function GET(req: NextRequest) {
         variations: true,
         brand: true,
       },
-      take: 5,
+      take: Number(limit),
     });
 
     return NextResponse.json(products);

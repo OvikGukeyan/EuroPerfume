@@ -33,7 +33,6 @@ import { getUserSession } from "../shared/lib/get-user-session";
 import { supabase } from "../lib/supabase";
 import { MetaValues } from "../shared/store";
 
-
 export async function createOrder(data: CheckoutFormValues) {
   try {
     const cookieStore = cookies();
@@ -1272,4 +1271,109 @@ export async function createPromocode(formData: CreatePromocodeValues) {
     console.error("Error [CREATE_PROMOCODE]", error);
     throw error;
   }
+}
+
+export async function getDhlAccessToken() {
+  const url = `${process.env.DHL_API_BASE}/parcel/de/account/auth/ropc/v1/token`;
+
+  const body = new URLSearchParams({
+    grant_type: "password",
+    username: process.env.DHL_SANDBOX_USERNAME!,
+    password: process.env.DHL_SANDBOX_PASSWORD!,
+    client_id: process.env.DHL_API_KEY!,
+    client_secret: process.env.DHL_API_SECRET!,
+  });
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      accept: "application/json",
+      "content-type": "application/x-www-form-urlencoded",
+    },
+    body,
+    // В Next.js Server Actions можно оставить кэш по умолчанию
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(
+      `DHL Auth failed: ${res.status} ${res.statusText} :: ${JSON.stringify(
+        data
+      )}`
+    );
+  }
+
+  // data = { access_token, token_type, expires_in, scope, ... }
+  return data.access_token as string;
+}
+
+export async function dhlTestCreateOrder() {
+  const token = await getDhlAccessToken();
+
+  const url = `${process.env.DHL_API_BASE}/parcel/de/shipping/v2/orders`;
+
+  // ВРЕМЕННЫЕ sandbox-данные (замени на выданные DHL тестовые EKP/Teilnahme!)
+  const payload = {
+    profile: "STANDARD_GRUPPENPROFIL",
+    shipments: [
+      {
+        product: "V01PAK",
+        billingNumber: "33333333330101", 
+        shipper: {
+          name1: "Euro Perfume",
+          addressStreet: "Bussardweg",
+          addressHouse: "2",
+          postalCode: "49808",
+          city: "Lingen",
+          country: "DEU",
+          email: "europerfumeshop@gmail.com",
+          phone: "015112345678",
+        },
+        consignee: {
+          name1: "Max Mustermann",
+          addressStreet: "Bussardweg",
+          addressHouse: "2",
+          postalCode: "49808",
+          city: "Lingen",
+          country: "DEU",
+          email: "max@example.com",
+        },
+        details: {
+          // вес обязателен
+          weight: { value: 1.2, uom: "kg" },
+        },
+        reference: "ORDER-12345",
+      },
+    ],
+    label: { format: "PDF" },
+  };
+  const res = await fetch(
+    `${process.env.DHL_API_BASE}/parcel/de/shipping/v2/orders`,
+    {
+      method: "POST",
+      headers: {
+        accept: "application/json",
+        "content-type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(payload),
+    }
+  );
+  const data = await res.json();
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    console.error(
+      "DHL create order failed:",
+      res.status,
+      res.statusText,
+      text || data
+    );
+  }
+
+  return {
+    ok: res.ok,
+    status: res.status,
+    statusText: res.statusText,
+    body: data,
+  };
 }

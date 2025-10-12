@@ -34,7 +34,6 @@ export const OrdersTable: FC<Props> = ({ className }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { items, removeOrder, changeOrderStatus, loading } = useOrders();
   const router = useRouter();
-  console.log(items);
   return (
     <div className={cn("", className)}>
       <div

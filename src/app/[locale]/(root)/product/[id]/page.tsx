@@ -61,6 +61,7 @@ export default async function Product({
     <Container className="flex flex-col mb-10 p-0 md:p-4">
       <BreadcrumbComponent
         className="mb-10 mt-5 ml-5 md:ml-0 md:mt-0"
+        productBrand={product.brand}
         productName={product.name}
         productCategory={product.category}
         productGroup={product.productGroup}

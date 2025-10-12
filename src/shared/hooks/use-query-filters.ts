@@ -8,7 +8,7 @@ export const useQueryFilters = (filters: Filters) => {
   const previousQuery = useRef<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
-  const isFilterPage = pathname === "/items" || pathname === "/products";
+  const isFilterPage = pathname === "/items" || pathname === "/products" ;
   useEffect(() => {
     const params = {
       ...filters.prices,

@@ -43,7 +43,7 @@ export const RecentReviewsList: FC<Props> = ({ className, reviews }) => {
             isBestseller={!!review.product.isBestseller}
           />
           <div>
-            <Rating className="mb-5" value={review.rating} withNumber />
+            <Rating className="my-5" value={review.rating} withNumber />
             <Separator className="mb-5" />
 
             <p className="mb-2">{review.user.fullName}</p>

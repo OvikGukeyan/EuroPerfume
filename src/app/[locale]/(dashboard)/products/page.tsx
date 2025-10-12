@@ -3,19 +3,15 @@ import {
   Categories,
   DashboardProduct,
   PaginationComponent,
+  SearchInput,
 } from "@/src/shared/components";
 import {
   russianToGermanLayout,
   ruToDeLayoutQWERTZ,
 } from "@/src/shared/components/shared/search-input";
-import {
-  useCategories,
-  useProducts,
-  useQueryFilters,
-} from "@/src/shared/hooks";
+import { useCategories, useProducts } from "@/src/shared/hooks";
 import { Api } from "@/src/shared/services/api-client";
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
-import { useFiltersStore } from "@/src/shared/store/filters";
 import { Search } from "lucide-react";
 import { useState } from "react";
 import { useDebounce } from "react-use";
@@ -34,7 +30,7 @@ export default function Products() {
         const convertedQuery = ruToDeLayoutQWERTZ(searchQuery);
         const convertedQuery2 = russianToGermanLayout(searchQuery);
 
-        const response = await Api.products.search(convertedQuery);
+        const response = await Api.products.search(convertedQuery, 50);
         const responseAlt =
           response.length === 0 && convertedQuery !== convertedQuery2
             ? await Api.products.search(convertedQuery2)
@@ -72,6 +68,7 @@ export default function Products() {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
+  
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-[50px] p-4 md:p-10">
         {list.map((item) => (
           <DashboardProduct

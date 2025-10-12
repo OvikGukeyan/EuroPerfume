@@ -2,6 +2,7 @@ import { useEffect, useRef } from "react";
 import { useProductStore } from "../store/product";
 import { GetSearchParams } from "../lib/find-products";
 import { useSearchParams } from "next/navigation";
+import { json } from "stream/consumers";
 
 function shallowEqual(
   obj1: Record<string, string>,
@@ -26,7 +27,9 @@ export const useProducts = () => {
   const productsState = useProductStore((state) => state);
   const paramsRef = useRef<Record<string, string> | null>(undefined);
 
-
+  const paramsObject = Object.fromEntries(searchParams.entries());
+  console.log("params:", paramsObject);
+  
   useEffect(() => {
     if (
       paramsRef.current &&
@@ -37,12 +40,9 @@ export const useProducts = () => {
     ) {
       return;
     }
-
     paramsRef.current = Object.fromEntries(searchParams.entries());
     productsState.fetchAllProducts(searchParams as GetSearchParams);
   }, [searchParams, productsState]);
-
-
 
   return productsState;
 };
