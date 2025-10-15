@@ -2,13 +2,13 @@
 import React, { FC } from "react";
 import { cn } from "@/src/lib/utils";
 import { RadioGroup, RadioGroupItem } from "../../ui/radio-group";
-import { ContactFormsType, DeliveryTypesType } from "@/../../prisma/constants";;
+import { ContactFormsType } from "@/../../prisma/constants";;
 import { Label } from "../../ui/label";
 import { Controller, useFormContext } from "react-hook-form";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   className?: string;
-  items: DeliveryTypesType | ContactFormsType;
+  items:  ContactFormsType;
   name: string;
 }
 

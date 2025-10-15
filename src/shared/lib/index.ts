@@ -17,4 +17,7 @@ export {getNewProducts} from './get-new-products';
 export {getRecentReviews} from './get-recent-reviews';
 export {getStories} from './get-stories';
 export {getDiscountedItems} from './get-discouted-items';
+export {iso2to3} from './iso2to3';
+export {getDhlAccessToken} from './get-dhl-access-token';
+export {dhlClient} from './dhl-client';
 export * from './cookies';

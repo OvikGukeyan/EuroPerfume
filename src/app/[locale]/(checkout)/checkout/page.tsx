@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { ContactForms, DeliveryTypes, ShippingMethods } from "@prisma/client";
+import { ContactForms, ShippingMethods } from "@prisma/client";
 import { checkoutFormSchema, CheckoutFormValues } from "@/src/shared/constants";
 import { useCart } from "@/src/shared/hooks";
 import { calcTotlalAmountWithDelivery } from "@/src/shared/lib";
@@ -44,16 +44,16 @@ export default function Checkout() {
       deliveryLastName: "",
       phone: "",
       address: "",
+      houseNumber: "",
       deliveryAddress: "",
-      country: "Deutschland",
-      deliveryCountry: "Deutschland",
+      country: "DEU",
+      deliveryCountry: "DEU",
       city: "",
       deliveryCity: "",
       zip: "",
       deliveryZip: "",
       contactForm: ContactForms.WA,
       comment: "",
-      deliveryType: DeliveryTypes.PBH,
       postNumber: "",
       postOffice: "",
       packstationNumber: "",
@@ -64,9 +64,8 @@ export default function Checkout() {
   });
 
   const discount = form.watch("discount");
-  const delivery = form.watch("deliveryType");
   const { totalAmountWithDelivery, deliveryPrice } =
-    calcTotlalAmountWithDelivery(totalAmount, delivery, discount);
+    calcTotlalAmountWithDelivery(totalAmount, discount);
 
   useEffect(() => {
     async function fetchUserInfo() {
@@ -121,7 +120,7 @@ export default function Checkout() {
     id: number,
     quantity: number,
     type: "plus" | "minus",
-    productGroup: number,
+    productGroup: number
   ) => {
     const isDraft = productGroup < 4;
     if (isDraft && quantity < 3 && type === "minus") {
@@ -133,9 +132,10 @@ export default function Checkout() {
   };
 
   const t = useTranslations("Checkout");
-
+  const { setValue } = useForm<any>({ mode: "onChange" });
   return (
     <div className="mt-10">
+     
       <Title text={t("title")} size="xl" className="font-extrabold mb-8" />
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>

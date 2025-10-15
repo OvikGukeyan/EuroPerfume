@@ -1,4 +1,4 @@
-import { ContactForms, DeliveryTypes, ShippingMethods } from "@prisma/client";
+import { ContactForms, ShippingMethods } from "@prisma/client";
 import { z } from "zod";
 
 export const checkoutFormSchema = z
@@ -8,6 +8,7 @@ export const checkoutFormSchema = z
     email: z.string().email({ message: "Invalid email address" }),
     phone: z.string().min(10, { message: "Invalid phone number" }),
     address: z.string().min(5, { message: "Invalid address" }),
+    houseNumber: z.string().min(1, { message: "Invalid house number" }),
     city: z.string().min(2, { message: "Invalid city" }),
     country: z.string().min(2, { message: "Invalid country" }),
     zip: z.string().min(5, { message: "Invalid zip code" }),
@@ -16,6 +17,7 @@ export const checkoutFormSchema = z
     deliveryFirstName: z.string().optional(),
     deliveryLastName: z.string().optional(),
     deliveryAddress: z.string().optional(),
+    deliveryHouseNumber: z.string().optional(),
     deliveryCity: z.string().optional(),
     deliveryCountry: z.string().optional(),
     deliveryZip: z.string().optional(),
@@ -24,7 +26,6 @@ export const checkoutFormSchema = z
     packstationNumber: z.string().optional(),
 
     comment: z.string().optional(),
-    deliveryType: z.nativeEnum(DeliveryTypes),
     contactForm: z.nativeEnum(ContactForms),
     shippingMethod: z.nativeEnum(ShippingMethods),
     promocode: z.string().optional(),
@@ -42,6 +43,9 @@ export const checkoutFormSchema = z
       }
       if (!data.deliveryAddress?.trim()) {
         ctx.addIssue({ code: "custom", message: "Address is required", path: ["deliveryAddress"] });
+      }
+      if (!data.deliveryHouseNumber?.trim()) {
+        ctx.addIssue({ code: "custom", message: "House number is required", path: ["deliveryHouseNumber"] });
       }
       if (!data.deliveryZip?.trim()) {
         ctx.addIssue({ code: "custom", message: "ZIP code is required", path: ["deliveryZip"] });

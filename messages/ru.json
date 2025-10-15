@@ -66,7 +66,6 @@
     },
     "delivery": {
       "stepTitle": "3. Информация о доставке",
-      "deliveryType": "Способ доставки",
       "commentPlaceholder": "Комментарий к заказу",
       "BILLING_ADDRESS": "Aдрес профиля",
       "DIFFERENT_ADDRESS": "Другой адрес",
@@ -91,7 +90,9 @@
       "zip": "Почтовый индекс",
       "Country": "Введите страну",
       "City": "Введите город",
-      "Address": "Введите адрес"
+      "Address": "Введите адрес",
+      "houseNumber": "Дом"
+
     }
   },
 

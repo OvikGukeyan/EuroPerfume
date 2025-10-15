@@ -61,7 +61,6 @@ export const OrdersTable: FC<Props> = ({ className }) => {
             <TableHead>Имя</TableHead>
             <TableHead>Телефон</TableHead>
             <TableHead>Способ связи</TableHead>
-            <TableHead>Тип доставки</TableHead>
             <TableHead>Статус</TableHead>
           </TableRow>
         </TableHeader>
@@ -87,7 +86,6 @@ export const OrdersTable: FC<Props> = ({ className }) => {
               <TableCell>{order.fullName}</TableCell>
               <TableCell>{order.phone}</TableCell>
               <TableCell>{order.contactForm}</TableCell>
-              <TableCell>{order.deliveryType}</TableCell>
               <TableCell>
                 <Select
                   onValueChange={(value) => {

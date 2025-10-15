@@ -1,7 +1,6 @@
 import {
   Gender,
   PerfumeConcentration,
-  DeliveryTypes,
   ContactForms,
   OrderStatus,
 } from "@prisma/client";
@@ -100,28 +99,10 @@ export const concentrations = [
 ];
 
 
-export const deliveryTypes = [
-  {
-    name: "Paket bis Haftung",
-    value: DeliveryTypes.PBH,
-    price: 6.2,
-  },
-  {
-    name: "Großbrief",
-    value: DeliveryTypes.GB,
-    price: 3,
-  },
-
-  {
-    name: "Einschreiben",
-    value: DeliveryTypes.ES,
-    price: 5,
-  },
-];
 
 
 
-export type DeliveryTypesType = typeof deliveryTypes;
+
 
 export const contactForms = [
   { name: "Whats App", value: ContactForms.WA },

@@ -1,9 +1,6 @@
-import { deliveryTypes } from "@/../../prisma/constants";
-import { DeliveryTypes } from "@prisma/client";
 
 export const calcTotlalAmountWithDelivery = (
   totlalAmount: number,
-  delivery: DeliveryTypes,
   discount?: number
 ) => {
   let totalAmountWithDelivery = 0;
@@ -12,8 +9,7 @@ export const calcTotlalAmountWithDelivery = (
     ? totlalAmount - totlalAmount * (discount / 100)
     : totlalAmount;
   if (totlalAmount < 100 && totlalAmount > 0) {
-    deliveryPrice =
-      deliveryTypes.find((type) => type.value === delivery)?.price || 0;
+    deliveryPrice = 5.95;
     totalAmountWithDelivery = Number(totalAmountWithDiscount) + deliveryPrice;
   } else {
     totalAmountWithDelivery = Number(totalAmountWithDiscount);

@@ -19,6 +19,7 @@ import {
 } from "../shared/constants";
 import {
   calcTotlalAmountWithDelivery,
+  dhlClient,
   parseProductFormData,
   sendTelegramMessage,
 } from "../shared/lib";
@@ -32,6 +33,94 @@ import { CartItemDTO } from "../shared/services/dto/cart.dto";
 import { getUserSession } from "../shared/lib/get-user-session";
 import { supabase } from "../lib/supabase";
 import { MetaValues } from "../shared/store";
+import { de } from "date-fns/locale";
+import { DhlCredantials } from "../shared/components/shared/dhlTest";
+
+export async function dhlTestCreateOrder(body: DhlCredantials) {
+  // const input = CreateShipmentInput.parse(raw);
+  const orderId = body.orderId;
+
+  if (!orderId) {
+    throw new Error("orderId is required");
+  }
+
+  const url = `${process.env.DHL_API_BASE}/parcel/de/shipping/v2/orders`;
+
+  const payload = {
+    profile: "STANDARD_GRUPPENPROFIL",
+    shipments: [
+      {
+        product: "V01PAK",
+        billingNumber: "33333333330101",
+        shipper: {
+          name1: "Euro Perfume",
+          addressStreet: "Bussardweg",
+          addressHouse: "2",
+          postalCode: "49808",
+          city: "Lingen",
+          country: "DEU",
+          email: "europerfumeshop@gmail.com",
+          phone: "015112345678",
+        },
+        consignee: {
+          name1: body.deliveryFullNmae,
+          addressStreet: body.addressStreet,
+          addressHouse: body.addressHouse,
+          postalCode: body.postalCode,
+          city: body.city,
+          country: body.country,
+          email: body.email,
+        },
+        details: {
+          // вес обязателен
+          weight: { value: 1.2, uom: "kg" },
+        },
+        reference: "ORDER-12345",
+      },
+    ],
+    label: { format: "PDF" },
+  };
+
+  try {
+    const res = await dhlClient.post("/parcel/de/shipping/v2/orders", payload);
+
+    const item = res.data.items?.[0];
+    const shipmentNo: string = item?.shipmentNo || "";
+    const routingCode: string = item?.routingCode || "";
+    const labelB64: string | undefined = item?.label?.b64;
+
+    const shipment = await prisma.shipment.create({
+      data: {
+        orderId: orderId,
+        carrier: "DHL",
+        shipmentNo: shipmentNo,
+        routingCode: routingCode,
+        labelB64: labelB64, // по желанию
+        status: "CREATED",
+        payload: JSON.stringify(res.data), // по желанию
+      },
+    });
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: { trackingCode: shipmentNo, status: "PENDING" },
+    });
+
+    // await sendTrackingEmail(order.email, shipmentNo)
+
+    return {
+      ok: true,
+      status: res.status,
+      body: res.data,
+    };
+  } catch (error: any) {
+    return {
+      ok: false,
+      status: error.response?.status || 500,
+      body: error.response?.data || error.message,
+    };
+  }
+}
 
 export async function createOrder(data: CheckoutFormValues) {
   try {
@@ -68,7 +157,6 @@ export async function createOrder(data: CheckoutFormValues) {
     const { totalAmountWithDelivery, deliveryPrice } =
       calcTotlalAmountWithDelivery(
         userCart.totalAmount.toNumber(),
-        data.deliveryType,
         data.discount
       );
     const fullName = data.firstName + " " + data.lastName;
@@ -96,13 +184,16 @@ export async function createOrder(data: CheckoutFormValues) {
         postOffice: data.postOffice,
         packstationNumber: data.packstationNumber,
         address: data.address,
+        houseNumber: data.houseNumber,
         deliveryAddress: data.deliveryAddress
           ? data.deliveryAddress
           : data.address,
+        deliveryHouseNumber: data.deliveryHouseNumber
+          ? data.deliveryHouseNumber
+          : data.houseNumber,
         comment: data.comment,
         token: cartToken,
         totalAmount: totalAmountWithDelivery,
-        deliveryType: data.deliveryType,
         contactForm: data.contactForm,
         promocode: data.promocode,
         discount: data.discount,
@@ -179,9 +270,7 @@ export async function createOrder(data: CheckoutFormValues) {
     await sendTelegramMessage(
       `Order #${
         order.id
-      } : Total amount: ${order.totalAmount.toNumber()}, Delivery type: ${
-        order.deliveryType
-      }, Items: ${safeCartItems
+      } : Total amount: ${order.totalAmount.toNumber()}, Items: ${safeCartItems
         .map((item) => item.product.name + " * " + item.quantity)
         .join(", ")}`
     );
@@ -1271,109 +1360,4 @@ export async function createPromocode(formData: CreatePromocodeValues) {
     console.error("Error [CREATE_PROMOCODE]", error);
     throw error;
   }
-}
-
-export async function getDhlAccessToken() {
-  const url = `${process.env.DHL_API_BASE}/parcel/de/account/auth/ropc/v1/token`;
-
-  const body = new URLSearchParams({
-    grant_type: "password",
-    username: process.env.DHL_SANDBOX_USERNAME!,
-    password: process.env.DHL_SANDBOX_PASSWORD!,
-    client_id: process.env.DHL_API_KEY!,
-    client_secret: process.env.DHL_API_SECRET!,
-  });
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      accept: "application/json",
-      "content-type": "application/x-www-form-urlencoded",
-    },
-    body,
-    // В Next.js Server Actions можно оставить кэш по умолчанию
-  });
-
-  const data = await res.json();
-  if (!res.ok) {
-    throw new Error(
-      `DHL Auth failed: ${res.status} ${res.statusText} :: ${JSON.stringify(
-        data
-      )}`
-    );
-  }
-
-  // data = { access_token, token_type, expires_in, scope, ... }
-  return data.access_token as string;
-}
-
-export async function dhlTestCreateOrder() {
-  const token = await getDhlAccessToken();
-
-  const url = `${process.env.DHL_API_BASE}/parcel/de/shipping/v2/orders`;
-
-  // ВРЕМЕННЫЕ sandbox-данные (замени на выданные DHL тестовые EKP/Teilnahme!)
-  const payload = {
-    profile: "STANDARD_GRUPPENPROFIL",
-    shipments: [
-      {
-        product: "V01PAK",
-        billingNumber: "33333333330101", 
-        shipper: {
-          name1: "Euro Perfume",
-          addressStreet: "Bussardweg",
-          addressHouse: "2",
-          postalCode: "49808",
-          city: "Lingen",
-          country: "DEU",
-          email: "europerfumeshop@gmail.com",
-          phone: "015112345678",
-        },
-        consignee: {
-          name1: "Max Mustermann",
-          addressStreet: "Bussardweg",
-          addressHouse: "2",
-          postalCode: "49808",
-          city: "Lingen",
-          country: "DEU",
-          email: "max@example.com",
-        },
-        details: {
-          // вес обязателен
-          weight: { value: 1.2, uom: "kg" },
-        },
-        reference: "ORDER-12345",
-      },
-    ],
-    label: { format: "PDF" },
-  };
-  const res = await fetch(
-    `${process.env.DHL_API_BASE}/parcel/de/shipping/v2/orders`,
-    {
-      method: "POST",
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(payload),
-    }
-  );
-  const data = await res.json();
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    console.error(
-      "DHL create order failed:",
-      res.status,
-      res.statusText,
-      text || data
-    );
-  }
-
-  return {
-    ok: res.ok,
-    status: res.status,
-    statusText: res.statusText,
-    body: data,
-  };
 }

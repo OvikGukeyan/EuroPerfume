@@ -5,6 +5,8 @@ import { useFormContext } from "react-hook-form";
 import { cn } from "../../lib/utils";
 import { ErrorText, FormInput } from ".";
 import { useTranslations } from "next-intl";
+import { iso2to3 } from "../../lib";
+import { log } from "console";
 
 interface Props {
   name: string;
@@ -19,7 +21,7 @@ export const AddressInput: FC<Props> = ({ name, className }) => {
   const [cityInput, setCityInput] = useState("");
   const [streetInput, setStreetInput] = useState("");
   const [countryInput, setCountryInput] = useState("Deutschland");
-  
+
   const [cityBounds, setCityBounds] = useState<google.maps.LatLngBounds | null>(
     null
   );
@@ -39,12 +41,13 @@ export const AddressInput: FC<Props> = ({ name, className }) => {
       c.types.includes("country")
     );
     const country = countryComponent?.long_name ?? "";
+    const country2Letter = countryComponent?.short_name ?? "";
+    const country3 = iso2to3(country2Letter);
 
     if (!country) return; // Не страна — не устанавливаем
 
-    setValue(countryName, country);
+    setValue(countryName, country3);
     setCountryInput(country);
-
   };
 
   const handleCitySelect = (place: google.maps.places.PlaceResult) => {
@@ -107,6 +110,7 @@ export const AddressInput: FC<Props> = ({ name, className }) => {
     <div className={cn("grid grid-cols-1 md:grid-cols-2 gap-5", className)}>
       <div className="w-full">
         <Autocomplete
+          language="en"
           apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
           placeholder={t("City")}
           options={{
@@ -140,13 +144,20 @@ export const AddressInput: FC<Props> = ({ name, className }) => {
         />
         {addressError && <ErrorText className="mt-2" text={addressError} />}
       </div>
+      <div>
+        <FormInput
+          name="houseNumber"
+          className="text-base"
+          placeholder={t("houseNumber")}
+        />
+      </div>
 
       <div className="w-full">
         <Autocomplete
           apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}
           placeholder={t("Country")}
           options={{
-            types: ["geocode"], // используем geocode вместо несуществующего (countries)
+            types: ["geocode"],
           }}
           onPlaceSelected={handleCountrySelect}
           onChange={handleCountryChange}

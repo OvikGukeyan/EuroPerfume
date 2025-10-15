@@ -332,37 +332,54 @@ model Reply {
 }
 
 model Order {
-  id                Int             @id @default(autoincrement())
-  userId            Int?
-  token             String
-  totalAmount       Decimal
-  status            OrderStatus
-  peymentId         String?
-  items             OrderItem[]
-  fullName          String
-  deliveryFullNmae  String
-  address           String
-  deliveryAddress   String
-  city              String
-  country           String
-  deliveryCity      String
-  deliveryCountry   String
-  zip               String
-  deliveryZip       String
-  postNumber        String?
-  postOffice        String?
-  packstationNumber String?
-  email             String
-  phone             String
-  comment           String?
-  promocode         String?
-  discount          Int?
-  shippingMethod    ShippingMethods
-  deliveryType      DeliveryTypes
-  contactForm       ContactForms
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-  user              User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                  Int             @id @default(autoincrement())
+  userId              Int?
+  token               String
+  totalAmount         Decimal
+  status              OrderStatus
+  peymentId           String?
+  items               OrderItem[]
+  fullName            String
+  deliveryFullNmae    String
+  address             String
+  houseNumber         String
+  deliveryAddress     String
+  deliveryHouseNumber String
+  city                String
+  country             String
+  deliveryCity        String
+  deliveryCountry     String
+  zip                 String
+  deliveryZip         String
+  postNumber          String?
+  postOffice          String?
+  packstationNumber   String?
+  email               String
+  phone               String
+  comment             String?
+  promocode           String?
+  discount            Int?
+  shippingMethod      ShippingMethods
+  contactForm         ContactForms
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  trackingCode        String? 
+  shipments           Shipment[]
+  user                User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Shipment {
+  id          Int      @id @default(autoincrement())
+  orderId     Int
+  carrier     String   @default("GHL")
+  shipmentNo  String   @unique 
+  routingCode String?
+  labelB64    String? 
+  status      String   @default("CREATED") // CREATED | HANDED_OVER | IN_TRANSIT | DELIVERED | CANCELED ...
+  payload     Json? 
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model OrderItem {
@@ -455,11 +472,6 @@ enum Languages {
   DE
 }
 
-enum DeliveryTypes {
-  GB
-  ES
-  PBH
-}
 
 enum ContactForms {
   WA

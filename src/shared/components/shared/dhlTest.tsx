@@ -1,16 +1,31 @@
 "use client";
 import { dhlTestCreateOrder } from "@/src/app/actions";
-import { useTransition, useState } from "react";
+import { useTransition, useState, FC } from "react";
+import { cn } from "../../lib/utils";
 
-export function DhlTestButton() {
+export type DhlCredantials = {
+  orderId: number | undefined
+  deliveryFullNmae: string
+  addressStreet: string
+  addressHouse: string
+  postalCode: string
+  city: string
+  country: string
+  email: string
+}
+interface Props extends DhlCredantials {
+  className?: string
+}
+
+export const DhlTestButton: FC<Props> = ({className, ...props}) => {
   const [pending, start] = useTransition();
   const [result, setResult] = useState<any>(null);
 
   return (
-    <div>
+    <div className={cn("", className)}>
       <button
         disabled={pending}
-        onClick={() => start(async () => setResult(await dhlTestCreateOrder()))}
+        onClick={() => start(async () => setResult(await dhlTestCreateOrder(props)))}
         className="px-4 py-2 rounded bg-black text-white"
       >
         {pending ? "Testing…" : "Test DHL order"}

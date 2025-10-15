@@ -6,19 +6,15 @@ import {
   ErrorText,
   FormInput,
   FormTextarea,
-  MyPopover,
-  RadioInput,
   Title,
   WhiteBlock,
 } from "..";
 import { cn } from "@/src/shared/lib/utils";
 import { Controller, useFormContext } from "react-hook-form";
-import { deliveryTypes } from "@/../../prisma/constants";
 import { useTranslations } from "next-intl";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import Autocomplete from "react-google-autocomplete";
-import { DeliveryTypes, ShippingMethods } from "@prisma/client";
-import { set } from "zod";
+import { ShippingMethods } from "@prisma/client";
 
 interface Props {
   totalAmount: number;
@@ -41,7 +37,6 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
         <Tabs
           onValueChange={(value) => {
             setValue("shippingMethod", value);
-            setValue("deliveryType", DeliveryTypes.PBH);
           }}
           defaultValue={ShippingMethods.BILLING_ADDRESS}
           className="w-full"
@@ -54,29 +49,13 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
            ))}
           </TabsList>
           <TabsContent value={ShippingMethods.BILLING_ADDRESS}>
-            <Title
-              className="mb-5"
-              text={t("delivery.deliveryType")}
-              size="xs"
-            />
-
-            <div className="flex justify-between">
-              <RadioInput name="deliveryType" items={deliveryTypes} />
-
-              <MyPopover />
-            </div>
+     
           </TabsContent>
           <TabsContent
             value={ShippingMethods.DIFFERENT_ADDRESS}
             className="w-full flex flex-col gap-5"
           >
-            <Title text={t("delivery.deliveryType")} size="xs" />
-
-            <div className="flex justify-between">
-              <RadioInput name="deliveryType" items={deliveryTypes} />
-
-              <MyPopover />
-            </div>
+       
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <FormInput
                 name="deliveryFirstName"

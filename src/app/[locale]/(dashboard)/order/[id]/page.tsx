@@ -1,5 +1,6 @@
 import { OrderStatuses } from "@/prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
+import { DhlTestButton } from "@/src/shared/components/shared/dhlTest";
 import { getTranslations } from "next-intl/server";
 
 export default async function Order({
@@ -52,7 +53,10 @@ export default async function Order({
           Товары:
           <div className="flex flex-col font-bold mr-2 w-1/2">
             {order?.items.map((item) => (
-              <div className="flex justify-between items-center border-b" key={item.id}>
+              <div
+                className="flex justify-between items-center border-b"
+                key={item.id}
+              >
                 <div className="flex flex-col text-sm">
                   <p>{item.product?.brand?.name}</p>
                   <p>{item.name}</p>
@@ -67,10 +71,6 @@ export default async function Order({
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Имя покупателя:
           <span className="font-bold mr-2 w-1/2">{order?.fullName}</span>
-        </li>
-        <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Тип доставки:
-          <span className="font-bold mr-2 w-1/2">{order?.deliveryType}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Статус заказа:
@@ -149,6 +149,16 @@ export default async function Order({
           <span className="font-bold mr-2 w-1/2">{convertedDate}</span>
         </li>
       </ul>
+      <DhlTestButton
+        orderId={order?.id}
+        deliveryFullNmae={order?.fullName || ""}
+        addressStreet={order?.address || ""}
+        addressHouse={order?.houseNumber || ""}
+        postalCode={order?.zip || ""}
+        city={order?.city || ""}
+        country={order?.country || ""}
+        email={order?.email || ""}
+      />
     </div>
   );
 }

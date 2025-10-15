@@ -42,6 +42,7 @@ export const ReviewComponent: FC<Props> = ({
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const { data: session } = useSession();
   const admin = session?.user?.role === "ADMIN";
+
   return (
     <div className={cn("", className)}>
       {(productId && productName && productImage) && (
@@ -81,8 +82,8 @@ export const ReviewComponent: FC<Props> = ({
           <div className="rounded-full overflow-hidden self-start">
             <Image
               src={"/assets/logo-mobile.png"}
-              width={60}
-              height={60}
+              width={40}
+              height={40}
               alt="logo"
             />
           </div>
