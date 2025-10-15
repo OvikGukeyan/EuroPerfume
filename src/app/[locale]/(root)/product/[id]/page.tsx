@@ -22,6 +22,7 @@ export default async function Product({
       reviews: {
         include: {
           user: true,
+          reply: true,
         },
       },
       productGroup: true,
