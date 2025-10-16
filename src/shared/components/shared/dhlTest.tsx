@@ -2,30 +2,41 @@
 import { dhlTestCreateOrder } from "@/src/app/actions";
 import { useTransition, useState, FC } from "react";
 import { cn } from "../../lib/utils";
+import { Api } from "../../services/api-client";
 
 export type DhlCredantials = {
-  orderId: number | undefined
-  deliveryFullNmae: string
-  addressStreet: string
-  addressHouse: string
-  postalCode: string
-  city: string
-  country: string
-  email: string
-}
+  orderId: number | undefined;
+  deliveryFullNmae: string;
+  addressStreet: string;
+  addressHouse: string;
+  postalCode: string;
+  city: string;
+  country: string;
+  email: string;
+};
 interface Props extends DhlCredantials {
-  className?: string
+  className?: string;
 }
 
-export const DhlTestButton: FC<Props> = ({className, ...props}) => {
+export const DhlTestButton: FC<Props> = ({ className, ...props }) => {
   const [pending, start] = useTransition();
   const [result, setResult] = useState<any>(null);
+
+  const handleCreate = async () => {
+    try {
+      await Api.dhl.createShipment(props);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className={cn("", className)}>
       <button
         disabled={pending}
-        onClick={() => start(async () => setResult(await dhlTestCreateOrder(props)))}
+        onClick={() =>
+          start(async () => setResult(await dhlTestCreateOrder(props)))
+        }
         className="px-4 py-2 rounded bg-black text-white"
       >
         {pending ? "Testing…" : "Test DHL order"}
@@ -38,4 +49,4 @@ export const DhlTestButton: FC<Props> = ({className, ...props}) => {
       )}
     </div>
   );
-}
+};

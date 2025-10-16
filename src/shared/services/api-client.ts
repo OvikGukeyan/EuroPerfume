@@ -8,6 +8,7 @@ import * as productGroup from "./product-group";
 import * as slides from "./slides";
 import * as productMeta from "./product-meta";
 import * as promocode from "./promocode";
+import * as dhl from "./dhl";
 
 
 export const Api = {
@@ -20,5 +21,6 @@ export const Api = {
     productGroup,
     slides,
     productMeta,
-    promocode
+    promocode,
+    dhl
 }

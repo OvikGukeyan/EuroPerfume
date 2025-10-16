@@ -363,7 +363,7 @@ model Order {
   contactForm         ContactForms
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
-  trackingCode        String? 
+  trackingCode        String?
   shipments           Shipment[]
   user                User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -372,14 +372,14 @@ model Shipment {
   id          Int      @id @default(autoincrement())
   orderId     Int
   carrier     String   @default("GHL")
-  shipmentNo  String   @unique 
+  shipmentNo  String   @unique
   routingCode String?
-  labelB64    String? 
+  labelUrl    String?
   status      String   @default("CREATED") // CREATED | HANDED_OVER | IN_TRANSIT | DELIVERED | CANCELED ...
-  payload     Json? 
+  payload     Json?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
 }
 
 model OrderItem {
@@ -471,7 +471,6 @@ enum Languages {
   RU
   DE
 }
-
 
 enum ContactForms {
   WA

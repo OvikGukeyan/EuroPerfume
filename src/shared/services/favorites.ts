@@ -1,5 +1,5 @@
 import { axiosInstance } from "./instance";
-import { FavoritesDTO, CreateFavoritesItemValues } from "./dto/favorites.dto";
+import { FavoritesDTO } from "./dto/favorites.dto";
 
 export const getFavorites = async (): Promise<FavoritesDTO> => {
   return (await axiosInstance.get<FavoritesDTO>('/favorites')).data;

@@ -1,6 +1,8 @@
 import { OrderStatuses } from "@/prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
+import { Button, Title } from "@/src/shared/components";
 import { DhlTestButton } from "@/src/shared/components/shared/dhlTest";
+import { File } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
 export default async function Order({
@@ -25,6 +27,7 @@ export default async function Order({
         },
       },
       user: true,
+      shipments: true,
     },
   });
   const date = order?.createdAt;
@@ -99,6 +102,9 @@ export default async function Order({
           Адрес: <span className="font-bold mr-2 w-1/2">{order?.address}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
+          Номер дома: <span className="font-bold mr-2 w-1/2">{order?.houseNumber}</span>
+        </li>
+        <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Комментарий:
           <span className="font-bold mr-2 w-1/2">{order?.comment}</span>
         </li>
@@ -131,6 +137,10 @@ export default async function Order({
           <span className="font-bold mr-2 w-1/2">{order?.deliveryAddress}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
+          Номер дома доставки:
+          <span className="font-bold mr-2 w-1/2">{order?.deliveryHouseNumber}</span>
+        </li>
+        <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Форма связи:
           <span className="font-bold mr-2 w-1/2">{order?.contactForm}</span>
         </li>
@@ -149,16 +159,33 @@ export default async function Order({
           <span className="font-bold mr-2 w-1/2">{convertedDate}</span>
         </li>
       </ul>
-      <DhlTestButton
-        orderId={order?.id}
-        deliveryFullNmae={order?.fullName || ""}
-        addressStreet={order?.address || ""}
-        addressHouse={order?.houseNumber || ""}
-        postalCode={order?.zip || ""}
-        city={order?.city || ""}
-        country={order?.country || ""}
-        email={order?.email || ""}
-      />
+      <div className="mt-5">
+        {order?.trackingCode ? (
+          <div>
+            <Title text="Отправление создано" size="sm" className="font-bold" />
+            <p className="font-bold mb-2">
+              Трек номер: <span>{order?.trackingCode}</span>
+            </p>
+            <a href={order.shipments[0].labelUrl || ""} download target="_blank">
+              <Button className="flex gap-2" variant="outline">
+                <span>Скачать метку</span>
+                <File />
+              </Button>
+            </a>
+          </div>
+        ) : (
+          <DhlTestButton
+            orderId={order?.id}
+            deliveryFullNmae={order?.deliveryFullNmae || ""}
+            addressStreet={order?.deliveryAddress || ""}
+            addressHouse={order?.deliveryHouseNumber || ""}
+            postalCode={order?.deliveryZip || ""}
+            city={order?.deliveryCity || ""}
+            country={order?.deliveryCountry || ""}
+            email={order?.email || ""}
+          />
+        )}
+      </div>
     </div>
   );
 }

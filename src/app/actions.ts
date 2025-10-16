@@ -35,6 +35,7 @@ import { supabase } from "../lib/supabase";
 import { MetaValues } from "../shared/store";
 import { de } from "date-fns/locale";
 import { DhlCredantials } from "../shared/components/shared/dhlTest";
+import { createClient } from "@supabase/supabase-js";
 
 export async function dhlTestCreateOrder(body: DhlCredantials) {
   // const input = CreateShipmentInput.parse(raw);
@@ -89,15 +90,47 @@ export async function dhlTestCreateOrder(body: DhlCredantials) {
     const routingCode: string = item?.routingCode || "";
     const labelB64: string | undefined = item?.label?.b64;
 
+    let pdfUrl: string | null = null;
+
+    if (labelB64) {
+      const clean = labelB64.includes(",") ? labelB64.split(",")[1] : labelB64;
+      const pdfBuffer = Buffer.from(clean, "base64");
+
+      // const supabase = createClient(
+      //   process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      //   process.env.SUPABASE_SERVICE_ROLE_KEY! // Нужно именно service key
+      // );
+
+      const filePath = `labels/${shipmentNo}.pdf`;
+
+      const { data, error } = await supabase.storage
+        .from("dhl-labels")
+        .upload(filePath, pdfBuffer, {
+          contentType: "application/pdf",
+          upsert: true,
+        });
+
+      if (error) {
+        console.error("Ошибка загрузки PDF:", error);
+      } else {
+        // Получаем URL (если приватный бакет — лучше getSignedUrl)
+        const { data: pub } = supabase.storage
+          .from("dhl-labels")
+          .getPublicUrl(filePath);
+
+        pdfUrl = pub?.publicUrl || null;
+      }
+    }
+
     const shipment = await prisma.shipment.create({
       data: {
         orderId: orderId,
         carrier: "DHL",
         shipmentNo: shipmentNo,
         routingCode: routingCode,
-        labelB64: labelB64, // по желанию
         status: "CREATED",
-        payload: JSON.stringify(res.data), // по желанию
+        payload: JSON.stringify(res.data), 
+        labelUrl: pdfUrl,
       },
     });
 
