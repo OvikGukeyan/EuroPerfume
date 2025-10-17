@@ -22,7 +22,7 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
     <div className={cn(className, "w-full flex flex-col items-center  ")}>
       <div
         className={cn(
-          "w-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-5 transition-all duration-700 overflow-hidden p-5",
+          "w-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-5 transition-all duration-700 overflow-hidden p-4 md:p-5",
           isOpen ? "md:max-h-[2400px]" : "md:max-h-[1200px]"
         )}
       >
