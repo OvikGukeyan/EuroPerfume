@@ -1,7 +1,7 @@
 import { OrderStatuses } from "@/prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
 import { Button, Title } from "@/src/shared/components";
-import { DhlTestButton } from "@/src/shared/components/shared/dhlTest";
+import { DhlButton } from "@/src/shared/components/shared";
 import { File } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
@@ -72,6 +72,10 @@ export default async function Order({
           </div>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
+         Промокод:
+          <span className="font-bold mr-2 w-1/2">{order?.promocode}</span>
+        </li>
+        <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Имя покупателя:
           <span className="font-bold mr-2 w-1/2">{order?.fullName}</span>
         </li>
@@ -102,7 +106,8 @@ export default async function Order({
           Адрес: <span className="font-bold mr-2 w-1/2">{order?.address}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Номер дома: <span className="font-bold mr-2 w-1/2">{order?.houseNumber}</span>
+          Номер дома:{" "}
+          <span className="font-bold mr-2 w-1/2">{order?.houseNumber}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Комментарий:
@@ -138,7 +143,9 @@ export default async function Order({
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Номер дома доставки:
-          <span className="font-bold mr-2 w-1/2">{order?.deliveryHouseNumber}</span>
+          <span className="font-bold mr-2 w-1/2">
+            {order?.deliveryHouseNumber}
+          </span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Форма связи:
@@ -160,31 +167,18 @@ export default async function Order({
         </li>
       </ul>
       <div className="mt-5">
-        {order?.trackingCode ? (
-          <div>
-            <Title text="Отправление создано" size="sm" className="font-bold" />
-            <p className="font-bold mb-2">
-              Трек номер: <span>{order?.trackingCode}</span>
-            </p>
-            <a href={order.shipments[0].labelUrl || ""} download target="_blank">
-              <Button className="flex gap-2" variant="outline">
-                <span>Скачать метку</span>
-                <File />
-              </Button>
-            </a>
-          </div>
-        ) : (
-          <DhlTestButton
-            orderId={order?.id}
-            deliveryFullNmae={order?.deliveryFullNmae || ""}
-            addressStreet={order?.deliveryAddress || ""}
-            addressHouse={order?.deliveryHouseNumber || ""}
-            postalCode={order?.deliveryZip || ""}
-            city={order?.deliveryCity || ""}
-            country={order?.deliveryCountry || ""}
-            email={order?.email || ""}
-          />
-        )}
+        <DhlButton
+          orderId={order?.id}
+          deliveryFullNmae={order?.deliveryFullNmae || ""}
+          addressStreet={order?.deliveryAddress || ""}
+          addressHouse={order?.deliveryHouseNumber || ""}
+          postalCode={order?.deliveryZip || ""}
+          city={order?.deliveryCity || ""}
+          country={order?.deliveryCountry || ""}
+          email={order?.email || ""}
+          labelUrl={order?.shipments[0]?.labelUrl || undefined}
+          trackingCode={order?.trackingCode || undefined}
+        />
       </div>
     </div>
   );

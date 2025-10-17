@@ -34,10 +34,10 @@ import { getUserSession } from "../shared/lib/get-user-session";
 import { supabase } from "../lib/supabase";
 import { MetaValues } from "../shared/store";
 import { de } from "date-fns/locale";
-import { DhlCredantials } from "../shared/components/shared/dhlTest";
+import { DhlCredantials } from "../shared/components/shared/dhl-button";
 import { createClient } from "@supabase/supabase-js";
 
-export async function dhlTestCreateOrder(body: DhlCredantials) {
+export async function dhlCreateOrder(body: DhlCredantials) {
   // const input = CreateShipmentInput.parse(raw);
   const orderId = body.orderId;
 
@@ -145,6 +145,7 @@ export async function dhlTestCreateOrder(body: DhlCredantials) {
       ok: true,
       status: res.status,
       body: res.data,
+      labelUrl: pdfUrl,
     };
   } catch (error: any) {
     return {

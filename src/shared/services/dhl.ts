@@ -1,4 +1,4 @@
-import { DhlCredantials } from "../components/shared/dhlTest";
+import { DhlCredantials } from "../components/shared/dhl-button";
 import { ApiRouts } from "./constants";
 import { axiosInstance } from "./instance";
 

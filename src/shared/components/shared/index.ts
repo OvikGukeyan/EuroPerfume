@@ -86,6 +86,7 @@ export {CookieConsentModal} from './cookie-consent-modal';
 export {SubmitPriceButton} from './submit-price-button';
 export {ShareButton} from './share-button';
 export {ByProductDialog} from './by-product-dialog';
+export {DhlButton} from './dhl-button';
 
 export * from './email-templates';
 export * from './form';
