@@ -35,7 +35,6 @@ import { supabase } from "../lib/supabase";
 import { MetaValues } from "../shared/store";
 import { de } from "date-fns/locale";
 import { DhlCredantials } from "../shared/components/shared/dhl-button";
-import { createClient } from "@supabase/supabase-js";
 
 export async function dhlCreateOrder(body: DhlCredantials) {
   // const input = CreateShipmentInput.parse(raw);
@@ -74,7 +73,7 @@ export async function dhlCreateOrder(body: DhlCredantials) {
         },
         details: {
           // вес обязателен
-          weight: { value: 1.2, uom: "kg" },
+          weight: { value: 0.9, uom: "kg" },
         },
         reference: "ORDER-12345",
       },

@@ -56,7 +56,7 @@ export async function POST(req: NextRequest) {
         },
         details: {
           // вес обязателен
-          weight: { value: 1.2, uom: "kg" },
+          weight: { value: 0.9, uom: "kg" },
         },
         reference: "ORDER-12345",
       },
