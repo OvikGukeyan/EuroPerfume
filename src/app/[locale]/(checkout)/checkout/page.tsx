@@ -65,7 +65,7 @@ export default function Checkout() {
 
   const discount = form.watch("discount");
   const { totalAmountWithDelivery, deliveryPrice } =
-    calcTotlalAmountWithDelivery(totalAmount, discount);
+    calcTotlalAmountWithDelivery(totalAmount, form.watch("country"), discount);
 
   useEffect(() => {
     async function fetchUserInfo() {
@@ -135,7 +135,6 @@ export default function Checkout() {
   const { setValue } = useForm<any>({ mode: "onChange" });
   return (
     <div className="mt-10">
-     
       <Title text={t("title")} size="xl" className="font-extrabold mb-8" />
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>

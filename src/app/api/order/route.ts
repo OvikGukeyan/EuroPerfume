@@ -12,6 +12,9 @@ export async function GET(req: NextRequest) {
     }
 
     const orders = await prisma.order.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
       include: {
         items: {
           include: {
@@ -21,9 +24,9 @@ export async function GET(req: NextRequest) {
       },
     });
     const safeOrders = orders.map((order) => ({
-      ...order, 
-      totalAmount: order.totalAmount.toNumber()
-    }))
+      ...order,
+      totalAmount: order.totalAmount.toNumber(),
+    }));
     return NextResponse.json(safeOrders);
   } catch (error) {
     console.log("[ORDERS_GET] Server error", error);

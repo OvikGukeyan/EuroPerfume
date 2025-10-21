@@ -53,14 +53,14 @@ export async function dhlCreateOrder(body: DhlCredantials) {
         product: "V01PAK",
         billingNumber: "33333333330101",
         shipper: {
-          name1: "Euro Perfume",
-          addressStreet: "Bussardweg",
-          addressHouse: "2",
+          name1: "Saiian Vitalii",
+          addressStreet: "Kollwitzstrase",
+          addressHouse: "8",
           postalCode: "49808",
           city: "Lingen",
           country: "DEU",
           email: "europerfumeshop@gmail.com",
-          phone: "015112345678",
+          phone: "+4915231651047",
         },
         consignee: {
           name1: body.deliveryFullNmae,
@@ -78,7 +78,7 @@ export async function dhlCreateOrder(body: DhlCredantials) {
         reference: "ORDER-12345",
       },
     ],
-    label: { format: "PDF" },
+    label: { format: "PDF", size: "A6" },
   };
 
   try {
@@ -128,7 +128,7 @@ export async function dhlCreateOrder(body: DhlCredantials) {
         shipmentNo: shipmentNo,
         routingCode: routingCode,
         status: "CREATED",
-        payload: JSON.stringify(res.data), 
+        payload: JSON.stringify(res.data),
         labelUrl: pdfUrl,
       },
     });
