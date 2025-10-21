@@ -190,6 +190,7 @@ export async function createOrder(data: CheckoutFormValues) {
     const { totalAmountWithDelivery, deliveryPrice } =
       calcTotlalAmountWithDelivery(
         userCart.totalAmount.toNumber(),
+        data.country,
         data.discount
       );
     const fullName = data.firstName + " " + data.lastName;
