@@ -1,11 +1,12 @@
-import { Button } from '@/src/shared/components';
-import Link from 'next/link';
+import { Button } from "@/src/shared/components";
+import Link from "next/link";
 
 export default function Impressum() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 text-gray-800">
       <h1 className="text-3xl font-semibold mb-6">Impressum</h1>
 
+      {/* Angaben gemäß § 5 TMG */}
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-3">Angaben gemäß § 5 TMG</h2>
         <p className="mb-2">Saiian Vitalii – Euro Perfume</p>
@@ -16,11 +17,12 @@ export default function Impressum() {
 
       <hr className="my-8 border-t border-gray-300" />
 
+      {/* Kontakt */}
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-3">Kontakt</h2>
         <p className="mb-2">Telefon: +49 1523 1651047</p>
-        <p className="mb-2">
-          E-Mail:{' '}
+        <p>
+          E-Mail:{" "}
           <a
             href="mailto:europerfumeshop@gmail.com"
             className="underline"
@@ -32,6 +34,7 @@ export default function Impressum() {
 
       <hr className="my-8 border-t border-gray-300" />
 
+      {/* Vertreten durch */}
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-3">Vertreten durch</h2>
         <p>Saiian Vitalii</p>
@@ -39,6 +42,7 @@ export default function Impressum() {
 
       <hr className="my-8 border-t border-gray-300" />
 
+      {/* Umsatzsteuer-ID */}
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-3">Umsatzsteuer-ID</h2>
         <p>
@@ -49,15 +53,15 @@ export default function Impressum() {
 
       <hr className="my-8 border-t border-gray-300" />
 
+      {/* Registereintrag */}
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-3">Registereintrag</h2>
-        <p>
-          Kein Registereintrag (Einzelunternehmen / Kleinunternehmer).
-        </p>
+        <p>Kein Registereintrag (Einzelunternehmen / Kleinunternehmer).</p>
       </section>
 
       <hr className="my-8 border-t border-gray-300" />
 
+      {/* Haftungsausschluss */}
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-3">Haftungsausschluss</h2>
         <p>
@@ -69,14 +73,36 @@ export default function Impressum() {
 
       <hr className="my-8 border-t border-gray-300" />
 
+      {/* Hinweis zu Marken */}
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-3">
+          Wichtiger Hinweis zu Marken
+        </h2>
+        <p className="mb-2">
+          Diese Website und deren Betreiber sind unabhängig und nicht mit den
+          genannten Parfummarken assoziiert, verbunden oder von diesen
+          autorisiert.
+        </p>
+        <p className="mb-2">
+          Die genannten Marken sind Eigentum ihrer jeweiligen Rechteinhaber.
+        </p>
+        <p>
+          Der Verkauf von Parfumproben (Decants) erfolgt als Service für
+          Parfumenthusiasten und stellt keine offizielle Vermarktung der
+          Markenprodukte dar.
+        </p>
+      </section>
+
+      <hr className="my-8 border-t border-gray-300" />
+
+      {/* Online-Streitbeilegung */}
       <section>
         <h2 className="text-2xl font-semibold mb-3">
           Online-Streitbeilegung gemäß Art. 14 Abs. 1 ODR-VO
         </h2>
         <p className="mb-4">
           Die Europäische Kommission stellt eine Plattform zur
-          Online-Streitbeilegung (OS) bereit, die Sie unter folgendem Link
-          finden:{' '}
+          Online-Streitbeilegung (OS) bereit:{" "}
           <a
             href="https://ec.europa.eu/consumers/odr"
             target="_blank"
@@ -88,8 +114,8 @@ export default function Impressum() {
         </p>
         <p>
           Wir sind weder verpflichtet noch bereit, an einem
-          Streitbeilegungsverfahren vor einer
-          Verbraucherschlichtungsstelle teilzunehmen.
+          Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle
+          teilzunehmen.
         </p>
 
         <div className="mt-6">
