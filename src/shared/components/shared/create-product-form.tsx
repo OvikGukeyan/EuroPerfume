@@ -573,6 +573,40 @@ export const CreateProductForm: FC<Props> = ({
                 control={form.control}
                 items={yers}
               />
+
+              <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
+                <FormField
+                  name="activeIngredientsRu"
+                  control={form.control as Control<CreateProductFormValues>}
+                  render={({ field }) => (
+                    <FormItem className="mb-5">
+                      <FormControl>
+                        <FormInput
+                          label={"Активные ингредиенты Ru"}
+                          {...field}
+                          placeholder="Активные ингредиенты"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  name="activeIngredientsDe"
+                  control={form.control as Control<CreateProductFormValues>}
+                  render={({ field }) => (
+                    <FormItem className="mb-5">
+                      <FormControl>
+                        <FormInput
+                          label={"Активные ингредиенты De"}
+                          {...field}
+                          placeholder="Активные ингредиенты"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
 
             <div className="w-1/2">
@@ -773,40 +807,6 @@ export const CreateProductForm: FC<Props> = ({
                               label={"Особенности композиции De"}
                               {...field}
                               placeholder="Особенности композиции"
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  <div className="flex flex-col gap-5 border rounded-sm p-5 mb-5">
-                    <FormField
-                      name="activeIngredientsRu"
-                      control={form.control as Control<CreateProductFormValues>}
-                      render={({ field }) => (
-                        <FormItem className="mb-5">
-                          <FormControl>
-                            <FormInput
-                              label={"Активные ингредиенты Ru"}
-                              {...field}
-                              placeholder="Активные ингредиенты"
-                            />
-                          </FormControl>
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      name="activeIngredientsDe"
-                      control={form.control as Control<CreateProductFormValues>}
-                      render={({ field }) => (
-                        <FormItem className="mb-5">
-                          <FormControl>
-                            <FormInput
-                              label={"Активные ингредиенты De"}
-                              {...field}
-                              placeholder="Активные ингредиенты"
                             />
                           </FormControl>
                         </FormItem>
