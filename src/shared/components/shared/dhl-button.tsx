@@ -6,8 +6,12 @@ import { Api } from "../../services/api-client";
 import { Button } from "../ui";
 import { File } from "lucide-react";
 import { Title } from "..";
+import { ShippingMethods } from "@prisma/client";
 
 export type DhlCredantials = {
+  shippingMethod: ShippingMethods;
+  postOffice: string | undefined;
+  packstationNumber: string | undefined;
   orderId: number | undefined;
   deliveryFullNmae: string;
   addressStreet: string;
@@ -42,7 +46,7 @@ export const DhlButton: FC<Props> = ({
 
   return (
     <div className={cn("", className)}>
-      {(result || labelUrl ) ? (
+      {(result?.ok || labelUrl ) ? (
         <>
           <Title text="Отправление создано" size="sm" className="font-bold" />
           <p className="font-bold mb-2">

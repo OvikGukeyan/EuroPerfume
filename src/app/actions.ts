@@ -8,6 +8,7 @@ import {
   Prisma,
   UserRole,
   NoteType,
+  ShippingMethods,
 } from "@prisma/client";
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
@@ -45,7 +46,37 @@ export async function dhlCreateOrder(body: DhlCredantials) {
   }
 
   const url = `${process.env.DHL_API_BASE}/parcel/de/shipping/v2/orders`;
+// let consignee;
 
+// if (body.shippingMethod === ShippingMethods.BILLING_ADDRESS || body.shippingMethod === ShippingMethods.DIFFERENT_ADDRESS) {
+//   consignee = {
+//     name1: body.deliveryFullNmae,
+//     addressStreet: body.addressStreet,
+//     addressHouse: body.addressHouse,
+//     postalCode: body.postalCode,
+//     city: body.city,
+//     country: body.country,
+//     email: body.email,
+//   };
+// } else if (body.shippingMethod === ShippingMethods.POST_OFFICE) {
+//   consignee = {
+//     name1: body.deliveryFullNmae,
+//     postfilialNumber: body.postOffice,
+//     postalCode: body.postalCode,
+//     city: body.city,
+//     country: body.country,
+//     email: body.email,
+//   };
+// } else if (body.shippingMethod === ShippingMethods.PACKSTATION) {
+//   consignee = {
+//     name1: body.deliveryFullNmae,
+//     packstationNumber: body.packstationNumber,
+//     postalCode: body.postalCode,
+//     city: body.city,
+//     country: body.country,
+//     email: body.email,
+//   };
+// }
   const payload = {
     profile: "STANDARD_GRUPPENPROFIL",
     shipments: [
@@ -78,7 +109,7 @@ export async function dhlCreateOrder(body: DhlCredantials) {
         reference: "ORDER-12345",
       },
     ],
-    label: { format: "PDF", size: "A6" },
+    label: { format: "PDF", size: "A6", customerReference: body.email },
   };
 
   try {
