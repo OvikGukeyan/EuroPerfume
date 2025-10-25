@@ -9,9 +9,9 @@ import { Title } from "..";
 import { ShippingMethods } from "@prisma/client";
 
 export type DhlCredantials = {
-  shippingMethod: ShippingMethods;
-  postOffice: string | undefined;
-  packstationNumber: string | undefined;
+  // shippingMethod: ShippingMethods;
+  // postOffice: string | undefined;
+  // packstationNumber: string | undefined;
   orderId: number | undefined;
   deliveryFullNmae: string;
   addressStreet: string;
