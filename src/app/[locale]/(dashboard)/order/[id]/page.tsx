@@ -2,6 +2,7 @@ import { OrderStatuses } from "@/prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
 import { Button, Title } from "@/src/shared/components";
 import { DhlButton } from "@/src/shared/components/shared";
+import { ShippingMethods } from "@prisma/client";
 import { File } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
@@ -72,7 +73,7 @@ export default async function Order({
           </div>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-         Промокод:
+          Промокод:
           <span className="font-bold mr-2 w-1/2">{order?.promocode}</span>
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
@@ -178,6 +179,12 @@ export default async function Order({
           email={order?.email || ""}
           labelUrl={order?.shipments[0]?.labelUrl || undefined}
           trackingCode={order?.trackingCode || undefined}
+          shippingMethod={
+            order?.shippingMethod || ShippingMethods.BILLING_ADDRESS
+          }
+          postOffice={order?.postOffice || ''}
+          packstationNumber={order?.packstationNumber || ''}
+          postNumber={order?.postNumber || ''}
         />
       </div>
     </div>

@@ -9,7 +9,7 @@ export const dhlClient = axios.create({
 });
 // 👉 Можем сразу подхватывать токен автоматически
 dhlClient.interceptors.request.use(async (config) => {
-  const { getDhlAccessToken } = await import("."); // или твой путь
+  const { getDhlAccessToken } = await import("."); 
   const token = await getDhlAccessToken();
   config.headers.Authorization = `Bearer ${token}`;
   return config;

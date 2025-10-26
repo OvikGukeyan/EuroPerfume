@@ -9,9 +9,10 @@ import { Title } from "..";
 import { ShippingMethods } from "@prisma/client";
 
 export type DhlCredantials = {
-  // shippingMethod: ShippingMethods;
-  // postOffice: string | undefined;
-  // packstationNumber: string | undefined;
+  shippingMethod: ShippingMethods;
+  postOffice: string;
+  packstationNumber: string;
+  postNumber: string;
   orderId: number | undefined;
   deliveryFullNmae: string;
   addressStreet: string;
@@ -69,6 +70,11 @@ export const DhlButton: FC<Props> = ({
         >
           {pending ? "Creating…" : "Create DHL order"}
         </Button>
+      )}
+      {result && (
+        <pre className="mt-4 p-3 bg-gray-100 text-xs overflow-auto">
+          {JSON.stringify(result.body, null, 2)}
+        </pre>
       )}
 
       {/* {result && (

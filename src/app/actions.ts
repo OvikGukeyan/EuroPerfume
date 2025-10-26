@@ -46,37 +46,42 @@ export async function dhlCreateOrder(body: DhlCredantials) {
   }
 
   const url = `${process.env.DHL_API_BASE}/parcel/de/shipping/v2/orders`;
-// let consignee;
+  let consignee;
 
-// if (body.shippingMethod === ShippingMethods.BILLING_ADDRESS || body.shippingMethod === ShippingMethods.DIFFERENT_ADDRESS) {
-//   consignee = {
-//     name1: body.deliveryFullNmae,
-//     addressStreet: body.addressStreet,
-//     addressHouse: body.addressHouse,
-//     postalCode: body.postalCode,
-//     city: body.city,
-//     country: body.country,
-//     email: body.email,
-//   };
-// } else if (body.shippingMethod === ShippingMethods.POST_OFFICE) {
-//   consignee = {
-//     name1: body.deliveryFullNmae,
-//     postfilialNumber: body.postOffice,
-//     postalCode: body.postalCode,
-//     city: body.city,
-//     country: body.country,
-//     email: body.email,
-//   };
-// } else if (body.shippingMethod === ShippingMethods.PACKSTATION) {
-//   consignee = {
-//     name1: body.deliveryFullNmae,
-//     packstationNumber: body.packstationNumber,
-//     postalCode: body.postalCode,
-//     city: body.city,
-//     country: body.country,
-//     email: body.email,
-//   };
-// }
+  if (
+    body.shippingMethod === ShippingMethods.BILLING_ADDRESS ||
+    body.shippingMethod === ShippingMethods.DIFFERENT_ADDRESS
+  ) {
+    consignee = {
+      name1: body.deliveryFullNmae,
+      addressStreet: body.addressStreet,
+      addressHouse: body.addressHouse,
+      postalCode: body.postalCode,
+      city: body.city,
+      country: body.country,
+      email: body.email,
+    };
+  } else if (body.shippingMethod === ShippingMethods.POST_OFFICE) {
+    consignee = {
+      name: body.deliveryFullNmae,
+      retailID: body.postOffice,
+      postNumber: body.postNumber,
+      postalCode: body.postalCode,
+      city: body.city,
+      country: body.country,
+      email: body.email,
+    };
+  } else if (body.shippingMethod === ShippingMethods.PACKSTATION) {
+    consignee = {
+      name: body.deliveryFullNmae,
+      lockerID: body.packstationNumber,
+      postNumber: body.postNumber,
+      postalCode: body.postalCode,
+      city: body.city,
+      country: body.country,
+      email: body.email,
+    };
+  }
   const payload = {
     profile: "STANDARD_GRUPPENPROFIL",
     shipments: [
@@ -85,7 +90,7 @@ export async function dhlCreateOrder(body: DhlCredantials) {
         billingNumber: "33333333330101",
         shipper: {
           name1: "Saiian Vitalii",
-          addressStreet: "Kollwitzstrase",
+          addressStreet: "Kollwitzstraße",
           addressHouse: "8",
           postalCode: "49808",
           city: "Lingen",
@@ -93,17 +98,8 @@ export async function dhlCreateOrder(body: DhlCredantials) {
           email: "europerfumeshop@gmail.com",
           phone: "+4915231651047",
         },
-        consignee: {
-          name1: body.deliveryFullNmae,
-          addressStreet: body.addressStreet,
-          addressHouse: body.addressHouse,
-          postalCode: body.postalCode,
-          city: body.city,
-          country: body.country,
-          email: body.email,
-        },
+        consignee,
         details: {
-          // вес обязателен
           weight: { value: 0.9, uom: "kg" },
         },
         reference: "ORDER-12345",

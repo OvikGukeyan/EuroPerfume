@@ -23,10 +23,7 @@ export default function Impressum() {
         <p className="mb-2">Telefon: +49 1523 1651047</p>
         <p>
           E-Mail:{" "}
-          <a
-            href="mailto:europerfumeshop@gmail.com"
-            className="underline"
-          >
+          <a href="mailto:europerfumeshop@gmail.com" className="underline">
             europerfumeshop@gmail.com
           </a>
         </p>
@@ -90,6 +87,11 @@ export default function Impressum() {
           Der Verkauf von Parfumproben (Decants) erfolgt als Service für
           Parfumenthusiasten und stellt keine offizielle Vermarktung der
           Markenprodukte dar.
+        </p>
+        <p>
+          Die Produkte werden nicht als Kosmetika im Sinne der
+          EU-Kosmetikverordnung vermarktet; sie sind ausschließlich als
+          Sammlerobjekte bestimmt.
         </p>
       </section>
 

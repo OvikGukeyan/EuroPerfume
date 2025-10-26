@@ -3,8 +3,8 @@ export async function getDhlAccessToken() {
 
   const body = new URLSearchParams({
     grant_type: "password",
-    username: process.env.DHL_SANDBOX_USERNAME!,
-    password: process.env.DHL_SANDBOX_PASSWORD!,
+    username: process.env.DHL_API_USER!,
+    password: process.env.DHL_API_PASSWORD!,
     client_id: process.env.DHL_API_KEY!,
     client_secret: process.env.DHL_API_SECRET!,
   });

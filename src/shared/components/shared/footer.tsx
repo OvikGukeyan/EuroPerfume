@@ -28,13 +28,18 @@ export const Footer: FC<Props> = ({ className }) => {
         <Image src="/assets/logo.png" width={120} height={40} alt="logo" />
         <div className="flex flex-col gap-5 max-h-[230px] flex-wrap px-0 md:px-5">
           {links.map((link) => (
-            <Link  key={link.href} href={link.href}>
+            <Link key={link.href} href={link.href}>
               <h3 className="text-md  ">{link.label[locale]}</h3>
             </Link>
           ))}
         </div>
       </div>
-      <div className="flex items-center justify-between gap-5 mt-10">
+      <div className="flex flex-col items-start justify-between gap-5 mt-10">
+        <p className="text-xs text-slate-600">
+          Die hier angebotenen Duftproben (Decants) stammen aus originalen,
+          rechtmäßig erworbenen Parfümflakons. Verkauf ausschließlich als
+          Sammlerobjekte. Nicht zur Anwendung auf der Haut bestimmt.
+        </p>
         <h5>EuroPerfume 2024. Alle Rechte vorbehalten.</h5>
       </div>
     </div>

@@ -252,6 +252,8 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
             </Tabs>
           </div>
 
+          <p className="text-xs text-slate-600">Sammlerobjekt – kein offizielles Markenprodukt.</p>
+
           <Separator />
           <div onClick={handleRatingClick}>
             <Rating
