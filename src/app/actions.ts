@@ -87,7 +87,7 @@ export async function dhlCreateOrder(body: DhlCredantials) {
     shipments: [
       {
         product: "V01PAK",
-        billingNumber: "33333333330101",
+        billingNumber: process.env.DHL_BILLING_NUMBER,
         shipper: {
           name1: "Saiian Vitalii",
           addressStreet: "Kollwitzstraße",
