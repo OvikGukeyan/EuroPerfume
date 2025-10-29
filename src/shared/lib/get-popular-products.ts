@@ -91,11 +91,16 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       }),
     ]);
 
-    const safeProducts = newPopularProducts?.products.map((product) => ({
-      ...product,
-      discountPrice: product.discountPrice && product.discountPrice?.toNumber(),
-      price: product.price.toNumber(),
-    }));
+    if (!newPopularProducts) return [];
+
+    const safeProducts = popularProductIds
+      .map((id) => newPopularProducts.products.find((p) => p.id === id))
+      .filter((p): p is (typeof newPopularProducts.products)[number] => !!p)
+      .map((product) => ({
+        ...product,
+        discountPrice: product.discountPrice?.toNumber() ?? null,
+        price: product.price.toNumber(),
+      }));
 
     return safeProducts || [];
   } catch (error) {

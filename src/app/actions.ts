@@ -28,6 +28,7 @@ import { sendEmail } from "../shared/lib/send-email";
 import {
   OrderSuccessTemplate,
   PasswordResetTemplate,
+  TrackingNotificationTemplate,
   UserVerificationTemplate,
 } from "../shared/components";
 import { CartItemDTO } from "../shared/services/dto/cart.dto";
@@ -166,6 +167,17 @@ export async function dhlCreateOrder(body: DhlCredantials) {
     });
 
     // await sendTrackingEmail(order.email, shipmentNo)
+
+    await sendEmail(
+      body.email,
+      'Delivery Notification',
+      TrackingNotificationTemplate({
+        orderId: shipment.orderId,
+        trackingNumber: shipmentNo,
+      })
+    );
+
+
 
     return {
       ok: true,

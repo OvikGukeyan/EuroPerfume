@@ -14,6 +14,15 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ totalAmount: 0, items: [] });
     }
 
+    await prisma.cartItem.deleteMany({
+      where: {
+        cart: { token },
+        product: {
+          available: false,
+        },
+      },
+    });
+    
     const userCart = await prisma.cart.findFirst({
       where: {
         token,
@@ -86,7 +95,7 @@ export async function POST(req: NextRequest) {
     }
 
     const updatedUserCart = await updateCartTotalAmount(token);
-   
+
     const resp = NextResponse.json(updatedUserCart);
     resp.cookies.set("cartToken", token, {
       maxAge: 60 * 60 * 24 * 7,
