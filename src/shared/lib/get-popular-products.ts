@@ -32,16 +32,6 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       },
     });
 
-    if (existingPopularProducts) {
-      const safeProducts = existingPopularProducts.products.map((product) => ({
-        ...product,
-        discountPrice:
-          product.discountPrice && product.discountPrice?.toNumber(),
-        price: product.price.toNumber(),
-      }));
-      return safeProducts;
-    }
-
     const popularProducts = await prisma.orderItem.groupBy({
       by: ["productId"],
       _sum: { quantity: true },
@@ -50,6 +40,20 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
     });
 
     const popularProductIds = popularProducts.map((p) => p.productId);
+
+    if (existingPopularProducts) {
+      const safeProducts = popularProductIds
+        .map((id) => existingPopularProducts.products.find((p) => p.id === id))
+        .filter(
+          (p): p is (typeof existingPopularProducts.products)[number] => !!p
+        )
+        .map((product) => ({
+          ...product,
+          discountPrice: product.discountPrice?.toNumber() ?? null,
+          price: product.price.toNumber(),
+        }));
+      return safeProducts;
+    }
 
     const availableProducts = await prisma.product.findMany({
       where: {
