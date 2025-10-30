@@ -42,13 +42,22 @@ export const DashboardProduct: React.FC<Props> = ({
 }) => {
   const router = useRouter();
   const [localVariations, setLocalVariations] = useState(variations ?? []);
-
+  const [isAvailable, setIsAvailable] = useState(available);
   const handleVariationDelete = async (id: number) => {
     try {
       await deleteProductVariation(id);
       setLocalVariations((prev) => prev.filter((item) => item.id !== id));
     } catch (error) {
       console.error("Error [DELETE_PRODUCT_VARIATION]", error);
+    }
+  };
+
+  const handleSwitchAvailability = async () => {
+    try {
+      await switchAvailability(id, !isAvailable);
+      setIsAvailable(!isAvailable);
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -97,8 +106,8 @@ export const DashboardProduct: React.FC<Props> = ({
         </Button>
 
         <Switch
-          checked={available}
-          onCheckedChange={() => switchAvailability(id, !available)}
+          checked={isAvailable}
+          onCheckedChange={handleSwitchAvailability}
         />
       </div>
 
