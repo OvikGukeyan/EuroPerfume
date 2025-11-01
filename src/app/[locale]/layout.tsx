@@ -6,12 +6,32 @@ import { notFound } from "next/navigation";
 import { routing } from "@/src/i18n/routing";
 import { cookies } from "next/headers";
 import Script from "next/script";
+import { Metadata } from "next";
 
 const nunito = Nunito({
   subsets: ["cyrillic"],
   variable: "--font-nunito",
   weight: ["400", "500", "600", "700", "800", "900"],
 });
+
+export const metadata: Metadata = {
+  title: {
+    default: "Euro Perfume",
+    template: "%s | Euro Perfume",
+  },
+  description: "Perfume store.",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
+  },
+  alternates: {
+    canonical: "https://www.euro-perfume.com",
+  },
+};
 
 export default async function RootLayout({
   children,

@@ -10,15 +10,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(slides);
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-    const id = Number((await params).id);
-    if(!id) {
-        return NextResponse.json({ message: 'Id not found' }, { status: 400 });
-    }
-    await prisma.slide.delete({
-        where: {
-            id: Number(id)
-        }
-    })
-    return NextResponse.json({ message: 'Slide deleted' }, { status: 200 });
-}
+// export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+//     const id = Number((await params).id);
+//     if(!id) {
+//         return NextResponse.json({ message: 'Id not found' }, { status: 400 });
+//     }
+//     await prisma.slide.delete({
+//         where: {
+//             id: Number(id)
+//         }
+//     })
+//     return NextResponse.json({ message: 'Slide deleted' }, { status: 200 });
+// }
