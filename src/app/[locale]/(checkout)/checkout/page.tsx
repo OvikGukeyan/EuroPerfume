@@ -47,7 +47,7 @@ export default function Checkout() {
       houseNumber: "",
       deliveryAddress: "",
       country: "DEU",
-      deliveryCountry: "DEU",
+      deliveryCountry: "",
       city: "",
       deliveryCity: "",
       zip: "",
@@ -62,6 +62,7 @@ export default function Checkout() {
       discount: 0,
     },
   });
+
 
   const discount = form.watch("discount");
   const { totalAmountWithDelivery, deliveryPrice } =

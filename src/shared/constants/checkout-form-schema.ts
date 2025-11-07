@@ -3,19 +3,44 @@ import { z } from "zod";
 
 export const checkoutFormSchema = z
   .object({
-    firstName: z.string().min(2, { message: "First Name must be at least 2 characters long" }),
-    lastName: z.string().min(2, { message: "Last Name must be at least 2 characters long" }),
-    email: z.string().email({ message: "Invalid email address" }),
-    phone: z.string().min(10, { message: "Invalid phone number" }),
-    address: z.string().min(5, { message: "Invalid address" }),
-    houseNumber: z.string().min(1, { message: "Invalid house number" }),
-    city: z.string().min(2, { message: "Invalid city" }),
-    country: z.string().min(2, { message: "Invalid country" }),
-    zip: z.string().min(5, { message: "Invalid zip code" }),
+    firstName: z
+      .string()
+      .min(2, { message: "Der Vorname muss mindestens 2 Zeichen lang sein." })
+      .regex(/^[A-Za-z\s'-]+$/, {
+        message: "Der Vorname darf nur lateinische Buchstaben enthalten.",
+      }),
 
-    // Опциональные поля (валидируются вручную)
-    deliveryFirstName: z.string().optional(),
-    deliveryLastName: z.string().optional(),
+    lastName: z
+      .string()
+      .min(2, { message: "Der Nachname muss mindestens 2 Zeichen lang sein." })
+      .regex(/^[A-Za-z\s'-]+$/, {
+        message: "Der Nachname darf nur lateinische Buchstaben enthalten.",
+      }),
+
+    email: z.string().email({ message: "Ungültige E-Mail-Adresse." }),
+    phone: z.string().min(10, { message: "Ungültige Telefonnummer." }),
+    address: z.string().min(5, { message: "Ungültige Adresse." }),
+    houseNumber: z.string().min(1, { message: "Ungültige Hausnummer." }),
+    city: z.string().min(2, { message: "Ungültige Stadt." }),
+    country: z.string().min(2, { message: "Ungültiges Land." }),
+    zip: z.string().min(4, { message: "Ungültige Postleitzahl." }),
+
+    deliveryFirstName: z
+      .string()
+      .regex(/^[A-Za-z\s'-]+$/, {
+        message: "Der Vorname darf nur lateinische Buchstaben enthalten.",
+      })
+      .optional()
+      .or(z.literal("")),
+
+    deliveryLastName: z
+      .string()
+      .regex(/^[A-Za-z\s'-]+$/, {
+        message: "Der Nachname darf nur lateinische Buchstaben enthalten.",
+      })
+      .optional()
+      .or(z.literal("")),
+
     deliveryAddress: z.string().optional(),
     deliveryHouseNumber: z.string().optional(),
     deliveryCity: z.string().optional(),
@@ -36,58 +61,122 @@ export const checkoutFormSchema = z
 
     if (shippingMethod === ShippingMethods.DIFFERENT_ADDRESS) {
       if (!data.deliveryFirstName?.trim()) {
-        ctx.addIssue({ code: "custom", message: "First name is required", path: ["deliveryFirstName"] });
+        ctx.addIssue({
+          code: "custom",
+          message: "Vorname ist erforderlich.",
+          path: ["deliveryFirstName"],
+        });
       }
       if (!data.deliveryLastName?.trim()) {
-        ctx.addIssue({ code: "custom", message: "Last name is required", path: ["deliveryLastName"] });
+        ctx.addIssue({
+          code: "custom",
+          message: "Nachname ist erforderlich.",
+          path: ["deliveryLastName"],
+        });
       }
       if (!data.deliveryAddress?.trim()) {
-        ctx.addIssue({ code: "custom", message: "Address is required", path: ["deliveryAddress"] });
+        ctx.addIssue({
+          code: "custom",
+          message: "Adresse ist erforderlich.",
+          path: ["deliveryAddress"],
+        });
       }
       if (!data.deliveryHouseNumber?.trim()) {
-        ctx.addIssue({ code: "custom", message: "House number is required", path: ["deliveryHouseNumber"] });
+        ctx.addIssue({
+          code: "custom",
+          message: "Hausnummer ist erforderlich.",
+          path: ["deliveryHouseNumber"],
+        });
       }
       if (!data.deliveryZip?.trim()) {
-        ctx.addIssue({ code: "custom", message: "ZIP code is required", path: ["deliveryZip"] });
+        ctx.addIssue({
+          code: "custom",
+          message: "Postleitzahl ist erforderlich.",
+          path: ["deliveryZip"],
+        });
       }
       if (!data.deliveryCity?.trim()) {
-        ctx.addIssue({ code: "custom", message: "City is required", path: ["deliveryCity"] });
+        ctx.addIssue({
+          code: "custom",
+          message: "Stadt ist erforderlich.",
+          path: ["deliveryCity"],
+        });
       }
       if (!data.deliveryCountry?.trim()) {
-        ctx.addIssue({ code: "custom", message: "Country is required", path: ["deliveryCountry"] });
+        ctx.addIssue({
+          code: "custom",
+          message: "Land ist erforderlich.",
+          path: ["deliveryCountry"],
+        });
       }
     }
 
     if (shippingMethod === ShippingMethods.PACKSTATION) {
       if (!data.packstationNumber?.trim()) {
-        ctx.addIssue({ code: "custom", message: "Packstation number is required", path: ["packstationNumber"] });
+        ctx.addIssue({
+          code: "custom",
+          message: "Packstation-Nummer ist erforderlich.",
+          path: ["packstationNumber"],
+        });
       }
       if (!data.postNumber?.trim()) {
-        ctx.addIssue({ code: "custom", message: "Post number is required", path: ["postNumber"] });
+        ctx.addIssue({
+          code: "custom",
+          message: "Postnummer ist erforderlich.",
+          path: ["postNumber"],
+        });
       }
       if (!data.deliveryZip?.trim()) {
-        ctx.addIssue({ code: "custom", message: "ZIP code is required", path: ["deliveryZip"] });
+        ctx.addIssue({
+          code: "custom",
+          message: "Postleitzahl ist erforderlich.",
+          path: ["deliveryZip"],
+        });
       }
       if (!data.deliveryCity?.trim()) {
-        ctx.addIssue({ code: "custom", message: "City is required", path: ["deliveryCity"] });
+        ctx.addIssue({
+          code: "custom",
+          message: "Stadt ist erforderlich.",
+          path: ["deliveryCity"],
+        });
       }
-       if (!data.deliveryCountry?.trim()) {
-        ctx.addIssue({ code: "custom", message: "Country is required", path: ["deliveryCountry"] });
+      if (!data.deliveryCountry?.trim()) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Land ist erforderlich.",
+          path: ["deliveryCountry"],
+        });
       }
     }
 
     if (shippingMethod === ShippingMethods.POST_OFFICE) {
       if (!data.postOffice?.trim()) {
-        ctx.addIssue({ code: "custom", message: "Post office is required", path: ["postOffice"] });
+        ctx.addIssue({
+          code: "custom",
+          message: "Postfiliale ist erforderlich.",
+          path: ["postOffice"],
+        });
       }
       if (!data.deliveryZip?.trim()) {
-        ctx.addIssue({ code: "custom", message: "ZIP code is required", path: ["deliveryZip"] });
+        ctx.addIssue({
+          code: "custom",
+          message: "Postleitzahl ist erforderlich.",
+          path: ["deliveryZip"],
+        });
       }
       if (!data.deliveryCity?.trim()) {
-        ctx.addIssue({ code: "custom", message: "City is required", path: ["deliveryCity"] });
+        ctx.addIssue({
+          code: "custom",
+          message: "Stadt ist erforderlich.",
+          path: ["deliveryCity"],
+        });
       }
-       if (!data.deliveryCountry?.trim()) {
-        ctx.addIssue({ code: "custom", message: "Country is required", path: ["deliveryCountry"] });
+      if (!data.deliveryCountry?.trim()) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Land ist erforderlich.",
+          path: ["deliveryCountry"],
+        });
       }
     }
   });

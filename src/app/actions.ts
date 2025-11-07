@@ -35,8 +35,8 @@ import { CartItemDTO } from "../shared/services/dto/cart.dto";
 import { getUserSession } from "../shared/lib/get-user-session";
 import { supabase } from "../lib/supabase";
 import { MetaValues } from "../shared/store";
-import { de } from "date-fns/locale";
 import { DhlCredantials } from "../shared/components/shared/dhl-button";
+import { euCountriesAlpha3 } from "../shared/lib/calc-total-amount-with-delivery";
 
 export async function dhlCreateOrder(body: DhlCredantials) {
   // const input = CreateShipmentInput.parse(raw);
@@ -47,6 +47,40 @@ export async function dhlCreateOrder(body: DhlCredantials) {
   }
 
   const url = `${process.env.DHL_API_BASE}/parcel/de/shipping/v2/orders`;
+
+  let productCode = "V01PAK";
+  let billingNumber = process.env.DHL_BILLING_NUMBER;
+  if (body.country !== "DEU") {
+    productCode = euCountriesAlpha3.includes(body.country)
+      ? "V53WPAK"
+      : "V54EPAK";
+    billingNumber = euCountriesAlpha3.includes(body.country)
+      ? process.env.DHL_EU_BILLING_NUMBER
+      : process.env.DHL_INTERNATIONAL_BILLING_NUMBER;
+  }
+  const customs =
+    productCode === "V54EPAK"
+      ? {
+          exportType: "OTHER",
+          exportDescription: "Online sale",
+          placeOfCommital: "Lingen",
+          shippingConditions: "DDP",
+          postalCharges: { value: 0.0, currency: "EUR" },
+
+          items: [
+            {
+              itemDescription: "Perfume",
+              countryOfOrigin: "DEU",
+              packagedQuantity: 1,
+              itemWeight: { value: 0.9, uom: "kg" },
+              itemValue: { value: 100, uom: "EUR" },
+              currency: "EUR",
+              hsCode: "33030010",
+            },
+          ],
+        }
+      : undefined;
+
   let consignee;
 
   if (
@@ -87,8 +121,8 @@ export async function dhlCreateOrder(body: DhlCredantials) {
     profile: "STANDARD_GRUPPENPROFIL",
     shipments: [
       {
-        product: "V01PAK",
-        billingNumber: process.env.DHL_BILLING_NUMBER,
+        product: productCode,
+        billingNumber: billingNumber,
         shipper: {
           name1: "Saiian Vitalii",
           addressStreet: "Kollwitzstraße",
@@ -104,6 +138,7 @@ export async function dhlCreateOrder(body: DhlCredantials) {
           weight: { value: 0.9, uom: "kg" },
         },
         reference: "ORDER-12345",
+        ...(customs ? { customs } : {}),
       },
     ],
     label: { format: "PDF", size: "A6", customerReference: body.email },
@@ -166,18 +201,14 @@ export async function dhlCreateOrder(body: DhlCredantials) {
       data: { trackingCode: shipmentNo, status: "PENDING" },
     });
 
-    // await sendTrackingEmail(order.email, shipmentNo)
-
     await sendEmail(
       body.email,
-      'Delivery Notification',
+      "Delivery Notification",
       TrackingNotificationTemplate({
         orderId: shipment.orderId,
         trackingNumber: shipmentNo,
       })
     );
-
-
 
     return {
       ok: true,

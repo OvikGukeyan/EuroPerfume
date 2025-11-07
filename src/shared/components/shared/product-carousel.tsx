@@ -80,6 +80,7 @@ export const ProductCarousel: React.FC<PropType> = ({
             >
               {slide.type === "video" ? (
                 <video
+                  preload="none"
                   key={index}
                   src={slide.url}
                   autoPlay
