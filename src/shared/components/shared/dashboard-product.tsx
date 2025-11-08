@@ -2,14 +2,19 @@
 
 import Image from "next/image";
 import React, { useState } from "react";
-import { SubmitPriceButton, Title } from ".";
+import { CreateVariationForm, SubmitPriceButton, Title } from ".";
 import { Button, Input, Popover, Switch } from "../ui";
-import { GalleryVerticalEnd, Settings2, Trash2, X } from "lucide-react";
+import {
+  FilePlus,
+  GalleryVerticalEnd,
+  Settings2,
+  Trash2,
+  X,
+} from "lucide-react";
 import { Brand, ProductVariation } from "@prisma/client";
 import { Link, useRouter } from "@/src/i18n/navigation";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
 import { changeProductPrice, deleteProductVariation } from "@/src/app/actions";
-import { ca, tr } from "date-fns/locale";
 
 interface Props {
   id: number;
@@ -43,6 +48,7 @@ export const DashboardProduct: React.FC<Props> = ({
   const router = useRouter();
   const [localVariations, setLocalVariations] = useState(variations ?? []);
   const [isAvailable, setIsAvailable] = useState(available);
+  console.log(localVariations);
   const handleVariationDelete = async (id: number) => {
     try {
       await deleteProductVariation(id);
@@ -56,6 +62,21 @@ export const DashboardProduct: React.FC<Props> = ({
     try {
       await switchAvailability(id, !isAvailable);
       setIsAvailable(!isAvailable);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSwitchVariationAvailability = async (id: number) => {
+    try {
+      setLocalVariations((prev) =>
+        prev.map((item) => {
+          if (item.id === id) {
+            return { ...item, available: !item.available };
+          }
+          return item;
+        })
+      );
     } catch (error) {
       console.error(error);
     }
@@ -80,23 +101,40 @@ export const DashboardProduct: React.FC<Props> = ({
 
         <Title text={name} size="xs" className="mb-1 mt-3 font-bold" />
       </div>
-      <Popover>
-        <PopoverTrigger asChild>
-          <GalleryVerticalEnd size={20} />
-        </PopoverTrigger>
-        <PopoverContent className="w-80">
-          <ul>
-            {localVariations?.map((item) => (
-              <li className="flex justify-between" key={item.id}>
-                {item.name}
-                <span onClick={() => handleVariationDelete(item.id)}>
-                  <X size={20} />
-                </span>
-              </li>
-            ))}
-          </ul>
-        </PopoverContent>
-      </Popover>
+      <div className="flex gap-3">
+        <Popover>
+          <PopoverTrigger asChild>
+            <GalleryVerticalEnd size={20} />
+          </PopoverTrigger>
+          <PopoverContent className="w-80">
+            <ul>
+              {localVariations?.map((item) => (
+                <li className="flex justify-between" key={item.id}>
+                  {item.name}
+                  <div className="flex gap-3">
+                    <Switch
+                      checked={item.available}
+                      onCheckedChange={() => handleSwitchVariationAvailability(item.id)}
+                    />
+                    <span onClick={() => handleVariationDelete(item.id)}>
+                      <X size={20} />
+                    </span>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </PopoverContent>
+        </Popover>
+        <Popover>
+          <PopoverTrigger asChild>
+            <FilePlus size={20} />
+          </PopoverTrigger>
+          <PopoverContent className="w-80">
+            <CreateVariationForm id={String(id)} />
+          </PopoverContent>
+        </Popover>
+      </div>
+
       <div className="flex items-center gap-2 md:gap-5 mt-4">
         <Button loading={loading} onClick={() => deleteProduct(id)}>
           <Trash2 size={20} />

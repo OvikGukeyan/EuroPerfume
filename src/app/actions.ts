@@ -712,6 +712,42 @@ export async function createProduct(
   }
 }
 
+export async function createVariation(formData: FormData) {
+  try {
+    const user = await getUserSession();
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
+
+    const variations = formData.getAll("variations") as File[];
+
+    const variationUploads = await Promise.all(
+      variations.map(async (file) => {
+        const fileName = `${file.name}--${new Date().toISOString()}`;
+        const { data, error } = await supabase.storage
+          .from("images")
+          .upload(fileName, file, {
+            contentType: file.type,
+          });
+        if (error) throw error;
+        return {
+          imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}images/${data?.path}`,
+          name: file.name.substring(0, file.name.lastIndexOf(".")) || file.name,
+          productId: Number(formData.get("productId")),
+        };
+      })
+    );
+
+    await prisma.productVariation.createMany({
+      data: variationUploads,
+    });
+  } catch (error) {
+    console.error("Error [CREATE_VARIATION]", error);
+    throw error;
+  }
+}
+
+
 export async function updateProduct(
   formData: FormData & CreateProductFormValues,
   id: number

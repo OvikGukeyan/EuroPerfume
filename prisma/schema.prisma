@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -112,6 +113,8 @@ model ProductVariation {
   id        Int         @id @default(autoincrement())
   name      String
   imageUrl  String
+  available Boolean     @default(true)
+  order     Int         @default(0)
   productId Int
   product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
   CartItem  CartItem[]

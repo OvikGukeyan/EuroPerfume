@@ -28,7 +28,6 @@ export const useProducts = () => {
   const paramsRef = useRef<Record<string, string> | null>(undefined);
 
   const paramsObject = Object.fromEntries(searchParams.entries());
-  console.log("params:", paramsObject);
   
   useEffect(() => {
     if (

@@ -87,6 +87,7 @@ export {SubmitPriceButton} from './submit-price-button';
 export {ShareButton} from './share-button';
 export {ByProductDialog} from './by-product-dialog';
 export {DhlButton} from './dhl-button';
+export {CreateVariationForm} from './create-variation-form';
 
 export * from './email-templates';
 export * from './form';
