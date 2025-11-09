@@ -15,7 +15,11 @@ export default async function Reviews() {
       reply: true,
       product: {
         include: {
-          variations: true,
+          variations: {
+            where: {
+              available: true,
+            },
+          },
           
         },
       },

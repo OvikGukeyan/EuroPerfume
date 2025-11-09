@@ -26,7 +26,11 @@ export default async function Product({
         },
       },
       productGroup: true,
-      variations: true,
+      variations: {
+        where: {
+          available: true,
+        },
+      },
       aromas: true,
       classification: true,
       effect: true,

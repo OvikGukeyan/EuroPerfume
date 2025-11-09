@@ -22,7 +22,11 @@ export async function GET(req: NextRequest) {
           include: {
             product: {
               include: {
-                variations: true,
+                variations: {
+                  where: {
+                    available: true,
+                  },
+                },
                 productGroup: true,
                 brand: true,
               },

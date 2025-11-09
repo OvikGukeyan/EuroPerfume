@@ -14,7 +14,11 @@ import {
 import { Brand, ProductVariation } from "@prisma/client";
 import { Link, useRouter } from "@/src/i18n/navigation";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
-import { changeProductPrice, deleteProductVariation } from "@/src/app/actions";
+import {
+  changeProductPrice,
+  deleteProductVariation,
+  toggleVariationAvailability,
+} from "@/src/app/actions";
 
 interface Props {
   id: number;
@@ -67,8 +71,9 @@ export const DashboardProduct: React.FC<Props> = ({
     }
   };
 
-  const handleSwitchVariationAvailability = async (id: number) => {
+  const handleSwitchVariationAvailability = async (id: number, isAvailable: boolean) => {
     try {
+      await toggleVariationAvailability(id, !isAvailable);
       setLocalVariations((prev) =>
         prev.map((item) => {
           if (item.id === id) {
@@ -114,7 +119,9 @@ export const DashboardProduct: React.FC<Props> = ({
                   <div className="flex gap-3">
                     <Switch
                       checked={item.available}
-                      onCheckedChange={() => handleSwitchVariationAvailability(item.id)}
+                      onCheckedChange={() =>
+                        handleSwitchVariationAvailability(item.id, item.available)
+                      }
                     />
                     <span onClick={() => handleVariationDelete(item.id)}>
                       <X size={20} />

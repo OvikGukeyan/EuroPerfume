@@ -10,7 +10,11 @@ export async function GET(req: NextRequest) {
             },
         },
         include: {
-            variations: true,
+            variations: {
+                where: {
+                    available: true
+                }
+            },
             brand: true,
             productGroup: true,
         },

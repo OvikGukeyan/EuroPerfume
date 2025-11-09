@@ -1214,6 +1214,35 @@ export async function toggleProductAvailability(
   }
 }
 
+export async function toggleVariationAvailability(
+  id: number,
+  available: boolean
+) {
+  try {
+    const user = await getUserSession();
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
+
+    const variation = await prisma.productVariation.findUnique({
+      where: { id },
+    });
+
+    if (!variation) {
+      throw new Error("Variation not found");
+    }
+
+    await prisma.productVariation.update({
+      where: { id },
+      data: {
+        available: available,
+      },
+    });
+  } catch (error) {
+    console.error("Error [TOGGLE_VARIATION_AVAILABILITY]", error);
+  }
+}
+
 export async function createReview(prevState: any, formData: FormData) {
   try {
     const user = await getUserSession();

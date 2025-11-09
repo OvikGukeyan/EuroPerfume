@@ -3,6 +3,8 @@ import { Gender, NoteType, PerfumeConcentration, Prisma } from "@prisma/client";
 import { ProductDTO, SafeProduct } from "../services/dto/product.dto";
 import { getAvailableFilters } from ".";
 import { AvailableFilters } from "../store/product";
+import { tr } from "date-fns/locale";
+import { getUserSession } from "./get-user-session";
 
 export interface GetSearchParams {
   query?: string;
@@ -36,6 +38,9 @@ export const findProducts = async (
   params: GetSearchParams
 ): Promise<FindProductsResponse> => {
   try {
+    const user = await getUserSession();
+    const isAdmin = user?.role === "ADMIN";
+
     const brands = (await params).brands
       ?.split(",")
       .map((item) => Number(item.trim()));
@@ -177,7 +182,13 @@ export const findProducts = async (
         include: {
           productGroup: true,
           translations: true,
-          variations: true,
+          variations: isAdmin
+            ? true
+            : {
+                where: {
+                  available: true,
+                },
+              },
           brand: true,
           productNotes: {
             include: {

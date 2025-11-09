@@ -23,7 +23,11 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       include: {
         products: {
           include: {
-            variations: true,
+            variations: {
+              where: {
+                available: true,
+              },
+            },
             productGroup: true,
             reviews: true,
             brand: true,
@@ -76,7 +80,11 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       include: {
         products: {
           include: {
-            variations: true,
+            variations: {
+              where: {
+                available: true,
+              },
+            },
             productGroup: true,
             reviews: true,
             brand: true,
