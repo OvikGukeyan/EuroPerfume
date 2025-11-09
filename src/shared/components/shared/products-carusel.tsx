@@ -40,7 +40,7 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
                   productGroup={item.productGroup}
                   id={item.id}
                   name={item.name}
-                  imageUrl={item.imageUrl[0] || item.variations[0].imageUrl}
+                  imageUrl={item.imageUrl[0] || item.variations[0]?.imageUrl}
                   variations={item.variations}
                   concentration={item.concentration || undefined}
                   discountPrice={item.discountPrice || undefined}

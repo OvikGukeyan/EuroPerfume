@@ -30,9 +30,9 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
           <ProductSelectionItem
             key={product.id}
             productGroup={product.productGroup}
-            id={product.id}
+            id={product?.id}
             name={product.name}
-            imageUrl={product.imageUrl[0] || product.variations[0].imageUrl}
+            imageUrl={product.imageUrl[0] || product.variations[0]?.imageUrl }
             variations={product.variations}
             concentration={product.concentration || undefined}
             discountPrice={product.discountPrice || undefined}
