@@ -88,6 +88,7 @@ export {ShareButton} from './share-button';
 export {ByProductDialog} from './by-product-dialog';
 export {DhlButton} from './dhl-button';
 export {CreateVariationForm} from './create-variation-form';
+export {AlertDialogButton} from './alert-dialog-button';
 
 export * from './email-templates';
 export * from './form';
