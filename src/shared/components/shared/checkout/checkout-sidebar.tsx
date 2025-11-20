@@ -24,6 +24,7 @@ interface Props {
   control: Control<CheckoutFormValues>;
   onPromocodeSubmit: () => void;
   discount?: number;
+  promoError: string | null;
 }
 
 export const CheckoutSidebar: FC<Props> = ({

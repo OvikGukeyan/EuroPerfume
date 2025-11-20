@@ -34,9 +34,13 @@ export default async function Order({
   const date = order?.createdAt;
 
   const convertedDate = new Intl.DateTimeFormat("ru-RU", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: "Europe/Berlin",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hourCycle: "h23", 
+    timeZone: "Europe/Berlin", 
   }).format(date);
 
   const t = await getTranslations("Checkout");
@@ -182,9 +186,9 @@ export default async function Order({
           shippingMethod={
             order?.shippingMethod || ShippingMethods.BILLING_ADDRESS
           }
-          postOffice={order?.postOffice || ''}
-          packstationNumber={order?.packstationNumber || ''}
-          postNumber={order?.postNumber || ''}
+          postOffice={order?.postOffice || ""}
+          packstationNumber={order?.packstationNumber || ""}
+          postNumber={order?.postNumber || ""}
         />
       </div>
     </div>

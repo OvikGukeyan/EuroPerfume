@@ -24,6 +24,7 @@ import { useRouter } from "@/src/i18n/navigation";
 
 export default function Checkout() {
   const [submitting, setSubmitting] = useState(false);
+  const [promoError, setPromoError] = useState<string | null>(null);
   const {
     totalAmount,
     items,
@@ -109,9 +110,11 @@ export default function Checkout() {
       const promoCode = form.watch("promocode") || "";
       const data = await Api.promocode.validatePromocode(promoCode);
       form.setValue("discount", data.discount);
+      form.setError("promocode", { message: "" });
     } catch (error) {
       console.error(error);
       toast.error("Something went wrong", { icon: "❌" });
+      form.setError("promocode", { message: "Ungültiger Gutscheincode" });
     } finally {
       setSubmitting(false);
     }
@@ -164,6 +167,7 @@ export default function Checkout() {
                 control={form.control}
                 onPromocodeSubmit={onPromocodeSubmit}
                 discount={discount}
+                promoError={promoError}
               />
             </div>
           </div>
