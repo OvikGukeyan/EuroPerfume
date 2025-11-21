@@ -37,8 +37,10 @@ export const Footer: FC<Props> = ({ className }) => {
       <div className="flex flex-col items-start justify-between gap-5 mt-10">
         <p className="text-xs text-slate-600">
           Die hier angebotenen Duftproben (Decants) stammen aus originalen,
-          rechtmäßig erworbenen Parfümflakons. Verkauf ausschließlich als
-          Sammlerobjekte. Nicht zur Anwendung auf der Haut bestimmt.
+          rechtmäßig erworbenen Parfümflakons. Der Verkauf erfolgt
+          ausschließlich als Raumduft- und Sammlerobjekte. Kein kosmetisches
+          Produkt. Nicht zur Anwendung auf der Haut bestimmt. Nicht einatmen.
+          Von Kindern fernhalten. Hochentzündlich.
         </p>
         <h5>EuroPerfume 2024. Alle Rechte vorbehalten.</h5>
       </div>
