@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { useProductStore } from "../store/product";
 import { GetSearchParams } from "../lib/find-products";
 import { useSearchParams } from "next/navigation";
-import { json } from "stream/consumers";
+
 
 function shallowEqual(
   obj1: Record<string, string>,
@@ -27,8 +27,6 @@ export const useProducts = () => {
   const productsState = useProductStore((state) => state);
   const paramsRef = useRef<Record<string, string> | null>(undefined);
 
-  const paramsObject = Object.fromEntries(searchParams.entries());
-  
   useEffect(() => {
     if (
       paramsRef.current &&

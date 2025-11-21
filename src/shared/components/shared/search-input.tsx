@@ -1,6 +1,6 @@
 "use client";
 
-import { Link } from "@/src/i18n/navigation";
+import { Link, useRouter } from "@/src/i18n/navigation";
 import { cn } from "@/src/shared/lib/utils";
 import { Api } from "@/src/shared/services/api-client";
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
@@ -165,9 +165,25 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
   const [products, setProducts] = useState<ProductDTO[]>([]);
   const ref = useRef<HTMLInputElement>(null);
   const { data: session } = useSession();
+  const router = useRouter();
+
   useClickAway(ref, () => {
     setFocused(false);
   });
+
+  const goToSearchPage = () => {
+    const q = searchQuery.trim();
+    if (!q) return;
+    router.push(`/items?search=${encodeURIComponent(q)}`);
+    setFocused(false);
+  };
+
+  const onKeyDown: React.KeyboardEventHandler<HTMLInputElement> = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      goToSearchPage();
+    }
+  };
 
   const onItemClick = () => {
     setFocused(false);
@@ -221,12 +237,13 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
           onFocus={() => setFocused(true)}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
+          onKeyDown={onKeyDown} 
         />
 
         {products.length > 0 && (
           <div
             className={cn(
-              "absolute w-full bg-white rounded-xl py-2 top-14 shadow-md transition-all duration-200 invisible opacity-0 z-30",
+              "absolute w-full h-[400px] overflow-y-auto bg-white rounded-xl py-2 top-14 shadow-md transition-all duration-200 invisible opacity-0 z-30 scrollbar",
               focused && "visible opacity-100 top-12"
             )}
           >

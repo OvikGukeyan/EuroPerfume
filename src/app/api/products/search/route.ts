@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
         variations: true,
         brand: true,
       },
-      take: Number(limit),
+      // take: Number(limit),
     });
 
     return NextResponse.json(products);

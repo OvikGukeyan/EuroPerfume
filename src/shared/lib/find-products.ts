@@ -23,6 +23,7 @@ export interface GetSearchParams {
   page?: string;
   category?: string;
   productGroup?: string;
+  search?: string;
 }
 
 export interface FindProductsResponse {
@@ -40,6 +41,12 @@ export const findProducts = async (
   try {
     const user = await getUserSession();
     const isAdmin = user?.role === "ADMIN";
+
+    const rawQuery = (await params).search?.trim() || "";
+    const tokens = rawQuery
+      .split(/\s+/)
+      .map((t) => t.trim())
+      .filter(Boolean);
 
     const brands = (await params).brands
       ?.split(",")
@@ -113,6 +120,20 @@ export const findProducts = async (
         },
       });
     }
+
+    const searchAND: Prisma.ProductWhereInput[] =
+      tokens.length > 0
+        ? tokens.map((token) => ({
+            OR: [
+              { name: { contains: token, mode: "insensitive" } },
+              {
+                brand: {
+                  is: { name: { contains: token, mode: "insensitive" } },
+                },
+              },
+            ],
+          }))
+        : [];
     const whereClause = {
       brandId: { in: brands },
       gender: genders.length > 0 ? { in: genders as Gender[] } : undefined,
@@ -142,7 +163,10 @@ export const findProducts = async (
         aromas.length > 0
           ? { some: { id: { in: aromas.map((aroma) => Number(aroma)) } } }
           : undefined,
-      ...(noteFilters.length > 0 && { AND: noteFilters }),
+      AND: [
+        ...(noteFilters.length ? noteFilters : []),
+        ...(searchAND.length ? searchAND : []),
+      ],
     };
 
     const allFilteredProducts = await prisma.product.findMany({
