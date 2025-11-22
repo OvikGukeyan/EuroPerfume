@@ -6,7 +6,7 @@
   },
 
   "Header": {
-    "freeDeliveryInfo": "Kostenloser Versand für Bestellungen über {amount} € ! (innerhalb Deutschlands)"
+    "freeDeliveryInfo": "Kostenloser Versand innerhalb Deutschlands für Bestellungen über {amount} € ! "
   },
 
   "Filters": {
