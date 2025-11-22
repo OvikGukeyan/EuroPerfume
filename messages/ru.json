@@ -6,7 +6,7 @@
   },
 
   "Header": {
-    "freeDeliveryInfo": "Бесплатная доставка при заказе от {amount} € ! "
+    "freeDeliveryInfo": "Бесплатная доставка при заказе от {amount} € ! (внутри Германии)"
   },
 
   "Filters": {
