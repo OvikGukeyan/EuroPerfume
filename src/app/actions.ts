@@ -39,7 +39,6 @@ import { DhlCredantials } from "../shared/components/shared/dhl-button";
 import { euCountriesAlpha3 } from "../shared/lib/calc-total-amount-with-delivery";
 
 export async function dhlCreateOrder(body: DhlCredantials) {
-  // const input = CreateShipmentInput.parse(raw);
   const orderId = body.orderId;
 
   if (!orderId) {
