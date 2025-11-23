@@ -73,7 +73,7 @@ export async function dhlCreateOrder(body: DhlCredantials) {
               countryOfOrigin: "DEU",
               packagedQuantity: 1,
               itemWeight: { value: 0.9, uom: "kg" },
-              itemValue: { value: 30, uom: "EUR" },
+              itemValue: { value: body.totalPrice, uom: "EUR" },
               currency: "EUR",
               hsCode: "33030010",
             },

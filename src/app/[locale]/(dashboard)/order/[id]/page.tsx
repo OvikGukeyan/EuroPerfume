@@ -189,6 +189,7 @@ export default async function Order({
           postOffice={order?.postOffice || ""}
           packstationNumber={order?.packstationNumber || ""}
           postNumber={order?.postNumber || ""}
+          totalPrice={Number(order?.totalAmount) || 0}
         />
       </div>
     </div>

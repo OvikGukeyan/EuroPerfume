@@ -21,6 +21,7 @@ export type DhlCredantials = {
   city: string;
   country: string;
   email: string;
+  totalPrice: number;
 };
 interface Props extends DhlCredantials {
   className?: string;
