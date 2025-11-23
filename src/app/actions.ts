@@ -73,7 +73,7 @@ export async function dhlCreateOrder(body: DhlCredantials) {
               countryOfOrigin: "DEU",
               packagedQuantity: 1,
               itemWeight: { value: 0.9, uom: "kg" },
-              itemValue: { value: 100, uom: "EUR" },
+              itemValue: { value: 30, uom: "EUR" },
               currency: "EUR",
               hsCode: "33030010",
             },
@@ -175,7 +175,6 @@ export async function dhlCreateOrder(body: DhlCredantials) {
       if (error) {
         console.error("Ошибка загрузки PDF:", error);
       } else {
-        // Получаем URL (если приватный бакет — лучше getSignedUrl)
         const { data: pub } = supabase.storage
           .from("dhl-labels")
           .getPublicUrl(filePath);
@@ -746,7 +745,6 @@ export async function createVariation(formData: FormData) {
     throw error;
   }
 }
-
 
 export async function updateProduct(
   formData: FormData & CreateProductFormValues,
