@@ -5,6 +5,7 @@ export const passwordSchema = z
   .min(8, { message: "Password must be at least 8 characters long" });
 export const emailSchema = z
   .string()
+  .trim()
   .email({ message: "Enter a valid email address" });
 
 export const getEmailSchema = z.object({

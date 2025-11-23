@@ -23,7 +23,7 @@ export const checkoutFormSchema = z
     houseNumber: z.string().min(1, { message: "Ungültige Hausnummer." }),
     city: z.string().min(2, { message: "Ungültige Stadt." }),
     country: z.string().min(2, { message: "Ungültiges Land." }),
-    zip: z.string().min(4, { message: "Ungültige Postleitzahl." }),
+    zip: z.string().trim().min(4, { message: "Ungültige Postleitzahl." }),
 
     deliveryFirstName: z
       .string()
@@ -45,7 +45,7 @@ export const checkoutFormSchema = z
     deliveryHouseNumber: z.string().optional(),
     deliveryCity: z.string().optional(),
     deliveryCountry: z.string().optional(),
-    deliveryZip: z.string().optional(),
+    deliveryZip: z.string().trim().optional(),
     postNumber: z.string().optional(),
     postOffice: z.string().optional(),
     packstationNumber: z.string().optional(),
