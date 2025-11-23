@@ -28,7 +28,7 @@ export const VolumeSelection: FC<Props> = ({
     >
       {volumes.map((item, index) => (
         <Button
-          onClick={() => setVolume(item)}
+          onPointerDown={() =>  {setVolume(item)}}
           disabled={volume === item}
           className=" h-8 rounded-none  disabled:bg-slate-300"
           key={item}

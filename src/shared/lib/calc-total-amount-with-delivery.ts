@@ -33,10 +33,10 @@ function getDeliveryPrice(country: string): number {
   if (euCountriesAlpha3.includes(country)) return 14.49;
   return 20;
 }
+
 export const calcTotlalAmountWithDelivery = (
   totlalAmount: number,
   country: string,
-
   discount?: number
 ) => {
   let totalAmountWithDelivery = 0;

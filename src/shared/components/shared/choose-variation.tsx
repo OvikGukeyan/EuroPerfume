@@ -59,7 +59,7 @@ export const ChooseVariation: FC<Props> = ({
       >
         {items.map((item, index) => (
           <Button
-            onClick={(e) => onChooseVariation(e, item.id)}
+            onPointerDown={(e) => onChooseVariation(e, item.id)}
             disabled={activeVariationId === item.id}
             variant={"outline"}
             className=" h-8 rounded-none  disabled:bg-slate-300"
