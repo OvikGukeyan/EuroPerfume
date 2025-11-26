@@ -1,3 +1,4 @@
+import { tr } from 'date-fns/locale';
 import { ContactForms, ShippingMethods } from "@prisma/client";
 import { z } from "zod";
 
@@ -17,7 +18,7 @@ export const checkoutFormSchema = z
         message: "Der Nachname darf nur lateinische Buchstaben enthalten.",
       }),
 
-    email: z.string().email({ message: "Ungültige E-Mail-Adresse." }),
+    email: z.string().trim().email({ message: "Ungültige E-Mail-Adresse." }),
     phone: z.string().min(10, { message: "Ungültige Telefonnummer." }),
     address: z.string().min(5, { message: "Ungültige Adresse." }),
     houseNumber: z.string().min(1, { message: "Ungültige Hausnummer." }),
