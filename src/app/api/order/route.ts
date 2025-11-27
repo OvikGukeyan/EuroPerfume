@@ -2,6 +2,7 @@ import { prisma } from "@/prisma/prisma-client";
 import { getUserSession } from "@/src/shared/lib/get-user-session";
 
 import { UserRole } from "@prisma/client";
+import { tr } from "date-fns/locale";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {

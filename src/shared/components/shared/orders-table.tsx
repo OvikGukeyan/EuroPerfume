@@ -23,7 +23,6 @@ import { useOrders } from "@/src/shared/hooks";
 import { OrderItemsPopover } from "./order-items-popover";
 import { useRouter } from "@/src/i18n/navigation";
 import { OrderStatuses } from "@/prisma/constants";
-import { AlertDialog } from "@radix-ui/react-alert-dialog";
 import { AlertDialogButton } from "./alert-dialog-button";
 
 type Props = {

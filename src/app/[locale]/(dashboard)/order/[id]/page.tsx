@@ -1,11 +1,9 @@
 import { OrderStatuses } from "@/prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
-import { Button, Title } from "@/src/shared/components";
 import { DhlButton } from "@/src/shared/components/shared";
 import { ShippingMethods } from "@prisma/client";
-import { File } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-
+import Image from "next/image";
 export default async function Order({
   params,
 }: {
@@ -65,6 +63,12 @@ export default async function Order({
                 className="flex justify-between items-center border-b"
                 key={item.id}
               >
+                <Image
+                  width={30}
+                  height={30}
+                  src={item.product?.imageUrl[0] || item.variation?.imageUrl || ""}
+                  alt={item.name}
+                />
                 <div className="flex flex-col text-sm">
                   <p>{item.product?.brand?.name}</p>
                   <p>{item.name}</p>
