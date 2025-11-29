@@ -38,7 +38,7 @@ import { MetaValues } from "../shared/store";
 import { DhlCredantials } from "../shared/components/shared/dhl-button";
 import { euCountriesAlpha3 } from "../shared/lib/calc-total-amount-with-delivery";
 
-export async function dhlCreateOrder(body: DhlCredantials) {
+export async function dhlCreateOrder(body: DhlCredantials, weight: number) {
   const orderId = body.orderId;
 
   if (!orderId) {
@@ -71,7 +71,7 @@ export async function dhlCreateOrder(body: DhlCredantials) {
               itemDescription: "Perfume",
               countryOfOrigin: "DEU",
               packagedQuantity: 1,
-              itemWeight: { value: 0.9, uom: "kg" },
+              itemWeight: { value: weight, uom: "kg" },
               itemValue: { value: body.totalPrice, uom: "EUR" },
               currency: "EUR",
               hsCode: "33030010",
@@ -134,7 +134,7 @@ export async function dhlCreateOrder(body: DhlCredantials) {
         },
         consignee,
         details: {
-          weight: { value: 0.9, uom: "kg" },
+          weight: { value: weight, uom: "kg" },
         },
         reference: "ORDER-12345",
         ...(customs ? { customs } : {}),

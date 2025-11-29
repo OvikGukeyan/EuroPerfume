@@ -89,6 +89,7 @@ export {ByProductDialog} from './by-product-dialog';
 export {DhlButton} from './dhl-button';
 export {CreateVariationForm} from './create-variation-form';
 export {AlertDialogButton} from './alert-dialog-button';
+export {PromoTable} from './promo-table';
 
 export * from './email-templates';
 export * from './form';

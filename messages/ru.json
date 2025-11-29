@@ -84,7 +84,8 @@
       "submitButton": "Подтвердить заказ",
       "promocode": "Промокод",
       "discount": "Скидка",
-      "minOrder": "Минимальная сумма заказа {amount} €"
+      "minOrder": "Минимальная сумма заказа {amount} €",
+      "apply": "Применить"
     },
     "AddressInput": {
       "zip": "Почтовый индекс",

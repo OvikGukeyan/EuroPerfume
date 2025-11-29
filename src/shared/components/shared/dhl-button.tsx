@@ -2,8 +2,7 @@
 import { dhlCreateOrder } from "@/src/app/actions";
 import { useTransition, useState, FC } from "react";
 import { cn } from "../../lib/utils";
-import { Api } from "../../services/api-client";
-import { Button } from "../ui";
+import { Button, Input } from "../ui";
 import { File } from "lucide-react";
 import { Title } from "..";
 import { ShippingMethods } from "@prisma/client";
@@ -37,14 +36,15 @@ export const DhlButton: FC<Props> = ({
 }) => {
   const [pending, start] = useTransition();
   const [result, setResult] = useState<any>(null);
+  const [weight, setWeight] = useState(0);
 
-  const handleCreate = async () => {
-    try {
-      await Api.dhl.createShipment(props);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const handleCreate = async () => {
+  //   try {
+  //     await Api.dhl.createShipment(props);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   return (
     <div className={cn("", className)}>
@@ -62,14 +62,17 @@ export const DhlButton: FC<Props> = ({
           </a>
         </>
       ) : (
-        <Button
-          disabled={pending}
-          onClick={() =>
-            start(async () => setResult(await dhlCreateOrder(props)))
-          }
-        >
-          {pending ? "Creating…" : "Create DHL order"}
-        </Button>
+        <div className="flex flex-col gap-3 w-[300px]">
+          <Input placeholder="Вес в кг" onChange={(e) => setWeight(Number(e.target.value))} />
+          <Button
+            disabled={pending}
+            onClick={() =>
+              start(async () => setResult(await dhlCreateOrder(props, weight)))
+            }
+          >
+            {pending ? "Creating…" : "Create DHL order"}
+          </Button>
+        </div>
       )}
       {/* {result && (
         <pre className="mt-4 p-3 bg-gray-100 text-xs overflow-auto">

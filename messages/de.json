@@ -84,7 +84,8 @@
       "submitButton": "Bestellung abschicken",
       "promocode": "Promokode",
       "discount": "Rabatt",
-      "minOrder": "Mindestbestellwert {amount} €"
+      "minOrder": "Mindestbestellwert {amount} €",
+      "apply": "Anwenden"
     },
     "AddressInput": {
       "zip": "PLZ",

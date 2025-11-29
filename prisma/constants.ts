@@ -204,6 +204,6 @@ export const yers = Array.from(
 export enum OrderStatuses {
   NEW="Новый",
   PENDING = "В ожидании",
-  SUCCEEDED = "Доставлен",
+  SUCCEEDED = "Отправлен",
   CENCELLED = "Отменен",
 }

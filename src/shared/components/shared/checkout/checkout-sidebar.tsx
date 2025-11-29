@@ -116,7 +116,7 @@ export const CheckoutSidebar: FC<Props> = ({
           {discount && discount > 0 ? (
             <BadgeCheck width={30} height={30} />
           ) : (
-            "Apply"
+            <p>{t("apply")}</p>
           )}
         </Button>
       </div>

@@ -11,7 +11,7 @@ import {
   TableRow,
 } from "../ui/table";
 import { OrderStatus } from "@prisma/client";
-import { Button, Select } from "../ui";
+import { Select } from "../ui";
 import { Search, Trash2 } from "lucide-react";
 import {
   SelectContent,
@@ -106,7 +106,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                         В обработке
                       </SelectItem>
                       <SelectItem value={OrderStatus.SUCCEEDED}>
-                        Доставлен
+                        Отправлен
                       </SelectItem>
                       <SelectItem value={OrderStatus.CENCELLED}>
                         Отменен
