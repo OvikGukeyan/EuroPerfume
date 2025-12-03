@@ -90,6 +90,7 @@ export {DhlButton} from './dhl-button';
 export {CreateVariationForm} from './create-variation-form';
 export {AlertDialogButton} from './alert-dialog-button';
 export {PromoTable} from './promo-table';
+export {VideoWithPoster} from './video-with-poster';
 
 export * from './email-templates';
 export * from './form';

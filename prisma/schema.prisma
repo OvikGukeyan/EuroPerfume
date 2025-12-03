@@ -99,6 +99,7 @@ model Product {
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
   popularProducts PopularProducts[] @relation("PopularProductsOnProducts")
+  StockMovement   StockMovement[]
 }
 
 model PopularProducts {
@@ -110,15 +111,16 @@ model PopularProducts {
 }
 
 model ProductVariation {
-  id        Int         @id @default(autoincrement())
-  name      String
-  imageUrl  String
-  available Boolean     @default(true)
-  order     Int         @default(0)
-  productId Int
-  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
-  CartItem  CartItem[]
-  OrderItem OrderItem[]
+  id            Int             @id @default(autoincrement())
+  name          String
+  imageUrl      String
+  available     Boolean         @default(true)
+  order         Int             @default(0)
+  productId     Int
+  product       Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  CartItem      CartItem[]
+  OrderItem     OrderItem[]
+  StockMovement StockMovement[]
 }
 
 model ProductTranslation {
@@ -386,15 +388,16 @@ model Shipment {
 }
 
 model OrderItem {
-  id          Int               @id @default(autoincrement())
-  name        String
-  quantity    Int
-  variationId Int?
-  variation   ProductVariation? @relation(fields: [variationId], references: [id])
-  orderId     Int
-  order       Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product     Product           @relation(fields: [productId], references: [id])
-  productId   Int
+  id            Int               @id @default(autoincrement())
+  name          String
+  quantity      Int
+  variationId   Int?
+  variation     ProductVariation? @relation(fields: [variationId], references: [id])
+  orderId       Int
+  order         Order             @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product       Product           @relation(fields: [productId], references: [id])
+  productId     Int
+  StockMovement StockMovement[]
 }
 
 model PromoCode {
@@ -436,6 +439,57 @@ model SlideImage {
 
   slideId Int
   Slide   Slide @relation(fields: [slideId], references: [id], onDelete: Cascade)
+}
+
+model StockMovement {
+  id Int @id @default(autoincrement())
+
+  product   Product? @relation(fields: [productId], references: [id])
+  productId Int?
+
+  variation   ProductVariation? @relation(fields: [variationId], references: [id])
+  variationId Int?
+
+  supply   Supply? @relation(fields: [supplyId], references: [id])
+  supplyId Int?
+
+  type      StockMovementType
+  unit      StockUnit
+  quantity  Int
+  reason    String?
+  createdAt DateTime          @default(now())
+
+  orderItem   OrderItem? @relation(fields: [orderItemId], references: [id])
+  orderItemId Int?
+}
+
+model Supply {
+  id         Int          @id @default(autoincrement())
+  reference  String?
+  supplier   String?
+  comment    String?
+  createdAt  DateTime     @default(now())
+  receivedAt DateTime?
+  status     SupplyStatus @default(DRAFT)
+
+  stockMovements StockMovement[]
+}
+
+enum StockMovementType {
+  IN
+  OUT
+  ADJUST
+}
+
+enum StockUnit {
+  ML
+  PIECE
+}
+
+enum SupplyStatus {
+  DRAFT
+  CONFIRMED
+  CANCELLED
 }
 
 enum OrderStatus {

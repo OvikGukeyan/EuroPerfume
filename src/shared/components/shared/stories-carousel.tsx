@@ -8,7 +8,8 @@ import Stories from "react-insta-stories";
 import { cn } from "../../lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { X } from "lucide-react";
+import { Video, X } from "lucide-react";
+import { VideoWithPoster } from ".";
 
 interface Props {
   items: Product[];
@@ -100,7 +101,7 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
               className="w-full basis-1/2 md:basis-1/4 lg:basis-1/5 relative"
               onClick={() => openStory(index)}
             >
-              <video
+              {/* <video
                 muted
                 playsInline
                 autoPlay
@@ -118,7 +119,8 @@ export const StoriesCarousel: FC<Props> = ({ items, className }) => {
                   e.currentTarget.currentTime = 0;
                 }}
                 className="w-full h-full object-cover"
-              />
+              /> */}
+              <VideoWithPoster videoUrl={item.videoUrl || ""} />
               <div
                 className="absolute top-0 left-2 text-white p-5 flex gap-2 items-center cursor-pointer"
                 onClick={(e) => {
