@@ -17,6 +17,7 @@ import {
   SidebarMenuSubItem,
 } from "../ui/sidebar";
 import {
+  Calculator,
   Folders,
   GalleryHorizontalEnd,
   House,
@@ -44,7 +45,7 @@ export const AppSidebar: FC<Props> = ({ className }) => {
       icon: <Plus />,
       href: "/create-slide/1",
     },
-     {
+    {
       name: "Создать Нижний Слайд",
       icon: <Plus />,
       href: "/create-slide/2",
@@ -102,6 +103,31 @@ export const AppSidebar: FC<Props> = ({ className }) => {
                       <Link href={"/create-promocode"}>
                         <SidebarMenuSubItem>
                           <SidebarMenuButton>Promocode</SidebarMenuButton>
+                        </SidebarMenuSubItem>
+                      </Link>
+                    </SidebarMenuSub>
+                  </CollapsibleContent>
+                </SidebarMenuItem>
+              </Collapsible>
+
+              <Collapsible className="group/collapsible">
+                <SidebarMenuItem>
+                  <CollapsibleTrigger asChild>
+                    <SidebarMenuButton>
+                      <Calculator /> Учет
+                    </SidebarMenuButton>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent>
+                    <SidebarMenuSub>
+                      <Link href={"/supply"}>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuButton>Приход</SidebarMenuButton>
+                        </SidebarMenuSubItem>
+                      </Link>
+
+                      <Link href={"/create-sale"}>
+                        <SidebarMenuSubItem>
+                          <SidebarMenuButton>Продажа</SidebarMenuButton>
                         </SidebarMenuSubItem>
                       </Link>
                     </SidebarMenuSub>

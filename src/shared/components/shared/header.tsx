@@ -59,12 +59,18 @@ export const Header: React.FC<Props> = ({
     }
   }, [router, searchParams]);
 
+
+
   return (
     <>
       <div className="flex justify-between items-center px-3 bg-tertiary ">
         <div className="flex items-center gap-2 h-10   md:px-5 ">
           <Truck />
-          <h3 className="text-sm md:text-base">{t("freeDeliveryInfo", { amount: SHOP_SETTINGS.FREE_DELIVERY_AMOUNT })}</h3>
+          <h3 className="text-sm md:text-base">
+            {t("freeDeliveryInfo", {
+              amount: SHOP_SETTINGS.FREE_DELIVERY_AMOUNT,
+            })}
+          </h3>
         </div>
         <LanguageSwitcher className="hidden md:block" />
       </div>
@@ -96,7 +102,9 @@ export const Header: React.FC<Props> = ({
 
           {hasSearch && (
             <div className="mx-10 flex-1 hidden md:flex">
-              <SearchInput />
+              <SearchInput
+                onProductClick={(id: number) => router.push(`/product/${id}`)}
+              />
             </div>
           )}
           <div></div>

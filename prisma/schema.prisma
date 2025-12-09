@@ -100,6 +100,8 @@ model Product {
   updatedAt       DateTime          @updatedAt
   popularProducts PopularProducts[] @relation("PopularProductsOnProducts")
   StockMovement   StockMovement[]
+  stockMl         Int               @default(0)
+  stockPieces     Int               @default(0)
 }
 
 model PopularProducts {
@@ -121,6 +123,7 @@ model ProductVariation {
   CartItem      CartItem[]
   OrderItem     OrderItem[]
   StockMovement StockMovement[]
+  stockPieces   Int             @default(0)
 }
 
 model ProductTranslation {

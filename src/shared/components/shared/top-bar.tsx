@@ -3,6 +3,7 @@ import React, { FC, useEffect, useState } from "react";
 import { Categories, SortPopup, Container, SearchInput } from ".";
 import { cn } from "@/src/shared/lib/utils";
 import { useCategories } from "@/src/shared/hooks";
+import { useRouter } from "@/src/i18n/navigation";
 
 interface Props {
   className?: string;
@@ -11,7 +12,7 @@ interface Props {
 export const TopBar: FC<Props> = ({ className }) => {
   const [show, setShow] = useState(true);
   const { categories } = useCategories();
-
+  const router = useRouter();
 
 
   return (
@@ -30,7 +31,7 @@ export const TopBar: FC<Props> = ({ className }) => {
       >
         <div className="flex w-full md:w-auto justify-between gap-5">
           <div className="md:hidden w-full">
-            <SearchInput />
+            <SearchInput onProductClick={(id: number) => router.push(`/product/${id}`)}/>
           </div>
 
           <SortPopup />

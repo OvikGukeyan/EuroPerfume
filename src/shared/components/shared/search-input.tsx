@@ -11,6 +11,7 @@ import React, { useRef, useState } from "react";
 import { useClickAway, useDebounce } from "react-use";
 
 interface Props {
+  onProductClick: (productId: number) => void;
   className?: string;
 }
 export const russianToGermanLayout = (input: string) => {
@@ -159,7 +160,7 @@ export const ruToDeLayoutQWERTZ = (input: string) => {
     .map((char) => map[char] || char)
     .join("");
 };
-export const SearchInput: React.FC<Props> = ({ className }) => {
+export const SearchInput: React.FC<Props> = ({ className, onProductClick }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [focused, setFocused] = useState(false);
   const [products, setProducts] = useState<ProductDTO[]>([]);
@@ -185,10 +186,11 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
     }
   };
 
-  const onItemClick = () => {
+  const onItemClick = (id: number) => {
     setFocused(false);
     setProducts([]);
     setSearchQuery("");
+    onProductClick(id);
   };
 
   useDebounce(
@@ -237,7 +239,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
           onFocus={() => setFocused(true)}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          onKeyDown={onKeyDown} 
+          onKeyDown={onKeyDown}
         />
 
         {products.length > 0 && (
@@ -248,11 +250,11 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
             )}
           >
             {products.map((product) => (
-              <Link
-                onClick={onItemClick}
+              <div
+                onClick={() => onItemClick(product.id)}
                 key={`product/${product.id}`}
                 className="flex items-center gap-3 w-full px-3 py-2 hover:bg-primary/10 "
-                href={`/product/${product.id}`}
+                // href={`/product/${product.id}`}
               >
                 <Image
                   src={product.imageUrl[0] || product.variations[0].imageUrl}
@@ -264,7 +266,7 @@ export const SearchInput: React.FC<Props> = ({ className }) => {
                   <span>{product.brand.name}</span>
                   <span>{product.name}</span>
                 </div>
-              </Link>
+              </div>
             ))}
           </div>
         )}
