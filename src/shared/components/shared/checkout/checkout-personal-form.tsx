@@ -1,6 +1,5 @@
 import React, { FC } from "react";
 import {
-  AddressInput,
   FormInput,
   RadioInput,
   Title,
@@ -9,14 +8,13 @@ import {
 import { cn } from "@/src/shared/lib/utils";
 import { contactForms } from "@/../../prisma/constants";
 import { useTranslations } from "next-intl";
-import {  useFormContext } from "react-hook-form";
+import { AddressInput } from "../address-input";
 interface Props {
   totalAmount: number;
   className?: string;
 }
 export const CheckoutPersonalForm: FC<Props> = ({ className, totalAmount }) => {
   const t = useTranslations("Checkout.personal");
-  const { control } = useFormContext();
   return (
     <WhiteBlock
       title={t("stepTitle")}

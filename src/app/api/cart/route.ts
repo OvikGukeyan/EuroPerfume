@@ -2,9 +2,9 @@ import { ProductGroup } from "@prisma/client";
 import { prisma } from "@/prisma/prisma-client";
 
 import { NextRequest, NextResponse } from "next/server";
-import { findOrCreateCart } from "@/src/shared/lib";
 import { CreateCartItemValues } from "@/src/shared/services/dto/cart.dto";
-import { updateCartTotalAmount } from "@/src/shared/lib/update-cart-total-amount";
+import { updateCartTotalAmount } from "@/src/shared/server-lib/update-cart-total-amount";
+import { findOrCreateCart } from "@/src/shared/server-lib/find-or-create-cart";
 
 export async function GET(req: NextRequest) {
   try {

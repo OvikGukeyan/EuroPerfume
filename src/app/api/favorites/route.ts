@@ -1,5 +1,5 @@
 import { prisma } from "@/prisma/prisma-client";
-import { findOrCreateFavorites } from "@/src/shared/lib";
+import { findOrCreateFavorites } from "@/src/shared/server-lib/find-or-creatre-favorites";
 
 import { NextRequest, NextResponse } from "next/server";
 

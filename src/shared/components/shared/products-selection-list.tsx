@@ -4,7 +4,7 @@ import { ProductSelectionItem } from ".";
 import { Button } from "..";
 import { useTranslations } from "next-intl";
 import { cn } from "../../lib/utils";
-import { SelectedProductDTO } from "../../lib/get-popular-products";
+import { SelectedProductDTO } from "../../server-lib/get-popular-products";
 import { useFavorites } from "../../hooks";
 
 interface Props {

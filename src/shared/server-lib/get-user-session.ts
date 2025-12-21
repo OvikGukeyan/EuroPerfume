@@ -1,3 +1,4 @@
+import "server-only";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../constants/auth-options";
 import { prisma } from "@/prisma/prisma-client";

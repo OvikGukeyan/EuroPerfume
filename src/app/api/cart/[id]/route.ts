@@ -1,5 +1,5 @@
 import { prisma } from "@/prisma/prisma-client";
-import { updateCartTotalAmount } from "@/src/shared/lib/update-cart-total-amount";
+import { updateCartTotalAmount } from "@/src/shared/server-lib/update-cart-total-amount";
 
 import { NextRequest, NextResponse } from "next/server";
 

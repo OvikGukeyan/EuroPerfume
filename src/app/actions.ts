@@ -37,7 +37,7 @@ import {
   UserVerificationTemplate,
 } from "../shared/components";
 import { CartItemDTO } from "../shared/services/dto/cart.dto";
-import { getUserSession } from "../shared/lib/get-user-session";
+import { getUserSession } from "../shared/server-lib/get-user-session";
 import { supabase } from "../lib/supabase";
 import { MetaValues } from "../shared/store";
 import { DhlCredantials } from "../shared/components/shared/dhl-button";

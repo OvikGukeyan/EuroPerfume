@@ -1,6 +1,6 @@
 import { prisma } from '@/prisma/prisma-client';
 import { Container, ProfileForm } from '@/src/shared/components';
-import { getUserSession } from '@/src/shared/lib/get-user-session';
+import { getUserSession } from '@/src/shared/server-lib/get-user-session';
 
 import { redirect } from 'next/navigation';
 

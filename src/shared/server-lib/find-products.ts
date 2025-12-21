@@ -1,7 +1,8 @@
+import "server-only";
 import { prisma } from "@/prisma/prisma-client";
 import { Gender, NoteType, PerfumeConcentration, Prisma } from "@prisma/client";
 import { ProductDTO, SafeProduct } from "../services/dto/product.dto";
-import { getAvailableFilters } from ".";
+import { getAvailableFilters } from "../lib";
 import { AvailableFilters } from "../store/product";
 import { tr } from "date-fns/locale";
 import { getUserSession } from "./get-user-session";

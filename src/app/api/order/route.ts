@@ -1,5 +1,5 @@
 import { prisma } from "@/prisma/prisma-client";
-import { getUserSession } from "@/src/shared/lib/get-user-session";
+import { getUserSession } from "@/src/shared/server-lib/get-user-session";
 
 import { UserRole } from "@prisma/client";
 import { tr } from "date-fns/locale";

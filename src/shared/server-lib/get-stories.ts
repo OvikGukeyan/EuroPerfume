@@ -1,3 +1,4 @@
+import "server-only";
 import { prisma } from "@/prisma/prisma-client";
 import { Product } from "@prisma/client";
 

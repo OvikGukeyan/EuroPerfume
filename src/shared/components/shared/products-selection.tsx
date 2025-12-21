@@ -1,6 +1,6 @@
 import React, { FC, use } from "react";
 import { ProductsSelectionList, Title } from "..";
-import { SelectedProductDTO } from "../../lib/get-popular-products";
+import { SelectedProductDTO } from "../../server-lib/get-popular-products";
 import { cn } from "../../lib/utils";
 
 

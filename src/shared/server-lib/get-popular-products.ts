@@ -1,3 +1,4 @@
+import "server-only";
 import { prisma } from "@/prisma/prisma-client";
 import { Brand, ProductGroup, ProductVariation, Review } from "@prisma/client";
 import { SafeProduct } from "../services/dto/product.dto";

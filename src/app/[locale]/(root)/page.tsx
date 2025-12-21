@@ -2,17 +2,17 @@ import {
   Carusel,
   TopBar,
   ProductsSelection,
-  RecentReviews,
   StoriesCarousel,
   ChatBotDrawer,
 } from "@/src/shared/components/shared";
+import { RecentReviews } from "@/src/shared/components/shared/recent-reviews";
 import {
-  getDiscountedItems,
-  getNewProducts,
-  getPopularProducts,
-  getSlides,
-  getStories,
 } from "@/src/shared/lib";
+import { getDiscountedItems } from "@/src/shared/server-lib/get-discouted-items";
+import { getNewProducts } from "@/src/shared/server-lib/get-new-products";
+import { getPopularProducts } from "@/src/shared/server-lib/get-popular-products";
+import { getStories } from "@/src/shared/server-lib/get-stories";
+import { getSlides } from "@/src/shared/services/slides";
 import { Slide, SlideImage } from "@prisma/client";
 import { getTranslations } from "next-intl/server";
 

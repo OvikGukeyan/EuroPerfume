@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useProductStore } from "../store/product";
-import { GetSearchParams } from "../lib/find-products";
+import { GetSearchParams } from "../server-lib/find-products";
 import { useSearchParams } from "next/navigation";
 
 

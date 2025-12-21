@@ -1,3 +1,4 @@
+import "server-only";
 import { prisma } from "@/prisma/prisma-client";
 import { Review, User } from "@prisma/client";
 import { SelectedProductDTO } from "./get-popular-products";

@@ -1,3 +1,4 @@
+
 import { NoteType } from "@prisma/client";
 import { ProductDTO } from "../services/dto/product.dto";
 import { concentrations, genders } from "@/prisma/constants";

@@ -3,7 +3,6 @@ import { categories, productGroups } from "@/prisma/constants";
 import { FilterToken } from "../components/shared/selected-filters-bar";
 import { Filters } from "../store/filters";
 import { AvailableFilters } from "../store/product";
-import { useLocale } from "next-intl";
 
 
 export function buildFilterTokens(

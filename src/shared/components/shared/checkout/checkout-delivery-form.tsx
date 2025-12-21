@@ -2,7 +2,6 @@
 
 import React, { FC } from "react";
 import {
-  AddressInput,
   ErrorText,
   FormInput,
   FormTextarea,
@@ -15,6 +14,7 @@ import { useTranslations } from "next-intl";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../ui/tabs";
 import Autocomplete from "react-google-autocomplete";
 import { ShippingMethods } from "@prisma/client";
+import { AddressInput } from "../address-input";
 
 interface Props {
   totalAmount: number;

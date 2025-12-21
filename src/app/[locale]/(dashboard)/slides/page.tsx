@@ -1,5 +1,5 @@
 import { DeshboardSlide, DragAndDrop } from "@/src/shared/components";
-import { getSlides } from "@/src/shared/lib";
+import { getSlides } from "@/src/shared/server-lib/get-slides";
 import { Slide, SlideImage } from "@prisma/client";
 
 export default async function Slides() {

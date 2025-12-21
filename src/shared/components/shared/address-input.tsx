@@ -6,7 +6,6 @@ import { cn } from "../../lib/utils";
 import { ErrorText, FormInput } from ".";
 import { useTranslations } from "next-intl";
 import { iso2to3 } from "../../lib";
-import { log } from "console";
 
 interface Props {
   name: string;

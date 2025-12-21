@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ProductDTO } from "../services/dto/product.dto";
 import { Api } from "../services/api-client";
-import { GetSearchParams } from "../lib/find-products";
+import { GetSearchParams } from "../server-lib/find-products";
 import { Aroma } from "@prisma/client";
 
 export interface RecommendationsParams {

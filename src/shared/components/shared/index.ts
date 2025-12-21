@@ -25,7 +25,6 @@ export {CheckoutSidebar} from './checkout/checkout-sidebar';
 export {RequiredSymbol} from './required-symbol';
 export {ErrorText} from './error-text';
 export {ClearButton} from './clear-button';
-export {AddressInput} from './address-input';
 export {FiltersDrawer} from './filters-drawer';
 export {Providers} from './providers';
 export {ProfileButton} from './profile-button';
@@ -73,7 +72,6 @@ export {OptionControlPanel} from './option-control-panel';
 export {ProductsSelection} from './products-selection'
 export {ProductSelectionItem} from './products-selection-item';
 export {ProductsSelectionList} from './products-selection-list';
-export {RecentReviews} from './recent-reviews';
 export {StoriesCarousel} from './stories-carousel';
 export {CreatePromocodeForm} from './create-promocode-form';
 export {CreateSlideForm} from './create-slide-form';

@@ -5,7 +5,7 @@ import { Rating } from "./rating";
 import { ProductSelectionItem, Separator } from "..";
 import { useFavorites } from "../../hooks";
 import { Review, User } from "@prisma/client";
-import { SelectedProductDTO } from "../../lib/get-popular-products";
+import { SelectedProductDTO } from "../../server-lib/get-popular-products";
 
 type Props = {
   reviews: (Review & { product: SelectedProductDTO; user: User })[];

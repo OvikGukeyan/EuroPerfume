@@ -1,8 +1,8 @@
 import React, { FC, use } from "react";
-import { getRecentReviews } from "../../lib";
 import { RecentReviewsList, Title } from "..";
 import { useTranslations } from "next-intl";
 import { cn } from "../../lib/utils";
+import { getRecentReviews } from "../../server-lib/get-recent-reviews";
 
 interface Props {
   className?: string;

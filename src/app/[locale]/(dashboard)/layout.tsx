@@ -4,7 +4,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/src/shared/components/ui/sidebar";
-import { getUserSession } from "@/src/shared/lib/get-user-session";
+import { getUserSession } from "@/src/shared/server-lib/get-user-session";
 import { UserRole } from "@prisma/client";
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";

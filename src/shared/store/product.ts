@@ -1,7 +1,7 @@
 import { Api } from "../services/api-client";
 import { create } from "zustand";
 import { ProductDTO } from "../services/dto/product.dto";
-import { GetSearchParams } from "../lib/find-products";
+import { GetSearchParams } from "../server-lib/find-products";
 import { deleteProduct, toggleProductAvailability } from "@/src/app/actions";
 import { getAvailableFilters } from "../lib";
 
