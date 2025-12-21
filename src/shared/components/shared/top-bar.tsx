@@ -4,6 +4,7 @@ import { Categories, SortPopup, Container, SearchInput } from ".";
 import { cn } from "@/src/shared/lib/utils";
 import { useCategories } from "@/src/shared/hooks";
 import { useRouter } from "@/src/i18n/navigation";
+import { ProductDTO } from "../../services/dto/product.dto";
 
 interface Props {
   className?: string;
@@ -31,7 +32,7 @@ export const TopBar: FC<Props> = ({ className }) => {
       >
         <div className="flex w-full md:w-auto justify-between gap-5">
           <div className="md:hidden w-full">
-            <SearchInput onProductClick={(id: number) => router.push(`/product/${id}`)}/>
+            <SearchInput onProductClick={(product: ProductDTO) => router.push(`/product/${product.id}`)}/>
           </div>
 
           <SortPopup />

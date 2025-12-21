@@ -91,6 +91,7 @@ export {CreateVariationForm} from './create-variation-form';
 export {AlertDialogButton} from './alert-dialog-button';
 export {PromoTable} from './promo-table';
 export {VideoWithPoster} from './video-with-poster';
+export {InvoiceButton} from './invoice-button';
 
 export * from './email-templates';
 export * from './form';

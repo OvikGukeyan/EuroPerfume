@@ -20,6 +20,7 @@ import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/src/i18n/navigation";
 import { useFiltersStore } from "../../store/filters";
 import { SHOP_SETTINGS } from "@/src/config/shop";
+import { ProductDTO } from "../../services/dto/product.dto";
 interface Props {
   hasSearch?: boolean;
   hasCart?: boolean;
@@ -103,7 +104,7 @@ export const Header: React.FC<Props> = ({
           {hasSearch && (
             <div className="mx-10 flex-1 hidden md:flex">
               <SearchInput
-                onProductClick={(id: number) => router.push(`/product/${id}`)}
+                onProductClick={(product: ProductDTO) => router.push(`/product/${product.id}`)}
               />
             </div>
           )}

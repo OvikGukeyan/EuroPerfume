@@ -11,7 +11,7 @@ import React, { useRef, useState } from "react";
 import { useClickAway, useDebounce } from "react-use";
 
 interface Props {
-  onProductClick: (productId: number) => void;
+  onProductClick: (product: ProductDTO) => void;
   className?: string;
 }
 export const russianToGermanLayout = (input: string) => {
@@ -186,11 +186,11 @@ export const SearchInput: React.FC<Props> = ({ className, onProductClick }) => {
     }
   };
 
-  const onItemClick = (id: number) => {
+  const onItemClick = (product: ProductDTO) => {
     setFocused(false);
     setProducts([]);
     setSearchQuery("");
-    onProductClick(id);
+    onProductClick(product);
   };
 
   useDebounce(
@@ -251,7 +251,7 @@ export const SearchInput: React.FC<Props> = ({ className, onProductClick }) => {
           >
             {products.map((product) => (
               <div
-                onClick={() => onItemClick(product.id)}
+                onClick={() => onItemClick(product)}
                 key={`product/${product.id}`}
                 className="flex items-center gap-3 w-full px-3 py-2 hover:bg-primary/10 "
                 // href={`/product/${product.id}`}

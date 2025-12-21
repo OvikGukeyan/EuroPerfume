@@ -1,3 +1,4 @@
+import { or } from './../../node_modules/effect/src/Boolean';
 "use server";
 
 import { prisma } from "@/prisma/prisma-client";
@@ -9,6 +10,10 @@ import {
   UserRole,
   NoteType,
   ShippingMethods,
+  Order,
+  OrderItem,
+  Product,
+  Brand,
 } from "@prisma/client";
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
@@ -37,7 +42,11 @@ import { supabase } from "../lib/supabase";
 import { MetaValues } from "../shared/store";
 import { DhlCredantials } from "../shared/components/shared/dhl-button";
 import { euCountriesAlpha3 } from "../shared/lib/calc-total-amount-with-delivery";
-
+import { CreateSupplyInput } from "./[locale]/(dashboard)/supply/page";
+import { CreateSupplySchema } from "../shared/constants/create-supply-schema";
+import PDFDocument from "pdfkit";
+import path from "path";
+import fs from "fs";
 export async function dhlCreateOrder(body: DhlCredantials, weight: number) {
   const orderId = body.orderId;
 
@@ -223,6 +232,55 @@ export async function dhlCreateOrder(body: DhlCredantials, weight: number) {
   }
 }
 
+export async function createSupply(body: CreateSupplyInput) {
+  try {
+    const user = await getUserSession();
+    if (!user || user.role !== UserRole.ADMIN) {
+      throw new Error("Access denied");
+    }
+
+    const parsed = CreateSupplySchema.safeParse(body);
+
+    if (!parsed.success) {
+      throw new Error(
+        `Invalid supply data: ${JSON.stringify(parsed.error.format())}`
+      );
+    }
+    const data = parsed.data;
+    const result = await prisma.$transaction(async (tx) => {
+      const supply = await tx.supply.create({
+        data: {
+          supplier: data.supplier,
+          reference: data.invoiceNumber ?? null,
+        },
+      });
+
+      for (const item of data.items) {
+        await tx.product.update({
+          where: { id: item.productId },
+          data: { stockMl: { increment: item.amountMl } },
+        });
+
+        await tx.stockMovement.create({
+          data: {
+            productId: item.productId,
+            type: "IN",
+            quantity: item.amountMl,
+            supplyId: supply.id,
+            unit: "ML",
+          },
+        });
+      }
+
+      return supply;
+    });
+
+    return { ok: true, supply: result };
+  } catch (error) {
+    console.error("Error [CREATE_SUPPLY]", error);
+    throw error;
+  }
+}
 export async function createOrder(data: CheckoutFormValues) {
   try {
     const cookieStore = cookies();
@@ -1526,4 +1584,190 @@ export async function createPromocode(formData: CreatePromocodeValues) {
     console.error("Error [CREATE_PROMOCODE]", error);
     throw error;
   }
+}
+
+async function generateInvoicePdf(
+  order: Order & {
+    items: (OrderItem & { product: Product & { brand: Brand } })[];
+  }
+): Promise<Buffer> {
+  const doc = new PDFDocument({
+    size: "A4",
+    margin: 50,
+    autoFirstPage: true,
+  });
+
+  const chunks: Buffer[] = [];
+  doc.on("data", (c) => chunks.push(c));
+  const done = new Promise<Buffer>((resolve) =>
+    doc.on("end", () => resolve(Buffer.concat(chunks)))
+  );
+
+  const logoPath = path.join(process.cwd(), "public/assets", "logo.png");
+
+  if (fs.existsSync(logoPath)) {
+    doc.image(logoPath, 50, 40, { width: 120, align: "center" });
+  }
+  doc.moveDown(2);
+
+  // Левая колонка — продавец (подставь свои данные)
+  doc.fontSize(10).text(
+    `EuroPerfume
+Kollwitzstraße 8
+49808 Lingen
+Deutschland`,
+    50,
+    120
+  );
+
+  // Правая — адрес доставки (подставь поля из order)
+  doc.fontSize(10).text(
+    `Lieferadresse:
+${order.deliveryFullNmae ?? order.fullName ?? "-"}
+${order.deliveryAddress ?? "-"}
+${order.deliveryZip ?? ""} ${order.deliveryCity ?? ""}
+${order.deliveryCountry ?? ""}`,
+    350,
+    120
+  );
+
+  // Rechnung + даты
+  doc.fontSize(16).text("Rechnung", 50, 220);
+  doc.fontSize(10).text(
+    `Rechnungsnummer: ${order.id}
+Bestelldatum: ${fmtDate(order.createdAt)}
+Rechnungsdatum: ${fmtDate(new Date())}`,
+    50,
+    245
+  );
+
+  // ====== TABLE ======
+  let y = 300;
+
+  doc.fontSize(10).text("Stk.", 50, y);
+  doc.text("Artikel", 90, y);
+  // doc.text("MwSt.", 360, y);
+  doc.text("Einzelpreis", 370, y, { width: 70, align: "right" });
+  doc.text("Gesamtpreis", 475, y, { width: 70, align: "right" });
+
+  y += 15;
+  doc.moveTo(50, y).lineTo(550, y).stroke();
+  y += 10;
+
+  let subtotal = 0;
+
+  for (const item of order.items) {
+    const qty = item.quantity;
+    const price = Number(item.product.price);
+    const line = qty * price;
+    subtotal += line;
+
+    const title = `${item.product.brand.name} | ${item.product.name}`;
+
+    doc.text(String(qty), 50, y);
+    doc.text(title, 90, y, { width: 260 });
+    // doc.text("19%", 360, y);
+    doc.text(`${price.toFixed(2)} €`, 370, y, { width: 70, align: "right" });
+    doc.text(`${line.toFixed(2)} €`, 475, y, { width: 70, align: "right" });
+
+    y += 18;
+
+    // если очень много товаров — можно добавить перенос страницы
+    if (y > 680) {
+      doc.addPage();
+      y = 80;
+    }
+  }
+
+  // ====== TOTALS ======
+  y += 10;
+  doc.moveTo(350, y).lineTo(550, y).stroke();
+  y += 10;
+
+  // Если у тебя цены уже “brutto” — VAT нужно считать иначе.
+  // Здесь пример: subtotal = brutto без доставки/скидки.
+  // const shipping = Number(order.deliveryPrice ?? 0);
+  // const discount = Number(order.discountAmount ?? 0); // если есть такое поле
+  // const shipping = 77;
+
+  doc.fontSize(10).text("Zwischensumme:", 350, y);
+  doc.text(`${subtotal.toFixed(2)} €`, 500, y, { align: "right" });
+  y += 14;
+
+  // doc.text("+ Porto und Verpackung:", 350, y);
+  // doc.text(`${shipping.toFixed(2)} €`, 500, y, { align: "right" });
+  y += 14;
+
+  if (order.discount && order.discount > 0) {
+    doc.text("- Gutschein:", 350, y);
+    doc.text(`${order.discount} €`, 500, y, { align: "right" });
+    y += 14;
+  }
+
+  doc.fontSize(10).text("Gesamtsumme:", 350, y);
+  doc.text(`${order.totalAmount} €`, 500, y, { align: "right" });
+
+  // ====== FOOTER ======
+  doc.fontSize(8).text(
+    `EuroPerfume
+Kollwitzstraße 8 | 49808 Lingen | Deutschland
+E: europerfumeshop@gmail.com
+
+USt-IdNr.: DEXXXXXXXXX
+Bank: Deutsche Bank AG | IBAN: DE00 0000 0000 0000 0000 00`,
+    50,
+    720
+  );
+
+  doc.end();
+  return done;
+}
+
+function fmtDate(d: Date) {
+  return new Intl.DateTimeFormat("de-DE").format(new Date(d));
+}
+
+export async function createInvoice(orderId: number) {
+  if (!orderId) throw new Error("orderId is required");
+
+  const order = await prisma.order.findUnique({
+    where: { id: orderId },
+    include: {
+      user: true,
+      items: { include: { product: { include: { brand: true } } } },
+    },
+  });
+
+  if (!order) throw new Error("Order not found");
+
+  // если уже создан — возвращаем
+  if (order.invoiceUrl) return { ok: true, invoiceUrl: order.invoiceUrl };
+
+  // 1) generate pdf
+  const pdfBuffer = await generateInvoicePdf(order);
+
+  // 2) upload
+  const filePath = `order-${order.id}/invoice-${order.id}.pdf`;
+
+  const { data, error } = await supabase.storage
+    .from("invoice")
+    .upload(filePath, pdfBuffer, {
+      contentType: "application/pdf",
+      upsert: true,
+    });
+
+  if (error) {
+    throw new Error(`Upload invoice failed: ${error.message}`);
+  }
+
+  const invoiceUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}invoice/${data?.path}`;
+  if (!invoiceUrl) throw new Error("Failed to get invoice publicUrl");
+
+  // 4) save in db
+  await prisma.order.update({
+    where: { id: order.id },
+    data: { invoiceUrl },
+  });
+
+  return { ok: true, invoiceUrl };
 }

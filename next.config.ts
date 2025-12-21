@@ -3,6 +3,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 
 /** @type {import('next').NextConfig} */
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["pdfkit"],
   reactStrictMode: false,
   images: {
     domains: ["tlppllvnvzjgxgbzlwnh.supabase.co", 'thgjecpmxhqwfoknvjiu.supabase.co'],

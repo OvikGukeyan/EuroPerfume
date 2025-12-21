@@ -1,6 +1,6 @@
 import { OrderStatuses } from "@/prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
-import { DhlButton } from "@/src/shared/components/shared";
+import { DhlButton, InvoiceButton } from "@/src/shared/components/shared";
 import { ShippingMethods } from "@prisma/client";
 import { getTranslations } from "next-intl/server";
 import Image from "next/image";
@@ -195,6 +195,7 @@ export default async function Order({
           postNumber={order?.postNumber || ""}
           totalPrice={Number(order?.totalAmount) || 0}
         />
+        <InvoiceButton invoiceUrl={order?.invoiceUrl || ""} id={order?.id || 0} />
       </div>
     </div>
   );
