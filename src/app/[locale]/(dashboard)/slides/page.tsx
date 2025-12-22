@@ -1,4 +1,4 @@
-import { DeshboardSlide, DragAndDrop } from "@/src/shared/components";
+import { DragAndDrop } from "@/src/shared/components";
 import { getSlides } from "@/src/shared/server-lib/get-slides";
 import { Slide, SlideImage } from "@prisma/client";
 

@@ -11,8 +11,8 @@ import {
 import { getDiscountedItems } from "@/src/shared/server-lib/get-discouted-items";
 import { getNewProducts } from "@/src/shared/server-lib/get-new-products";
 import { getPopularProducts } from "@/src/shared/server-lib/get-popular-products";
+import { getSlides } from "@/src/shared/server-lib/get-slides";
 import { getStories } from "@/src/shared/server-lib/get-stories";
-import { getSlides } from "@/src/shared/services/slides";
 import { Slide, SlideImage } from "@prisma/client";
 import { getTranslations } from "next-intl/server";
 
