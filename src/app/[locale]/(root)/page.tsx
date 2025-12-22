@@ -6,8 +6,6 @@ import {
   ChatBotDrawer,
 } from "@/src/shared/components/shared";
 import { RecentReviews } from "@/src/shared/components/shared/recent-reviews";
-import {
-} from "@/src/shared/lib";
 import { getDiscountedItems } from "@/src/shared/server-lib/get-discouted-items";
 import { getNewProducts } from "@/src/shared/server-lib/get-new-products";
 import { getPopularProducts } from "@/src/shared/server-lib/get-popular-products";

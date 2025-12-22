@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider = "postgresql"
 }
 
 model User {
@@ -373,6 +373,7 @@ model Order {
   shipments           Shipment[]
   user                User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
   invoiceUrl          String?
+  invoiceNumber       String?         
 }
 
 model Shipment {
@@ -387,6 +388,12 @@ model Shipment {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model InvoiceCounter {
+  id        Int @id @default(autoincrement())
+  year      Int @unique
+  lastValue Int
 }
 
 model OrderItem {
@@ -518,6 +525,7 @@ enum PerfumeConcentration {
   EAU_DE_PARFUM
   EAU_DE_TOILETTE
   EAU_DE_COLOGNE
+  ELIXIR
 }
 
 enum NoteType {

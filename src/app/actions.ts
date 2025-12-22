@@ -1,4 +1,3 @@
-import { or } from './../../node_modules/effect/src/Boolean';
 "use server";
 
 import { prisma } from "@/prisma/prisma-client";
@@ -14,6 +13,7 @@ import {
   OrderItem,
   Product,
   Brand,
+  ProductGroup,
 } from "@prisma/client";
 import { hashSync } from "bcrypt";
 import { cookies } from "next/headers";
@@ -24,6 +24,7 @@ import {
   CreatePromocodeValues,
 } from "../shared/constants";
 import {
+  calcPrice,
   calcTotlalAmountWithDelivery,
   dhlClient,
   parseProductFormData,
@@ -47,6 +48,8 @@ import { CreateSupplySchema } from "../shared/constants/create-supply-schema";
 import PDFDocument from "pdfkit";
 import path from "path";
 import fs from "fs";
+import { Volume } from "../shared/constants/perfume";
+import { generateInvoiceNumber } from "../shared/server-lib/generate-invoice-number";
 export async function dhlCreateOrder(body: DhlCredantials, weight: number) {
   const orderId = body.orderId;
 
@@ -325,71 +328,79 @@ export async function createOrder(data: CheckoutFormValues) {
         ? data.deliveryFirstName + " " + data.deliveryLastName
         : fullName;
 
-    const order = await prisma.order.create({
-      data: {
-        fullName: fullName,
-        deliveryFullNmae: deliveryFullNmae,
-        email: data.email,
-        phone: data.phone,
-        city: data.city,
-        country: data.country,
-        deliveryCountry: data.deliveryCountry
-          ? data.deliveryCountry
-          : data.country,
-        deliveryCity: data.deliveryCity ? data.deliveryCity : data.city,
-        zip: data.zip,
-        deliveryZip: data.deliveryZip ? data.deliveryZip : data.zip,
-        shippingMethod: data.shippingMethod,
-        postNumber: data.postNumber,
-        postOffice: data.postOffice,
-        packstationNumber: data.packstationNumber,
-        address: data.address,
-        houseNumber: data.houseNumber,
-        deliveryAddress: data.deliveryAddress
-          ? data.deliveryAddress
-          : data.address,
-        deliveryHouseNumber: data.deliveryHouseNumber
-          ? data.deliveryHouseNumber
-          : data.houseNumber,
-        comment: data.comment,
-        token: cartToken,
-        totalAmount: totalAmountWithDelivery,
-        contactForm: data.contactForm,
-        promocode: data.promocode,
-        discount: data.discount,
-        status: OrderStatus.NEW,
-        items: {
-          create: userCart.items.map((item) => ({
-            name: item.product.name,
-            quantity: item.quantity,
-            variationId: item.variationId,
-            productId: item.productId,
-          })),
-        },
-      },
-      include: {
-        items: {
-          include: {
-            product: true,
+    const order = await prisma.$transaction(async (tx) => {
+      const invoiceNumber = await generateInvoiceNumber();
+
+      const order = await tx.order.create({
+        data: {
+          fullName: fullName,
+          deliveryFullNmae: deliveryFullNmae,
+          email: data.email,
+          phone: data.phone,
+          city: data.city,
+          country: data.country,
+          deliveryCountry: data.deliveryCountry
+            ? data.deliveryCountry
+            : data.country,
+          deliveryCity: data.deliveryCity ? data.deliveryCity : data.city,
+          zip: data.zip,
+          deliveryZip: data.deliveryZip ? data.deliveryZip : data.zip,
+          shippingMethod: data.shippingMethod,
+          postNumber: data.postNumber,
+          postOffice: data.postOffice,
+          packstationNumber: data.packstationNumber,
+          address: data.address,
+          houseNumber: data.houseNumber,
+          deliveryAddress: data.deliveryAddress
+            ? data.deliveryAddress
+            : data.address,
+          deliveryHouseNumber: data.deliveryHouseNumber
+            ? data.deliveryHouseNumber
+            : data.houseNumber,
+          comment: data.comment,
+          token: cartToken,
+          totalAmount: totalAmountWithDelivery,
+          contactForm: data.contactForm,
+          promocode: data.promocode,
+          discount: data.discount,
+          status: OrderStatus.NEW,
+          invoiceNumber: invoiceNumber,
+          items: {
+            create: userCart.items.map((item) => ({
+              name: item.product.name,
+              quantity: item.quantity,
+              variationId: item.variationId,
+              productId: item.productId,
+            })),
           },
         },
-      },
+        include: {
+          items: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      });
+
+      await tx.cart.update({
+        where: {
+          id: userCart.id,
+        },
+        data: {
+          totalAmount: 0,
+        },
+      });
+
+      await tx.cartItem.deleteMany({
+        where: {
+          cartId: userCart.id,
+        },
+      });
+
+      return order;
     });
 
-    await prisma.cart.update({
-      where: {
-        id: userCart.id,
-      },
-      data: {
-        totalAmount: 0,
-      },
-    });
-
-    await prisma.cartItem.deleteMany({
-      where: {
-        cartId: userCart.id,
-      },
-    });
     // const paymentData = await createPayment({
     //   orderId: order.id,
     //   amount: order.totalAmount,
@@ -1588,7 +1599,9 @@ export async function createPromocode(formData: CreatePromocodeValues) {
 
 async function generateInvoicePdf(
   order: Order & {
-    items: (OrderItem & { product: Product & { brand: Brand } })[];
+    items: (OrderItem & {
+      product: Product & { brand: Brand; productGroup: ProductGroup };
+    })[];
   }
 ): Promise<Buffer> {
   const doc = new PDFDocument({
@@ -1634,9 +1647,9 @@ ${order.deliveryCountry ?? ""}`,
   // Rechnung + даты
   doc.fontSize(16).text("Rechnung", 50, 220);
   doc.fontSize(10).text(
-    `Rechnungsnummer: ${order.id}
-Bestelldatum: ${fmtDate(order.createdAt)}
-Rechnungsdatum: ${fmtDate(new Date())}`,
+    `Rechnungsnummer: ${order.invoiceNumber}
+Bestellnummer: ${order.id}
+Bestelldatum: ${fmtDate(order.createdAt)}`,
     50,
     245
   );
@@ -1644,7 +1657,7 @@ Rechnungsdatum: ${fmtDate(new Date())}`,
   // ====== TABLE ======
   let y = 300;
 
-  doc.fontSize(10).text("Stk.", 50, y);
+  doc.fontSize(10).text("Stk./Ml.", 50, y);
   doc.text("Artikel", 90, y);
   // doc.text("MwSt.", 360, y);
   doc.text("Einzelpreis", 370, y, { width: 70, align: "right" });
@@ -1658,8 +1671,13 @@ Rechnungsdatum: ${fmtDate(new Date())}`,
 
   for (const item of order.items) {
     const qty = item.quantity;
-    const price = Number(item.product.price);
-    const line = qty * price;
+    const price =
+      Number(item.product.discountPrice) || Number(item.product.price);
+    let line = qty * price;
+
+    if (item.product.productGroup?.onTap) {
+      line = calcPrice(qty as Volume, price);
+    }
     subtotal += line;
 
     const title = `${item.product.brand.name} | ${item.product.name}`;
@@ -1679,6 +1697,9 @@ Rechnungsdatum: ${fmtDate(new Date())}`,
     }
   }
 
+  const { totalAmountWithDelivery, deliveryPrice } =
+    calcTotlalAmountWithDelivery(subtotal, order.deliveryCountry);
+
   // ====== TOTALS ======
   y += 10;
   doc.moveTo(350, y).lineTo(550, y).stroke();
@@ -1694,13 +1715,13 @@ Rechnungsdatum: ${fmtDate(new Date())}`,
   doc.text(`${subtotal.toFixed(2)} €`, 500, y, { align: "right" });
   y += 14;
 
-  // doc.text("+ Porto und Verpackung:", 350, y);
-  // doc.text(`${shipping.toFixed(2)} €`, 500, y, { align: "right" });
+  doc.text("+ Porto und Verpackung:", 350, y);
+  doc.text(`${deliveryPrice.toFixed(2)} €`, 500, y, { align: "right" });
   y += 14;
 
   if (order.discount && order.discount > 0) {
     doc.text("- Gutschein:", 350, y);
-    doc.text(`${order.discount} €`, 500, y, { align: "right" });
+    doc.text(`${order.discount} %`, 500, y, { align: "right" });
     y += 14;
   }
 
@@ -1711,10 +1732,13 @@ Rechnungsdatum: ${fmtDate(new Date())}`,
   doc.fontSize(8).text(
     `EuroPerfume
 Kollwitzstraße 8 | 49808 Lingen | Deutschland
-E: europerfumeshop@gmail.com
+E-Mail: europerfumeshop@gmail.com
 
-USt-IdNr.: DEXXXXXXXXX
-Bank: Deutsche Bank AG | IBAN: DE00 0000 0000 0000 0000 00`,
+Bank: Qonto (Qonto Europe S.A.) 
+IBAN: DE96 1001 0123 2124 7366 74
+BIC: QNTODEB2XXX
+
+`,
     50,
     720
   );
@@ -1734,7 +1758,9 @@ export async function createInvoice(orderId: number) {
     where: { id: orderId },
     include: {
       user: true,
-      items: { include: { product: { include: { brand: true } } } },
+      items: {
+        include: { product: { include: { brand: true, productGroup: true } } },
+      },
     },
   });
 

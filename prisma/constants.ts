@@ -96,6 +96,10 @@ export const concentrations = [
     name: "Eau de Cologne",
     value: PerfumeConcentration.EAU_DE_COLOGNE,
   },
+  {
+    name: "Elixir de Parfum",
+    value: PerfumeConcentration.ELIXIR,
+  }
 ];
 
 
