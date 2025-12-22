@@ -1711,6 +1711,8 @@ Bestelldatum: ${fmtDate(order.createdAt)}`,
   // const discount = Number(order.discountAmount ?? 0); // если есть такое поле
   // const shipping = 77;
 
+  doc.text("Gemäß §19 UStG wird keine Umsatzsteuer berechnet.", 350, y);
+  y += 28;
   doc.fontSize(10).text("Zwischensumme:", 350, y);
   doc.text(`${subtotal.toFixed(2)} €`, 500, y, { align: "right" });
   y += 14;
