@@ -1657,10 +1657,10 @@ Bestelldatum: ${fmtDate(order.createdAt)}`,
   // ====== TABLE ======
   let y = 300;
 
-  doc.fontSize(10).text("Stk./Ml.", 50, y);
+  doc.fontSize(10).text("Pos", 50, y);
   doc.text("Artikel", 90, y);
   // doc.text("MwSt.", 360, y);
-  doc.text("Einzelpreis", 370, y, { width: 70, align: "right" });
+  doc.text("Stk./Ml.", 370, y, { width: 70, align: "right" });
   doc.text("Gesamtpreis", 475, y, { width: 70, align: "right" });
 
   y += 15;
@@ -1669,7 +1669,7 @@ Bestelldatum: ${fmtDate(order.createdAt)}`,
 
   let subtotal = 0;
 
-  for (const item of order.items) {
+  for (const [index, item] of order.items.entries()) {
     const qty = item.quantity;
     const price =
       Number(item.product.discountPrice) || Number(item.product.price);
@@ -1682,10 +1682,10 @@ Bestelldatum: ${fmtDate(order.createdAt)}`,
 
     const title = `${item.product.brand.name} | ${item.product.name}`;
 
-    doc.text(String(qty), 50, y);
+    doc.text(String(index + 1), 50, y);
     doc.text(title, 90, y, { width: 260 });
     // doc.text("19%", 360, y);
-    doc.text(`${price.toFixed(2)} €`, 370, y, { width: 70, align: "right" });
+    doc.text(`${qty} ${item.product.productGroup?.onTap ? "ml" : "Stk."}`, 370, y, { width: 70, align: "right" });
     doc.text(`${line.toFixed(2)} €`, 475, y, { width: 70, align: "right" });
 
     y += 18;
