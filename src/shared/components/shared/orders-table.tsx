@@ -20,10 +20,10 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useOrders } from "@/src/shared/hooks";
-import { OrderItemsPopover } from "./order-items-popover";
 import { useRouter } from "@/src/i18n/navigation";
 import { OrderStatuses } from "@/prisma/constants";
 import { AlertDialogButton } from "./alert-dialog-button";
+import { convertDate } from "../../lib";
 
 type Props = {
   className?: string;
@@ -53,7 +53,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
         <TableCaption>A list of your recent orders.</TableCaption>
         <TableHeader>
           <TableRow>
-            <TableHead>Товары</TableHead>
+            <TableHead>Дата</TableHead>
             <TableHead>Сумма</TableHead>
             <TableHead>Имя</TableHead>
             <TableHead>Телефон</TableHead>
@@ -77,9 +77,10 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                 }
               >
                 <TableCell>
-                  <div onClick={(e) => e.stopPropagation()}>
+                  {convertDate(order.createdAt)}
+                  {/* <div onClick={(e) => e.stopPropagation()}>
                     <OrderItemsPopover order={order} />
-                  </div>
+                  </div> */}
                 </TableCell>
                 <TableCell>{order.totalAmount} </TableCell>
                 <TableCell>{order.fullName}</TableCell>

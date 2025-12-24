@@ -12,4 +12,5 @@ export {sendTelegramMessage} from './send-telegram-massage';
 export {iso2to3} from './iso2to3';
 export {getDhlAccessToken} from './get-dhl-access-token';
 export {dhlClient} from './dhl-client';
+export {convertDate} from  './convert-date';
 export * from './cookies';

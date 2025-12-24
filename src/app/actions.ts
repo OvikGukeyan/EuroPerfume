@@ -193,22 +193,27 @@ export async function dhlCreateOrder(body: DhlCredantials, weight: number) {
         pdfUrl = pub?.publicUrl || null;
       }
     }
+    const shipment = await prisma.$transaction(async (tx) => {
+      const invoiceNumber = await generateInvoiceNumber();
 
-    const shipment = await prisma.shipment.create({
-      data: {
-        orderId: orderId,
-        carrier: "DHL",
-        shipmentNo: shipmentNo,
-        routingCode: routingCode,
-        status: "CREATED",
-        payload: JSON.stringify(res.data),
-        labelUrl: pdfUrl,
-      },
-    });
+      const shipment = await tx.shipment.create({
+        data: {
+          orderId: orderId,
+          carrier: "DHL",
+          shipmentNo: shipmentNo,
+          routingCode: routingCode,
+          status: "CREATED",
+          payload: JSON.stringify(res.data),
+          labelUrl: pdfUrl,
+        },
+      });
 
-    await prisma.order.update({
-      where: { id: orderId },
-      data: { trackingCode: shipmentNo, status: "PENDING" },
+      await tx.order.update({
+        where: { id: orderId },
+        data: { trackingCode: shipmentNo, status: "PENDING", invoiceNumber },
+      });
+
+      return shipment;
     });
 
     await sendEmail(
@@ -328,77 +333,70 @@ export async function createOrder(data: CheckoutFormValues) {
         ? data.deliveryFirstName + " " + data.deliveryLastName
         : fullName;
 
-    const order = await prisma.$transaction(async (tx) => {
-      const invoiceNumber = await generateInvoiceNumber();
-
-      const order = await tx.order.create({
-        data: {
-          fullName: fullName,
-          deliveryFullNmae: deliveryFullNmae,
-          email: data.email,
-          phone: data.phone,
-          city: data.city,
-          country: data.country,
-          deliveryCountry: data.deliveryCountry
-            ? data.deliveryCountry
-            : data.country,
-          deliveryCity: data.deliveryCity ? data.deliveryCity : data.city,
-          zip: data.zip,
-          deliveryZip: data.deliveryZip ? data.deliveryZip : data.zip,
-          shippingMethod: data.shippingMethod,
-          postNumber: data.postNumber,
-          postOffice: data.postOffice,
-          packstationNumber: data.packstationNumber,
-          address: data.address,
-          houseNumber: data.houseNumber,
-          deliveryAddress: data.deliveryAddress
-            ? data.deliveryAddress
-            : data.address,
-          deliveryHouseNumber: data.deliveryHouseNumber
-            ? data.deliveryHouseNumber
-            : data.houseNumber,
-          comment: data.comment,
-          token: cartToken,
-          totalAmount: totalAmountWithDelivery,
-          contactForm: data.contactForm,
-          promocode: data.promocode,
-          discount: data.discount,
-          status: OrderStatus.NEW,
-          invoiceNumber: invoiceNumber,
-          items: {
-            create: userCart.items.map((item) => ({
-              name: item.product.name,
-              quantity: item.quantity,
-              variationId: item.variationId,
-              productId: item.productId,
-            })),
+    const order = await prisma.order.create({
+      data: {
+        fullName: fullName,
+        deliveryFullNmae: deliveryFullNmae,
+        email: data.email,
+        phone: data.phone,
+        city: data.city,
+        country: data.country,
+        deliveryCountry: data.deliveryCountry
+          ? data.deliveryCountry
+          : data.country,
+        deliveryCity: data.deliveryCity ? data.deliveryCity : data.city,
+        zip: data.zip,
+        deliveryZip: data.deliveryZip ? data.deliveryZip : data.zip,
+        shippingMethod: data.shippingMethod,
+        postNumber: data.postNumber,
+        postOffice: data.postOffice,
+        packstationNumber: data.packstationNumber,
+        address: data.address,
+        houseNumber: data.houseNumber,
+        deliveryAddress: data.deliveryAddress
+          ? data.deliveryAddress
+          : data.address,
+        deliveryHouseNumber: data.deliveryHouseNumber
+          ? data.deliveryHouseNumber
+          : data.houseNumber,
+        comment: data.comment,
+        token: cartToken,
+        totalAmount: totalAmountWithDelivery,
+        contactForm: data.contactForm,
+        promocode: data.promocode,
+        discount: data.discount,
+        status: OrderStatus.NEW,
+        items: {
+          create: userCart.items.map((item) => ({
+            name: item.product.name,
+            quantity: item.quantity,
+            variationId: item.variationId,
+            productId: item.productId,
+          })),
+        },
+      },
+      include: {
+        items: {
+          include: {
+            product: true,
           },
         },
-        include: {
-          items: {
-            include: {
-              product: true,
-            },
-          },
-        },
-      });
+      },
+    });
 
-      await tx.cart.update({
-        where: {
-          id: userCart.id,
-        },
-        data: {
-          totalAmount: 0,
-        },
-      });
+    await prisma.cart.update({
+      where: {
+        id: userCart.id,
+      },
+      data: {
+        totalAmount: 0,
+      },
+    });
 
-      await tx.cartItem.deleteMany({
-        where: {
-          cartId: userCart.id,
-        },
-      });
-
-      return order;
+    await prisma.cartItem.deleteMany({
+      where: {
+        cartId: userCart.id,
+      },
     });
 
     // const paymentData = await createPayment({
@@ -1685,7 +1683,12 @@ Bestelldatum: ${fmtDate(order.createdAt)}`,
     doc.text(String(index + 1), 50, y);
     doc.text(title, 90, y, { width: 260 });
     // doc.text("19%", 360, y);
-    doc.text(`${qty} ${item.product.productGroup?.onTap ? "ml" : "Stk."}`, 370, y, { width: 70, align: "right" });
+    doc.text(
+      `${qty} ${item.product.productGroup?.onTap ? "ml" : "Stk."}`,
+      370,
+      y,
+      { width: 70, align: "right" }
+    );
     doc.text(`${line.toFixed(2)} €`, 475, y, { width: 70, align: "right" });
 
     y += 18;
@@ -1728,7 +1731,9 @@ Bestelldatum: ${fmtDate(order.createdAt)}`,
   }
 
   doc.fontSize(10).text("Gesamtsumme:", 350, y);
-  doc.text(`${order.totalAmount} €`, 500, y, { align: "right" });
+  doc.text(`${Number(order.totalAmount.toFixed(2))} €`, 500, y, {
+    align: "right",
+  });
 
   // ====== FOOTER ======
   doc.fontSize(8).text(
