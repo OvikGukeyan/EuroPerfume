@@ -372,8 +372,7 @@ model Order {
   trackingCode        String?
   shipments           Shipment[]
   user                User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  invoiceUrl          String?
-  invoiceNumber       String?         
+  invoice             Invoice?
 }
 
 model Shipment {
@@ -482,6 +481,21 @@ model Supply {
   status     SupplyStatus @default(DRAFT)
 
   stockMovements StockMovement[]
+}
+
+model Invoice {
+  id            Int    @id @default(autoincrement())
+  invoiceNumber String @unique
+  orderId       Int    @unique
+  order         Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  pdfUrl   String
+  issuedAt DateTime @default(now())
+
+  year          Int
+  customerEmail String?
+
+  createdAt DateTime @default(now())
 }
 
 enum StockMovementType {

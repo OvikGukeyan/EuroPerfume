@@ -1,7 +1,5 @@
 "use server";
 
-import { prisma } from "@/prisma/prisma-client";
-
 import {
   Languages,
   OrderStatus,
@@ -50,6 +48,7 @@ import path from "path";
 import fs from "fs";
 import { Volume } from "../shared/constants/perfume";
 import { generateInvoiceNumber } from "../shared/server-lib/generate-invoice-number";
+import prisma from "@/prisma/prisma-client";
 export async function dhlCreateOrder(body: DhlCredantials, weight: number) {
   const orderId = body.orderId;
 
@@ -194,8 +193,6 @@ export async function dhlCreateOrder(body: DhlCredantials, weight: number) {
       }
     }
     const shipment = await prisma.$transaction(async (tx) => {
-      const invoiceNumber = await generateInvoiceNumber();
-
       const shipment = await tx.shipment.create({
         data: {
           orderId: orderId,
@@ -210,7 +207,7 @@ export async function dhlCreateOrder(body: DhlCredantials, weight: number) {
 
       await tx.order.update({
         where: { id: orderId },
-        data: { trackingCode: shipmentNo, status: "PENDING", invoiceNumber },
+        data: { trackingCode: shipmentNo, status: "PENDING" },
       });
 
       return shipment;
@@ -1600,7 +1597,8 @@ async function generateInvoicePdf(
     items: (OrderItem & {
       product: Product & { brand: Brand; productGroup: ProductGroup };
     })[];
-  }
+  },
+  invoiceNumber: string
 ): Promise<Buffer> {
   const doc = new PDFDocument({
     size: "A4",
@@ -1645,7 +1643,7 @@ ${order.deliveryCountry ?? ""}`,
   // Rechnung + даты
   doc.fontSize(16).text("Rechnung", 50, 220);
   doc.fontSize(10).text(
-    `Rechnungsnummer: ${order.invoiceNumber}
+    `Rechnungsnummer: ${invoiceNumber}
 Bestellnummer: ${order.id}
 Bestelldatum: ${fmtDate(order.createdAt)}`,
     50,
@@ -1773,13 +1771,14 @@ export async function createInvoice(orderId: number) {
 
   if (!order) throw new Error("Order not found");
 
-  // если уже создан — возвращаем
-  if (order.invoiceUrl) return { ok: true, invoiceUrl: order.invoiceUrl };
+  const exists = await prisma.invoice.findFirst({
+    where: { orderId: order.id },
+  });
+  if (exists) throw new Error("Invoice already exists");
 
-  // 1) generate pdf
-  const pdfBuffer = await generateInvoicePdf(order);
+  const invoiceNumber = await generateInvoiceNumber();
+  const pdfBuffer = await generateInvoicePdf(order, invoiceNumber);
 
-  // 2) upload
   const filePath = `order-${order.id}/invoice-${order.id}.pdf`;
 
   const { data, error } = await supabase.storage
@@ -1796,10 +1795,13 @@ export async function createInvoice(orderId: number) {
   const invoiceUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}invoice/${data?.path}`;
   if (!invoiceUrl) throw new Error("Failed to get invoice publicUrl");
 
-  // 4) save in db
-  await prisma.order.update({
-    where: { id: order.id },
-    data: { invoiceUrl },
+  await prisma.invoice.create({
+    data: {
+      orderId: order.id,
+      pdfUrl: invoiceUrl,
+      year: new Date().getFullYear(),
+      invoiceNumber,
+    },
   });
 
   return { ok: true, invoiceUrl };

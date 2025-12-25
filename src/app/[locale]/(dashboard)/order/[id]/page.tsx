@@ -26,6 +26,7 @@ export default async function Order({
           },
         },
       },
+      invoice: true,
       user: true,
       shipments: true,
     },
@@ -167,7 +168,7 @@ export default async function Order({
           <span className="font-bold mr-2 w-1/2">{convertDate(order?.createdAt as Date)}</span>
         </li>
       </ul>
-      <div className="mt-5">
+      <div className="mt-5 flex flex-col gap-2">
         <DhlButton
           orderId={order?.id}
           deliveryFullNmae={order?.deliveryFullNmae || ""}
@@ -187,7 +188,7 @@ export default async function Order({
           postNumber={order?.postNumber || ""}
           totalPrice={Number(order?.totalAmount) || 0}
         />
-        <InvoiceButton invoiceUrl={order?.invoiceUrl || ""} id={order?.id || 0} />
+        <InvoiceButton invoiceUrl={order?.invoice?.pdfUrl || ""} id={order?.id || 0} />
       </div>
     </div>
   );

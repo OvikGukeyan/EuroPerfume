@@ -26,7 +26,7 @@ export const InvoiceButton: FC<Props> = ({
     <div className={cn("", className)}>
       {result?.ok || invoiceUrl ? (
         <>
-          <Title text="Отправление создано" size="sm" className="font-bold" />
+          <Title text="Счет создан" size="sm" className="font-bold" />
           
           <a href={result?.invoiceUrl || invoiceUrl || ""} download target="_blank">
             <Button className="flex gap-2" variant="outline">
