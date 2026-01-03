@@ -1,3 +1,4 @@
+'use client'
 import React, { FC } from "react";
 import { cn } from "../../lib/utils";
 import { FormCheckbox } from "./product-form";

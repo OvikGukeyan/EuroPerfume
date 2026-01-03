@@ -1,12 +1,11 @@
-import { Brand, Order, OrderItem, PrismaClient, Product, ProductGroup } from "@prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import { supabase } from "@/src/lib/supabase";
-import { calcTotlalAmountWithDelivery } from "@/src/shared/lib/calc-total-amount-with-delivery";
-import { calcPrice } from "@/src/shared/lib/calc-price";
-import { Volume } from "@/src/shared/constants/perfume";
+import { Brand, Order, OrderItem, Product, ProductGroup } from "@prisma/client";
+import { calcPrice, calcTotlalAmountWithDelivery } from "../lib";
+import { Volume } from "../constants/perfume";
 import PDFDocument from "pdfkit";
 import path from "path";
 import fs from "fs";
+
+
 function fmtDate(d: Date) {
   return new Intl.DateTimeFormat("de-DE").format(new Date(d));
 }
@@ -107,7 +106,7 @@ Bestelldatum: ${fmtDate(order.createdAt)}`,
     );
     doc.text(`${line.toFixed(2)} €`, 475, y, { width: 70, align: "right" });
 
-    y += 18;
+    y += 22;
 
     // если очень много товаров — можно добавить перенос страницы
     if (y > 680) {
@@ -169,134 +168,3 @@ BIC: QNTODEB2XXX
   doc.end();
   return done;
 }
-
-
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL!,
-});
-
-const prisma = new PrismaClient({ adapter });
-
-
-async function generateInvoiceNumber() {
-  const year = new Date().getFullYear();
-
-  const counter = await prisma.$transaction(async (tx) => {
-    const existing = await tx.invoiceCounter.findUnique({
-      where: { year },
-    });
-
-    if (existing) {
-      return tx.invoiceCounter.update({
-        where: { year },
-        data: { lastValue: { increment: 1 } },
-      });
-    }
-
-    return tx.invoiceCounter.create({
-      data: { year, lastValue: 1 },
-    });
-  });
-
-  const number = counter.lastValue.toString().padStart(6, "0");
-
-  return `EP-${year}-${number}`;
-}
-
-async function main() {
-  // 1) берём только отправленные (есть трек)
-  const orders = await prisma.order.findMany({
-    where: {
-      trackingCode: { not: null },
-      NOT: { trackingCode: "" },
-    },
-    orderBy: { createdAt: "asc" },
-    include: {
-      // если твой PDF использует товары/юзера — подключи нужные include
-      user: true,
-      items: {
-        include: { product: { include: { brand: true, productGroup: true } } },
-      },
-    },
-  });
-
-  console.log(`Found ${orders.length} shipped orders with trackingCode`);
-
-  let created = 0;
-  let skipped = 0;
-  let failed = 0;
-
-  for (const order of orders) {
-    // 2) пропускаем, если invoice уже есть
-    const existing = await prisma.invoice.findFirst({
-      where: { orderId: order.id },
-    });
-    if (existing) {
-      skipped++;
-      continue;
-    }
-
-    const year = new Date(order.createdAt).getFullYear();
-    const filePath = `order-${order.id}/invoice-${order.id}.pdf`;
-
-    // 3) ВАЖНО: резервируем номер и создаём черновик invoice в транзакции
-    const draft = await prisma.$transaction(async (tx) => {
-      const invoiceNumber = await generateInvoiceNumber();
-
-      const invoice = await tx.invoice.create({
-        data: {
-          orderId: order.id,
-          year,
-          invoiceNumber,
-          pdfUrl: null,
-        },
-      });
-
-      return invoice;
-    });
-
-    // 4) генерим PDF и грузим в storage
-    try {
-      const pdfBuffer = await generateInvoicePdf(order, draft.invoiceNumber);
-
-      const { data, error } = await supabase.storage
-        .from("invoice")
-        .upload(filePath, pdfBuffer, {
-          contentType: "application/pdf",
-          upsert: true,
-        });
-
-      if (error) throw new Error(error.message);
-
-      const { data: pub } = supabase.storage
-        .from("invoice")
-        .getPublicUrl(filePath);
-      const publicUrl = pub?.publicUrl;
-      if (!publicUrl) throw new Error("No publicUrl");
-
-      await prisma.invoice.update({
-        where: { id: draft.id },
-        data: {
-          pdfUrl: publicUrl,
-        },
-      });
-
-      created++;
-    } catch (e: any) {
-      failed++;
-
-
-    }
-  }
-
-  console.log({ created, skipped, failed });
-}
-
-main()
-  .catch((e) => {
-    console.error(e);
-    process.exitCode = 1;
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });

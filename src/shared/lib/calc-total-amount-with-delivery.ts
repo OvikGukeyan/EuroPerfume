@@ -44,7 +44,7 @@ export const calcTotlalAmountWithDelivery = (
   const totalAmountWithDiscount = discount
     ? totlalAmount - totlalAmount * (discount / 100)
     : totlalAmount;
-  if (totlalAmount > 100 && country === "DEU") {
+  if (totlalAmount >= 100 && country === "DEU") {
     deliveryPrice = 0;
     totalAmountWithDelivery = Number(totalAmountWithDiscount) ;
   } else {

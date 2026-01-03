@@ -489,7 +489,7 @@ model Invoice {
   orderId       Int    @unique
   order         Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
-  pdfUrl   String
+  pdfUrl   String?
   issuedAt DateTime @default(now())
 
   year          Int
