@@ -16,6 +16,7 @@ interface Props extends CartItemProps {
 
 export const CheckoutItem: React.FC<Props> = ({
   name,
+  brand,
   price,
   imageUrl,
   quantity,
@@ -29,7 +30,7 @@ export const CheckoutItem: React.FC<Props> = ({
     <div className={cn('flex items-center w-full justify-between', { 'opacity-50 pointer-events-none': disabled }, className)}>
       <div className="flex items-center gap-3 md:gap-5 flex-1">
         <CartItemDetails.Image src={imageUrl} />
-        <CartItemDetails.Info name={name} info={variation || '' }  clssName='w-1/2' />
+        <CartItemDetails.Info name={name} brand={brand.name} info={variation || '' }  clssName='w-1/2' />
       </div>
 
       <CartItemDetails.Price value={price} />

@@ -1,3 +1,5 @@
+import { Brand } from "@prisma/client";
+
 export interface CartItemProps {
   id: number;
   imageUrl: string;
@@ -5,5 +7,6 @@ export interface CartItemProps {
   price: number;
   disabled?: boolean;
   quantity: number;
+  brand: Brand;
   className?: string;
 }

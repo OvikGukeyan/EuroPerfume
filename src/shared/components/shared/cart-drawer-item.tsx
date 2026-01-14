@@ -19,6 +19,7 @@ export const CartDrawerItem: FC<Props> = ({
     imageUrl,
     name,
     price,
+    brand,
     quantity,
     disabled,
     variation,
@@ -28,13 +29,12 @@ export const CartDrawerItem: FC<Props> = ({
     className,
 }) => {
 
-   
     return (
         <div className={cn('flex bg-white p-5 gap-6', { 'opacity-50 pointer-events-none': disabled} , className)}>
             <CartDetail.Image src={imageUrl} />
 
             <div className='flex-1'>
-                <CartDetail.Info name={name} info={variation || productGroupLabel || ''} />
+                <CartDetail.Info name={name} brand={brand.name} info={variation || productGroupLabel || ''} />
 
                 <hr className='my-3' />
 

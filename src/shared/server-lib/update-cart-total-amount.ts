@@ -17,6 +17,7 @@ export const updateCartTotalAmount = async (token: string) => {
           product: {
             include: {
               productGroup: true,
+              brand: true,
             },
           },
           variation: true,

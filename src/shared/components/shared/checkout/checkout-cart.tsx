@@ -60,6 +60,7 @@ export const CheckoutCart: FC<Props> = ({
                 id={item.id}
                 imageUrl={item.imageUrl as string}
                 name={item.name}
+                brand={item.brand}
                 price={item.price}
                 quantity={item.quantity}
                 disabled={item.disabled}

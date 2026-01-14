@@ -95,6 +95,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                     id={item.id}
                     imageUrl={item.imageUrl as string}
                     name={item.name}
+                    brand={item.brand}
                     price={item.price}
                     quantity={item.quantity}
                     disabled={item.disabled}

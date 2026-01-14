@@ -1,4 +1,4 @@
-import { ProductGroup } from "@prisma/client";
+import { Brand, ProductGroup } from "@prisma/client";
 import { CartDTO } from "../services/dto/cart.dto";
 import { calcCartItemTotalPrice } from "./calc-cart-item-total-price";
 
@@ -7,6 +7,7 @@ export type CartStateItem = {
     id: number;
     quantity: number;
     name: string;
+    brand: Brand;
     imageUrl?: string;
     variationName?: string;
     productGroup?: ProductGroup;
@@ -25,6 +26,7 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
         id: item.id,
         quantity: item.quantity,
         name: item.product.name,
+        brand: item.product.brand,
         imageUrl: item.product.imageUrl[0] || item.variation?.imageUrl , 
         variationName: item.variation?.name || '',
         productGroup: item.product?.productGroup,
