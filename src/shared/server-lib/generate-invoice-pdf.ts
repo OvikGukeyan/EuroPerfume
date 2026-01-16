@@ -5,7 +5,6 @@ import PDFDocument from "pdfkit";
 import path from "path";
 import fs from "fs";
 
-
 function fmtDate(d: Date) {
   return new Intl.DateTimeFormat("de-DE").format(new Date(d));
 }
@@ -86,8 +85,8 @@ Bestelldatum: ${fmtDate(order.createdAt)}`,
     const qty = item.quantity;
     const price =
       Number(item.product.discountPrice) || Number(item.product.price);
-    let line = qty * price;
 
+    let line = qty * price;
     if (item.product.productGroup?.onTap) {
       line = calcPrice(qty as Volume, price);
     }
@@ -153,6 +152,7 @@ Bestelldatum: ${fmtDate(order.createdAt)}`,
   // ====== FOOTER ======
   doc.fontSize(8).text(
     `EuroPerfume
+Saiian Vitalii
 Kollwitzstraße 8 | 49808 Lingen | Deutschland
 E-Mail: europerfumeshop@gmail.com
 
@@ -162,7 +162,7 @@ BIC: QNTODEB2XXX
 
 `,
     50,
-    720
+    700
   );
 
   doc.end();
