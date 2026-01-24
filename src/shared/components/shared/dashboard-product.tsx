@@ -52,7 +52,6 @@ export const DashboardProduct: React.FC<Props> = ({
   const router = useRouter();
   const [localVariations, setLocalVariations] = useState(variations ?? []);
   const [isAvailable, setIsAvailable] = useState(available);
-  console.log(localVariations);
   const handleVariationDelete = async (id: number) => {
     try {
       await deleteProductVariation(id);

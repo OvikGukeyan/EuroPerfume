@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ totalAmount: 0, items: [] });
     }
 
-    await prisma.cartItem.deleteMany({
+    const deletedItemsCount = await prisma.cartItem.deleteMany({
       where: {
         cart: { token },
         product: {
@@ -22,6 +22,10 @@ export async function GET(req: NextRequest) {
         },
       },
     });
+
+    if (deletedItemsCount.count > 0) {
+      await updateCartTotalAmount(token);
+    }
     
     const userCart = await prisma.cart.findFirst({
       where: {
