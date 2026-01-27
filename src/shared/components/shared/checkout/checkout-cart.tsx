@@ -7,7 +7,6 @@ import {
   FreeShippingProgress,
   WhiteBlock,
 } from "..";
-import { Trash2 } from "lucide-react";
 import { CartStateItem } from "@/src/shared/lib/get-cart-details";
 import { useTranslations } from "use-intl";
 

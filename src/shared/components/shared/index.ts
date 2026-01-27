@@ -90,6 +90,7 @@ export {AlertDialogButton} from './alert-dialog-button';
 export {PromoTable} from './promo-table';
 export {VideoWithPoster} from './video-with-poster';
 export {InvoiceButton} from './invoice-button';
+export {OrderItemsList} from './order-items-list';
 
 export * from './email-templates';
 export * from './form';

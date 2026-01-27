@@ -1,10 +1,16 @@
 import { OrderStatuses } from "@/prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
-import { DhlButton, InvoiceButton } from "@/src/shared/components/shared";
+import {
+  CheckoutItem,
+  DhlButton,
+  InvoiceButton,
+  OrderItemsList,
+} from "@/src/shared/components/shared";
 import { convertDate } from "@/src/shared/lib";
+import { OrderDTO } from "@/src/shared/services/dto/orders.dto";
 import { ShippingMethods } from "@prisma/client";
 import { getTranslations } from "next-intl/server";
-import Image from "next/image";
+
 export default async function Order({
   params,
 }: {
@@ -31,12 +37,17 @@ export default async function Order({
       shipments: true,
     },
   });
-  const date = order?.createdAt;
 
+  const safeOrder = {
+    ...order,
+    totalAmount: Number(order?.totalAmount),
+  };
+  const date = order?.createdAt;
 
   const t = await getTranslations("Checkout");
   return (
     <div className="my-4 md:px-7">
+      <OrderItemsList order={safeOrder as OrderDTO} />
       <ul className="md:columns-2">
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Номер заказа:
@@ -48,31 +59,7 @@ export default async function Order({
             {Number(order?.totalAmount)} €
           </span>
         </li>
-        <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-          Товары:
-          <div className="flex flex-col font-bold mr-2 w-1/2">
-            {order?.items.map((item) => (
-              <div
-                className="flex justify-between items-center border-b"
-                key={item.id}
-              >
-                <Image
-                  width={30}
-                  height={30}
-                  src={item.product?.imageUrl[0] || item.variation?.imageUrl || ""}
-                  alt={item.name}
-                />
-                <div className="flex flex-col text-sm">
-                  <p>{item.product?.brand?.name}</p>
-                  <p>{item.name}</p>
-                  <p>{item.variation && item.variation.name}</p>
-                </div>
 
-                <p>{item.quantity}</p>
-              </div>
-            ))}
-          </div>
-        </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Промокод:
           <span className="font-bold mr-2 w-1/2">{order?.promocode}</span>
@@ -165,7 +152,9 @@ export default async function Order({
         </li>
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Дата оформления:
-          <span className="font-bold mr-2 w-1/2">{convertDate(order?.createdAt as Date)}</span>
+          <span className="font-bold mr-2 w-1/2">
+            {convertDate(order?.createdAt as Date)}
+          </span>
         </li>
       </ul>
       <div className="mt-5 flex flex-col gap-2">
@@ -188,7 +177,10 @@ export default async function Order({
           postNumber={order?.postNumber || ""}
           totalPrice={Number(order?.totalAmount) || 0}
         />
-        <InvoiceButton invoiceUrl={order?.invoice?.pdfUrl || ""} id={order?.id || 0} />
+        <InvoiceButton
+          invoiceUrl={order?.invoice?.pdfUrl || ""}
+          id={order?.id || 0}
+        />
       </div>
     </div>
   );
