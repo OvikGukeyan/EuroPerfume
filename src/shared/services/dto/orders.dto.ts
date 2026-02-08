@@ -1,8 +1,19 @@
-import { Brand, Order, OrderItem, Product, ProductVariation } from "@prisma/client";
+import {
+  Brand,
+  Order,
+  OrderItem,
+  Product,
+  ProductGroup,
+  ProductVariation,
+} from "@prisma/client";
 
-export type SafeOrder = Omit<Order, 'totalAmount'> & {
-    totalAmount: number
-}
+export type OrderItemDTO = Omit<OrderItem, "variation" | "product"> & {
+  variation: ProductVariation;
+  product: Product & { brand: Brand, productGroup?: ProductGroup };
+};
+export type SafeOrder = Omit<Order, "totalAmount"> & {
+  totalAmount: number;
+};
 export interface OrderDTO extends SafeOrder {
-    items: (OrderItem & {variation: ProductVariation, product: Product & {brand: Brand}})[]
+  items: OrderItemDTO[];
 }

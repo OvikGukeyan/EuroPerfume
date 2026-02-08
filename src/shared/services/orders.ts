@@ -6,6 +6,10 @@ export const fetchOrders = async (): Promise<OrderDTO[]> => {
       return (await axiosInstance.get<OrderDTO[]>('/order')).data;
 }
 
+export const fetchOrder = async (orderId: number): Promise<OrderDTO> => {
+  return (await axiosInstance.get('/order/' + orderId)).data;
+}
+
 export const removeOrder = async (orderId: number): Promise<OrderDTO> => {
   return (await axiosInstance.delete('/order/' + orderId)).data;
 }

@@ -6,13 +6,21 @@ import { CheckoutItem, SearchInput } from ".";
 import { OrderDTO } from "../../services/dto/orders.dto";
 import { Minus, Plus } from "lucide-react";
 import { Button } from "../ui";
+import { useOrderItems } from "../../hooks";
+import { calcCartItemTotalPrice } from "../../lib";
 
 type Props = {
   className?: string;
-  order: OrderDTO;
 };
 
-export const OrderItemsList: FC<Props> = ({ className, order }) => {
+export const OrderItemsList: FC<Props> = ({ className }) => {
+  const { order, updateItemQuantity, removeOrderItem } = useOrderItems();
+  const onCountClick = async (itemId: number, type: "plus" | "minus") => {
+    const delta = type === "plus" ? 1 : -1;
+
+    const res = await updateItemQuantity(itemId, delta);
+    console.log(res);
+  };
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
   return (
     <div className={cn("", className)}>
@@ -24,18 +32,23 @@ export const OrderItemsList: FC<Props> = ({ className, order }) => {
             imageUrl={item.product.imageUrl[0] as string}
             name={item.name}
             brand={item.product.brand}
-            price={Number(item.product.price)}
+            price={calcCartItemTotalPrice(
+              Number(item.product.price),
+              item.quantity,
+              Boolean(item.product.productGroup?.onTap),
+              Number(item.product.discountPrice)
+            )}
             quantity={item.quantity}
             disabled={
               order.status === "SUCCEEDED" || order.status === "CENCELLED"
             }
             variation={item.variation?.name}
-            onClickCountButton={(type) => () => {}}
-            onClickRemove={() => {}}
+            onClickCountButton={(type) => onCountClick(item.id, type)}
+            onClickRemove={() => removeOrderItem(item.id)}
           />
         ))}
       </div>
-      <div className="flex gap-3 my-2">
+      <div className="flex gap-3 mt-2">
         <Button onClick={() => setIsSearchOpen(!isSearchOpen)} className="h-12">
           {isSearchOpen ? <Minus size={20} /> : <Plus size={20} />}
         </Button>

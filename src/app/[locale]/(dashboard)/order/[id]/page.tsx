@@ -1,13 +1,11 @@
 import { OrderStatuses } from "@/prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
 import {
-  CheckoutItem,
   DhlButton,
   InvoiceButton,
   OrderItemsList,
 } from "@/src/shared/components/shared";
 import { convertDate } from "@/src/shared/lib";
-import { OrderDTO } from "@/src/shared/services/dto/orders.dto";
 import { ShippingMethods } from "@prisma/client";
 import { getTranslations } from "next-intl/server";
 
@@ -47,7 +45,7 @@ export default async function Order({
   const t = await getTranslations("Checkout");
   return (
     <div className="my-4 md:px-7">
-      <OrderItemsList order={safeOrder as OrderDTO} />
+      <OrderItemsList />
       <ul className="md:columns-2">
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Номер заказа:

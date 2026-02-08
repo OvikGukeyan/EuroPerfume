@@ -74,3 +74,39 @@ export async function DELETE(req: NextRequest,  { params }: { params: Promise<{ 
     }
 
 }
+
+export async function GET(req: NextRequest,  { params }: { params: Promise<{ id: string }> }) {
+    try {
+        const id = Number((await params).id);
+        if (isNaN(id)) {
+            return NextResponse.json({ message: 'Invalid order ID' }, { status: 400 });
+        }
+
+        const order = await prisma.order.findFirst({
+            where: {
+                id
+            },
+            include: {
+                items: {
+                    include: {
+                        product: {
+                            include: {
+                                productGroup: true
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+        if (!order) {
+            return NextResponse.json({ message: 'Order not found!' })
+        }
+
+        return NextResponse.json(order)
+    }
+    catch (error) {
+        console.log('[ORDER GET] Server error', error);
+        return NextResponse.json({ message: 'Faild to get the order' }, { status: 500 })
+    }
+}

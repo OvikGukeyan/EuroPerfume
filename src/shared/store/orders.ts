@@ -1,4 +1,3 @@
-import { removeOrder } from './../services/orders';
 import { Api } from "../services/api-client";
 import { create } from "zustand";
 import { OrderDTO } from "../services/dto/orders.dto";
@@ -7,7 +6,7 @@ import { OrderStatus } from '@prisma/client';
 export interface OrdersState {
   loading: boolean;
   error: boolean;
-  items: OrderDTO[];
+  orders: OrderDTO[];
 
   fetchOrders: () => Promise<void>;
   removeOrder: (id: number) => Promise<void>;
@@ -15,7 +14,7 @@ export interface OrdersState {
 }
 
 export const useOrdersStore = create<OrdersState>((set, get) => ({
-  items: [],
+  orders: [],
   loading: true,
   error: false,
 
@@ -23,7 +22,7 @@ export const useOrdersStore = create<OrdersState>((set, get) => ({
     try {
       set({ loading: true, error: false });
       const data = await Api.orders.fetchOrders();
-      set({ items: data });
+      set({ orders: data });
     } catch (error) {
       console.error(error);
       set({ error: true });
@@ -35,7 +34,7 @@ export const useOrdersStore = create<OrdersState>((set, get) => ({
     try {
       set({ loading: true, error: false });
       const data = await Api.orders.removeOrder(id);
-      set({items: get().items.filter(item => item.id !== data.id)});
+      set({orders: get().orders.filter(item => item.id !== data.id)});
     } catch (error) {
       set({ error: true });
       console.error(error);
@@ -49,7 +48,7 @@ export const useOrdersStore = create<OrdersState>((set, get) => ({
     try {
       set({ loading: true, error: false });
       const data = await Api.orders.updateOrderStatus(itemId, status);
-      set({items: get().items.map(item => item.id === itemId ? { ...item, status: data.status } : item)});
+      set({orders: get().orders.map(item => item.id === itemId ? { ...item, status: data.status } : item)});
     } catch (error) {
       set({ error: true });
       console.error(error);

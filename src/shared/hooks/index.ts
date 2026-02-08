@@ -11,3 +11,4 @@ export {useRecentlyViewed} from './use-recently-viewed';
 export {useProductMeta} from './use-product-meta';
 export {useVideoUpload} from './use-video-upload';
 export {useChat} from './use-chat';
+export {useOrderItems} from './use-order-items';

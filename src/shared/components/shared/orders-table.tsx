@@ -31,7 +31,7 @@ type Props = {
 
 export const OrdersTable: FC<Props> = ({ className }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const { items, removeOrder, changeOrderStatus, loading } = useOrders();
+  const { orders, removeOrder, changeOrderStatus, loading } = useOrders();
   const router = useRouter();
   return (
     <div className={cn("", className)}>
@@ -62,7 +62,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {items
+          {orders
             .filter((order) => order.id.toString().includes(searchQuery))
             .map((order) => (
               <TableRow

@@ -9,7 +9,7 @@ import * as slides from "./slides";
 import * as productMeta from "./product-meta";
 import * as promocode from "./promocode";
 import * as dhl from "./dhl";
-
+import * as orderItem from "./order-item";
 
 export const Api = {
     products,
@@ -22,5 +22,6 @@ export const Api = {
     slides,
     productMeta,
     promocode,
-    dhl
+    dhl,
+    orderItem
 }
