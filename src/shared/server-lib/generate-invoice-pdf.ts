@@ -37,7 +37,8 @@ export async function generateInvoicePdf(
 
   // Левая колонка — продавец (подставь свои данные)
   doc.fontSize(10).text(
-    `EuroPerfume
+    `Euro Perfume
+Saiian Vitalii
 Kollwitzstraße 8
 49808 Lingen
 Deutschland`,
@@ -49,7 +50,7 @@ Deutschland`,
   doc.fontSize(10).text(
     `Lieferadresse:
 ${order.deliveryFullNmae ?? order.fullName ?? "-"}
-${order.deliveryAddress ?? "-"}
+${order.deliveryAddress ?? "-"} ${order.deliveryHouseNumber ?? "-"}
 ${order.deliveryZip ?? ""} ${order.deliveryCity ?? ""}
 ${order.deliveryCountry ?? ""}`,
     350,

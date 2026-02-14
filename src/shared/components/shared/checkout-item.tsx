@@ -12,6 +12,7 @@ interface Props extends CartItemProps {
   onClickRemove?: () => void;
   variation?: string;
   className?: string;
+  onTap: boolean
 }
 
 export const CheckoutItem: React.FC<Props> = ({
@@ -24,7 +25,8 @@ export const CheckoutItem: React.FC<Props> = ({
   disabled,
   onClickCountButton,
   onClickRemove,
-  variation
+  variation, 
+  onTap
 }) => {
   return (
     <div className={cn('flex items-center w-full justify-between', { 'opacity-50 pointer-events-none': disabled }, className)}>
@@ -36,7 +38,7 @@ export const CheckoutItem: React.FC<Props> = ({
       <CartItemDetails.Price value={price} />
 
       <div className="flex items-center gap-3 md:gap-5 ml-3 md:ml-5 sm:ml-20">
-        <CountButton onClick={onClickCountButton} value={quantity} />
+        <CountButton onClick={onClickCountButton} value={quantity} onTap={onTap} />
         <button onClick={onClickRemove}>
           <X className="text-gray-400 cursor-pointer hover:text-gray-600" size={20} />
         </button>

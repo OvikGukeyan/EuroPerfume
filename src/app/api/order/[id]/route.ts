@@ -91,7 +91,8 @@ export async function GET(req: NextRequest,  { params }: { params: Promise<{ id:
                     include: {
                         product: {
                             include: {
-                                productGroup: true
+                                productGroup: true,
+                                brand: true
                             }
                         }
                     }

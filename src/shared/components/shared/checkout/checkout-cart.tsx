@@ -61,6 +61,7 @@ export const CheckoutCart: FC<Props> = ({
                 name={item.name}
                 brand={item.brand}
                 price={item.price}
+                onTap={Boolean(item.productGroup?.onTap)}
                 quantity={item.quantity}
                 disabled={item.disabled}
                 variation={item.variationName}

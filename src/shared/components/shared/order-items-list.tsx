@@ -14,7 +14,7 @@ type Props = {
 };
 
 export const OrderItemsList: FC<Props> = ({ className }) => {
-  const { order, updateItemQuantity, removeOrderItem } = useOrderItems();
+  const { order, updateItemQuantity, removeOrderItem, loading } = useOrderItems();
   const onCountClick = async (itemId: number, type: "plus" | "minus") => {
     const delta = type === "plus" ? 1 : -1;
 
@@ -32,6 +32,7 @@ export const OrderItemsList: FC<Props> = ({ className }) => {
             imageUrl={item.product.imageUrl[0] as string}
             name={item.name}
             brand={item.product.brand}
+            onTap={Boolean(item.product.productGroup?.onTap)}
             price={calcCartItemTotalPrice(
               Number(item.product.price),
               item.quantity,

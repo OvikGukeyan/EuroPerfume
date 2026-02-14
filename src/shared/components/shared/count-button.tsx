@@ -5,6 +5,7 @@ import { CountIconButton } from '.';
 export interface CountButtonProps {
   value?: number;
   size?: 'sm' | 'lg';
+  onTap?: boolean
   className?: string;
   onClick?: (type: 'plus' | 'minus') => void;
 }
@@ -12,6 +13,7 @@ export interface CountButtonProps {
 export const CountButton: FC<CountButtonProps> = ({
   className,
   onClick,
+  onTap,
   value = 1,
   size = 'sm',
 }) => {
@@ -24,7 +26,7 @@ export const CountButton: FC<CountButtonProps> = ({
         type="minus"
       />
 
-      <b className={size === 'sm' ? 'text-sm' : 'text-md'}>{value}ml</b>
+      <b className={size === 'sm' ? 'text-sm' : 'text-md'}>{value}{onTap ? 'ml' : 'pcs' }</b>
 
       <CountIconButton onClick={() => onClick?.('plus')} size={size} type="plus" />
     </div>
