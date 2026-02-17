@@ -8,13 +8,14 @@ import { Minus, Plus } from "lucide-react";
 import { Button } from "../ui";
 import { useOrderItems } from "../../hooks";
 import { calcCartItemTotalPrice } from "../../lib";
+import { add } from "date-fns";
 
 type Props = {
   className?: string;
 };
 
 export const OrderItemsList: FC<Props> = ({ className }) => {
-  const { order, updateItemQuantity, removeOrderItem, loading } = useOrderItems();
+  const { order, updateItemQuantity, removeOrderItem, addOrderItem, loading } = useOrderItems();
   const onCountClick = async (itemId: number, type: "plus" | "minus") => {
     const delta = type === "plus" ? 1 : -1;
 
@@ -54,7 +55,7 @@ export const OrderItemsList: FC<Props> = ({ className }) => {
           {isSearchOpen ? <Minus size={20} /> : <Plus size={20} />}
         </Button>
         <div className={`${isSearchOpen ? "block" : "hidden"} w-full`}>
-          <SearchInput onProductClick={() => {}} />
+          {/* <SearchInput onProductClick={() => addOrderItem()} /> */}
         </div>
       </div>
     </div>
