@@ -12,6 +12,7 @@ type Props = {
 export const FreeShippingProgress: FC<Props> = ({ className, totalAmount }) => {
   const isFreeShipping = totalAmount >= SHOP_SETTINGS.FREE_DELIVERY_AMOUNT;
   const currentProgress = (totalAmount * 100) / SHOP_SETTINGS.FREE_DELIVERY_AMOUNT;
+  const remainingAmount = (SHOP_SETTINGS.FREE_DELIVERY_AMOUNT - totalAmount).toFixed(2);
   const t = useTranslations("Cart");
   return (
     <div
@@ -24,7 +25,7 @@ export const FreeShippingProgress: FC<Props> = ({ className, totalAmount }) => {
         {!isFreeShipping && (
           <span className="text-red-500">
             {t("freeShippingRemaining", {
-              amount: SHOP_SETTINGS.FREE_DELIVERY_AMOUNT - totalAmount,
+              amount: remainingAmount,
             })}
           </span>
         )}

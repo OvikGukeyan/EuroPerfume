@@ -7,12 +7,13 @@ import { CartItemProps } from './cart-item-details/cart-item-details.types';
 import * as CartDetail from './cart-item-details';
 import { Trash2Icon } from 'lucide-react';
 import { CountButton } from '.';
+import { ProductGroup } from '@prisma/client';
 
 interface Props extends CartItemProps {
     onClickCountButton: (type: 'plus' | 'minus') => void;
     onClickRemove: () => void;
     variation?: string;
-    productGroupLabel?: string;
+    productGroup?: ProductGroup;
     className?: string;
 }
 export const CartDrawerItem: FC<Props> = ({
@@ -23,7 +24,7 @@ export const CartDrawerItem: FC<Props> = ({
     quantity,
     disabled,
     variation,
-    productGroupLabel,
+    productGroup,
     onClickCountButton,
     onClickRemove,
     className,
@@ -34,12 +35,12 @@ export const CartDrawerItem: FC<Props> = ({
             <CartDetail.Image src={imageUrl} />
 
             <div className='flex-1'>
-                <CartDetail.Info name={name} brand={brand?.name} info={variation || productGroupLabel || ''} />
+                <CartDetail.Info name={name} brand={brand?.name} info={variation || productGroup?.labelDe || ''} />
 
                 <hr className='my-3' />
 
                 <div className='flex items-center justify-between'>
-                    <CountButton onClick={onClickCountButton} value={quantity} />
+                    <CountButton onTap={Boolean(productGroup?.onTap)} onClick={onClickCountButton} value={quantity} />
 
                     <div className='flex items-center gap-3'>
                         <CartDetail.Price value={price} />

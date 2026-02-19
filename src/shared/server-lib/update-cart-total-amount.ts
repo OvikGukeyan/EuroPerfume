@@ -67,7 +67,7 @@ export const updateCartTotalAmount = async (token: string) => {
           createdAt: "desc",
         },
         include: {
-          product: { include: { productGroup: true } },
+          product: { include: { productGroup: true, brand: true } },
           variation: true,
         },
       },
