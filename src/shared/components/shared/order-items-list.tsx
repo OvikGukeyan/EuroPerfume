@@ -15,12 +15,12 @@ type Props = {
 };
 
 export const OrderItemsList: FC<Props> = ({ className }) => {
-  const { order, updateItemQuantity, removeOrderItem, addOrderItem, loading } = useOrderItems();
+  const { order, updateItemQuantity, removeOrderItem, addOrderItem, loading } =
+    useOrderItems();
   const onCountClick = async (itemId: number, type: "plus" | "minus") => {
     const delta = type === "plus" ? 1 : -1;
 
     const res = await updateItemQuantity(itemId, delta);
-    console.log(res);
   };
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
   return (
@@ -55,7 +55,11 @@ export const OrderItemsList: FC<Props> = ({ className }) => {
           {isSearchOpen ? <Minus size={20} /> : <Plus size={20} />}
         </Button>
         <div className={`${isSearchOpen ? "block" : "hidden"} w-full`}>
-          {/* <SearchInput onProductClick={() => addOrderItem()} /> */}
+          <SearchInput
+            onProductClick={(product) =>
+              addOrderItem(order?.id || 0, product, undefined, 1)
+            }
+          />
         </div>
       </div>
     </div>

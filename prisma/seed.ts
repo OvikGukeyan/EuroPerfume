@@ -289,7 +289,6 @@ async function main() {
     }
   }
 
-  console.log({ created, skipped, failed });
 }
 
 main()

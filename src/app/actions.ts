@@ -1194,7 +1194,6 @@ export async function changeProductPrice(formData: FormData) {
         discountPrice: discountPrice ? Number(discountPrice) : undefined,
       },
     });
-    console.log("Product updated:", res);
   } catch (error) {
     console.error("Error [CHANGE_PRODUCT_PRICE]", error);
     throw error;

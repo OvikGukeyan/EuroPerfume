@@ -20,27 +20,27 @@ export default async function Order({
       id: Number(id),
     },
     include: {
-      items: {
-        include: {
-          variation: true,
-          product: {
-            include: {
-              brand: true,
-            },
-          },
-        },
-      },
+      // items: {
+      //   include: {
+      //     variation: true,
+      //     product: {
+      //       include: {
+      //         brand: true,
+      //       },
+      //     },
+      //   },
+      // },
       invoice: true,
-      user: true,
+      // user: true,
       shipments: true,
     },
   });
 
-  const safeOrder = {
-    ...order,
-    totalAmount: Number(order?.totalAmount),
-  };
-  const date = order?.createdAt;
+  // const safeOrder = {
+  //   ...order,
+  //   totalAmount: Number(order?.totalAmount),
+  // };
+  // const date = order?.createdAt;
 
   const t = await getTranslations("Checkout");
   return (

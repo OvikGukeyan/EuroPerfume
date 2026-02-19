@@ -4,7 +4,6 @@ import { axiosInstance } from "./instance";
 
 
 export const fetchOrder = async (orderId: number): Promise<OrderDTO> => {
-  console.log(orderId, 'orderId');
   return (await axiosInstance.get('/order/' + orderId)).data;
 }
 export const removeOrderItem = async (itemId: number): Promise<OrderDTO> => {
@@ -17,5 +16,5 @@ export const updateOrderItem = async (delta: number, itemId: number): Promise<Or
 }
 
 export const addOrderItem = async (data: AddOrderItemBody): Promise<OrderDTO> => {
-  return (await axiosInstance.post('/order-item', data)).data;
+  return (await axiosInstance.post('/order-item/' + data.orderId, data)).data;
 }

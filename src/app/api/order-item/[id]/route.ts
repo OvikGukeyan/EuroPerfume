@@ -283,12 +283,7 @@ export async function POST(req: NextRequest) {
         data: { totalAmount },
       });
 
-      return {
-        orderId,
-        itemsCount: updated.items.length,
-        subtotal,
-        totalAmount,
-      };
+      return updated
     });
 
     return NextResponse.json({ ok: true, ...result });

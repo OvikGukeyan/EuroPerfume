@@ -2,6 +2,9 @@ import { AddOrderItemBody } from "@/src/app/api/order-item/[id]/route";
 import { Api } from "../services/api-client";
 import { OrderDTO } from "../services/dto/orders.dto";
 import { create } from "zustand";
+import { ProductDTO } from "../services/dto/product.dto";
+
+
 
 export interface OrderItemsState {
   loading: boolean;
@@ -12,7 +15,7 @@ export interface OrderItemsState {
 
   fetchOrder: (id: number) => Promise<void>;
   updateItemQuantity: (id: number, quantity: number) => Promise<void>;
-  addOrderItem: (values: AddOrderItemBody) => Promise<void>;
+  addOrderItem: (orderId: number, product: ProductDTO,  variationId: number | undefined, quantity?: number,) => Promise<void>;
   removeOrderItem: (id: number) => Promise<void>;
 }
 
@@ -26,7 +29,6 @@ export const useOrderItemsStore = create<OrderItemsState>((set) => ({
   fetchOrder: async (id: number) => {
     try {
       set({ loading: true, error: false });
-      console.log(id, 'id');
       const data = await Api.orderItem.fetchOrder(id);
       set({ order: data });
     } catch (error) {
@@ -92,10 +94,15 @@ export const useOrderItemsStore = create<OrderItemsState>((set) => ({
     }
   },
 
-  addOrderItem: async (values: AddOrderItemBody) => {
+  addOrderItem: async (orderId: number, product: ProductDTO,  variationId: number | undefined, quantity=1) => {
     try {
       set({ loading: true, error: false });
-      const data = await Api.orderItem.addOrderItem(values);
+      const data = await Api.orderItem.addOrderItem({
+        orderId,
+        productId: product.id,
+        variationId,
+        quantity
+      });
       set({ order: data });
     } catch (error) {
       console.error(error);
