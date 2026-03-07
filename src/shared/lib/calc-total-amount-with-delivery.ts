@@ -29,7 +29,7 @@ export const euCountriesAlpha3 = [
 ];
 
 function getDeliveryPrice(country: string): number {
-  if (country === "DEU") return 5.95;
+  if (country === "DEU") return 4.95;
   if (euCountriesAlpha3.includes(country)) return 14.49;
   return 20;
 }
