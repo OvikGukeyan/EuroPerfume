@@ -8,7 +8,6 @@ import { Minus, Plus } from "lucide-react";
 import { Button } from "../ui";
 import { useOrderItems } from "../../hooks";
 import { calcCartItemTotalPrice } from "../../lib";
-import { add } from "date-fns";
 
 type Props = {
   className?: string;

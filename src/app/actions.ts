@@ -40,15 +40,16 @@ import { CreateSupplySchema } from "../shared/constants/create-supply-schema";
 import { generateInvoiceNumber } from "../shared/server-lib/generate-invoice-number";
 import prisma from "@/prisma/prisma-client";
 import { generateInvoicePdf } from "../shared/server-lib/generate-invoice-pdf";
-export async function dhlCreateOrder(body: DhlCredantials, weight: number) {
+export async function dhlCreateOrder(body: DhlCredantials, weight: number, small: boolean) {
   const orderId = body.orderId;
 
   if (!orderId) {
     throw new Error("orderId is required");
   }
 
-  let productCode = "V01PAK";
-  let billingNumber = process.env.DHL_BILLING_NUMBER;
+  let productCode = small ? "V62KP" : "V01PAK";
+
+  let billingNumber = small ? process.env.DHL_KLEIN_PAKET_BILLING_NUMBER : process.env.DHL_BILLING_NUMBER;
   if (body.country !== "DEU") {
     productCode = euCountriesAlpha3.includes(body.country)
       ? "V53WPAK"
