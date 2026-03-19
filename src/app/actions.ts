@@ -40,7 +40,11 @@ import { CreateSupplySchema } from "../shared/constants/create-supply-schema";
 import { generateInvoiceNumber } from "../shared/server-lib/generate-invoice-number";
 import prisma from "@/prisma/prisma-client";
 import { generateInvoicePdf } from "../shared/server-lib/generate-invoice-pdf";
-export async function dhlCreateOrder(body: DhlCredantials, weight: number, small: boolean) {
+export async function dhlCreateOrder(
+  body: DhlCredantials,
+  weight: number,
+  small: boolean,
+) {
   const orderId = body.orderId;
 
   if (!orderId) {
@@ -49,7 +53,9 @@ export async function dhlCreateOrder(body: DhlCredantials, weight: number, small
 
   let productCode = small ? "V62KP" : "V01PAK";
 
-  let billingNumber = small ? process.env.DHL_KLEIN_PAKET_BILLING_NUMBER : process.env.DHL_BILLING_NUMBER;
+  let billingNumber = small
+    ? process.env.DHL_KLEIN_PAKET_BILLING_NUMBER
+    : process.env.DHL_BILLING_NUMBER;
   if (body.country !== "DEU") {
     productCode = euCountriesAlpha3.includes(body.country)
       ? "V53WPAK"
@@ -209,7 +215,7 @@ export async function dhlCreateOrder(body: DhlCredantials, weight: number, small
       TrackingNotificationTemplate({
         orderId: shipment.orderId,
         trackingNumber: shipmentNo,
-      })
+      }),
     );
 
     return {
@@ -238,7 +244,7 @@ export async function createSupply(body: CreateSupplyInput) {
 
     if (!parsed.success) {
       throw new Error(
-        `Invalid supply data: ${JSON.stringify(parsed.error.format())}`
+        `Invalid supply data: ${JSON.stringify(parsed.error.format())}`,
       );
     }
     const data = parsed.data;
@@ -290,7 +296,12 @@ export async function createOrder(data: CheckoutFormValues) {
         user: true,
         items: {
           include: {
-            product: true,
+            product: {
+              include: {
+                brand: true,
+                productGroup: true,
+              }
+            },
             variation: true,
           },
         },
@@ -312,7 +323,7 @@ export async function createOrder(data: CheckoutFormValues) {
       calcTotlalAmountWithDelivery(
         userCart.totalAmount.toNumber(),
         data.country,
-        data.discount
+        data.discount,
       );
     const fullName = data.firstName + " " + data.lastName;
     const deliveryFullNmae =
@@ -417,10 +428,12 @@ export async function createOrder(data: CheckoutFormValues) {
       "Pay order #" + order.id,
       OrderSuccessTemplate({
         orderId: order.id,
-        orderDate: new Date().toLocaleString(),
+        orderDate: new Date().toLocaleString("de-DE", {
+          timeZone: "Europe/Berlin",
+        }),
         total: order.totalAmount.toNumber(),
         items: safeCartItems as CartItemDTO[],
-      })
+      }),
     );
 
     await sendTelegramMessage(
@@ -428,7 +441,7 @@ export async function createOrder(data: CheckoutFormValues) {
         order.id
       } : Total amount: ${order.totalAmount.toNumber()}, Items: ${safeCartItems
         .map((item) => item.product.name + " * " + item.quantity)
-        .join(", ")}`
+        .join(", ")}`,
     );
   } catch (error) {
     console.error("[createOrder] Server error", error);
@@ -493,7 +506,7 @@ export async function registerUser(body: Prisma.UserCreateInput) {
     });
 
     const code = Math.floor(
-      Math.random() * (9999 - 1000 + 1) + 1000
+      Math.random() * (9999 - 1000 + 1) + 1000,
     ).toString();
 
     await prisma.verificationCode.create({
@@ -509,7 +522,7 @@ export async function registerUser(body: Prisma.UserCreateInput) {
       "Verify your email",
       UserVerificationTemplate({
         code,
-      })
+      }),
     );
   } catch (error) {
     console.error("Error [REGISTER_USER]", error);
@@ -591,7 +604,7 @@ export async function getRecoveringEmail(email: string) {
     }
 
     const code = Math.floor(
-      Math.random() * (9999 - 1000 + 1) + 1000
+      Math.random() * (9999 - 1000 + 1) + 1000,
     ).toString();
 
     await prisma.verificationCode.create({
@@ -607,7 +620,7 @@ export async function getRecoveringEmail(email: string) {
       "Recover password",
       PasswordResetTemplate({
         code,
-      })
+      }),
     );
   } catch (error) {
     console.error("Error [RECOVER_PASSWORD]", error);
@@ -616,7 +629,7 @@ export async function getRecoveringEmail(email: string) {
 }
 
 export async function createProduct(
-  formData: FormData & CreateProductFormValues
+  formData: FormData & CreateProductFormValues,
 ) {
   try {
     const user = await getUserSession();
@@ -636,7 +649,7 @@ export async function createProduct(
           });
         if (error) throw error;
         return process.env.NEXT_PUBLIC_SUPABASE_URL + "images/" + data?.path;
-      })
+      }),
     );
     const variationUploads = await Promise.all(
       parsedData.variations.map(async (file) => {
@@ -651,7 +664,7 @@ export async function createProduct(
           imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}images/${data?.path}`,
           name: file.name.substring(0, file.name.lastIndexOf(".")) || file.name,
         };
-      })
+      }),
     );
 
     await prisma.product.create({
@@ -787,7 +800,7 @@ export async function createVariation(formData: FormData) {
           name: file.name.substring(0, file.name.lastIndexOf(".")) || file.name,
           productId: Number(formData.get("productId")),
         };
-      })
+      }),
     );
 
     await prisma.productVariation.createMany({
@@ -801,7 +814,7 @@ export async function createVariation(formData: FormData) {
 
 export async function updateProduct(
   formData: FormData & CreateProductFormValues,
-  id: number
+  id: number,
 ) {
   try {
     const user = await getUserSession();
@@ -843,14 +856,14 @@ export async function updateProduct(
           });
         if (error) throw error;
         return process.env.NEXT_PUBLIC_SUPABASE_URL + "images/" + data?.path;
-      })
+      }),
     );
     if (imageUploads.length > 0 && product.imageUrl.length > 0) {
       const getRelativePath = (url: string) =>
         url.split("/storage/v1/object/public/images/")[1];
 
       const relativePaths = product.imageUrl.map((image) =>
-        getRelativePath(image)
+        getRelativePath(image),
       );
       const removalResults = await supabase.storage
         .from("images")
@@ -873,14 +886,14 @@ export async function updateProduct(
           imageUrl: `${process.env.NEXT_PUBLIC_SUPABASE_URL}images/${data?.path}`,
           name: file.name.substring(0, file.name.lastIndexOf(".")) || file.name,
         };
-      })
+      }),
     );
     if (product.variations.length > 0) {
       const getRelativePath = (url: string) =>
         url.split("/storage/v1/object/public/images/")[1];
 
       const relativePaths = product.variations.map((variation) =>
-        getRelativePath(variation.imageUrl)
+        getRelativePath(variation.imageUrl),
       );
       const removalResults = await supabase.storage
         .from("images")
@@ -1146,7 +1159,7 @@ export async function deleteProduct(id: number) {
         url.split("/storage/v1/object/public/images/")[1];
 
       const relativePaths = product.variations.map((variation) =>
-        getRelativePath(variation.imageUrl)
+        getRelativePath(variation.imageUrl),
       );
       const removalResults = await supabase.storage
         .from("images")
@@ -1179,7 +1192,7 @@ export async function changeProductPrice(formData: FormData) {
       throw new Error("Access denied");
     }
     const { id, price, discountPrice } = Object.fromEntries(
-      formData.entries()
+      formData.entries(),
     ) as {
       id: string;
       price: string;
@@ -1237,7 +1250,7 @@ export async function deleteProductVariation(id: number) {
 
 export async function toggleProductAvailability(
   id: number,
-  available: boolean
+  available: boolean,
 ) {
   try {
     const user = await getUserSession();
@@ -1266,7 +1279,7 @@ export async function toggleProductAvailability(
 
 export async function toggleVariationAvailability(
   id: number,
-  available: boolean
+  available: boolean,
 ) {
   try {
     const user = await getUserSession();
@@ -1307,7 +1320,7 @@ export async function createReview(prevState: any, formData: FormData) {
     const images = formData.getAll("images");
     const files: File[] = images.filter(
       (v): v is File =>
-        v instanceof File && v.size > 0 && v.type.startsWith("image/")
+        v instanceof File && v.size > 0 && v.type.startsWith("image/"),
     );
     let uploadResults: string[] | undefined;
 
@@ -1323,7 +1336,7 @@ export async function createReview(prevState: any, formData: FormData) {
             });
           if (error) throw error;
           return process.env.NEXT_PUBLIC_SUPABASE_URL + "images/" + data?.path;
-        })
+        }),
       );
       uploadResults = imageUploads;
     }
@@ -1424,7 +1437,7 @@ export async function createNote(formData: FormData) {
       throw new Error("Access denied");
     }
     const { labelRu, labelDe } = Object.fromEntries(
-      formData.entries()
+      formData.entries(),
     ) as MetaValues;
 
     await prisma.note.create({
@@ -1474,7 +1487,7 @@ export async function createSlide(formData: FormData) {
       } else {
         console.log(
           `File ${images[index].name} uploaded successfully :`,
-          result.data?.path
+          result.data?.path,
         );
       }
     });
@@ -1541,7 +1554,7 @@ export async function deleteSlide(id: number) {
     if (removalResults.error) {
       console.error(
         "Error removing images from storage:",
-        removalResults.error
+        removalResults.error,
       );
     }
 
@@ -1580,8 +1593,6 @@ export async function createPromocode(formData: CreatePromocodeValues) {
     throw error;
   }
 }
-
-
 
 export async function createInvoice(orderId: number) {
   if (!orderId) throw new Error("orderId is required");

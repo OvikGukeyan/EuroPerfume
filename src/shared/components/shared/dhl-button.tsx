@@ -88,11 +88,11 @@ export const DhlButton: FC<Props> = ({
           </Button>
         </div>
       )}
-      {result && (
+      {/* {result && (
         <pre className="mt-4 p-3 bg-gray-100 text-xs overflow-auto">
           {JSON.stringify(result.body, null, 2)}
         </pre>
-      )}
+      )} */}
     </div>
   );
 };
