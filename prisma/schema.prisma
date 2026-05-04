@@ -99,7 +99,9 @@ model Product {
   popularProducts PopularProducts[] @relation("PopularProductsOnProducts")
   StockMovement   StockMovement[]
   stockMl         Int               @default(0)
-  stockPieces     Int               @default(0)
+  stockQty     Int               @default(0)
+
+  supplyItems SupplyItem[]
 }
 
 model PopularProducts {
@@ -121,7 +123,9 @@ model ProductVariation {
   CartItem      CartItem[]
   OrderItem     OrderItem[]
   StockMovement StockMovement[]
-  stockPieces   Int             @default(0)
+  stockQty   Int             @default(0)
+
+  supplyItems SupplyItem[]
 }
 
 model ProductTranslation {
@@ -472,15 +476,26 @@ model StockMovement {
 }
 
 model Supply {
-  id         Int          @id @default(autoincrement())
-  reference  String?
-  supplier   String?
-  comment    String?
-  createdAt  DateTime     @default(now())
-  receivedAt DateTime?
-  status     SupplyStatus @default(DRAFT)
-
+  id             Int             @id @default(autoincrement())
+  supplier       String?
+  note           String?
+  createdAt      DateTime        @default(now())
+  items          SupplyItem[]
   stockMovements StockMovement[]
+}
+
+model SupplyItem {
+  id          Int       @id @default(autoincrement())
+  supplyId    Int
+  productId   Int
+  variationId Int?
+  quantity    Decimal
+  unit        StockUnit
+  costPrice   Decimal?
+
+  supply    Supply            @relation(fields: [supplyId], references: [id], onDelete: Cascade)
+  product   Product           @relation(fields: [productId], references: [id])
+  variation ProductVariation? @relation(fields: [variationId], references: [id])
 }
 
 model Invoice {

@@ -17,11 +17,11 @@ export const UserVerificationTemplate: React.FC<Props> = ({ code }) => (
     <p>
       Благодарим вас за регистрацию на сайте <strong>Euro Perfume</strong> (
       <a
-        href="https://www.euro-perfume.com/"
+        href="https://euro-perfume-inky.vercel.app//"
         target="_blank"
         rel="noopener noreferrer"
       >
-        https://www.euro-perfume.com/
+        https://euro-perfume-inky.vercel.app//
       </a>
       ) — мире оригинальной парфюмерии и утончённого стиля.
     </p>
@@ -75,7 +75,7 @@ export const UserVerificationTemplate: React.FC<Props> = ({ code }) => (
       <strong>Команда Euro Perfume</strong>
       <br />
       <a
-        href="https://www.euro-perfume.com/"
+        href="https://euro-perfume-inky.vercel.app//"
         target="_blank"
         rel="noopener noreferrer"
       >

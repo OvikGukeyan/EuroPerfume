@@ -2,24 +2,26 @@
 
 import { SearchInput } from "@/src/shared/components";
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
-import { StockMovementType } from "@prisma/client";
+import { StockMovementType, StockUnit } from "@prisma/client";
 import { useState } from "react";
 
-
-type SupplyItem = {
+export interface CreateSupplyItemInput {
   productId: number;
+  variationId?: number;
+
   quantity: number;
-  unit: string;
-  unitPrice: number;
-  variationId: number;
-  type: StockMovementType;
+  unit: StockUnit;
+
+  costPrice?: number;
+  reason?: string;
 }
 export interface CreateSupplyInput {
-  reference: string;
-  supplier: string;
-  comment: string;
-  receivedAt: Date;
-  supplyItems: SupplyItem[];
+  supplier?: string;
+  reference?: string; // invoice / Lieferschein
+  comment?: string;
+  receivedAt?: Date;
+
+  items: CreateSupplyItemInput[];
 }
 export default function Supply() {
   const [supplyItems, setSupplyItems] = useState<ProductDTO[]>([]);

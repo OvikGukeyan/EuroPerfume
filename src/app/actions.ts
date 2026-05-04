@@ -35,11 +35,11 @@ import { supabase } from "../lib/supabase";
 import { MetaValues } from "../shared/store";
 import { DhlCredantials } from "../shared/components/shared/dhl-button";
 import { euCountriesAlpha3 } from "../shared/lib/calc-total-amount-with-delivery";
-import { CreateSupplyInput } from "./[locale]/(dashboard)/supply/page";
-import { CreateSupplySchema } from "../shared/constants/create-supply-schema";
 import { generateInvoiceNumber } from "../shared/server-lib/generate-invoice-number";
 import prisma from "@/prisma/prisma-client";
 import { generateInvoicePdf } from "../shared/server-lib/generate-invoice-pdf";
+import { CreateSupplyInput } from "./[locale]/(dashboard)/supply/page";
+import { CreateSupplySchema } from "../shared/constants/create-supply-schema";
 export async function dhlCreateOrder(
   body: DhlCredantials,
   weight: number,
@@ -236,6 +236,7 @@ export async function dhlCreateOrder(
 export async function createSupply(body: CreateSupplyInput) {
   try {
     const user = await getUserSession();
+
     if (!user || user.role !== UserRole.ADMIN) {
       throw new Error("Access denied");
     }
@@ -244,36 +245,97 @@ export async function createSupply(body: CreateSupplyInput) {
 
     if (!parsed.success) {
       throw new Error(
-        `Invalid supply data: ${JSON.stringify(parsed.error.format())}`,
+        `Invalid supply data: ${JSON.stringify(parsed.error.format())}`
       );
     }
+
     const data = parsed.data;
+
     const result = await prisma.$transaction(async (tx) => {
       const supply = await tx.supply.create({
         data: {
-          supplier: data.supplier,
-          reference: data.invoiceNumber ?? null,
+          supplier: data.supplier ?? null,
+          note: data.comment ?? null,
         },
       });
 
       for (const item of data.items) {
-        await tx.product.update({
+        const product = await tx.product.findUnique({
           where: { id: item.productId },
-          data: { stockMl: { increment: item.amountMl } },
         });
 
+        if (!product) {
+          throw new Error(`Product with id ${item.productId} not found`);
+        }
+
+        // 1. создаём строку поставки
+        await tx.supplyItem.create({
+          data: {
+            supplyId: supply.id,
+            productId: item.productId,
+            variationId: item.variationId ?? null,
+            quantity: item.quantity,
+            unit: item.unit,
+            costPrice: item.costPrice ?? null,
+          },
+        });
+
+        // 2. обновляем остатки
+        if (item.variationId) {
+          await tx.productVariation.update({
+            where: { id: item.variationId },
+            data: {
+              stockQty: {
+                increment: item.quantity,
+              },
+            },
+          });
+        } else if (item.unit === "ML") {
+          await tx.product.update({
+            where: { id: item.productId },
+            data: {
+              stockMl: {
+                increment: item.quantity,
+              },
+            },
+          });
+        } else {
+          await tx.product.update({
+            where: { id: item.productId },
+            data: {
+              stockQty: {
+                increment: item.quantity,
+              },
+            },
+          });
+        }
+
+        // 3. создаём движение склада
         await tx.stockMovement.create({
           data: {
             productId: item.productId,
-            type: "IN",
-            quantity: item.amountMl,
+            variationId: item.variationId ?? null,
             supplyId: supply.id,
-            unit: "ML",
+            type: "IN",
+            unit: item.unit,
+            quantity: Number(item.quantity),
+            reason: item.reason ?? null,
           },
         });
       }
 
-      return supply;
+      return await tx.supply.findUnique({
+        where: { id: supply.id },
+        include: {
+          items: {
+            include: {
+              product: true,
+              variation: true,
+            },
+          },
+          stockMovements: true,
+        },
+      });
     });
 
     return { ok: true, supply: result };

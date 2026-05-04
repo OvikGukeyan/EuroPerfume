@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://www.euro-perfume.com",
+    canonical: "https://euro-perfume-inky.vercel.app/",
   },
 };
 

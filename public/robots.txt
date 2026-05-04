@@ -3,7 +3,7 @@ User-agent: *
 Allow: /
 
 # Host
-Host: https://www.euro-perfume.com
+Host: https://euro-perfume-inky.vercel.app/
 
 # Sitemaps
-Sitemap: https://www.euro-perfume.com/sitemap.xml
+Sitemap: https://euro-perfume-inky.vercel.app//sitemap.xml
