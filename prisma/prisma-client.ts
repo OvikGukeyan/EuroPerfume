@@ -21,3 +21,15 @@ if (process.env.NODE_ENV !== "production") {
 }
 
 export default prisma;
+
+console.log(
+
+  "DB HOST:",
+
+  process.env.DATABASE_URL
+
+    ? new URL(process.env.DATABASE_URL).host
+
+    : "NO_DB_URL"
+
+);
