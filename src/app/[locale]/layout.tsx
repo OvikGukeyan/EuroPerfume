@@ -14,24 +14,24 @@ const nunito = Nunito({
   weight: ["400", "500", "600", "700", "800", "900"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Euro Perfume",
-    template: "%s | Euro Perfume",
-  },
-  description: "Perfume store.",
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-    },
-  },
-  alternates: {
-    canonical: "https://euro-perfume-inky.vercel.app",
-  },
-};
+// export const metadata: Metadata = {
+//   title: {
+//     default: "Euro Perfume",
+//     template: "%s | Euro Perfume",
+//   },
+//   description: "Perfume store.",
+//   robots: {
+//     index: true,
+//     follow: true,
+//     googleBot: {
+//       index: true,
+//       follow: true,
+//     },
+//   },
+//   alternates: {
+//     canonical: "https://euro-perfume-inky.vercel.app",
+//   },
+// };
 
 export default async function RootLayout({
   children,

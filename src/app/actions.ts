@@ -1441,6 +1441,7 @@ export async function deleteReview(id: number) {
       where: { id },
     });
 
+
     if (!review) {
       throw new Error("Review not found");
     }
@@ -1458,6 +1459,11 @@ export async function deleteReview(id: number) {
         throw new Error(removalResults.error.message);
       }
 
+      await prisma.review.delete({
+        where: { id },
+      });
+
+    }else{
       await prisma.review.delete({
         where: { id },
       });
