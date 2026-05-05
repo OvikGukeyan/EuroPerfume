@@ -52,7 +52,7 @@ export const TrackingNotificationTemplate: React.FC<Props> = ({
     </p>
 
     <p>
-      <a href="https://euro-perfume-inky.vercel.app/" target="_blank" rel="noopener noreferrer">
+      <a href="https://euro-perfume-inky.vercel.app" target="_blank" rel="noopener noreferrer">
         www.euro-perfume.com
       </a>
     </p>

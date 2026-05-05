@@ -90,7 +90,7 @@ export const OrderSuccessTemplate: React.FC<Props> = ({
       <br />
       Ihr Euro Perfume Team
       <br />
-      <a href="https://euro-perfume-inky.vercel.app/" target="_blank">
+      <a href="https://euro-perfume-inky.vercel.app" target="_blank">
         www.euro-perfume.com
       </a>
     </p>
