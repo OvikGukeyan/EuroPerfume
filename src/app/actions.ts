@@ -245,7 +245,7 @@ export async function createSupply(body: CreateSupplyInput) {
 
     if (!parsed.success) {
       throw new Error(
-        `Invalid supply data: ${JSON.stringify(parsed.error.format())}`
+        `Invalid supply data: ${JSON.stringify(parsed.error.format())}`,
       );
     }
 
@@ -362,7 +362,7 @@ export async function createOrder(data: CheckoutFormValues) {
               include: {
                 brand: true,
                 productGroup: true,
-              }
+              },
             },
             variation: true,
           },
@@ -1441,7 +1441,6 @@ export async function deleteReview(id: number) {
       where: { id },
     });
 
-
     if (!review) {
       throw new Error("Review not found");
     }
@@ -1458,16 +1457,10 @@ export async function deleteReview(id: number) {
       if (removalResults.error) {
         throw new Error(removalResults.error.message);
       }
-
-      await prisma.review.delete({
-        where: { id },
-      });
-
-    }else{
-      await prisma.review.delete({
-        where: { id },
-      });
     }
+    await prisma.review.delete({
+      where: { id },
+    });
   } catch (error) {
     console.error("Error [DELETE_REVIEW]", error);
     throw error;
