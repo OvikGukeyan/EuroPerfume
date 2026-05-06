@@ -13,7 +13,7 @@ import { getSlides } from "@/src/shared/server-lib/get-slides";
 import { getStories } from "@/src/shared/server-lib/get-stories";
 import { Slide, SlideImage } from "@prisma/client";
 import { getTranslations } from "next-intl/server";
-
+export const dynamic = "force-dynamic";
 export default async function Home() {
   const slides = await getSlides();
   const stories = await getStories();
