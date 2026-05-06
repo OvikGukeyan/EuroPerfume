@@ -1458,7 +1458,7 @@ export async function deleteReview(id: number) {
         throw new Error(removalResults.error.message);
       }
     }
-    await prisma.review.delete({
+    return await prisma.review.delete({
       where: { id },
     });
   } catch (error) {
