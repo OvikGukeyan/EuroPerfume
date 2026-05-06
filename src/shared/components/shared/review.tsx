@@ -10,7 +10,7 @@ import { Reply, Trash } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { createReply, deleteReview } from "@/src/app/actions";
 import { Reply as ReplyType } from "@prisma/client";
-import { Link } from "@/src/i18n/navigation";
+import { Link, useRouter } from "@/src/i18n/navigation";
 
 type Props = {
   className?: string;
@@ -39,16 +39,29 @@ export const ReviewComponent: FC<Props> = ({
   productImage,
   createdAt,
 }) => {
+  const router = useRouter();
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const { data: session } = useSession();
   const admin = session?.user?.role === "ADMIN";
 const handleDeleteReview = async () => {
+
   try {
-    await deleteReview(id);
+
+    const res = await deleteReview(id);
+
+    console.log("DELETE REVIEW RESULT:", res);
+
+    router.refresh();
+
   } catch (error) {
-    console.error("Error deleting review:", error);
+
+    console.error("DELETE REVIEW ERROR:", error);
+
+    alert("Fehler beim Löschen des Kommentars");
+
   }
-}
+
+};
   return (
     <div className={cn("", className)}>
       {(productId && productName && productImage) && (
