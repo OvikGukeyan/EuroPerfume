@@ -47,7 +47,7 @@ export default async function Home() {
       />
       <Carusel slides={bottomSlides} />
       {/* <ChatBotDrawer /> */}
-      <RecentReviews />
+      {/* <RecentReviews /> */}
     </div>
   );
 }

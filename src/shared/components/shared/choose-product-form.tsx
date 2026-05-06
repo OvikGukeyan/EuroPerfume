@@ -247,7 +247,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
               </TabsContent>
 
               <TabsContent className="w-full md:hidden" value="comments">
-                <ReviewsComponent product={product} />
+                {/* <ReviewsComponent product={product} /> */}
               </TabsContent>
             </Tabs>
           </div>
