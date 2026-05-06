@@ -42,7 +42,13 @@ export const ReviewComponent: FC<Props> = ({
   const [isReplyOpen, setIsReplyOpen] = useState(false);
   const { data: session } = useSession();
   const admin = session?.user?.role === "ADMIN";
-
+const handleDeleteReview = async () => {
+  try {
+    await deleteReview(id);
+  } catch (error) {
+    console.error("Error deleting review:", error);
+  }
+}
   return (
     <div className={cn("", className)}>
       {(productId && productName && productImage) && (
@@ -105,7 +111,7 @@ export const ReviewComponent: FC<Props> = ({
               className="cursor-pointer"
               size={20}
             />
-            <Trash onClick={() => {deleteReview(id)}} className="cursor-pointer" size={20} />
+            <Trash onClick={handleDeleteReview} className="cursor-pointer" size={20} />
           </div>
           {isReplyOpen && (
             <form

@@ -285,7 +285,7 @@ export async function createSupply(body: CreateSupplyInput) {
           await tx.productVariation.update({
             where: { id: item.variationId },
             data: {
-              stockQty: {
+              stockPieces: {
                 increment: item.quantity,
               },
             },
@@ -303,7 +303,7 @@ export async function createSupply(body: CreateSupplyInput) {
           await tx.product.update({
             where: { id: item.productId },
             data: {
-              stockQty: {
+              stockPieces: {
                 increment: item.quantity,
               },
             },
