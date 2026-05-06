@@ -5,7 +5,6 @@ import {
   StoriesCarousel,
   ChatBotDrawer,
 } from "@/src/shared/components/shared";
-import { RecentReviews } from "@/src/shared/components/shared/recent-reviews";
 import { getDiscountedItems } from "@/src/shared/server-lib/get-discouted-items";
 import { getNewProducts } from "@/src/shared/server-lib/get-new-products";
 import { getPopularProducts } from "@/src/shared/server-lib/get-popular-products";
@@ -13,7 +12,6 @@ import { getSlides } from "@/src/shared/server-lib/get-slides";
 import { getStories } from "@/src/shared/server-lib/get-stories";
 import { Slide, SlideImage } from "@prisma/client";
 import { getTranslations } from "next-intl/server";
-export const dynamic = "force-dynamic";
 export default async function Home() {
   const slides = await getSlides();
   const stories = await getStories();
