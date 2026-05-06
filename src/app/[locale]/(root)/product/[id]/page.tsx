@@ -72,7 +72,7 @@ export default async function Product({
         productGroup={product.productGroup}
       />
       <ChooseProductForm product={safeProduct} />
-      {/* <ReviewsComponent className="hidden md:block" product={safeProduct} /> */}
+      <ReviewsComponent className="hidden md:block" product={safeProduct} />
       <Recommendations searchParams={safeProduct} className="my-20" />
       <RecentlyViewed />
     </Container>

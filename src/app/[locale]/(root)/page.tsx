@@ -5,6 +5,7 @@ import {
   StoriesCarousel,
   ChatBotDrawer,
 } from "@/src/shared/components/shared";
+import { RecentReviews } from "@/src/shared/components/shared/recent-reviews";
 import { getDiscountedItems } from "@/src/shared/server-lib/get-discouted-items";
 import { getNewProducts } from "@/src/shared/server-lib/get-new-products";
 import { getPopularProducts } from "@/src/shared/server-lib/get-popular-products";
@@ -45,7 +46,7 @@ export default async function Home() {
       />
       <Carusel slides={bottomSlides} />
       {/* <ChatBotDrawer /> */}
-      {/* <RecentReviews /> */}
+      <RecentReviews />
     </div>
   );
 }
