@@ -346,6 +346,7 @@ model Order {
   userId              Int?
   token               String
   totalAmount         Decimal
+  pricingSnapshot     Json?
   status              OrderStatus
   peymentId           String?
   items               OrderItem[]
@@ -504,6 +505,8 @@ model Invoice {
   orderId       Int    @unique
   order         Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
+  taxSnapshot Json?
+  supplyDate DateTime? @db.Date
   pdfUrl   String?
   issuedAt DateTime @default(now())
 
@@ -579,4 +582,18 @@ enum ShippingMethods {
   DIFFERENT_ADDRESS
   PACKSTATION
   POST_OFFICE
+}
+
+// Submitted declarations are server-only. The Supabase migration enables RLS
+// and revokes browser roles; access uses the existing server database connection.
+model WithdrawalRequest {
+  id                  String    @id @default(uuid()) @db.Uuid
+  fullName            String
+  email               String
+  contractIdentifier  String
+  locale              String
+  receivedAt          DateTime  @default(now()) @db.Timestamptz(3)
+  confirmationSentAt  DateTime? @db.Timestamptz(3)
+  confirmationEmailId String?
+  receiptText         String
 }

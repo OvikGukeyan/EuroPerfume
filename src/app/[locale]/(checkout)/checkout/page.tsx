@@ -8,6 +8,7 @@ import { useSession } from "next-auth/react";
 import { ContactForms, ShippingMethods } from "@prisma/client";
 import { checkoutFormSchema, CheckoutFormValues } from "@/src/shared/constants";
 import { useCart } from "@/src/shared/hooks";
+import { deliveryCountryForCheckout } from "@/src/shared/lib/tax";
 import { calcTotlalAmountWithDelivery } from "@/src/shared/lib";
 import { Api } from "@/src/shared/services/api-client";
 import { createOrder } from "@/src/app/actions";
@@ -66,8 +67,9 @@ export default function Checkout() {
 
 
   const discount = form.watch("discount");
+  const deliveryCountry = deliveryCountryForCheckout({ shippingMethod: form.watch("shippingMethod"), deliveryCountry: form.watch("deliveryCountry"), country: form.watch("country") });
   const { totalAmountWithDelivery, deliveryPrice } =
-    calcTotlalAmountWithDelivery(totalAmount, form.watch("country"), discount);
+    calcTotlalAmountWithDelivery(totalAmount, deliveryCountry, discount);
 
   useEffect(() => {
     async function fetchUserInfo() {

@@ -4,7 +4,7 @@ import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Euro Perfume",
-  description: "Perfume store",
+  description: "EURO PERFUME – Designer- und Nischendüfte, Duftabfüllungen und Probierkollektionen. Versand innerhalb Deutschlands und der EU.",
 };
 
 export default function HomeLayout({

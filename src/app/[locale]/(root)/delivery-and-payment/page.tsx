@@ -19,6 +19,7 @@ export default function PaymentInfoPage() {
           <li>{t('delivery.items.3')}</li>
           <li>{t('delivery.items.4')}</li>
         </ul>
+        <p className="mb-3">{t('delivery.notice')}</p>
         <p>{t('delivery.tracking')}</p>
       </section>
 

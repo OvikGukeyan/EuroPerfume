@@ -1,3 +1,6 @@
+import { deliveryCountryForCheckout } from "@/src/shared/lib/tax";
+import { TaxPriceNotice } from "../tax-price-notice";
+import { useWatch } from "react-hook-form";
 import React, { FC } from "react";
 import {
   ArrowRight,
@@ -38,6 +41,10 @@ export const CheckoutSidebar: FC<Props> = ({
   onPromocodeSubmit,
   discount,
 }) => {
+  const deliveryCountry = useWatch({ control, name: "deliveryCountry" });
+  const billingCountry = useWatch({ control, name: "country" });
+  const shippingMethod = useWatch({ control, name: "shippingMethod" });
+  const country = deliveryCountryForCheckout({ shippingMethod, deliveryCountry, country: billingCountry || "DEU" });
   const isMinOrderAmount = totalAmount >= SHOP_SETTINGS.MIN_ORDER_EUR;
 
   const t = useTranslations("Checkout.sidebar");
@@ -54,6 +61,8 @@ export const CheckoutSidebar: FC<Props> = ({
           </span>
         )}
       </div>
+
+      <TaxPriceNotice gross={totalAmountWithDelivery} country={country} />
 
       <OrderDetails
         title={

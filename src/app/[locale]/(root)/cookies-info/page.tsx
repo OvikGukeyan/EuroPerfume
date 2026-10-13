@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { CookieSettingsButton } from '@/src/shared/components/shared/cookie-settings-button';
 
 export default function CookiesInfo() {
   const t = useTranslations('CookiesInfo');
@@ -27,6 +28,7 @@ export default function CookiesInfo() {
         <ul className="list-disc list-inside space-y-2 mb-3">
           <li>{t('experience.items.0')}</li>
           <li>{t('experience.items.1')}</li>
+          <li>{t('experience.items.2')}</li>
         </ul>
       </section>
 
@@ -35,6 +37,7 @@ export default function CookiesInfo() {
       <section>
         <h2 className="text-2xl font-semibold mb-4">{t('privacy.title')}</h2>
         <p className="mb-3">{t('privacy.description')}</p>
+        <CookieSettingsButton />
       </section>
     </div>
   );
