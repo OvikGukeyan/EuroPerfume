@@ -8,6 +8,7 @@ import { SocialMediaBar } from "./social-media-bar";
 import { links } from "@/src/shared/services/constants";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/src/i18n/navigation";
+import { CookieSettingsButton } from "./cookie-settings-button";
 
 type Props = {
   className?: string;
@@ -35,14 +36,14 @@ export const Footer: FC<Props> = ({ className }) => {
         </div>
       </div>
       <div className="flex flex-col items-start justify-between gap-5 mt-10">
+        <Link href="/withdrawal" className="rounded-md bg-gray-900 px-5 py-3 font-semibold text-white">
+          {locale === "ru" ? "Отказаться от договора" : "Vertrag widerrufen"}
+        </Link>
+        <CookieSettingsButton />
         <p className="text-xs text-slate-600">
-          Die hier angebotenen Duftproben (Decants) stammen aus originalen,
-          rechtmäßig erworbenen Parfümflakons. Der Verkauf erfolgt
-          ausschließlich als Raumduft- und Sammlerobjekte. Kein kosmetisches
-          Produkt. Nicht zur Anwendung auf der Haut bestimmt. Nicht einatmen.
-          Von Kindern fernhalten. Hochentzündlich.
+          {t("brandNotice")}
         </p>
-        <h5>EuroPerfume 2024. Alle Rechte vorbehalten.</h5>
+        <p className="text-sm">© {new Date().getFullYear()} EURO PERFUME. {locale === "ru" ? "Все права защищены." : "Alle Rechte vorbehalten."}</p>
       </div>
     </div>
   );

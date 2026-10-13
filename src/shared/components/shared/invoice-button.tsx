@@ -19,6 +19,8 @@ export const InvoiceButton: FC<Props> = ({
   id
 }) => {
   const [pending, start] = useTransition();
+  const [supplyDate, setSupplyDate] = useState("");
+  const [error, setError] = useState("");
   const [result, setResult] = useState<any>(null);
 
 
@@ -37,10 +39,13 @@ export const InvoiceButton: FC<Props> = ({
         </>
       ) : (
         <div className="flex flex-col gap-3 w-[300px]">
+          <label htmlFor={`invoice-supply-date-${id}`} className="text-sm">Дата фактической поставки / Leistungsdatum</label>
+          <input id={`invoice-supply-date-${id}`} type="date" required value={supplyDate} onChange={e => setSupplyDate(e.target.value)} className="rounded border p-2" />
+          {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
           <Button
-            disabled={pending}
+            disabled={pending || !supplyDate}
             onClick={() =>
-              start(async () => setResult(await createInvoice(id)))
+              start(async () => { setError(""); try { const response = await createInvoice(id, supplyDate); if (response.ok) setResult(response); else setError(response.message ?? "Не удалось создать счёт"); } catch (e) { setError(e instanceof Error ? e.message : "Не удалось создать счёт"); } })
             }
           >
             {pending ? "Creating…" : "Create invoice"}

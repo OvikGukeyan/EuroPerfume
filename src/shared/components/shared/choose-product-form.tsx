@@ -1,4 +1,5 @@
 "use client";
+import { TaxPriceNotice } from "./tax-price-notice";
 
 import { cn } from "@/src/shared/lib/utils";
 import React, { FC, useEffect, useRef, useState } from "react";
@@ -27,6 +28,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useCartStore } from "../../store";
 import toast from "react-hot-toast";
 import { ProductDTO } from "../../services/dto/product.dto";
+import { consentEvent, readCookieConsent } from "@/src/shared/lib/cookie-consent";
 
 export type MediaItem = { type: "image" | "video"; url: string; id?: number };
 
@@ -66,12 +68,17 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
   ]);
 
   useEffect(() => {
-    const viewed = JSON.parse(localStorage.getItem("recentlyViewed") || "[]");
-    const updated = [
-      product.id,
-      ...viewed.filter((id: number) => id !== product.id),
-    ].slice(0, 10);
-    localStorage.setItem("recentlyViewed", JSON.stringify(updated));
+    const remember = () => {
+      if (!readCookieConsent()?.preferences) return;
+      try {
+        const saved = JSON.parse(localStorage.getItem("recentlyViewed") || "[]");
+        const viewed: number[] = Array.isArray(saved) ? saved.filter(id => typeof id === "number") : [];
+        localStorage.setItem("recentlyViewed", JSON.stringify([product.id, ...viewed.filter(id => id !== product.id)].slice(0, 10)));
+      } catch { /* Optional history is unavailable when browser storage is blocked. */ }
+    };
+    remember();
+    window.addEventListener(consentEvent, remember);
+    return () => window.removeEventListener(consentEvent, remember);
   }, [product.id]);
 
   const onSubmit = async () => {
@@ -252,7 +259,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
             </Tabs>
           </div>
 
-          <p className="text-xs text-slate-600">Sammlerobjekt – kein offizielles Markenprodukt.</p>
+          {product.productGroup.onTap && <p className="text-xs text-slate-600">{locale === "ru" ? "Отливант из оригинального флакона. Не является официальным пробником производителя." : "Duftabfüllung aus einem Originalflakon. Keine offizielle Herstellerprobe."}</p>}
 
           <Separator />
           <div onClick={handleRatingClick}>
@@ -294,6 +301,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
             <b>{finalPrice} €</b>
           )}
         </Button>
+        <TaxPriceNotice />
       </div>
     </div>
   );
