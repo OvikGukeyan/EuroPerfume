@@ -4,11 +4,9 @@
     "popularProducts": "Beliebte Produkte",
     "discountedProducts": "Rabatte"
   },
-
   "Header": {
     "freeDeliveryInfo": "Kostenloser Versand innerhalb Deutschlands für Bestellungen über {amount} € ! "
   },
-
   "Filters": {
     "apply": "Anwenden",
     "reset": "Zurücksetzen",
@@ -25,7 +23,6 @@
     "hide": "-  Ausblenden",
     "showMore": "+  Mehr anzeigen"
   },
-
   "Product": {
     "addToCart": "Hinzufügen",
     "price": "preis",
@@ -35,7 +32,6 @@
     "activeIngredients": "Inhaltsstoffe",
     "comments": "Bewertungen"
   },
-
   "Cart": {
     "title": "Im Warenkorb befinden sich {count} Artikel",
     "emptyTitle": "Warenkorb ist leer",
@@ -47,7 +43,6 @@
     "freeShippingRemaining": "Nur noch {amount} € bis zum kostenlosen Versand",
     "minOrder": "Mindestbestellwert {amount} €"
   },
-
   "Checkout": {
     "title": "Zur Kasse",
     "cart": {
@@ -95,109 +90,53 @@
       "houseNumber": "Hausnummer"
     }
   },
-
   "PaymentInfo": {
     "title": "Versand und Bezahlung",
     "delivery": {
       "title": "Versand",
-      "description": "Wir liefern Bestellungen innerhalb Deutschlands und in EU-Länder. Der Versand erfolgt über DHL, Deutsche Post oder andere zuverlässige Zustelldienste.",
+      "description": "Wir liefern innerhalb Deutschlands sowie in ausgewählte Länder der Europäischen Union. Der Versand erfolgt über DHL, Deutsche Post oder vergleichbare Versanddienstleister.",
       "items": [
-        "Versandzeit: 1–3 Werktage nach Zahlungseingang.",
-        "Lieferzeit innerhalb Deutschlands: 2–5 Werktage.",
-        "Internationale Lieferung: 4 bis 10 Werktage.",
-        "Die Versandkosten werden beim Checkout berechnet und hängen von Land und Gewicht ab.",
-        "Kostenloser Versand innerhalb Deutschlands ab einem Bestellwert von 100€."
+        "Bearbeitung und Versand in der Regel innerhalb von 1–3 Werktagen nach Zahlungseingang.",
+        "Lieferzeit innerhalb Deutschlands in der Regel 2–5 Werktage.",
+        "Lieferzeit innerhalb der Europäischen Union in der Regel 4–10 Werktage.",
+        "Die Versandkosten werden im Bestellvorgang angezeigt und richten sich nach Lieferland, Versandart und Gewicht der Bestellung.",
+        "Kostenloser Versand innerhalb Deutschlands ab einem Bestellwert von 100 €."
       ],
-      "tracking": "Sie erhalten eine E-Mail (oder Nachricht) mit der Sendungsverfolgungsnummer nach dem Versand."
+      "tracking": "Sie erhalten eine E-Mail (oder Nachricht) mit der Sendungsverfolgungsnummer nach dem Versand.",
+      "notice": "In Einzelfällen können Feiertage, eine hohe Auslastung der Versanddienstleister oder Zollbearbeitung zu Verzögerungen führen."
     },
     "payment": {
       "title": "Bezahlung",
-      "description": "Wir akzeptieren folgende Zahlungsmethoden:",
+      "description": "Die für Ihre Bestellung verfügbaren Zahlungsarten werden im Bestellvorgang oder in der Bestellbestätigung mitgeteilt.",
       "methods": [
         "PayPal",
-        "Kredit- und Debitkarten (Visa, Mastercard)",
-        "Vorkasse per Banküberweisung"
+        "Vorkasse per Banküberweisung",
+        "Weitere Zahlungsarten, sofern für Ihre Bestellung verfügbar"
       ],
-      "notice": "Die Zahlung muss innerhalb von 3 Werktagen nach der Bestellung erfolgen.\nNicht bezahlte Bestellungen werden automatisch storniert."
+      "notice": "Die Bedingungen der ausgewählten Zahlungsart werden vor Abschluss der Bestellung mitgeteilt. Bearbeitung und Versand erfolgen nach erfolgreicher Zahlung."
     }
   },
-
-  "Return": {
-    "title": "Widerruf und Rückgabe",
-    "greeting": "Liebe Kundinnen und Kunden,",
-    "legalNote": "Gemäß <strong>§ 312g Abs. 2 BGB</strong> (Bürgerliches Gesetzbuch) gilt das Widerrufsrecht nicht für bestimmte Produktkategorien. Bitte beachten Sie, dass folgende Produkte vom Widerruf oder Umtausch ausgeschlossen sind:",
-    "nonReturnable": [
-      "<strong>Abgefüllte Parfüms (Abfüllungen)</strong> – diese werden individuell nach Bestellung hergestellt und können nicht erneut verkauft werden;",
-      "<strong>Kosmetische und Hygieneprodukte</strong>, wenn die Verpackung nach der Lieferung geöffnet wurde;",
-      "<strong>Zubehör</strong> (Taschen, Kosmetiktaschen usw.), das getragen, benutzt oder Gebrauchsspuren aufweist;",
-      "<strong>Schuhe und Kleidung</strong>, wenn sie ihren Verkaufszustand verloren haben, getragen wurden oder nicht in Originalverpackung zurückgesendet werden;",
-      "<strong>Personalisierte oder individuell gefertigte Produkte</strong> (z. B. mit Namen oder Sonderanfertigung);",
-      "<strong>Geschenkgutscheine und digitale Codes</strong>, wenn sie bereits aktiviert wurden."
-    ],
-    "consumerRight": {
-      "title": "Widerrufsrecht für Verbraucher",
-      "definition": "<em>Verbraucher</em> ist jede natürliche Person, die ein Rechtsgeschäft zu Zwecken abschließt, die überwiegend weder ihrer gewerblichen noch ihrer selbständigen beruflichen Tätigkeit zugeordnet werden können."
-    },
-    "instruction": {
-      "title": "Widerrufsbelehrung",
-      "period": "Sie haben das Recht, innerhalb von <strong>14 Tagen</strong> ohne Angabe von Gründen vom Vertrag zurückzutreten.",
-      "begins": "Die Widerrufsfrist beginnt ab dem Tag:",
-      "conditions": [
-        "an dem Sie oder ein Dritter (nicht der Beförderer) die Ware erhalten haben, wenn die Bestellung in einer Sendung geliefert wurde;",
-        "an dem Sie die letzte Ware erhalten haben, wenn mehrere Waren bestellt und getrennt geliefert wurden;",
-        "an dem Sie die letzte Teilsendung oder das letzte Stück erhalten haben, wenn die Lieferung in mehreren Teilen erfolgt."
-      ],
-      "how": {
-        "title": "Wie übe ich das Widerrufsrecht aus?",
-        "description": "Sie müssen uns, Euro Perfume, an die E-Mail-Adresse <a>europerfumeshop@gmail.com</a> über Ihren Entschluss informieren – zum Beispiel per E-Mail oder Brief. Sie können das beigefügte Widerrufsformular verwenden, dies ist jedoch nicht verpflichtend."
-      },
-      "download": "Widerrufsformular herunterladen",
-      "deadlineNote": "Die Frist ist gewahrt, wenn Sie Ihre Mitteilung vor Ablauf der Widerrufsfrist absenden."
-    },
-    "consequences": {
-      "title": "Folgen des Widerrufs",
-      "items": [
-        "Wir erstatten alle Zahlungen (einschließlich der Lieferkosten, außer bei Express- oder Sonderversand) innerhalb von <strong>14 Tagen</strong> mit der gleichen Zahlungsmethode, die Sie bei der Bestellung verwendet haben.",
-        "Wir können die Rückzahlung verweigern, bis wir die Ware zurückerhalten oder einen Nachweis über den Versand erhalten haben.",
-        "Sie müssen die Ware innerhalb von <strong>14 Tagen</strong> nach Ihrem Widerruf zurücksenden und tragen die Rücksendekosten.",
-        "Für einen Wertverlust haften Sie nur, wenn dieser auf einen nicht bestimmungsgemäßen Gebrauch zurückzuführen ist."
-      ]
-    },
-    "exceptions": {
-      "title": "Ausschluss des Widerrufsrechts",
-      "items": [
-        "Produkte, die nach Kundenspezifikation angefertigt wurden (z. B. individuelle Parfüms);",
-        "Geöffnete kosmetische und Hygieneartikel;",
-        "Personalisierte Produkte;",
-        "Verderbliche Waren."
-      ]
-    },
-    "thanks": "Vielen Dank für Ihr Verständnis,",
-    "team": "Ihr Euro Perfume Team"
-  },
-
   "Faq": {
     "title": "Häufig gestellte Fragen zu Rückgabe und Umtausch",
     "items": [
       {
-        "question": "1. Kann ich ein abgefülltes Parfüm zurückgeben?",
-        "answer": "Nein. Gemäß §312g BGB sowie aus hygienischen Gründen sind Abfüllungen vom Umtausch und der Rückgabe ausgeschlossen."
+        "question": "1. Kann ich eine Duftabfüllung widerrufen?",
+        "answer": "Grundsätzlich besteht das gesetzliche Widerrufsrecht. Bei entsprechend versiegelten Waren kann es nach Entfernung der Schutzversiegelung nur unter den gesetzlichen Voraussetzungen des § 312g Abs. 2 Nr. 3 BGB erlöschen. Ihre Rechte bei Mängeln bleiben unberührt."
       },
       {
-        "question": "2. Warum gilt das Widerrufsrecht nicht für Abfüllungen?",
-        "answer": "Abfüllungen werden individuell auf Bestellung gefertigt (z. B. 2–10 ml) und können nach dem Öffnen nicht weiterverkauft werden."
+        "question": "2. Ist die Wahl einer angebotenen Größe eine individuelle Anfertigung?",
+        "answer": "Die bloße Auswahl einer regulär angebotenen Größe oder Variante führt nicht automatisch zum Ausschluss des Widerrufsrechts. Weitere Einzelheiten finden Sie in unserer Widerrufsbelehrung."
       },
       {
-        "question": "3. Ich habe einen Originalflakon in Folie gekauft. Kann ich ihn zurückgeben?",
-        "answer": "Ja, sofern die Verpackung ungeöffnet und die Ware versiegelt ist, können Sie den Artikel innerhalb von 14 Tagen zurückgeben. Bitte kontaktieren Sie uns im Voraus."
+        "question": "3. Wie erkläre ich meinen Widerruf?",
+        "answer": "Sie können Ihren Widerruf innerhalb der gesetzlichen Frist von vierzehn Tagen per Brief, E-Mail oder über die Funktion „Vertrag widerrufen“ erklären. Ein Kundenkonto und die Angabe eines Grundes sind nicht erforderlich."
       },
       {
-        "question": "4. Was tun, wenn meine Bestellung beschädigt angekommen ist?",
-        "answer": "Bitte senden Sie uns innerhalb von 48 Stunden nach Erhalt ein Foto des Schadens an <a>europerfumeshop@gmail.com</a> — wir finden garantiert eine Lösung."
+        "question": "4. Was tun bei beschädigter oder falsch gelieferter Ware?",
+        "answer": "Bitte informieren Sie uns möglichst zeitnah über <a>europerfumeshop@gmail.com</a>. Fotos helfen bei der Bearbeitung. Eine verspätete Mitteilung schränkt Ihre gesetzlichen Mängelhaftungsrechte nicht ein."
       }
     ]
   },
-
   "Footer": {
     "links": {
       "about": "Über uns",
@@ -207,13 +146,12 @@
     },
     "privacy": "Datenschutz",
     "impressum": "Impressum",
-    "copyright": "EuroPerfume 2024. Alle Rechte vorbehalten."
+    "copyright": "EuroPerfume 2024. Alle Rechte vorbehalten.",
+    "brandNotice": "Marken- und Produktnamen gehören den jeweiligen Rechteinhabern. Duftabfüllungen und von EURO PERFUME zusammengestellte Sets sind keine offiziellen Herstellerproben oder Discovery Sets, sofern in der Produktbeschreibung nicht ausdrücklich anders angegeben."
   },
-
   "SocialMedia": {
     "follow": "Folgen Sie unsere Social-Media-Plattformen"
   },
-
   "Reviews": {
     "title": "Bewertungen",
     "noReviews": "Noch keine Bewertungen"
@@ -224,12 +162,10 @@
     "submitButton": "Absenden",
     "success": "Vielen Dank für Ihre Bewertung!"
   },
-
   "ProductsSelection": {
     "showAll": "Alle anzeigen",
     "showLess": "Zurück"
   },
-
   "RecentReviews": {
     "title": "Letzte Bewertungen"
   },
@@ -239,16 +175,14 @@
   "YouMayLike": {
     "title": "Vielleicht interessiert"
   },
-
   "SelectedFiltersBar": {
     "clearAll": "Alle entfernen"
   },
-
   "CookiesInfo": {
     "title": "Verwendung von Cookies",
     "necessary": {
       "title": "Notwendige Cookies",
-      "description": "Wir verwenden nur notwendige Cookies, die für das einwandfreie Funktionieren der Website erforderlich sind.",
+      "description": "Notwendige Cookies und lokale Speicherfunktionen ermöglichen die grundlegenden Funktionen des Shops.",
       "items": [
         "Gewährleisten die Sicherheit",
         "Speichern Ihre Einstellungen",
@@ -256,41 +190,25 @@
       ]
     },
     "experience": {
-      "title": "Verbesserung der Benutzererfahrung",
-      "description": "Cookies helfen uns, die Nutzung der Website komfortabler zu gestalten.",
+      "title": "Optionale Komfortfunktionen, Analyse und Marketing",
+      "description": "Diese Dienste werden nur mit Ihrer Einwilligung aktiviert. Sie können die Kategorien getrennt erlauben oder ausschließlich notwendige Funktionen verwenden.",
       "items": [
-        "Beschleunigen das Laden von Seiten",
-        "Speichern ausgewählte Einstellungen bei erneuten Besuchen"
+        "Google Analytics — Analyse der Website-Nutzung.",
+        "Meta Pixel — Messung der Werbewirkung.",
+        "Zuletzt angesehene Düfte — werden lokal in Ihrem Browser gespeichert."
       ]
     },
     "privacy": {
       "title": "Datenschutz",
-      "description": "Wir verwenden keine externen Marketing- oder Analyse-Cookies. Ihre Daten werden nicht an Werbenetzwerke weitergegeben."
+      "description": "Sie können Ihre Auswahl über die folgende Schaltfläche ändern oder widerrufen. Weitere Informationen finden Sie in der Datenschutzerklärung."
     }
   },
-
-  "CookieConsent": {
-    "title": "Cookies",
-    "p1": "Wir verwenden nur unbedingt erforderliche Cookies, die für den ordnungsgemäßen Betrieb der Website notwendig sind. Sie gewährleisten Sicherheit, speichern Ihre Einstellungen und unterstützen die stabile Funktion der Kernfeatures.",
-    "p2": "Darüber hinaus nutzen wir Cookies, um Ihre Nutzererfahrung zu verbessern – z. B. schnellere Ladezeiten und das Beibehalten Ihrer Einstellungen bei erneuten Besuchen.",
-    "p3": "Wir verwenden keine externen Marketing- oder Analyse-Cookies; Ihre Daten werden nicht an Werbenetzwerke weitergegeben.",
-    "more": "Mehr erfahren",
-    "accept": "Zustimmen",
-    "moreInfo": {
-      "0": "Wir verwenden Cookies, um die Leistung der Website zu optimieren.",
-      "1": "Cookies helfen uns, Ihre Einstellungen zwischen den Besuchen zu speichern.",
-      "2": "Sie können Cookies jederzeit in den Einstellungen Ihres Browsers löschen."
-    }
-  },
-
   "AboutUs": {
     "title": "Über uns",
-
     "intro": {
-      "p1": "Euro Perfume ist ein unabhängiger Online-Shop mit einer privaten Sammlung von originalen Designer- und Nischendüften.",
-      "p2": "Alle Duftproben stammen aus originalen, legal erworbenen Parfümflakons. Die Produkte werden nicht als Kosmetika im Sinne der EU-Kosmetikverordnung vermarktet, sondern ausschließlich als Sammlerobjekte und olfaktorische Referenzen angeboten. Nicht zur Anwendung auf der Haut bestimmt."
+      "p1": "EURO PERFUME ist ein unabhängiger Online-Shop für Designer- und Nischendüfte.",
+      "p2": "Unser Sortiment umfasst Düfte, Duftabfüllungen und Probierkollektionen. Duftabfüllungen stammen aus regulär erworbenen Originalflakons. Sie sind keine offiziellen Herstellerproben, sofern dies nicht ausdrücklich anders angegeben ist."
     },
-
     "brands": {
       "title": "Marken in unserer Sammlung",
       "intro": "In unserer Sammlung finden Sie Düfte führender Marken, darunter:",
@@ -307,35 +225,30 @@
       ],
       "footer": "…und viele weitere."
     },
-
     "decants": {
       "title": "Unser besonderes Angebot – Duftproben ab 2 ml",
-      "text": "Bei Euro Perfume können Sie originale Duftproben ab 2 ml erwerben. Dies bietet Sammlern und Duftliebhabern die Möglichkeit, seltene oder limitierte Kompositionen kennenzulernen und zu archivieren, ohne eine ganze Flasche erwerben zu müssen."
+      "text": "Duftabfüllungen ermöglichen es, einen Duft vor dem Kauf eines ganzen Flakons kennenzulernen. Verfügbare Größen und Varianten finden Sie in der jeweiligen Produktbeschreibung."
     },
-
     "why": {
       "title": "Warum Euro Perfume",
       "items": [
         "Originale Düfte aus europäischen Quellen",
         "Spezialisierung auf Nischendüfte und Raritäten",
-        "Sammlerformate ab 2 ml",
+        "Praktische Formate zum Kennenlernen eines Duftes",
         "Lieferung in ganz Europa",
         "Persönlicher Service für Duftliebhaber"
       ]
     },
-
     "shipping": {
       "title": "Lieferung",
       "text": "Wir liefern sicher und zuverlässig über DHL und andere Versandpartner in Deutschland und der EU. Jeder Duft wird sorgfältig verpackt, um den bestmöglichen Zustand bei Ankunft zu gewährleisten."
     },
-
     "contact": {
       "title": "Kontakt",
       "text": "Haben Sie Fragen zu einem Duft oder zu Ihrer Bestellung? Kontaktieren Sie uns per E-Mail – wir helfen Ihnen gerne weiter.",
       "email": "europerfumeshop@gmail.com"
     }
   },
-
   "ByProductDialog": {
     "by": "Kaufen",
     "addToCart": "In den Warenkorb",
