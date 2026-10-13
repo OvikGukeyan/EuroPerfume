@@ -37,6 +37,7 @@ import { DhlCredantials } from "../shared/components/shared/dhl-button";
 import { euCountriesAlpha3 } from "../shared/lib/calc-total-amount-with-delivery";
 import { generateInvoiceNumber } from "../shared/server-lib/generate-invoice-number";
 import prisma from "@/prisma/prisma-client";
+import { PricingSnapshot, capturePricing, readPricing, cents, validateSupplyDate, invoiceTax, deliveryCountryForCheckout } from "../shared/lib/tax";
 import { generateInvoicePdf } from "../shared/server-lib/generate-invoice-pdf";
 import { CreateSupplyInput } from "./[locale]/(dashboard)/supply/page";
 import { CreateSupplySchema } from "../shared/constants/create-supply-schema";
@@ -130,10 +131,10 @@ export async function dhlCreateOrder(
         product: productCode,
         billingNumber: billingNumber,
         shipper: {
-          name1: "Saiian Vitalii",
-          addressStreet: "Kollwitzstraße",
-          addressHouse: "8",
-          postalCode: "49808",
+          name1: "Vitalii Saiian",
+          addressStreet: "Schillerstrasse",
+          addressHouse: "40",
+          postalCode: "49811",
           city: "Lingen",
           country: "DEU",
           email: "europerfumeshop@gmail.com",
@@ -381,12 +382,10 @@ export async function createOrder(data: CheckoutFormValues) {
       throw new Error("Cart is empty!");
     }
 
-    const { totalAmountWithDelivery, deliveryPrice } =
-      calcTotlalAmountWithDelivery(
-        userCart.totalAmount.toNumber(),
-        data.country,
-        data.discount,
-      );
+    const deliveryCountry = deliveryCountryForCheckout(data);
+    const orderedAt = new Date();
+    const pricing = capturePricing(userCart.items, deliveryCountry, data.discount ?? 0, orderedAt);
+    const totalAmountWithDelivery = pricing.totalGrossCents / 100;
     const fullName = data.firstName + " " + data.lastName;
     const deliveryFullNmae =
       data.deliveryFirstName && data.deliveryFirstName.length > 0
@@ -401,9 +400,7 @@ export async function createOrder(data: CheckoutFormValues) {
         phone: data.phone,
         city: data.city,
         country: data.country,
-        deliveryCountry: data.deliveryCountry
-          ? data.deliveryCountry
-          : data.country,
+        deliveryCountry,
         deliveryCity: data.deliveryCity ? data.deliveryCity : data.city,
         zip: data.zip,
         deliveryZip: data.deliveryZip ? data.deliveryZip : data.zip,
@@ -422,6 +419,8 @@ export async function createOrder(data: CheckoutFormValues) {
         comment: data.comment,
         token: cartToken,
         totalAmount: totalAmountWithDelivery,
+        createdAt: orderedAt,
+        pricingSnapshot: pricing,
         contactForm: data.contactForm,
         promocode: data.promocode,
         discount: data.discount,
@@ -494,6 +493,7 @@ export async function createOrder(data: CheckoutFormValues) {
           timeZone: "Europe/Berlin",
         }),
         total: order.totalAmount.toNumber(),
+        pricing,
         items: safeCartItems as CartItemDTO[],
       }),
     );
@@ -1655,7 +1655,9 @@ export async function createPromocode(formData: CreatePromocodeValues) {
   }
 }
 
-export async function createInvoice(orderId: number) {
+export async function createInvoice(orderId: number, supplyDateValue: string) {
+  const user = await getUserSession();
+  if (!user || user.role !== UserRole.ADMIN) return { ok: false, message: "Только администратор может создавать счета" };
   if (!orderId) throw new Error("orderId is required");
 
   const order = await prisma.order.findUnique({
@@ -1675,8 +1677,21 @@ export async function createInvoice(orderId: number) {
   });
   if (exists) throw new Error("Invoice already exists");
 
+  let supplyDate: Date;
+  let pricing: PricingSnapshot;
+  let taxSnapshot: ReturnType<typeof invoiceTax>;
+  try {
+    supplyDate = validateSupplyDate(supplyDateValue, order.createdAt);
+    pricing = readPricing(order.pricingSnapshot) ?? capturePricing(order.items, order.deliveryCountry, order.discount ?? 0, order.createdAt);
+    if (pricing.totalGrossCents !== cents(Number(order.totalAmount))) {
+      return { ok: false, message: "Исторические цены не совпадают с суммой заказа. Проверьте данные перед созданием счёта." };
+    }
+    taxSnapshot = invoiceTax(pricing, supplyDate);
+  } catch (error) {
+    return { ok: false, message: error instanceof Error ? error.message : "Проверьте налоговые данные счёта" };
+  }
   const invoiceNumber = await generateInvoiceNumber();
-  const pdfBuffer = await generateInvoicePdf(order, invoiceNumber);
+  const pdfBuffer = await generateInvoicePdf(order, invoiceNumber, pricing, taxSnapshot);
 
   const filePath = `order-${order.id}/invoice-${order.id}.pdf`;
 
@@ -1691,13 +1706,15 @@ export async function createInvoice(orderId: number) {
     throw new Error(`Upload invoice failed: ${error.message}`);
   }
 
-  const invoiceUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}invoice/${data?.path}`;
+  const invoiceUrl = supabase.storage.from("invoice").getPublicUrl(filePath).data.publicUrl;
   if (!invoiceUrl) throw new Error("Failed to get invoice publicUrl");
 
   await prisma.invoice.create({
     data: {
       orderId: order.id,
       pdfUrl: invoiceUrl,
+      supplyDate,
+      taxSnapshot,
       year: new Date().getFullYear(),
       invoiceNumber,
     },
