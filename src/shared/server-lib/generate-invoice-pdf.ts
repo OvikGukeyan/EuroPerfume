@@ -1,12 +1,12 @@
 import { Brand, Order, OrderItem, Product, ProductGroup } from "@prisma/client";
-import { calcPrice, calcTotlalAmountWithDelivery } from "../lib";
-import { Volume } from "../constants/perfume";
+import { PricingSnapshot, invoiceTax, berlinDate } from "../lib/tax";
+import { business } from "../constants/business";
 import PDFDocument from "pdfkit";
 import path from "path";
 import fs from "fs";
 
 function fmtDate(d: Date) {
-  return new Intl.DateTimeFormat("de-DE").format(new Date(d));
+  return new Intl.DateTimeFormat("de-DE", { timeZone: "Europe/Berlin" }).format(new Date(d));
 }
 export async function generateInvoicePdf(
   order: Order & {
@@ -14,7 +14,10 @@ export async function generateInvoicePdf(
       product: Product & { brand: Brand; productGroup: ProductGroup };
     })[];
   },
-  invoiceNumber: string
+  invoiceNumber: string,
+  pricing: PricingSnapshot,
+  tax: ReturnType<typeof invoiceTax>,
+  issuedAt = new Date()
 ): Promise<Buffer> {
   const doc = new PDFDocument({
     size: "A4",
@@ -22,11 +25,16 @@ export async function generateInvoicePdf(
     autoFirstPage: true,
   });
 
+  doc.registerFont("EuroRegular", path.join(process.cwd(), "public/fonts/DejaVuSans.ttf"));
+  doc.registerFont("EuroBold", path.join(process.cwd(), "public/fonts/DejaVuSans-Bold.ttf"));
+  doc.font("EuroRegular");
+
   const chunks: Buffer[] = [];
   doc.on("data", (c) => chunks.push(c));
-  const done = new Promise<Buffer>((resolve) =>
-    doc.on("end", () => resolve(Buffer.concat(chunks)))
-  );
+  const done = new Promise<Buffer>((resolve, reject) => {
+    doc.on("end", () => resolve(Buffer.concat(chunks)));
+    doc.on("error", reject);
+  });
 
   const logoPath = path.join(process.cwd(), "public/assets", "logo.png");
 
@@ -38,9 +46,9 @@ export async function generateInvoicePdf(
   // Левая колонка — продавец (подставь свои данные)
   doc.fontSize(10).text(
     `Euro Perfume
-Saiian Vitalii
-Kollwitzstraße 8
-49808 Lingen
+Vitalii Saiian
+Schillerstrasse 40
+49811 Lingen
 Deutschland`,
     50,
     120
@@ -48,11 +56,11 @@ Deutschland`,
 
   // Правая — адрес доставки (подставь поля из order)
   doc.fontSize(10).text(
-    `Lieferadresse:
-${order.deliveryFullNmae ?? order.fullName ?? "-"}
-${order.deliveryAddress ?? "-"} ${order.deliveryHouseNumber ?? "-"}
-${order.deliveryZip ?? ""} ${order.deliveryCity ?? ""}
-${order.deliveryCountry ?? ""}`,
+    `Rechnungsadresse:
+${order.fullName}
+${order.address} ${order.houseNumber}
+${order.zip} ${order.city}
+${order.country}`,
     350,
     120
   );
@@ -62,108 +70,75 @@ ${order.deliveryCountry ?? ""}`,
   doc.fontSize(10).text(
     `Rechnungsnummer: ${invoiceNumber}
 Bestellnummer: ${order.id}
-Bestelldatum: ${fmtDate(order.createdAt)}`,
+Bestelldatum: ${fmtDate(order.createdAt)}
+Rechnungsdatum: ${berlinDate(issuedAt)}
+Leistungsdatum: ${tax.supplyDate}`,
     50,
     245
   );
 
-  // ====== TABLE ======
-  let y = 300;
-
-  doc.fontSize(10).text("Pos", 50, y);
-  doc.text("Artikel", 90, y);
-  // doc.text("MwSt.", 360, y);
-  doc.text("Stk./Ml.", 370, y, { width: 70, align: "right" });
-  doc.text("Gesamtpreis", 475, y, { width: 70, align: "right" });
-
-  y += 15;
-  doc.moveTo(50, y).lineTo(550, y).stroke();
-  y += 10;
-
-  let subtotal = 0;
-
-  for (const [index, item] of order.items.entries()) {
-    const qty = item.quantity;
-    const price =
-      Number(item.product.discountPrice) || Number(item.product.price);
-
-    let line = qty * price;
-    if (item.product.productGroup?.onTap) {
-      line = calcPrice(qty as Volume, price);
-    }
-    subtotal += line;
-
-    const title = `${item.product.brand.name} | ${item.product.name}`;
-
+  // Prices come from the saved order, not today's catalog.
+  let y = 325;
+  function tableHeader() {
+    doc.fontSize(10).text("Pos", 50, y);
+    doc.text("Artikel", 90, y);
+    doc.text("Stk./Ml.", 370, y, { width: 70, align: "right" });
+    doc.text(tax.mode === "vat" ? "Bruttopreis" : "Gesamtpreis", 465, y, { width: 80, align: "right" });
+    y += 16;
+    doc.moveTo(50, y).lineTo(550, y).stroke();
+    y += 10;
+  }
+  tableHeader();
+  for (const [index, line] of pricing.lines.entries()) {
+    const height = Math.max(22, doc.heightOfString(line.title, { width: 260 }) + 8);
+    if (y + height > 590) { doc.addPage(); y = 80; tableHeader(); }
     doc.text(String(index + 1), 50, y);
-    doc.text(title, 90, y, { width: 260 });
-    // doc.text("19%", 360, y);
-    doc.text(
-      `${qty} ${item.product.productGroup?.onTap ? "ml" : "Stk."}`,
-      370,
-      y,
-      { width: 70, align: "right" }
-    );
-    doc.text(`${line.toFixed(2)} €`, 475, y, { width: 70, align: "right" });
-
-    y += 22;
-
-    // если очень много товаров — можно добавить перенос страницы
-    if (y > 680) {
-      doc.addPage();
-      y = 80;
-    }
+    doc.text(line.title, 90, y, { width: 260 });
+    doc.text(String(line.quantity) + (line.onTap ? " ml" : " Stk."), 370, y, { width: 70, align: "right" });
+    doc.text((line.grossCents / 100).toFixed(2) + " €", 465, y, { width: 80, align: "right" });
+    y += height;
   }
-
-  const { totalAmountWithDelivery, deliveryPrice } =
-    calcTotlalAmountWithDelivery(subtotal, order.deliveryCountry);
-
-  // ====== TOTALS ======
+  if (y > 540) { doc.addPage(); y = 80; }
   y += 10;
-  doc.moveTo(350, y).lineTo(550, y).stroke();
+  doc.moveTo(320, y).lineTo(550, y).stroke();
   y += 10;
-
-  // Если у тебя цены уже “brutto” — VAT нужно считать иначе.
-  // Здесь пример: subtotal = brutto без доставки/скидки.
-  // const shipping = Number(order.deliveryPrice ?? 0);
-  // const discount = Number(order.discountAmount ?? 0); // если есть такое поле
-  // const shipping = 77;
-
-  doc.text("Gemäß §19 UStG wird keine Umsatzsteuer berechnet.", 350, y);
-  y += 28;
-  doc.fontSize(10).text("Zwischensumme:", 350, y);
-  doc.text(`${subtotal.toFixed(2)} €`, 500, y, { align: "right" });
-  y += 14;
-
-  doc.text("+ Porto und Verpackung:", 350, y);
-  doc.text(`${deliveryPrice.toFixed(2)} €`, 500, y, { align: "right" });
-  y += 14;
-
-  if (order.discount && order.discount > 0) {
-    doc.text("- Gutschein:", 350, y);
-    doc.text(`${order.discount} %`, 500, y, { align: "right" });
-    y += 14;
+  function amount(label: string, value: number) {
+    doc.fontSize(10).text(label, 320, y, { width: 150 });
+    doc.text((value / 100).toFixed(2) + " €", 470, y, { width: 75, align: "right" });
+    y += 18;
   }
-
-  doc.fontSize(10).text("Gesamtsumme:", 350, y);
-  doc.text(`${Number(order.totalAmount.toFixed(2))} €`, 500, y, {
-    align: "right",
-  });
+  amount("Warenwert:", pricing.subtotalGrossCents);
+  amount("Porto und Verpackung:", pricing.shippingGrossCents);
+  if (pricing.discountGrossCents > 0) {
+    doc.text("Gutschein:", 320, y, { width: 150 });
+    doc.text("−" + (pricing.discountGrossCents / 100).toFixed(2) + " €", 470, y, { width: 75, align: "right" });
+    y += 18;
+  }
+  if (tax.mode === "vat") {
+    amount("Nettobetrag:", tax.netCents);
+    amount("Umsatzsteuer " + String((tax.rateBasisPoints ?? 0) / 100) + "%:", tax.vatCents);
+  } else {
+    doc.fontSize(9).text("Steuerbefreit gemäß §19 Abs. 1 UStG. Umsatzsteuer wird nicht ausgewiesen.", 320, y, { width: 225 });
+    y += 32;
+  }
+  doc.font("EuroBold");
+  amount(tax.mode === "vat" ? "Gesamtbetrag (brutto):" : "Gesamtbetrag:", tax.grossCents);
+  doc.font("EuroRegular");
 
   // ====== FOOTER ======
   doc.fontSize(8).text(
     `EuroPerfume
-Saiian Vitalii
-Kollwitzstraße 8 | 49808 Lingen | Deutschland
+Vitalii Saiian
+Schillerstrasse 40 | 49811 Lingen | Deutschland
 E-Mail: europerfumeshop@gmail.com
+USt-IdNr.: ${business.vatId}
 
 Bank: Qonto (Qonto Europe S.A.) 
 IBAN: DE96 1001 0123 2124 7366 74
-BIC: QNTODEB2XXX
-
-`,
+BIC: QNTODEB2XXX`,
     50,
-    700
+    700,
+    { width: 495, align: "left" }
   );
 
   doc.end();
