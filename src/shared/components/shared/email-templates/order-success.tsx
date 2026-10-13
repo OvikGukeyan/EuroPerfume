@@ -1,6 +1,6 @@
 import { calcCartItemTotalPrice } from "@/src/shared/lib";
 import { CartItemDTO } from "@/src/shared/services/dto/cart.dto";
-import { unauthorized } from "next/navigation";
+import { PricingSnapshot, splitGross } from "@/src/shared/lib/tax";
 
 import * as React from "react";
 
@@ -9,6 +9,7 @@ interface Props {
   orderDate: string;
   total: number;
   items: CartItemDTO[];
+  pricing?: PricingSnapshot;
 }
 
 export const OrderSuccessTemplate: React.FC<Props> = ({
@@ -16,6 +17,7 @@ export const OrderSuccessTemplate: React.FC<Props> = ({
   orderDate,
   total,
   items,
+  pricing,
 }) => (
   <div>
     <h1>Vielen Dank für Ihren Einkauf!</h1>
@@ -38,6 +40,7 @@ export const OrderSuccessTemplate: React.FC<Props> = ({
       </li>
     </ul>
 
+    {pricing && <p>{pricing.policy.mode === "exempt" ? "Umsatzsteuer wird gemäß §19 UStG nicht ausgewiesen." : pricing.policy.mode === "vat" ? `Darin enthaltene MwSt. 19%: ${(splitGross(pricing.totalGrossCents, pricing.policy.rateBasisPoints ?? 1900).vatCents / 100).toFixed(2)} €.` : "Die anwendbare Umsatzsteuer wird bei der Bestätigung Ihrer Bestellung ausgewiesen."}</p>}
     <p>
       Wir werden uns in Kürze mit Ihnen in Verbindung setzen, um die Details zu
       bestätigen, und Sie informieren, sobald das Paket an den
@@ -69,7 +72,7 @@ export const OrderSuccessTemplate: React.FC<Props> = ({
 
     <h3>Bestellübersicht:</h3>
     <ul>
-      {items.map((item) => (
+      {pricing ? pricing.lines.map((line, index) => <li key={index}>{line.title} × {line.quantity} {line.onTap ? "ml" : "Stk."} = <strong>{(line.grossCents / 100).toFixed(2)} €</strong></li>) : items.map((item) => (
         <li key={item.id}>
           {item.product.name} | {item.variation?.name} × {item.quantity} ={" "}
           <strong>
