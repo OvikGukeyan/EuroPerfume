@@ -136,7 +136,7 @@ export function conflicts(a){
  if(a.flowers==='none'&&['rose','whitefloral','softfloral','powder'].includes(a.focus))return 'Вы выбрали цветочный аккорд, но отказались от цветочного направления. Уточните ответ.';
  return '';
 }
-export function rank(products,a){
+export function rank(products,a,{relaxed=false}={}){
  if(conflicts(a)||!facets[a.focus]||!directions[a.direction])return [];
  const profiles=new Map(products.map(p=>[p.id,profile(p)]));
  const liked=list(a.liked).map(id=>({p:products.find(p=>p.id===id),f:profiles.get(id)})).filter(x=>x.f);
@@ -154,7 +154,7 @@ export function rank(products,a){
   const familyDirection={fresh:/цитрус|зелен|зелён|фужер|водн|морск|свеж|шипр/i,floral:/цвет|пудр/i,woody:/древес|шипр|фужер/i,sweet:/гурман|фрукт|восточ|амбров/i,warm:/восточ|амбров|кож|прян|древес/i,clean:/мускус|цвет|пудр|зелен|зелён|альдегид/i};
   const familyFits=!familyText||familyDirection[a.direction].test(familyText);
   const exact=familyFits && focus>=.75 && share>=.12 && focus>=strongest*.7;
-  if(!exact && !(a.explore==='balanced'&&focus>=.55&&share>=.08&&directionShare>=.28))return [];
+  if(!relaxed && !exact && !(a.explore==='balanced'&&focus>=.55&&share>=.08&&directionShare>=.28))return [];
   if(a.flowers==='none'&&(p.families||[]).some(x=>/цветоч/i.test(x)))return [];
   let score=28*Math.min(1,focus/2)+30*share+12*directionShare;
   const reasons=[];
@@ -176,8 +176,9 @@ export function rank(products,a){
   if(exactNotes.length){score+=10*exactNotes.length;reasons.push('Вы хотели попробовать: '+exactNotes.join(', '));}
   if(liked.length){const matches=liked.map(x=>({...x,sim:similarity(f,x.f)})).sort((x,y)=>y.sim-x.sim);score+=24*matches[0].sim;if(matches[0].sim>=.35){const shared=(p.notes||[]).filter(n=>matches[0].f.notes.has(norm(n)));if(shared.length)reasons.push('Общее с '+matches[0].p.name+': '+shared.slice(0,3).join(', '));}}
   if(disliked.length)score-=32*Math.max(...disliked.map(x=>similarity(f,x)));
-  if(score<25)return [];
-  return [{...p,score:Math.round(score*100)/100,reasons:reasons.slice(0,3),match:exact?'По главному аккорду':'Соседний оттенок',profile:f}];
+  if(!relaxed && score<25)return [];
+  if(relaxed && !exact){score-=14;reasons.push('Дополнительный вариант с учётом ваших исключений');}
+  return [{...p,score:Math.round(score*100)/100,reasons:reasons.slice(0,3),match:exact?'По главному аккорду':relaxed?'Альтернативный характер':'Соседний оттенок',profile:f}];
  }).sort((a,b)=>b.score-a.score||a.name.localeCompare(b.name,'ru')||a.id-b.id);
 }
 export function selectEight(ranked,budget){
