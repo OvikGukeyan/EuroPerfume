@@ -1,6 +1,7 @@
 import { Footer, Header } from "@/src/shared/components";
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { DiscoveryBoxWidget } from "@/src/shared/components/shared/discovery-box-widget";
 
 export const metadata: Metadata = {
   title: "Euro Perfume",
@@ -23,6 +24,7 @@ export default function HomeLayout({
       </div>
 
       <Footer />
+      <DiscoveryBoxWidget />
     </div>
   );
 }

@@ -382,6 +382,12 @@ export async function createOrder(data: CheckoutFormValues) {
       throw new Error("Cart is empty!");
     }
 
+    const boxIds = ((await cookieStore).get("discoveryBoxIds")?.value || "").split(",").map(Number);
+    const isDiscoveryBox = boxIds.length === 8 && new Set(boxIds).size === 8 && boxIds.every(id => Number.isSafeInteger(id) && id > 0 && userCart.items.some(item => item.productId === id && item.quantity === 2 && !item.variationId));
+    if (userCart.items.some(item => !item.product.available)) {
+      throw new Error("Один из товаров больше недоступен. Обновите корзину.");
+    }
+    const boxLabel = isDiscoveryBox ? "Discovery Box 8 × 2 мл: " + userCart.items.filter(item => boxIds.includes(item.productId) && item.quantity === 2).map(item => item.product.name).join(", ") : "";
     const deliveryCountry = deliveryCountryForCheckout(data);
     const orderedAt = new Date();
     const pricing = capturePricing(userCart.items, deliveryCountry, data.discount ?? 0, orderedAt);
@@ -416,7 +422,7 @@ export async function createOrder(data: CheckoutFormValues) {
         deliveryHouseNumber: data.deliveryHouseNumber
           ? data.deliveryHouseNumber
           : data.houseNumber,
-        comment: data.comment,
+        comment: [boxLabel, data.comment].filter(Boolean).join("\n"),
         token: cartToken,
         totalAmount: totalAmountWithDelivery,
         createdAt: orderedAt,
@@ -484,7 +490,7 @@ export async function createOrder(data: CheckoutFormValues) {
         price: item.product.price.toNumber(),
       },
     }));
-    const res = await sendEmail(
+    const notificationResults = await Promise.allSettled([sendEmail(
       data.email,
       "Pay order #" + order.id,
       OrderSuccessTemplate({
@@ -496,15 +502,15 @@ export async function createOrder(data: CheckoutFormValues) {
         pricing,
         items: safeCartItems as CartItemDTO[],
       }),
-    );
-
-    await sendTelegramMessage(
-      `Order #${
+    ), sendTelegramMessage(
+      `${boxLabel ? "DISCOVERY BOX · " : ""}Order #${
         order.id
       } : Total amount: ${order.totalAmount.toNumber()}, Items: ${safeCartItems
         .map((item) => item.product.name + " * " + item.quantity)
         .join(", ")}`,
-    );
+    )]);
+    notificationResults.forEach((result, index) => { if (result.status === "rejected") console.error("[order notification]", index, "delivery failed"); });
+    (await cookieStore).delete("discoveryBoxIds");
   } catch (error) {
     console.error("[createOrder] Server error", error);
     throw error;
