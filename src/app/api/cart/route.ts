@@ -1,3 +1,4 @@
+import { roundMoney } from "@/src/shared/lib/money";
 import { ProductGroup } from "@prisma/client";
 import { prisma } from "@/prisma/prisma-client";
 
@@ -50,7 +51,7 @@ export async function GET(req: NextRequest) {
     });
     const safeUserCart = {
       ...userCart,
-      totalAmount: userCart?.totalAmount.toNumber(),
+      totalAmount: roundMoney(userCart?.totalAmount.toNumber() ?? 0),
     };
     return NextResponse.json(safeUserCart);
   } catch (error) {

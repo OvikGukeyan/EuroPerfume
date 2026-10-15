@@ -1,3 +1,4 @@
+import { formatMoney } from "@/src/shared/lib/money";
 import { OrderStatuses } from "@/prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
 import {
@@ -54,7 +55,7 @@ export default async function Order({
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Общая сумма:
           <span className="font-bold mr-2 w-1/2">
-            {Number(order?.totalAmount)} €
+            {formatMoney(Number(order?.totalAmount))} €
           </span>
         </li>
 

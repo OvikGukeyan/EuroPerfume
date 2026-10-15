@@ -1,4 +1,5 @@
 "use client";
+import { formatMoney } from "@/src/shared/lib/money";
 import { FC, useState } from "react";
 import { Button, ChooseVariation, Dialog, Title, VolumeSelection } from "..";
 import {
@@ -100,12 +101,12 @@ export const ByProductDialog: FC<Props> = ({
               {discountPrice ? (
                 <>
                   <span className="line-through text-base mr-2">
-                    {finalPrice} €
+                    {formatMoney(finalPrice)} €
                   </span>
-                  <b className="text-red-500">{finalDiscountPrice} €</b>
+                  <b className="text-red-500">{formatMoney(finalDiscountPrice ?? finalPrice)} €</b>
                 </>
               ) : (
-                <b>{finalPrice} €</b>
+                <b>{formatMoney(finalPrice)} €</b>
               )}
             </p>
           </div>

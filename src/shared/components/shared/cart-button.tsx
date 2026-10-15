@@ -1,5 +1,6 @@
 'use client'
 
+import { formatMoney } from "@/src/shared/lib/money";
 import React, { FC } from 'react'
 import { Button } from '../ui'
 import { cn } from '@/src/shared/lib/utils'
@@ -18,7 +19,7 @@ export const CartButton: FC<Props> = ({ className }) => {
             variant='ghost'
                 // loading={loading}
                 className={cn('group relative', className)}>
-                <b className='hidden md:block'>{totalAmount} €</b>
+                <b className='hidden md:block'>{formatMoney(totalAmount)} €</b>
                 <span className="hidden md:block h-full w-[1px] bg-black/30 mx-3" />
                 <div className="flex items-center gap-1 transition duration-300 group-hover:opacity-0">
                     <ShoppingCart size={16} className="relative" strokeWidth={2} />

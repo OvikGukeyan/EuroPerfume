@@ -1,3 +1,4 @@
+import { roundMoney } from "./money";
 import { Brand, ProductGroup } from "@prisma/client";
 import { CartDTO } from "../services/dto/cart.dto";
 import { calcCartItemTotalPrice } from "./calc-cart-item-total-price";
@@ -36,7 +37,7 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
     disabled: false,
   })) as CartStateItem[];
   return {
-    totalAmount: data.totalAmount,
+    totalAmount: roundMoney(data.totalAmount),
     items,
   };
 };

@@ -1,5 +1,6 @@
 "use client";
 
+import { formatMoney } from "@/src/shared/lib/money";
 import Image from "next/image";
 import React, { useState } from "react";
 import { ChooseVariation, Title, VolumeSelection } from ".";
@@ -186,12 +187,12 @@ export const ProductCard: React.FC<Props> = ({
             {discountPrice ? (
               <>
                 <span className="line-through text-base mr-2">
-                  {finalPrice} €
+                  {formatMoney(finalPrice)} €
                 </span>
-                <b className="text-red-500">{finalDiscountPrice} €</b>
+                <b className="text-red-500">{formatMoney(finalDiscountPrice ?? finalPrice)} €</b>
               </>
             ) : (
-              <b>{finalPrice} €</b>
+              <b>{formatMoney(finalPrice)} €</b>
             )}
           </p>
         </div>

@@ -1,3 +1,4 @@
+import { formatMoney } from "@/src/shared/lib/money";
 import { deliveryCountryForCheckout } from "@/src/shared/lib/tax";
 import { TaxPriceNotice } from "../tax-price-notice";
 import { useWatch } from "react-hook-form";
@@ -57,7 +58,7 @@ export const CheckoutSidebar: FC<Props> = ({
           <Skeleton className="h-11 w-40" />
         ) : (
           <span className="h-11 text-[34px] font-extrabold">
-            {totalAmountWithDelivery} €
+            {formatMoney(totalAmountWithDelivery)} €
           </span>
         )}
       </div>
@@ -71,7 +72,7 @@ export const CheckoutSidebar: FC<Props> = ({
             {t("orderPrice")}
           </div>
         }
-        value={loading ? <Skeleton className="h-6 w-16" /> : totalAmount + " €"}
+        value={loading ? <Skeleton className="h-6 w-16" /> : formatMoney(totalAmount) + " €"}
       />
 
       <OrderDetails
@@ -82,7 +83,7 @@ export const CheckoutSidebar: FC<Props> = ({
           </div>
         }
         value={
-          loading ? <Skeleton className="h-6 w-16" /> : deliveryPrice + " €"
+          loading ? <Skeleton className="h-6 w-16" /> : formatMoney(deliveryPrice) + " €"
         }
       />
 

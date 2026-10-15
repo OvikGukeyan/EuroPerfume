@@ -1,5 +1,6 @@
 "use client";
 
+import { formatMoney } from "@/src/shared/lib/money";
 import Image from "next/image";
 import React, { useState } from "react";
 import { CreateVariationForm, SubmitPriceButton, Title } from ".";
@@ -157,7 +158,7 @@ export const DashboardProduct: React.FC<Props> = ({
 
       <div className="flex justify-between items-center mt-4">
         <span className="text-[20px]">
-          price <b>{discountPrice || price} €</b>
+          price <b>{formatMoney(discountPrice || price)} €</b>
         </span>
         <form action={changeProductPrice} className="flex gap-2">
           <input

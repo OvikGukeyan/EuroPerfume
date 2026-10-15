@@ -1,3 +1,4 @@
+import { formatMoney } from "@/src/shared/lib/money";
 import { cn } from "@/src/shared/lib/utils";
 
 interface Props {
@@ -6,5 +7,5 @@ interface Props {
 }
 
 export const CartItemDetailsPrice: React.FC<Props> = ({ value, className }) => {
-  return <h2 className={cn('font-bold', className)}>{value} €</h2>;
+  return <h2 className={cn('font-bold', className)}>{formatMoney(value)} €</h2>;
 };

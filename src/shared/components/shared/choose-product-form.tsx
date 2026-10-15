@@ -1,4 +1,5 @@
 "use client";
+import { formatMoney } from "@/src/shared/lib/money";
 import { TaxPriceNotice } from "./tax-price-notice";
 
 import { cn } from "@/src/shared/lib/utils";
@@ -293,12 +294,12 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
           {product.discountPrice ? (
             <>
               <span className="line-through text-base mr-2">
-                {finalPrice} €
+                {formatMoney(finalPrice)} €
               </span>
-              <b className="text-red-500">{finalDiscountPrice} €</b>
+              <b className="text-red-500">{formatMoney(finalDiscountPrice ?? finalPrice)} €</b>
             </>
           ) : (
-            <b>{finalPrice} €</b>
+            <b>{formatMoney(finalPrice)} €</b>
           )}
         </Button>
         <TaxPriceNotice />

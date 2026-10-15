@@ -1,3 +1,4 @@
+import { formatMoney } from "@/src/shared/lib/money";
 import * as React from 'react';
 
 interface Props {
@@ -14,7 +15,7 @@ export const PayOrderTemplate: React.FC<Props> = ({
   <div>
     <h1>Order #{orderId}</h1>
 
-    <p> Click on the <a href={paymentUrl}>link</a> to pay {totalAmount} € for your order  <a></a></p>
+    <p> Click on the <a href={paymentUrl}>link</a> to pay {formatMoney(totalAmount)} € for your order  <a></a></p>
 
   </div>
 );

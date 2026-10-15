@@ -1,5 +1,6 @@
 "use client";
 
+import { formatMoney } from "@/src/shared/lib/money";
 import Image from "next/image";
 import React from "react";
 import { ByProductDialog, Title } from ".";
@@ -145,16 +146,16 @@ export const ProductSelectionItem: React.FC<Props> = ({
             {discountPrice ? (
               <>
                 <span className="line-through text-base mr-2">
-                  {finalPrice} €
+                  {formatMoney(finalPrice)} €
                 </span>
-                <b className="text-red-500">{finalDiscountPrice} € </b>
+                <b className="text-red-500">{formatMoney(finalDiscountPrice ?? finalPrice)} € </b>
                 <span className="text-base">
                   {productGroup.onTap && " (2ml)"}
                 </span>
               </>
             ) : (
               <>
-                <b>{finalPrice} €</b>
+                <b>{formatMoney(finalPrice)} €</b>
                 <span className="text-base ">
                   {productGroup.onTap && " (2ml)"}
                 </span>
