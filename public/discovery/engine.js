@@ -67,8 +67,10 @@ const subtypes={
  clean:[option('musk','Мускус','Ищу мускусную основу'),option('powder','Пудра','Ирис, фиалка, мягкая косметическая нота'),option('green','Зелёная чистота','Листья, травы и свежесть')]
 };
 export const seasons={spring:'На весну',summer:'На лето',autumn:'На осень',winter:'На зиму',all:'На круглый год'};
+export const ageGroups={'under18':'До 18 лет','18-24':'18–24 года','25-34':'25–34 года','35-44':'35–44 года','45-54':'45–54 года','55plus':'55 лет и старше'};
 export const questions=[
  {id:'gender',title:'В каком разделе вы обычно выбираете аромат?',hint:'Унисекс останется в подборе при любом ответе.',options:[option('FEMALE','Женские и унисекс'),option('MALE','Мужские и унисекс'),option('any','Не ограничивать по разделу')]},
+ {id:'age',title:'Для какого возраста вы выбираете аромат?',hint:'Укажите возраст человека, который будет носить аромат — ваш или получателя подарка. Это часть его портрета; подбор по нотам определяется ответами о вкусах.',options:Object.entries(ageGroups).map(([id,label])=>option(id,label))},
  {id:'liked',type:'products',title:'Какие ароматы вам уже нравятся на коже?',hint:'Выберите до двух знакомых ароматов из каталога. Сравним их ноты и семейства с новыми рекомендациями. Если не нашли свой — пропустите.',max:2},
  {id:'direction',title:'Какой характер вы хотите в новом наборе?',hint:'Выберите одно главное направление. Дальше уточним его, чтобы не смешивать совсем разные вкусы.',options:Object.entries(directions).map(([id,[label,detail]])=>option(id,label,detail))},
  {id:'focus',title:'Что именно должно звучать в этом направлении?',hint:'Это главный ориентир подбора. Одной случайной ноты в начале аромата будет недостаточно.',options:a=>subtypes[a.direction]||[]},
@@ -174,7 +176,7 @@ export function selectEight(ranked,budget){
  return best?best[1].items.sort((a,b)=>b.score-a.score||a.id-b.id):[];
 }
 export function totals(items){const samples=items.reduce((s,p)=>s+Math.round(p.price*100),0);const shipping=samples>=10000?0:495;return {samples:samples/100,packaging:0,shipping:shipping/100,total:(samples+shipping)/100};}
-export function profileSummary(a){return [...new Set([seasons[a.season],directions[a.direction]?.[0],facets[a.focus]?.[0],a.sweetness==='dry'?'Без десертных нот':a.sweetness==='sweet'?'Со сладкими нотами':'',...list(a.base).map(k=>facets[k]?.[0])].filter(Boolean))].join(' · ');}
+export function profileSummary(a){return [...new Set([ageGroups[a.age],seasons[a.season],directions[a.direction]?.[0],facets[a.focus]?.[0],a.sweetness==='dry'?'Без десертных нот':a.sweetness==='sweet'?'Со сладкими нотами':'',...list(a.base).map(k=>facets[k]?.[0])].filter(Boolean))].join(' · ');}
 
 // Rotate only among qualified, similarly relevant perfumes. Budget and hard exclusions remain unchanged.
 export function selectDiscovery(ranked,budget,history=[]){

@@ -5,7 +5,7 @@ const a={gender:'any',liked:[],disliked:[],direction:'fresh',focus:'citrus',swee
 const citrus=Array.from({length:12},(_,i)=>make(i+1,['Бергамот','Лимон','Мандарин'],{price:i<8?10:5}));
 const dessert=Array.from({length:10},(_,i)=>make(i+30,['Ваниль','Карамель','Какао']));
 const products=[...citrus,...dessert];
-assert.equal(questions.length,13);
+assert.equal(questions.length,14);
 assert(rank(products,a).every(p=>p.id<30));
 assert(rank(products,{...a,direction:'sweet',focus:'gourmand',sweetness:'sweet'}).every(p=>p.id>=30));
 assert.equal(rank([make(90,['Бергамот','Лимон','Уд'])],{...a,avoid:['oud']}).length,0);
