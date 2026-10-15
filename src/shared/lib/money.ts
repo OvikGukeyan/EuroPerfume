@@ -3,12 +3,12 @@ export function roundMoney(value: number): number {
   return Math.round((value + Number.EPSILON) * 100) / 100;
 }
 
-const euroNumber = new Intl.NumberFormat("de-DE", {
+const euroNumber = new Intl.NumberFormat("en-GB", {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
 
-/** Both supported storefront languages use a decimal comma. */
+/** Use the requested decimal point consistently in both storefront languages. */
 export function formatMoney(value: number): string {
   return euroNumber.format(roundMoney(value));
 }
