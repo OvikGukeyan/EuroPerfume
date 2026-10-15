@@ -7,8 +7,8 @@ export const facets={
  fruit:['Фрукты и ягоды',/фрукт|ягод|груш|яблок|персик|абрикос|манго|маракуй|ананас|слива|сливов|вишн|смород|малин|личи|инжир/i],
  rose:['Роза',/(?:^|[\s-])роз(?:а|ы|у|е|овый|овая|овые)?(?:$|[\s-])|(?:^|[\s-])rose(?:$|[\s-])/i],
  whitefloral:['Белые цветы',/жасмин|тубероз|гардени|самбак|флердоранж|цвет(?:ок|ы) апельсина|иланг|лили/i],
- softfloral:['Лёгкие цветы',/пион|фрези|ландыш|магноли|сирень|липа|цветоч/i],
- powder:['Пудровые ноты',/ирис|фиалк|пудр|гелиотроп/i], wood:['Древесина',/древес|кедр|сандал|гуаяк|кашмеран|cashmeran|iso e|ветивер|пачули|акигала|akigala/i],
+ softfloral:['Лёгкие цветы',/пион|фрези|ландыш|магноли|сирень|липа|тюльпан|гиацинт|нарцисс|османт|цветоч/i],
+ powder:['Пудровые ноты',/ирис|фиалк|пудр|гелиотроп/i], wood:['Древесина',/древес|кедр|сандал|гуаяк|гваяк|кипарис|кашмеран|cashmeran|iso e|ветивер|пачули|акигала|akigala/i],
  earth:['Ветивер, пачули и мох',/ветивер|пачули|мох|земл/i], cream:['Кремовые ноты',/сандал|молок|молоч|сливоч|кокос|лактон/i],
  musk:['Мускус',/мускус|moschus|musk/i], amber:['Амбра и смолы',/амбр(?!окс)|amber|лабданум|бензоин|смол|бальзам/i],
  vanilla:['Ваниль и тонка',/ванил|тонка/i], gourmand:['Десертные ноты',/карамел|шоколад|какао|пралине|сахар|мед|мёд|маршмеллоу|печень|марципан|кофе|фисташ/i],
@@ -98,7 +98,10 @@ export function rank(products,a){
   const focus=f.vector[a.focus]||0,share=focus/total;
   const directionShare=dir.reduce((s,k)=>s+f.vector[k],0)/total;
   const strongest=Math.max(...Object.values(f.vector));
-  const exact=focus>=.75 && share>=.12 && focus>=strongest*.7;
+  const familyText=(p.families||[]).join(' ');
+  const familyDirection={fresh:/цитрус|зелен|зелён|фужер|водн|морск|свеж|шипр/i,floral:/цвет|пудр/i,woody:/древес|шипр|фужер/i,sweet:/гурман|фрукт|восточ|амбров/i,warm:/восточ|амбров|кож|прян|древес/i,clean:/мускус|цвет|пудр|зелен|зелён|альдегид/i};
+  const familyFits=!familyText||familyDirection[a.direction].test(familyText);
+  const exact=familyFits && focus>=.75 && share>=.12 && focus>=strongest*.7;
   if(!exact && !(a.explore==='balanced'&&focus>=.55&&share>=.08&&directionShare>=.28))return [];
   if(a.flowers==='none'&&(p.families||[]).some(x=>/цветоч/i.test(x)))return [];
   let score=28*Math.min(1,focus/2)+30*share+12*directionShare;
@@ -132,4 +135,4 @@ export function selectEight(ranked,budget){
  return best?best[1].items.sort((a,b)=>b.score-a.score||a.id-b.id):[];
 }
 export function totals(items){const samples=items.reduce((s,p)=>s+Math.round(p.price*100),0);const shipping=samples>=10000?0:495;return {samples:samples/100,packaging:0,shipping:shipping/100,total:(samples+shipping)/100};}
-export function profileSummary(a){return [directions[a.direction]?.[0],facets[a.focus]?.[0],a.sweetness==='dry'?'Без десертных нот':a.sweetness==='sweet'?'Со сладкими нотами':'',...list(a.base).map(k=>facets[k]?.[0])].filter(Boolean).join(' · ');}
+export function profileSummary(a){return [...new Set([directions[a.direction]?.[0],facets[a.focus]?.[0],a.sweetness==='dry'?'Без десертных нот':a.sweetness==='sweet'?'Со сладкими нотами':'',...list(a.base).map(k=>facets[k]?.[0])].filter(Boolean))].join(' · ');}

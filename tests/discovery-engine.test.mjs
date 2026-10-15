@@ -33,6 +33,7 @@ assert.equal(rank([reference,p1,p2],{...a,disliked:[100]})[0].id,102);
 assert.equal(rank([p1,p2],{...a,notes:['Мускус']})[0].id,102);
 assert.equal(rank([p1,p2],{...a,base:['earth']})[0].id,101);
 assert.deepEqual(rank(products,a).map(p=>p.id),rank([...products].reverse(),a).map(p=>p.id));
+assert.equal(rank([make(999,['Ветивер','Древесные ноты','Тюльпан'],{families:['Цветочные']})],{...a,direction:'woody',focus:'wood'}).length,0);
 const dominant=make(200,['Бергамот','Ваниль','Тонка','Карамель','Мёд','Табак','Ладан','Кожа','Роза','Жасмин'],{notePyramid:[{label:'Бергамот',type:'TOP'},...['Ваниль','Тонка','Карамель','Табак','Кожа','Роза'].map(label=>({label,type:'BASE'}))]});
 assert.equal(rank([dominant],a).length,0); // a citrus opening doesn't make a heavy perfume fresh
 assert.equal(totals([{price:24.3},{price:24.3}]).samples,48.6);
