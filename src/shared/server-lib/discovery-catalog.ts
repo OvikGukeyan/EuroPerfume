@@ -13,6 +13,7 @@ export async function discoveryCatalog(ids?: number[]) {
     image: p.imageUrl[0] || null,
     price: calcCartItemTotalPrice(Number(p.price), 2, true, Number(p.discountPrice) || undefined),
     notes: [...new Set(p.productNotes.map(n => n.note.labelRu).filter(Boolean))],
+    notePyramid: p.productNotes.map(n => ({ label: n.note.labelRu, type: n.noteType })),
     families: p.aromas.map(a => a.labelRu), concentration: p.concentration, available: true,
   }));
 }
