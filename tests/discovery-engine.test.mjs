@@ -5,7 +5,7 @@ const a={gender:'any',liked:[],disliked:[],direction:'fresh',focus:'citrus',swee
 const citrus=Array.from({length:12},(_,i)=>make(i+1,['Бергамот','Лимон','Мандарин'],{price:i<8?10:5}));
 const dessert=Array.from({length:10},(_,i)=>make(i+30,['Ваниль','Карамель','Какао']));
 const products=[...citrus,...dessert];
-assert.equal(questions.length,12);
+assert.equal(questions.length,13);
 assert(rank(products,a).every(p=>p.id<30));
 assert(rank(products,{...a,direction:'sweet',focus:'gourmand',sweetness:'sweet'}).every(p=>p.id>=30));
 assert.equal(rank([make(90,['Бергамот','Лимон','Уд'])],{...a,avoid:['oud']}).length,0);
@@ -38,3 +38,13 @@ const dominant=make(200,['Бергамот','Ваниль','Тонка','Кар�
 assert.equal(rank([dominant],a).length,0); // a citrus opening doesn't make a heavy perfume fresh
 assert.equal(totals([{price:24.3},{price:24.3}]).samples,48.6);
 console.log('Discovery matching regression checks passed.');
+
+const seasonFresh=make(601,['Кедр','Ветивер','Бергамот','Лимон']);
+const seasonWarm=make(602,['Кедр','Ветивер','Амбра','Бензоин']);
+const woody={...a,direction:'woody',focus:'wood'};
+const seasonScore=(p,season)=>rank([p],{...woody,season})[0].score;
+assert(seasonScore(seasonFresh,'summer')>seasonScore(seasonFresh,'winter'));
+assert(seasonScore(seasonWarm,'winter')>seasonScore(seasonWarm,'summer'));
+assert.equal(seasonScore(seasonWarm,'all'),rank([seasonWarm],woody)[0].score);
+assert.equal(rank([make(603,['Кедр','Лимон','Уд'])],{...woody,season:'winter',avoid:['oud']}).length,0);
+console.log('Season preference refines scoring without relaxing exclusions.');

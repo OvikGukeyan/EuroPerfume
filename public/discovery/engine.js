@@ -31,6 +31,7 @@ const subtypes={
  warm:[option('amber','Амбра и смолы','Бальзамическое тепло'),option('spice','Пряности','Кардамон, перец, корица'),option('smoke','Табак и ладан','Дымное направление'),option('leather','Кожа и замша','Кожаный характер')],
  clean:[option('musk','Мускус','Ищу мускусную основу'),option('powder','Пудра','Ирис, фиалка, мягкая косметическая нота'),option('green','Зелёная чистота','Листья, травы и свежесть')]
 };
+export const seasons={spring:'На весну',summer:'На лето',autumn:'На осень',winter:'На зиму',all:'На круглый год'};
 export const questions=[
  {id:'gender',title:'В каком разделе вы обычно выбираете аромат?',hint:'Унисекс останется в подборе при любом ответе.',options:[option('FEMALE','Женские и унисекс'),option('MALE','Мужские и унисекс'),option('any','Не ограничивать по разделу')]},
  {id:'liked',type:'products',title:'Какие ароматы вам уже нравятся на коже?',hint:'Выберите до двух знакомых ароматов из каталога. Сравним их ноты и семейства с новыми рекомендациями. Если не нашли свой — пропустите.',max:2},
@@ -38,6 +39,7 @@ export const questions=[
  {id:'focus',title:'Что именно должно звучать в этом направлении?',hint:'Это главный ориентир подбора. Одной случайной ноты в начале аромата будет недостаточно.',options:a=>subtypes[a.direction]||[]},
  {id:'sweetness',title:'Какой сладости вам хочется?',hint:'Сладкий фрукт и ванильный десерт — разные вещи. Здесь уточняем ваше отношение к десертным нотам.',options:[option('dry','Без десертной сладости','Исключить ваниль, тонка, карамель, мёд и другие десертные ноты'),option('balanced','Сладость — только дополнение','Ваниль возможна, но не как главное направление'),option('sweet','Хочу сладкий характер','Ванильные или десертные ноты приветствуются'),option('any','Не принципиально')]},
  {id:'flowers',title:'Какие цветы вам комфортны?',hint:'Выберите предпочтение. Нежелательные отдельные ноты можно полностью исключить дальше.',options:[option('rose','Люблю розу'),option('whitefloral','Люблю жасмин и белые цветы'),option('powder','Люблю ирис и пудру'),option('softfloral','Скорее лёгкий цветочный букет'),option('none','Не хочу цветочное направление'),option('any','Нет предпочтения')]},
+ {id:'season',title:'На какой сезон вы выбираете аромат?',hint:'Когда вы планируете его носить? Выберите нужный сезон — он может отличаться от текущего.',options:Object.entries(seasons).map(([id,label])=>option(id,label))},
  {id:'base',type:'multi',max:2,title:'Что хочется ощущать после первого впечатления?',hint:'До двух вариантов. Сравним прежде всего с сердцем и базой аромата, а не только с верхними нотами.',options:['wood','earth','cream','musk','amber','vanilla','powder','green'].map(k=>option(k,facets[k][0])).concat(option('none','Пока не знаю'))},
  {id:'avoid',type:'multi',max:21,title:'Какие ноты вы точно не хотите?',hint:'Можно выбрать несколько. Исключим ароматы с этими нотами в каталоге. Это предпочтения по запаху, не проверка состава на аллергены.',options:['oud','rose','whitefloral','powder','musk','vanilla','gourmand','smoke','leather','animalic','earth','aquatic','spice'].map(k=>option(k,facets[k][0])).concat(option('none','Нет исключений'))},
  {id:'notes',type:'notes',max:3,title:'Есть ноты, которые особенно хочется попробовать?',hint:'До трёх конкретных нот из каталога. Это дополнительные пожелания; главное направление остаётся важнее. Можно пропустить.'},
@@ -115,6 +117,11 @@ export function rank(products,a){
   if(a.sweetness==='sweet')score+=18*Math.min(1,sweet*3);
   if(a.sweetness==='balanced')score-=22*Math.max(0,sweet-.22);
   if(facets[a.flowers])score+=8*Math.min(1,f.vector[a.flowers]);
+  // Season is an explicit wearing preference, not the current date or a hard product claim.
+  // A small secondary weight refines qualified matches without overriding the chosen accord or exclusions.
+  const seasonalFacets={spring:['green','softfloral','rose','tea'],summer:['citrus','aquatic','green','tea'],autumn:['wood','earth','amber','spice'],winter:['amber','vanilla','gourmand','spice','smoke']};
+  const seasonalKeys=seasonalFacets[a.season]||[];
+  score+=6*seasonalKeys.reduce((sum,k)=>sum+f.vector[k],0)/total;
   const exactNotes=list(a.notes).filter(n=>f.notes.has(norm(n)));
   if(exactNotes.length){score+=10*exactNotes.length;reasons.push('Вы хотели попробовать: '+exactNotes.join(', '));}
   if(liked.length){const matches=liked.map(x=>({...x,sim:similarity(f,x.f)})).sort((x,y)=>y.sim-x.sim);score+=24*matches[0].sim;if(matches[0].sim>=.35){const shared=(p.notes||[]).filter(n=>matches[0].f.notes.has(norm(n)));if(shared.length)reasons.push('Общее с '+matches[0].p.name+': '+shared.slice(0,3).join(', '));}}
@@ -135,4 +142,4 @@ export function selectEight(ranked,budget){
  return best?best[1].items.sort((a,b)=>b.score-a.score||a.id-b.id):[];
 }
 export function totals(items){const samples=items.reduce((s,p)=>s+Math.round(p.price*100),0);const shipping=samples>=10000?0:495;return {samples:samples/100,packaging:0,shipping:shipping/100,total:(samples+shipping)/100};}
-export function profileSummary(a){return [...new Set([directions[a.direction]?.[0],facets[a.focus]?.[0],a.sweetness==='dry'?'Без десертных нот':a.sweetness==='sweet'?'Со сладкими нотами':'',...list(a.base).map(k=>facets[k]?.[0])].filter(Boolean))].join(' · ');}
+export function profileSummary(a){return [...new Set([seasons[a.season],directions[a.direction]?.[0],facets[a.focus]?.[0],a.sweetness==='dry'?'Без десертных нот':a.sweetness==='sweet'?'Со сладкими нотами':'',...list(a.base).map(k=>facets[k]?.[0])].filter(Boolean))].join(' · ');}
