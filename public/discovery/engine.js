@@ -185,7 +185,7 @@ export function selectDiscovery(ranked,budget,history=[]){
  const floor=Math.min(...best.map(p=>p.score))-8;
  const candidates=ranked.filter(p=>p.score>=floor||best.some(b=>b.id===p.id));
  const adjusted=candidates.map(p=>({...p,score:p.score+(previous.has(p.id)?0:10000)+(recent.has(p.id)?0:1000)}));
- const chosen=selectEight(adjusted,budget);
+ const chosen=selectEight(adjusted.sort((a,b)=>b.score-a.score||a.id-b.id),budget);
  const byId=new Map(ranked.map(p=>[p.id,p]));
  const items=(chosen.length===8?chosen:best).map(p=>byId.get(p.id));
  return {items,repeated:items.filter(p=>previous.has(p.id)).length,hasHistory:true};

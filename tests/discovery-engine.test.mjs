@@ -78,3 +78,5 @@ assert.equal(selectDiscovery(forbidden,'80',[first.items.map(p=>p.id)]).items.le
 const originalScores=repeatPool.map(p=>p.score);selectDiscovery(repeatPool,'80',[first.items.map(p=>p.id)]);
 assert.deepEqual(repeatPool.map(p=>p.score),originalScores);
 console.log('Repeat selections rotate qualified matches, preserve budget and exclusions, and explain insufficient alternatives.');
+
+assert.equal(selectDiscovery(repeatPool,'any',[first.items.map(p=>p.id)]).repeated,0);
