@@ -112,6 +112,22 @@ function similarity(a,b){
  const union=new Set([...a.notes,...b.notes]).size;
  return .55*cosine+.45*(union?shared/union:0);
 }
+// Hard exclusions take precedence over positive wishes. Keep the original responses
+// available for editing; only adapt the effective matching preferences.
+export function resolvePreferences(answers){
+ const resolved={...answers};
+ const blocked=blockedKeys(resolved);
+ const available=(subtypes[resolved.direction]||[]).map(o=>o.id).filter(k=>!blocked.has(k)&&!(resolved.flowers==='none'&&['rose','whitefloral','softfloral','powder'].includes(k)));
+ if(!available.length)return {answers:resolved,needsReview:true,changed:false};
+ let changed=false;
+ if(!available.includes(resolved.focus)){resolved.focus=available[0];changed=true;}
+ const base=list(resolved.base).filter(k=>!blocked.has(k));
+ if(base.length!==list(resolved.base).length){resolved.base=base.length?base:['none'];changed=true;}
+ const notes=list(resolved.notes).filter(n=>![...blocked].some(k=>noteMatches(k,n)));
+ if(notes.length!==list(resolved.notes).length){resolved.notes=notes;changed=true;}
+ if(resolved.flowers!=='none'&&facets[resolved.flowers]&&blocked.has(resolved.flowers)){resolved.flowers='any';changed=true;}
+ return {answers:resolved,needsReview:false,changed};
+}
 export function conflicts(a){
  const blocked=blockedKeys(a);
  if(blocked.has(a.focus))return 'Главный аккорд одновременно исключён. Вернитесь к ответам и выберите, что важнее.';
