@@ -1,5 +1,6 @@
 "use client";
 
+import { AromaBoxSummary } from "@/src/shared/components/shared/aroma-box-summary";
 import React, { FC } from "react";
 import {
   CheckoutItem,
@@ -49,6 +50,7 @@ export const CheckoutCart: FC<Props> = ({
       // }
     >
       <div className="flex flex-col gap-5">
+        {!loading && <AromaBoxSummary items={items} />}
         {loading
           ? [...Array(4)].map((_, index) => (
               <CheckoutItemSkeleton key={index} />

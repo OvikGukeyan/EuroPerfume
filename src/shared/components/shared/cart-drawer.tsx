@@ -1,6 +1,7 @@
 "use client";
 
 import { formatMoney } from "@/src/shared/lib/money";
+import { AromaBoxSummary } from "@/src/shared/components/shared/aroma-box-summary";
 import React, { FC } from "react";
 import Image from "next/image";
 import {
@@ -90,6 +91,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
           <>
             <div className="-mx-6 mt-5 overflow-auto scrollbar flex-1">
               <FreeShippingProgress totalAmount={totalAmount} />
+              <AromaBoxSummary items={items} />
               {items.map((item) => (
                 <div key={item.id} className="mb-2">
                   <CartDrawerItem

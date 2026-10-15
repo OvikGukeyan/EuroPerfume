@@ -4,6 +4,7 @@ import { CartDTO } from "../services/dto/cart.dto";
 import { calcCartItemTotalPrice } from "./calc-cart-item-total-price";
 
 export type CartStateItem = {
+  aromaBox?: boolean;
   id: number;
   quantity: number;
   name: string;
@@ -22,6 +23,7 @@ interface ReturnProps {
 export const getCartDetails = (data: CartDTO): ReturnProps => {
   const items = data.items.map((item) => ({
     id: item.id,
+    aromaBox: item.aromaBox,
     quantity: item.quantity,
     name: item.product.name,
     brand: item.product.brand,

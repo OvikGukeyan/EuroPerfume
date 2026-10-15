@@ -1,3 +1,4 @@
+import { aromaBoxItems } from "@/src/shared/lib/aroma-box";
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/prisma/prisma-client";
 import { validDiscoveryIds } from "@/src/shared/server-lib/discovery-catalog";
@@ -21,18 +22,27 @@ export async function POST(req: NextRequest) {
       if (prices.some((p, i) => Math.round(p.price * 100) !== Math.round(body.prices[i] * 100))) return { status: 409, error: "Цены изменились. Проверьте новую сумму и подтвердите переход ещё раз.", products: prices };
       let cart = await tx.cart.findFirst({ where: { token }, include: { items: true } });
       if (!cart) cart = await tx.cart.create({ data: { token }, include: { items: true } });
-      const existingSet = ids.every(id => cart!.items.some(i => i.productId === id && i.quantity === 2 && !i.variationId));
-      if (!existingSet) await tx.cartItem.createMany({ data: ids.map(productId => ({ cartId: cart!.id, productId, quantity: 2 })) });
+      const previous = aromaBoxItems(req.cookies.get("discoveryBoxIds")?.value, cart.items);
+      const existingSet = previous.length === 8 && ids.every(id => previous.some(i => i.productId === id));
+      let boxItemIds = previous.map(i => i.id);
+      if (!existingSet) {
+        if (previous.length) await tx.cartItem.deleteMany({ where: { id: { in: boxItemIds }, cartId: cart.id } });
+        boxItemIds = [];
+        for (const productId of ids) {
+          const item = await tx.cartItem.create({ data: { cartId: cart.id, productId, quantity: 2 } });
+          boxItemIds.push(item.id);
+        }
+      }
       const items = await tx.cartItem.findMany({ where: { cartId: cart.id }, include: { product: { include: { productGroup: true } } } });
       const totalAmount = items.reduce((sum, i) => sum + calcCartItemTotalPrice(Number(i.product.price), i.quantity, Boolean(i.product.productGroup.onTap), Number(i.product.discountPrice) || undefined), 0);
       await tx.cart.update({ where: { id: cart.id }, data: { totalAmount: Math.round(totalAmount * 100) / 100 } });
-      return { status: 200, success: true };
+      return { status: 200, success: true, boxItemIds };
     }, { timeout: 15000 });
     const response = NextResponse.json(result, { status: result.status, headers: { "Cache-Control": "no-store" } });
     if (result.status === 200) {
       const options = { httpOnly: true, secure: req.nextUrl.protocol === "https:", sameSite: "lax" as const, path: "/", maxAge: 604800 };
       response.cookies.set("cartToken", token, options);
-      response.cookies.set("discoveryBoxIds", ids.join(","), options);
+      response.cookies.set("discoveryBoxIds", "items:" + result.boxItemIds!.join(","), options);
     }
     return response;
   } catch { return NextResponse.json({ error: "Не удалось подготовить корзину. Попробуйте ещё раз." }, { status: 503 }); }

@@ -10,6 +10,7 @@ interface Props {
   total: number;
   items: CartItemDTO[];
   pricing?: PricingSnapshot;
+  aromaBox?: string;
 }
 
 export const OrderSuccessTemplate: React.FC<Props> = ({
@@ -18,6 +19,7 @@ export const OrderSuccessTemplate: React.FC<Props> = ({
   total,
   items,
   pricing,
+  aromaBox,
 }) => (
   <div>
     <h1>Vielen Dank für Ihren Einkauf!</h1>
@@ -70,6 +72,7 @@ export const OrderSuccessTemplate: React.FC<Props> = ({
 
     <hr />
 
+    {aromaBox && <section><h3>Aroma Box · 8 × 2 ml</h3><p style={{ whiteSpace: "pre-line" }}>{aromaBox}</p></section>}
     <h3>Bestellübersicht:</h3>
     <ul>
       {pricing ? pricing.lines.map((line, index) => <li key={index}>{line.title} × {line.quantity} {line.onTap ? "ml" : "Stk."} = <strong>{(line.grossCents / 100).toFixed(2)} €</strong></li>) : items.map((item) => (

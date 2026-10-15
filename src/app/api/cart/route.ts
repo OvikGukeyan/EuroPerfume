@@ -1,3 +1,4 @@
+import { aromaBoxItems } from "@/src/shared/lib/aroma-box";
 import { roundMoney } from "@/src/shared/lib/money";
 import { ProductGroup } from "@prisma/client";
 import { prisma } from "@/prisma/prisma-client";
@@ -49,8 +50,10 @@ export async function GET(req: NextRequest) {
         },
       },
     });
+    const box = aromaBoxItems(req.cookies.get("discoveryBoxIds")?.value, userCart?.items || []);
     const safeUserCart = {
       ...userCart,
+      items: userCart?.items.map(item => ({ ...item, aromaBox: box.some(b => b.id === item.id) })) || [],
       totalAmount: roundMoney(userCart?.totalAmount.toNumber() ?? 0),
     };
     return NextResponse.json(safeUserCart);

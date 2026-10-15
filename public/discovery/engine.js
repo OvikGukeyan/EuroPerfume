@@ -175,3 +175,18 @@ export function selectEight(ranked,budget){
 }
 export function totals(items){const samples=items.reduce((s,p)=>s+Math.round(p.price*100),0);const shipping=samples>=10000?0:495;return {samples:samples/100,packaging:0,shipping:shipping/100,total:(samples+shipping)/100};}
 export function profileSummary(a){return [...new Set([seasons[a.season],directions[a.direction]?.[0],facets[a.focus]?.[0],a.sweetness==='dry'?'Без десертных нот':a.sweetness==='sweet'?'Со сладкими нотами':'',...list(a.base).map(k=>facets[k]?.[0])].filter(Boolean))].join(' · ');}
+
+// Rotate only among qualified, similarly relevant perfumes. Budget and hard exclusions remain unchanged.
+export function selectDiscovery(ranked,budget,history=[]){
+ const best=selectEight(ranked,budget);
+ if(best.length!==8||!history.length)return {items:best,repeated:0,hasHistory:false};
+ const previous=new Set(history[0]);
+ const recent=new Set(history.slice(0,3).flat());
+ const floor=Math.min(...best.map(p=>p.score))-8;
+ const candidates=ranked.filter(p=>p.score>=floor||best.some(b=>b.id===p.id));
+ const adjusted=candidates.map(p=>({...p,score:p.score+(previous.has(p.id)?0:10000)+(recent.has(p.id)?0:1000)}));
+ const chosen=selectEight(adjusted,budget);
+ const byId=new Map(ranked.map(p=>[p.id,p]));
+ const items=(chosen.length===8?chosen:best).map(p=>byId.get(p.id));
+ return {items,repeated:items.filter(p=>previous.has(p.id)).length,hasHistory:true};
+}

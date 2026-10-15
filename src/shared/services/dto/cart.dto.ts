@@ -5,6 +5,7 @@ export type SafeCart = Omit<Cart, "totalAmount"> & {
   totalAmount: number;
 };
 export type CartItemDTO = CartItem & {
+  aromaBox?: boolean;
   product: (SafeProduct & {
     productGroup?: ProductGroup;
     brand: Brand;

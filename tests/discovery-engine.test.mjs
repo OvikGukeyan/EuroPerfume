@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {rank,selectEight,profile,conflicts,questions,totals,avoidOptions,exclusionMatches} from '../public/discovery/engine.js';
+import {rank,selectEight,selectDiscovery,profile,conflicts,questions,totals,avoidOptions,exclusionMatches} from '../public/discovery/engine.js';
 const make=(id,notes,extra={})=>({id,name:'Test '+id,brand:'Test',price:6,gender:'UNISEX',available:true,notes,families:[],notePyramid:notes.map(label=>({label,type:'HEART'})),...extra});
 const a={gender:'any',liked:[],disliked:[],direction:'fresh',focus:'citrus',sweetness:'any',flowers:'any',base:['none'],avoid:['none'],notes:[],explore:'strict',budget:'80'};
 const citrus=Array.from({length:12},(_,i)=>make(i+1,['Бергамот','Лимон','Мандарин'],{price:i<8?10:5}));
@@ -62,3 +62,19 @@ assert(conflicts({...a,focus:'rose',direction:'floral',avoid:['floral']}));
 assert.equal(conflicts({...a,notes:['Розовый перец'],avoid:['rose']}),'');
 assert.equal(rank([make(805,['Кедр','Ветивер','Лимон'])],{...woody,explore:'balanced',avoid:['citrus']}).length,0);
 console.log('26 exclusions verified for catalog notes, families, compound groups and false matches.');
+
+const repeatPool=Array.from({length:20},(_,i)=>({...make(900+i,['Лимон']),score:60-i*.2}));
+const first=selectDiscovery(repeatPool,'80');
+const second=selectDiscovery(repeatPool,'80',[first.items.map(p=>p.id)]);
+assert.equal(first.items.length,8);assert.equal(second.items.length,8);
+assert.equal(second.repeated,0);
+assert(second.items.every(p=>!first.items.some(x=>x.id===p.id)));
+const limited=selectDiscovery(repeatPool.slice(0,8),'80',[first.items.map(p=>p.id)]);
+assert.equal(limited.repeated,8);
+const expensive=repeatPool.map((p,i)=>({...p,price:i<8?5:20}));
+assert(totals(selectDiscovery(expensive,'50',[first.items.map(p=>p.id)]).items).samples<=50);
+const forbidden=rank(products,{...a,avoid:['citrus']});
+assert.equal(selectDiscovery(forbidden,'80',[first.items.map(p=>p.id)]).items.length,0);
+const originalScores=repeatPool.map(p=>p.score);selectDiscovery(repeatPool,'80',[first.items.map(p=>p.id)]);
+assert.deepEqual(repeatPool.map(p=>p.score),originalScores);
+console.log('Repeat selections rotate qualified matches, preserve budget and exclusions, and explain insufficient alternatives.');

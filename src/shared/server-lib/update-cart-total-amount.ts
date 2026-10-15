@@ -1,4 +1,6 @@
 import "server-only";
+import { cookies } from "next/headers";
+import { aromaBoxItems } from "../lib/aroma-box";
 import { sumMoney } from "../lib/money";
 import { prisma } from "@/prisma/prisma-client";
 import { calcCartItemTotalPrice } from "../lib/calc-cart-item-total-price";
@@ -73,11 +75,13 @@ export const updateCartTotalAmount = async (token: string) => {
     },
   });
 
+  const box = aromaBoxItems((await cookies()).get("discoveryBoxIds")?.value, cart.items);
   const safeCart = {
     ...cart,
     totalAmount: cart.totalAmount.toNumber(),
     items: cart.items.map((item) => ({
       ...item,
+      aromaBox: box.some(b => b.id === item.id),
       product: {
         ...item.product,
         price: item.product.price.toNumber(),

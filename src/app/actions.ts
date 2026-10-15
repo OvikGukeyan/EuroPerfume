@@ -1,4 +1,5 @@
 "use server";
+import { aromaBoxItems } from "@/src/shared/lib/aroma-box";
 
 import {
   Languages,
@@ -382,15 +383,15 @@ export async function createOrder(data: CheckoutFormValues) {
       throw new Error("Cart is empty!");
     }
 
-    const boxIds = ((await cookieStore).get("discoveryBoxIds")?.value || "").split(",").map(Number);
-    const isDiscoveryBox = boxIds.length === 8 && new Set(boxIds).size === 8 && boxIds.every(id => Number.isSafeInteger(id) && id > 0 && userCart.items.some(item => item.productId === id && item.quantity === 2 && !item.variationId));
+    const boxItems = aromaBoxItems((await cookieStore).get("discoveryBoxIds")?.value, userCart.items);
+    const boxItemIds = new Set(boxItems.map(item => item.id));
     if (userCart.items.some(item => !item.product.available)) {
       throw new Error("Один из товаров больше недоступен. Обновите корзину.");
     }
-    const boxLabel = isDiscoveryBox ? "Discovery Box 8 × 2 мл: " + userCart.items.filter(item => boxIds.includes(item.productId) && item.quantity === 2).map(item => item.product.name).join(", ") : "";
+    const boxLabel = boxItems.length ? "Aroma Box · 8 × 2 мл\n" + boxItems.map(item => `${item.product.brand?.name || ""} ${item.product.name} — 2 мл`).join("\n") : "";
     const deliveryCountry = deliveryCountryForCheckout(data);
     const orderedAt = new Date();
-    const pricing = capturePricing(userCart.items, deliveryCountry, data.discount ?? 0, orderedAt);
+    const pricing = capturePricing(userCart.items.map(item => boxItemIds.has(item.id) ? { ...item, product: { ...item.product, name: "Aroma Box · " + item.product.name } } : item), deliveryCountry, data.discount ?? 0, orderedAt);
     const totalAmountWithDelivery = pricing.totalGrossCents / 100;
     const fullName = data.firstName + " " + data.lastName;
     const deliveryFullNmae =
@@ -433,7 +434,7 @@ export async function createOrder(data: CheckoutFormValues) {
         status: OrderStatus.NEW,
         items: {
           create: userCart.items.map((item) => ({
-            name: item.product.name,
+            name: (boxItemIds.has(item.id) ? "Aroma Box · " : "") + item.product.name,
             quantity: item.quantity,
             variationId: item.variationId,
             productId: item.productId,
@@ -500,10 +501,11 @@ export async function createOrder(data: CheckoutFormValues) {
         }),
         total: order.totalAmount.toNumber(),
         pricing,
+        aromaBox: boxLabel,
         items: safeCartItems as CartItemDTO[],
       }),
     ), sendTelegramMessage(
-      `${boxLabel ? "DISCOVERY BOX · " : ""}Order #${
+      `${boxLabel ? boxLabel + "\n\n" : ""}Order #${
         order.id
       } : Total amount: ${order.totalAmount.toNumber()}, Items: ${safeCartItems
         .map((item) => item.product.name + " * " + item.quantity)
