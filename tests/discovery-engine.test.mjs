@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {rank,selectEight,profile,conflicts,questions,totals} from '../public/discovery/engine.js';
+import {rank,selectEight,profile,conflicts,questions,totals,avoidOptions,exclusionMatches} from '../public/discovery/engine.js';
 const make=(id,notes,extra={})=>({id,name:'Test '+id,brand:'Test',price:6,gender:'UNISEX',available:true,notes,families:[],notePyramid:notes.map(label=>({label,type:'HEART'})),...extra});
 const a={gender:'any',liked:[],disliked:[],direction:'fresh',focus:'citrus',sweetness:'any',flowers:'any',base:['none'],avoid:['none'],notes:[],explore:'strict',budget:'80'};
 const citrus=Array.from({length:12},(_,i)=>make(i+1,['Бергамот','Лимон','Мандарин'],{price:i<8?10:5}));
@@ -48,3 +48,17 @@ assert(seasonScore(seasonWarm,'winter')>seasonScore(seasonWarm,'summer'));
 assert.equal(seasonScore(seasonWarm,'all'),rank([seasonWarm],woody)[0].score);
 assert.equal(rank([make(603,['Кедр','Лимон','Уд'])],{...woody,season:'winter',avoid:['oud']}).length,0);
 console.log('Season preference refines scoring without relaxing exclusions.');
+
+assert(avoidOptions.length>=25);
+for(const [key,note] of Object.entries({sweet:'Бурбонская ваниль',citrus:'Лимон',sour:'Ревень',fruit:'Манго',green:'Мята',bitter:'Полынь',tea:'Черный чай',aquatic:'Морская соль',floral:'Жасмин',rose:'Болгарская роза',whitefloral:'Тубероза',softfloral:'Пион',powder:'Ирис',vanilla:'Бобы тонка',gourmand:'Карамель',cream:'Молоко',amber:'Бензоин',musk:'Белый мускус',wood:'Кедр',earth:'Дубовый мох',spice:'Кардамон',smoke:'Табак',leather:'Замша',oud:'Уд',animalic:'Циветта',boozy:'Коньяк'})) {
+ assert(exclusionMatches(make(800,[note]),{...a,avoid:[key]}).length, key+' note must be excluded');
+}
+for(const [key,family] of [['sweet','Гурманские'],['citrus','Цитрусовые'],['floral','Цветочные'],['wood','Древесные'],['amber','Амбровые'],['musk','Мускусные']])assert(exclusionMatches(make(801,['Шафран'],{families:[family]}),{...a,avoid:[key]}).length);
+assert.equal(exclusionMatches(make(802,['Тубероза','Розовый перец']),{...a,avoid:['rose']}).length,0);
+assert.equal(exclusionMatches(make(803,['Цветок апельсина']),{...a,avoid:['citrus']}).length,0);
+assert.equal(exclusionMatches(make(804,['Лимон']),{...a,avoid:['none']}).length,0);
+assert(conflicts({...a,focus:'vanilla',direction:'sweet',avoid:['sweet']}));
+assert(conflicts({...a,focus:'rose',direction:'floral',avoid:['floral']}));
+assert.equal(conflicts({...a,notes:['Розовый перец'],avoid:['rose']}),'');
+assert.equal(rank([make(805,['Кедр','Ветивер','Лимон'])],{...woody,explore:'balanced',avoid:['citrus']}).length,0);
+console.log('26 exclusions verified for catalog notes, families, compound groups and false matches.');

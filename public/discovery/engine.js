@@ -15,6 +15,41 @@ export const facets={
  spice:['Пряности',/перец|кориц|кардамон|гвоздик|шафран|имбир|мускат/i], smoke:['Дым, ладан и табак',/дым|ладан|табак|копчен|копчён|березов.*дег|берёзов.*дег/i],
  leather:['Кожа и замша',/кожа|кожан|замш/i], oud:['Уд',/(?:^|[\s-])уд(?:$|[\s-])|удов|агар|oud/i], animalic:['Анималистические ноты',/цивет|кастореум|бобров|животн|анимал|костус|гибракс/i]
 };
+// Exclusions are checked separately from ranking so a forbidden note cannot win on score.
+export const avoidOptions=[
+ option('sweet','Десертная сладость','Ваниль, тонка, карамель, мёд, шоколад и другие десертные ноты'),
+ option('citrus','Цитрусы и цитрусовая кислинка','Лимон, лайм, грейпфрут, бергамот, мандарин'),
+ option('sour','Ревень и смородина','Если не нравится ягодно-зелёная кислинка этих нот'),
+ option('fruit','Фрукты и ягоды','Груша, персик, манго, вишня и другие фруктовые ноты'),
+ option('green','Зелень и травы','Листья, мята, базилик, лаванда, шалфей'),
+ option('bitter','Горькие травы','Полынь, артемизия, горечавка, гальбанум'),
+ option('tea','Чай','Чайные ноты, мате, матча'),
+ option('aquatic','Морское и водное','Морские, солёные, водные и озоновые ноты'),
+ option('floral','Цветочное направление целиком','Цветочные семейства, роза, белые цветы и лёгкие букеты'),
+ option('rose','Роза','Розовые ноты; туберозу и розовый перец сюда не относим'),
+ option('whitefloral','Белые цветы','Жасмин, тубероза, гардения, иланг-иланг, цветок апельсина'),
+ option('softfloral','Лёгкие цветы','Пион, фрезия, ландыш, магнолия, тюльпан'),
+ option('powder','Пудровое звучание','Ирис, фиалка, гелиотроп и пудровые ноты'),
+ option('vanilla','Ваниль и тонка','Исключить эти ноты, даже если аромат не относится к гурманским'),
+ option('gourmand','Десертные ноты без ванили','Карамель, какао, пралине, мёд, кофе, фисташка'),
+ option('cream','Молочное и кремовое','Молоко, сливки, кокос, сандал и лактонные ноты'),
+ option('amber','Амбра и смолы','Амбровые, смолистые, бальзамические ноты'),
+ option('musk','Мускус','Мускусные ноты и семейства'),
+ option('wood','Древесина','Кедр, сандал, ветивер и другие древесные ноты'),
+ option('earth','Землистое и мшистое','Пачули, ветивер, мох, земля'),
+ option('spice','Пряности','Перец, корица, кардамон, гвоздика, шафран'),
+ option('smoke','Дым, ладан и табак','Дымные, табачные и ладановые ноты'),
+ option('leather','Кожа и замша','Кожаные ноты и семейства'),
+ option('oud','Уд','Уд, агаровое дерево, удовые ноты'),
+ option('animalic','Анималистические ноты','Циветта, кастореум, костус и животные ноты'),
+ option('boozy','Алкогольные ноты','Ром, коньяк, виски, вино, ликёр')
+];
+const extraAvoid={sour:/ревень|смородин|щавел/i,bitter:/полын|артемизи|горечав|генциан|гал[ь]?банум/i,boozy:/(?:^|[\s-])ром(?:$|[\s-])|коньяк|виски|вино|винн|ликер|ликёр|бренди|шампан/i};
+const avoidFamilies={citrus:/цитрус/i,green:/зелен|зелён|травян|фужер/i,tea:/чайн/i,aquatic:/водн|морск|озон/i,fruit:/фрукт|ягод/i,rose:/розов/i,whitefloral:/белоцвет/i,floral:/цветоч/i,softfloral:/легк.*цвет|лёгк.*цвет/i,powder:/пудр/i,wood:/древес/i,earth:/землист|мшист|шипр/i,cream:/лактон|кремов|молоч/i,musk:/мускус/i,amber:/амбров|смол|бальзам/i,vanilla:/ваниль/i,gourmand:/гурман|сладк/i,spice:/прян/i,smoke:/дым|табач|ладан/i,leather:/кож|замш/i,oud:/удов/i,animalic:/анимал|животн/i,boozy:/алкогол/i,bitter:/горьк/i,sour:/кисл/i};
+const noteMatches=(key,label)=>Boolean((facets[key]?.[1]||extraAvoid[key])?.test(label)) && !(key==='citrus'&&/цвет|флер|нероли|лист/i.test(label)) && !(key==='rose'&&/перец|дерев/i.test(label)) && !(key==='aquatic'&&/жасмин|лили/i.test(label));
+function blockedKeys(a){const keys=new Set(list(a.avoid));if(keys.delete('sweet')||a.sweetness==='dry'){keys.add('vanilla');keys.add('gourmand');}if(keys.has('floral'))for(const k of ['rose','whitefloral','softfloral','powder'])keys.add(k);return keys;}
+export const avoidLabel=key=>avoidOptions.find(o=>o.id===key)?.label||facets[key]?.[0]||key;
+export function exclusionMatches(p,a){const keys=blockedKeys(a),notes=[...(p.notes||[]),...(p.notePyramid||[]).map(n=>n.label)],family=(p.families||[]).join(' ');return [...keys].filter(k=>notes.some(n=>noteMatches(k,n))||avoidFamilies[k]?.test(family));}
 export const directions={
  fresh:['Свежий','Цитрусы, чай или морская вода',['citrus','green','tea','aquatic']],
  floral:['Цветочный','От пиона до розы и белых цветов',['rose','whitefloral','softfloral','powder']],
@@ -41,7 +76,7 @@ export const questions=[
  {id:'flowers',title:'Какие цветы вам комфортны?',hint:'Выберите предпочтение. Нежелательные отдельные ноты можно полностью исключить дальше.',options:[option('rose','Люблю розу'),option('whitefloral','Люблю жасмин и белые цветы'),option('powder','Люблю ирис и пудру'),option('softfloral','Скорее лёгкий цветочный букет'),option('none','Не хочу цветочное направление'),option('any','Нет предпочтения')]},
  {id:'season',title:'На какой сезон вы выбираете аромат?',hint:'Когда вы планируете его носить? Выберите нужный сезон — он может отличаться от текущего.',options:Object.entries(seasons).map(([id,label])=>option(id,label))},
  {id:'base',type:'multi',max:2,title:'Что хочется ощущать после первого впечатления?',hint:'До двух вариантов. Сравним прежде всего с сердцем и базой аромата, а не только с верхними нотами.',options:['wood','earth','cream','musk','amber','vanilla','powder','green'].map(k=>option(k,facets[k][0])).concat(option('none','Пока не знаю'))},
- {id:'avoid',type:'multi',max:21,title:'Какие ноты вы точно не хотите?',hint:'Можно выбрать несколько. Исключим ароматы с этими нотами в каталоге. Это предпочтения по запаху, не проверка состава на аллергены.',options:['oud','rose','whitefloral','powder','musk','vanilla','gourmand','smoke','leather','animalic','earth','aquatic','spice'].map(k=>option(k,facets[k][0])).concat(option('none','Нет исключений'))},
+ {id:'avoid',type:'multi',max:avoidOptions.length,title:'Какие ноты и направления вы не хотите?',hint:'Отметьте всё, что не нравится. Исключим совпадения с нотами и семействами каталога, в том числе при замене проб. Кислинка и сладость здесь — ориентиры по указанным нотам, а не гарантия звучания. Это не проверка состава на аллергены.',options:avoidOptions.concat(option('none','Нет исключений'))},
  {id:'notes',type:'notes',max:3,title:'Есть ноты, которые особенно хочется попробовать?',hint:'До трёх конкретных нот из каталога. Это дополнительные пожелания; главное направление остаётся важнее. Можно пропустить.'},
  {id:'disliked',type:'products',max:2,title:'Какие ароматы вам не подошли на коже?',hint:'Их не предложим. Похожие сочетания нот понизим в подборе. Не знакомы с ними — пропустите.'},
  {id:'explore',title:'Насколько близко держаться ваших пожеланий?',hint:'Исключённые ноты не вернём ни при одном варианте.',options:[option('strict','Максимально близко','Только подтверждённые совпадения с главным аккордом'),option('balanced','Близко, но с разными оттенками','Допустим соседний аккорд в выбранном направлении')]},
@@ -54,7 +89,7 @@ export function profile(p){
  const pyramid=p.notePyramid?.length?p.notePyramid:(p.notes||[]).map(label=>({label,type:'UNKNOWN'}));
  const vector={},base={},evidence={},baseEvidence={};
  for(const [key,[,re]] of Object.entries(facets)){
-  const hits=pyramid.filter(n=>re.test(n.label) && !(key==='citrus'&&/цвет|флер|нероли|лист/i.test(n.label)) && !(key==='rose'&&/перец|дерев/i.test(n.label)) && !(key==='aquatic'&&/жасмин|лили/i.test(n.label)));
+  const hits=pyramid.filter(n=>noteMatches(key,n.label));
   // Generic family labels support a match but never invent a specific note.
   const weight=hits.reduce((n,h)=>n+({TOP:.55,HEART:1,BASE:1.1,UNKNOWN:.75}[h.type]||.75),0);
   vector[key]=Math.min(2,weight);
@@ -76,11 +111,10 @@ function similarity(a,b){
  return .55*cosine+.45*(union?shared/union:0);
 }
 export function conflicts(a){
- const blocked=new Set(list(a.avoid));
- if(a.sweetness==='dry'){blocked.add('vanilla');blocked.add('gourmand');}
+ const blocked=blockedKeys(a);
  if(blocked.has(a.focus))return 'Главный аккорд одновременно исключён. Вернитесь к ответам и выберите, что важнее.';
  if(list(a.base).some(k=>blocked.has(k)))return 'Желаемая база есть и среди исключений. Уточните эти ответы перед подбором.';
- if(list(a.notes).some(n=>[...blocked].some(k=>facets[k]?.[1].test(n))))return 'Одна из желаемых нот одновременно исключена. Уточните ответы.';
+ if(list(a.notes).some(n=>[...blocked].some(k=>noteMatches(k,n))))return 'Одна из желаемых нот одновременно исключена. Уточните ответы.';
  if(a.flowers==='none'&&['rose','whitefloral','softfloral','powder'].includes(a.focus))return 'Вы выбрали цветочный аккорд, но отказались от цветочного направления. Уточните ответ.';
  return '';
 }
@@ -89,13 +123,11 @@ export function rank(products,a){
  const profiles=new Map(products.map(p=>[p.id,profile(p)]));
  const liked=list(a.liked).map(id=>({p:products.find(p=>p.id===id),f:profiles.get(id)})).filter(x=>x.f);
  const disliked=list(a.disliked).map(id=>profiles.get(id)).filter(Boolean);
- const blocked=new Set(list(a.avoid));if(a.sweetness==='dry'){blocked.add('vanilla');blocked.add('gourmand');}
  const dir= directions[a.direction][2];
  return products.flatMap(p=>{
   if(p.available===false||!Number.isFinite(p.price)||p.price<=0||list(a.disliked).includes(p.id)||list(a.liked).includes(p.id))return [];
   if(a.gender!=='any'&&['MALE','FEMALE'].includes(p.gender)&&p.gender!==a.gender)return [];
-  const f=profiles.get(p.id);if(!f.notes.size||[...blocked].some(k=>f.evidence[k]?.length))return [];
-  if([...blocked].some(k=>['gourmand','leather','aquatic','powder'].includes(k)&&f.vector[k]>0))return [];
+  const f=profiles.get(p.id);if(!f.notes.size||exclusionMatches(p,a).length)return [];
   const total=Object.values(f.vector).reduce((x,y)=>x+y,0)||1;
   const focus=f.vector[a.focus]||0,share=focus/total;
   const directionShare=dir.reduce((s,k)=>s+f.vector[k],0)/total;
