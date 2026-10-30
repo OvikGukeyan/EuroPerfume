@@ -5,6 +5,7 @@ import { cn } from "../../lib/utils";
 import { Button } from "../ui";
 import { File } from "lucide-react";
 import { Title } from "..";
+import { InvoiceCorrectionsPanel } from './invoice-corrections-panel';
 
 
 interface Props  {
@@ -36,6 +37,7 @@ export const InvoiceButton: FC<Props> = ({
               <File />
             </Button>
           </a>
+          <InvoiceCorrectionsPanel orderId={id} />
         </>
       ) : (
         <div className="flex flex-col gap-3 w-[300px]">
