@@ -500,6 +500,7 @@ model SupplyItem {
 }
 
 model Invoice {
+  document InvoiceDocument?
   corrections InvoiceCorrection[]
   id            Int    @id @default(autoincrement())
   invoiceNumber String @unique
@@ -627,4 +628,13 @@ model WithdrawalRequest {
   confirmationSentAt  DateTime? @db.Timestamptz(3)
   confirmationEmailId String?
   receiptText         String
+}
+
+model InvoiceDocument {
+ invoiceId Int @id
+ invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+ pdf Bytes
+ sha256 String
+ sourceUrl String?
+ archivedAt DateTime @default(now()) @db.Timestamptz(6)
 }

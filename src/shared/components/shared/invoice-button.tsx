@@ -31,7 +31,7 @@ export const InvoiceButton: FC<Props> = ({
         <>
           <Title text="Счет создан" size="sm" className="font-bold" />
           
-          <a href={result?.invoiceUrl || invoiceUrl || ""} download target="_blank">
+          <a href={`/api/invoices/${id}`} download target="_blank">
             <Button className="flex gap-2" variant="outline">
               <span>Скачать счет</span>
               <File />

@@ -12,7 +12,7 @@ export async function loadInvoiceCorrections(orderId: number) {
   const saved = corrections[0]?.snapshot.baseline;
   const tax = invoice.taxSnapshot as { grossCents?: number } | null;
   return {
-    originalNumber: invoice.invoiceNumber, originalUrl: invoice.pdfUrl!,
+    originalNumber: invoice.invoiceNumber, originalUrl: `/api/invoices/${orderId}`,
     originalAmount: ((saved?.grossCents ?? tax?.grossCents ?? Math.round(Number(invoice.order.totalAmount) * 100)) / 100).toFixed(2),
     customer: saved?.customer ?? [invoice.order.fullName, `${invoice.order.address} ${invoice.order.houseNumber}`, `${invoice.order.zip} ${invoice.order.city}`, invoice.order.country].join('\n'),
     legacy: !invoice.taxSnapshot, locked: Boolean(saved),

@@ -36,10 +36,10 @@ import { supabase } from "../lib/supabase";
 import { MetaValues } from "../shared/store";
 import { DhlCredantials } from "../shared/components/shared/dhl-button";
 import { euCountriesAlpha3 } from "../shared/lib/calc-total-amount-with-delivery";
-import { generateInvoiceNumber } from "../shared/server-lib/generate-invoice-number";
+import { createProtectedInvoice } from "../shared/server-lib/create-protected-invoice";
 import prisma from "@/prisma/prisma-client";
-import { PricingSnapshot, capturePricing, readPricing, cents, validateSupplyDate, invoiceTax, deliveryCountryForCheckout } from "../shared/lib/tax";
-import { generateInvoicePdf } from "../shared/server-lib/generate-invoice-pdf";
+import { capturePricing, deliveryCountryForCheckout } from "../shared/lib/tax";
+
 import { CreateSupplyInput } from "./[locale]/(dashboard)/supply/page";
 import { CreateSupplySchema } from "../shared/constants/create-supply-schema";
 export async function dhlCreateOrder(
@@ -1664,69 +1664,5 @@ export async function createPromocode(formData: CreatePromocodeValues) {
 }
 
 export async function createInvoice(orderId: number, supplyDateValue: string) {
-  const user = await getUserSession();
-  if (!user || user.role !== UserRole.ADMIN) return { ok: false, message: "Только администратор может создавать счета" };
-  if (!orderId) throw new Error("orderId is required");
-
-  const order = await prisma.order.findUnique({
-    where: { id: orderId },
-    include: {
-      user: true,
-      items: {
-        include: { product: { include: { brand: true, productGroup: true } } },
-      },
-    },
-  });
-
-  if (!order) throw new Error("Order not found");
-
-  const exists = await prisma.invoice.findFirst({
-    where: { orderId: order.id },
-  });
-  if (exists) throw new Error("Invoice already exists");
-
-  let supplyDate: Date;
-  let pricing: PricingSnapshot;
-  let taxSnapshot: ReturnType<typeof invoiceTax>;
-  try {
-    supplyDate = validateSupplyDate(supplyDateValue, order.createdAt);
-    pricing = readPricing(order.pricingSnapshot) ?? capturePricing(order.items, order.deliveryCountry, order.discount ?? 0, order.createdAt);
-    if (pricing.totalGrossCents !== cents(Number(order.totalAmount))) {
-      return { ok: false, message: "Исторические цены не совпадают с суммой заказа. Проверьте данные перед созданием счёта." };
-    }
-    taxSnapshot = invoiceTax(pricing, supplyDate);
-  } catch (error) {
-    return { ok: false, message: error instanceof Error ? error.message : "Проверьте налоговые данные счёта" };
-  }
-  const invoiceNumber = await generateInvoiceNumber();
-  const pdfBuffer = await generateInvoicePdf(order, invoiceNumber, pricing, taxSnapshot);
-
-  const filePath = `order-${order.id}/invoice-${order.id}.pdf`;
-
-  const { data, error } = await supabase.storage
-    .from("invoice")
-    .upload(filePath, pdfBuffer, {
-      contentType: "application/pdf",
-      upsert: true,
-    });
-
-  if (error) {
-    throw new Error(`Upload invoice failed: ${error.message}`);
-  }
-
-  const invoiceUrl = supabase.storage.from("invoice").getPublicUrl(filePath).data.publicUrl;
-  if (!invoiceUrl) throw new Error("Failed to get invoice publicUrl");
-
-  await prisma.invoice.create({
-    data: {
-      orderId: order.id,
-      pdfUrl: invoiceUrl,
-      supplyDate,
-      taxSnapshot,
-      year: new Date().getFullYear(),
-      invoiceNumber,
-    },
-  });
-
-  return { ok: true, invoiceUrl };
+ return createProtectedInvoice(orderId, supplyDateValue);
 }
