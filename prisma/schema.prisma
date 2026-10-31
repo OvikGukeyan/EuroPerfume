@@ -500,6 +500,7 @@ model SupplyItem {
 }
 
 model Invoice {
+  corrections InvoiceCorrection[]
   id            Int    @id @default(autoincrement())
   invoiceNumber String @unique
   orderId       Int    @unique
@@ -514,6 +515,36 @@ model Invoice {
   customerEmail String?
 
   createdAt DateTime @default(now())
+}
+
+model InvoiceCorrectionCounter {
+  year Int @id
+  value Int
+}
+
+model InvoiceCorrection {
+  id String @id
+  number String @unique
+  invoiceId Int
+  invoice Invoice @relation(fields: [invoiceId], references: [id], onDelete: Restrict)
+  grossCents Int
+  vatCents Int
+  issuedAt DateTime @db.Timestamptz(6)
+  snapshot Json
+  pdf Bytes
+  requestHash String
+  actorId Int
+  refund InvoiceRefund?
+  @@index([invoiceId])
+}
+
+model InvoiceRefund {
+  correctionId String @id
+  correction InvoiceCorrection @relation(fields: [correctionId], references: [id], onDelete: Restrict)
+  paidAt String
+  reference String
+  actorId Int
+  recordedAt DateTime @default(now()) @db.Timestamptz(6)
 }
 
 enum StockMovementType {
