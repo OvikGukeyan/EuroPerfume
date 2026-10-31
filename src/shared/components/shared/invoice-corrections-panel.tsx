@@ -1,11 +1,15 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { loadInvoiceCorrections, previewInvoiceCorrection, createInvoiceCorrection, recordInvoiceRefund } from '@/src/app/invoice-correction-actions';
-import { CorrectionInput, euro } from '@/src/shared/lib/invoice-correction';
+import { correctionInput, CorrectionInput, euro } from '@/src/shared/lib/invoice-correction';
 
 type Context = Awaited<ReturnType<typeof loadInvoiceCorrections>>;
 type Preview = Awaited<ReturnType<typeof previewInvoiceCorrection>>;
 export function InvoiceCorrectionsPanel({ orderId }: { orderId: number }) {
+  return <InvoiceCorrectionsForm key={orderId} orderId={orderId} />;
+}
+function InvoiceCorrectionsForm({ orderId }: { orderId: number }) {
+  const reasonField = useRef<HTMLTextAreaElement>(null);
   const [open, setOpen] = useState(false);
   const [ctx, setCtx] = useState<Context | null>(null);
   const [form, setForm] = useState<CorrectionInput | null>(null);
@@ -35,10 +39,21 @@ export function InvoiceCorrectionsPanel({ orderId }: { orderId: number }) {
     try { await fn(); } catch (e) { setError(e instanceof Error ? e.message : 'Не удалось выполнить действие. Повторите попытку.'); }
     finally { setPending(false); }
   }
-  function change(values: Partial<CorrectionInput>) { if (form) setForm({ ...form, ...values, requestId: crypto.randomUUID() }); setPreview(null); setConfirmed(false); }
+  function change(values: Partial<CorrectionInput>) { if (form) setForm({ ...form, ...values, requestId: crypto.randomUUID() }); setPreview(null); setConfirmed(false); setError(''); }
+  async function showPreview() {
+    if (!form) return;
+    const input = { ...form, originalChecked: checked, lines: form.mode === 'full' ? [] : form.lines };
+    const validation = correctionInput.safeParse(input);
+    if (!validation.success) {
+      setError(validation.error.issues.map(issue => issue.message).join('\n'));
+      if (validation.error.issues.some(issue => issue.path[0] === 'reason')) reasonField.current?.focus();
+      return;
+    }
+    await run(async () => { setPreview(await previewInvoiceCorrection({ ...input, originalChecked: validation.data.originalChecked })); setConfirmed(false); });
+  }
   const field = 'border rounded p-2 w-full bg-white text-black';
   return <section className="mt-4 max-w-2xl rounded border p-4 space-y-3">
-    <button type="button" className="font-semibold underline" disabled={pending} onClick={() => { setOpen(!open); if (!open) void run(refresh); }}>
+    <button type="button" className="font-semibold underline" disabled={pending} onClick={() => { setOpen(!open); if (!open && !ctx) void run(refresh); }}>
       Stornorechnung · возвраты и отмена счёта
     </button>
     {open && <>
@@ -55,7 +70,8 @@ export function InvoiceCorrectionsPanel({ orderId }: { orderId: number }) {
           <label className="block">Вид документа<select className={field} value={form.mode} onChange={e => change({ mode: e.target.value as 'full' | 'partial' })}>
             <option value="full">Полная отмена оставшейся суммы</option><option value="partial">Частичный возврат / уменьшение стоимости</option>
           </select></label>
-          <label className="block">Причина на немецком (попадёт в PDF)<textarea className={field} value={form.reason} placeholder="Например: Rückgabe der Ware" onChange={e => change({ reason: e.target.value })} /></label>
+          <label className="block">Причина на немецком (обязательно, попадёт в PDF)<textarea ref={reasonField} className={field} value={form.reason} required minLength={3} maxLength={500} aria-describedby={`correction-reason-help-${orderId}`} placeholder="Например: Rückgabe der Ware" onChange={e => change({ reason: e.target.value })} /></label>
+          <p id={`correction-reason-help-${orderId}`} className="text-sm">Введите причину, например Rückgabe der Ware — возврат товара. Текст-пример в пустом поле не считается заполнением.</p>
           {form.mode === 'partial' && <div className="space-y-2">{form.lines.map((line, index) => <div className="border rounded p-2 space-y-2" key={index}>
             <label className="block">Позиция {index + 1}: товар, объём и количество на немецком<input className={field} value={line.description} onChange={e => change({ lines: form.lines.map((l, i) => i === index ? { ...l, description: e.target.value } : l) })} /></label>
             <label className="block">Возвращаемая сумма, €<input className={field} inputMode="decimal" value={line.amount} onChange={e => change({ lines: form.lines.map((l, i) => i === index ? { ...l, amount: e.target.value } : l) })} /></label>
@@ -63,7 +79,7 @@ export function InvoiceCorrectionsPanel({ orderId }: { orderId: number }) {
           </div>)}<button type="button" disabled={form.lines.length >= 30} onClick={() => change({ lines: [...form.lines, { description: '', amount: '' }] })}>+ Добавить позицию / доставку</button></div>}
           {ctx.legacy && !ctx.locked && <label className="flex gap-2"><input type="checkbox" checked={form.legacyExemptConfirmed} onChange={e => change({ legacyExemptConfirmed: e.target.checked })} />В исходном PDF указано освобождение по § 19 UStG, НДС не выделен.</label>}
           <label className="flex gap-2"><input type="checkbox" checked={checked} onChange={e => { setChecked(e.target.checked); setPreview(null); setConfirmed(false); }} />Я сверил исходный PDF, реквизиты, суммы, скидки и предыдущие возвраты. Указанный возврат согласован.</label>
-          <button type="button" className="border rounded px-4 py-2" disabled={!checked || (ctx.legacy && !ctx.locked && !form.legacyExemptConfirmed)} onClick={() => void run(async () => { setPreview(await previewInvoiceCorrection({ ...form, lines: form.mode === 'full' ? [] : form.lines })); setConfirmed(false); })}>Предпросмотр без выпуска</button>
+          <button type="button" className="border rounded px-4 py-2" disabled={!checked || (ctx.legacy && !ctx.locked && !form.legacyExemptConfirmed)} onClick={() => void showPreview()}>{pending ? 'Подготовка…' : 'Предпросмотр без выпуска'}</button>
           {preview && <div className="border rounded p-3 space-y-3">
             <p>Сумма корректировки: <strong>{euro(preview.grossCents)}</strong></p>
             <a href={url} target="_blank" rel="noopener noreferrer" className="underline">Открыть PDF-черновик</a>

@@ -4,10 +4,10 @@ export const euroAmount = z.string().trim().regex(/^\d{1,7}([.,]\d{1,2})?$/, 'С
   .transform(v => { const [a, b = ''] = v.replace(',', '.').split('.'); return Number(a) * 100 + Number(b.padEnd(2, '0')); });
 export const correctionInput = z.object({
   orderId: z.number().int().positive(), requestId: z.string().uuid(),
-  mode: z.enum(['full', 'partial']), reason: z.string().trim().min(3).max(500),
-  customer: z.string().trim().min(5).max(700), originalAmount: euroAmount,
+  mode: z.enum(['full', 'partial']), reason: z.string().trim().min(3, 'Укажите причину на немецком, например Rückgabe der Ware (минимум 3 символа).').max(500, 'Причина: не более 500 символов.'),
+  customer: z.string().trim().min(5, 'Укажите получателя и адрес из исходного Rechnung.').max(700, 'Получатель и адрес: не более 700 символов.'), originalAmount: euroAmount,
   legacyExemptConfirmed: z.boolean(), originalChecked: z.literal(true),
-  lines: z.array(z.object({ description: z.string().trim().min(3).max(300), amount: euroAmount })).max(30),
+  lines: z.array(z.object({ description: z.string().trim().min(3, 'Укажите товар, объём и количество для каждой позиции возврата.').max(300, 'Описание позиции: не более 300 символов.'), amount: euroAmount })).max(30, 'Можно добавить не более 30 позиций.'),
 });
 export type CorrectionInput = z.input<typeof correctionInput>;
 export type Baseline = { customer: string; grossCents: number; vatCents: number; rateBasisPoints: number; mode: 'vat' | 'exempt' };
