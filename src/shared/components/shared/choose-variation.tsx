@@ -4,7 +4,7 @@ import { cn } from "@/src/lib/utils";
 import { ProductVariation } from "@prisma/client";
 import { Button } from "../ui";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { it } from "node:test";
+
 
 type Props = {
   className?: string;
@@ -20,6 +20,11 @@ export const ChooseVariation: FC<Props> = ({
   activeVariationId,
 }) => {
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  // Keep samples ahead of full-size options without changing variant identities.
+  const sortedItems = [...items].sort((a, b) => {
+    const isTwoMl = (name: string) => /^2\s*ml(?:\b|\s|$)/i.test(name.trim());
+    return Number(isTwoMl(b.name)) - Number(isTwoMl(a.name));
+  });
 
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
@@ -57,13 +62,13 @@ export const ChooseVariation: FC<Props> = ({
         style={{ scrollbarWidth: "none" }}
         className="flex gap-3 w-full overflow-x-scroll overflow-y-hidden "
       >
-        {items.map((item, index) => (
+        {sortedItems.map((item) => (
           <Button
             onPointerDown={(e) => onChooseVariation(e, item.id)}
             disabled={activeVariationId === item.id}
             variant={"outline"}
             className=" h-8 rounded-none  disabled:bg-slate-300"
-            key={index}
+            key={item.id}
           >
             {item.name}
           </Button>
