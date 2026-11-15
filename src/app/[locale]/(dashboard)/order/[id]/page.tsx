@@ -61,18 +61,19 @@ export default async function Order({
           Номер заказа:
           <span className="font-bold mr-2 w-1/2">{order?.id}</span>
         </li>
-        {breakdown.map(([label, amount]) => (
-          <li key={label} className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
-            {label}:
-            <span className="font-bold mr-2 w-1/2">{formatMoney(amount / 100)} €</span>
-          </li>
-        ))}
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Общая сумма:
           <span className="font-bold mr-2 w-1/2">
             {formatMoney(Number(order?.totalAmount))} €
           </span>
         </li>
+
+        {breakdown.map(([label, amount]) => (
+          <li key={label} className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
+            {label}:
+            <span className="font-bold mr-2 w-1/2">{formatMoney(amount / 100)} €</span>
+          </li>
+        ))}
 
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Промокод:
