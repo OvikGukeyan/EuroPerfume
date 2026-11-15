@@ -1,4 +1,5 @@
 "use client";
+import { HomePriceProvider } from "./home-price-note";
 import { ProductCard, ProductCardSkeleton, SelectedFiltersContainer, Title } from ".";
 import { cn } from "@/src/shared/lib/utils";
 import { useFavorites, useProducts } from "@/src/shared/hooks";
@@ -36,7 +37,7 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
       )?.toUpperCase()
     : "";
   return (
-    <div>
+    <HomePriceProvider><div>
       {subTitle && (
         <div className="flex items-center justify-center gap-4 w-full">
           <div className="h-1 w-12 bg-black"></div>
@@ -79,6 +80,6 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
               />
             ))}
       </div>
-    </div>
+    </div></HomePriceProvider>
   );
 };

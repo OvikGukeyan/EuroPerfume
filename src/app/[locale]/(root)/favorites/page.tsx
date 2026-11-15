@@ -1,4 +1,5 @@
 "use client";
+import { HomePriceProvider } from "@/src/shared/components/shared/home-price-note";
 import { Link } from "@/src/i18n/navigation";
 import { Button, Container, ProductCard, Title } from "@/src/shared/components";
 import { useFavorites } from "@/src/shared/hooks";
@@ -10,7 +11,7 @@ export default function Favorites() {
   const ru=useLocale()==="ru";
   const { items, favoriteIds, favoritesLoading, addFavoritesItem } = useFavorites();
   return (
-    <Container>
+    <HomePriceProvider><Container>
       {favoritesLoading ? <p role="status" className="py-10 text-center">{ru?"Загружаем избранное…":"Favoriten werden geladen…"}</p> : items.some(i=>favoriteIds.includes(i.productId)) ? (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 p-4 md:gap-8">
           {items.filter(i=>favoriteIds.includes(i.productId)).map((item) => (
@@ -52,6 +53,6 @@ export default function Favorites() {
           </Link>
         </div>
       )}
-    </Container>
+    </Container></HomePriceProvider>
   );
 }
