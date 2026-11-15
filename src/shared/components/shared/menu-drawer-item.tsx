@@ -86,7 +86,9 @@ export const MenuDrawerItem: FC<Props> = ({
             {locale === "ru" ? <p>Показать все</p> : <p>Ales anzeigen</p>}
           </div>
         </Link>
-        {category.productGroups.map((productGroup) => (
+        {category.productGroups.map((productGroup) => productGroup.id === 30 ? (
+          <a key={productGroup.id} href="/discovery/index.html" onClick={()=>setOpen(false)} className="block px-4 py-2 text-xl hover:bg-gray-100">Discovery Box</a>
+        ) : (
           <Link
             key={productGroup.id}
             className="text-xl"

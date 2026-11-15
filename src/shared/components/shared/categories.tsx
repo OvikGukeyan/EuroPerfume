@@ -59,7 +59,9 @@ export const Categories: FC<Props> = ({ items, className }) => {
                 </p>
                 <span className="absolute left-0 bottom-0 h-[2px] w-0 bg-black transition-all duration-300 group-hover:w-full"></span>
               </div>
-              {productGroups.map((group) => (
+              {productGroups.map((group) => group.id === 30 ? (
+                <a key={group.id} href="/discovery/index.html" className="w-fit text-xl font-bold tracking-wider hover:underline">Discovery Box</a>
+              ) : (
                 <div
                   className="relative cursor-pointer group font-semibold w-fit"
                   key={group.id}
