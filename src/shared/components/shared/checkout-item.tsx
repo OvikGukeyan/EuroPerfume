@@ -25,23 +25,23 @@ export const CheckoutItem: React.FC<Props> = ({
   disabled,
   onClickCountButton,
   onClickRemove,
-  variation, 
+  variation,
   onTap
 }) => {
   return (
-    <div className={cn('flex items-center w-full justify-between', { 'opacity-50 pointer-events-none': disabled }, className)}>
-      <div className="flex items-center gap-3 md:gap-5 flex-1">
-        <CartItemDetails.Image src={imageUrl} />
-        <CartItemDetails.Info name={name} brand={brand?.name} info={variation || '' }  clssName='w-1/2' />
-      </div>
-
-      <CartItemDetails.Price value={price} />
-
-      <div className="flex items-center gap-3 md:gap-5 ml-3 md:ml-5 sm:ml-20">
-        <CountButton onClick={onClickCountButton} value={quantity} onTap={onTap} />
-        <button onClick={onClickRemove}>
-          <X className="text-gray-400 cursor-pointer hover:text-gray-600" size={20} />
-        </button>
+    <div className={cn("flex w-full gap-3 border-b border-neutral-100 py-4 last:border-b-0", {"opacity-50 pointer-events-none":disabled},className)}>
+      <CartItemDetails.Image src={imageUrl}/>
+      <div className="min-w-0 flex-1">
+        <CartItemDetails.Info name={name} brand={brand?.name} info={variation || ""}/>
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+          <CountButton onClick={onClickCountButton} value={quantity} onTap={onTap}/>
+          <div className="flex items-center gap-2">
+            <CartItemDetails.Price value={price}/>
+            <button type="button" aria-label={"Remove / Удалить: "+name} onClick={onClickRemove} className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-neutral-50">
+              <X size={17} className="text-neutral-500"/>
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

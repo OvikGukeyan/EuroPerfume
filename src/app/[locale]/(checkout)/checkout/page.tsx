@@ -147,12 +147,12 @@ export default function Checkout() {
   const t = useTranslations("Checkout");
   const { setValue } = useForm<any>({ mode: "onChange" });
   return (
-    <div className="mt-10">
-      <Title text={t("title")} size="xl" className="font-extrabold mb-8" />
+    <div className="mx-auto max-w-6xl px-1 py-6 md:py-10">
+      <Title text={t("title")} size="md" className="font-semibold mb-6" />
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex flex-col lg:flex-row gap-10">
-            <div className="flex flex-col gap-10 flex-1 mb-20">
+          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
+            <div className="flex min-w-0 flex-col gap-5 flex-1 mb-2">
               <CheckoutCart
                 loading={loading}
                 items={items}
@@ -166,7 +166,7 @@ export default function Checkout() {
               <CheckoutDeliveryForm totalAmount={totalAmount} />
             </div>
 
-            <div className="w-full lg:w-[450px] mx-auto">
+            <div className="w-full lg:w-[370px] mx-auto">
               <CheckoutSidebar
                 itemLoading={itemLoading}
                 loading={loading || submitting}
@@ -183,7 +183,7 @@ export default function Checkout() {
         </form>
       </FormProvider>
       <Recommendations
-        className="my-20 py-20 px-2 md:px-10 rounded-3xl bg-gray-50"
+        className="my-12 py-6 px-2 md:px-6 border-t border-neutral-200"
         searchParams={{ productGroupId: 2 }}
       />
     </div>

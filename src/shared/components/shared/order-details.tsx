@@ -10,13 +10,13 @@ interface Props {
 }
 export const OrderDetails: FC<Props> = ({ className, title, value }) => {
     return (
-        <div className={cn("flex my-4", className)}>
-            <span className="flex flex-1 text-lg text-neutral-500">
+        <div className={cn("flex items-center justify-between gap-3 my-4", className)}>
+            <span className="flex flex-1 text-sm text-neutral-600">
                 {title}:
-                <div className="flex-1 border-b border-dashed border-b-neutral-200 relative -top-1 mx-2" />
+
             </span>
-            <span className="font-bold text-lg">{value} </span>
-            
+            <span className="shrink-0 font-semibold text-sm tabular-nums">{value} </span>
+
         </div>
     )
 }

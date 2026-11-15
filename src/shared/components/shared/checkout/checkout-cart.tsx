@@ -49,7 +49,7 @@ export const CheckoutCart: FC<Props> = ({
       //   )
       // }
     >
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col">
         {!loading && <AromaBoxSummary items={items} />}
         {loading
           ? [...Array(4)].map((_, index) => (

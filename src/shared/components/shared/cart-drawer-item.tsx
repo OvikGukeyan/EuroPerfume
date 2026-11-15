@@ -7,6 +7,7 @@ import { CartItemProps } from './cart-item-details/cart-item-details.types';
 import * as CartDetail from './cart-item-details';
 import { Trash2Icon } from 'lucide-react';
 import { CountButton } from '.';
+import { useLocale } from 'next-intl';
 import { ProductGroup } from '@prisma/client';
 
 interface Props extends CartItemProps {
@@ -30,25 +31,25 @@ export const CartDrawerItem: FC<Props> = ({
     className,
 }) => {
 
+    const ru=useLocale()==="ru";
     return (
-        <div className={cn('flex bg-white p-5 gap-6', { 'opacity-50 pointer-events-none': disabled} , className)}>
+        <div className={cn('flex bg-white py-5 gap-3', { 'opacity-50 pointer-events-none': disabled} , className)}>
             <CartDetail.Image src={imageUrl} />
 
-            <div className='flex-1'>
-                <CartDetail.Info name={name} brand={brand?.name} info={variation || productGroup?.labelDe || ''} />
+            <div className='min-w-0 flex-1'>
+                <CartDetail.Info name={name} brand={brand?.name} info={variation || (ru?productGroup?.labelRu:productGroup?.labelDe) || ''} />
 
-                <hr className='my-3' />
+                <div className='h-3' />
 
-                <div className='flex items-center justify-between'>
+                <div className='flex flex-wrap items-center justify-between gap-2'>
                     <CountButton onTap={Boolean(productGroup?.onTap)} onClick={onClickCountButton} value={quantity} />
 
-                    <div className='flex items-center gap-3'>
+                    <div className='flex items-center gap-1'>
                         <CartDetail.Price value={price} />
-                        <Trash2Icon
+                        <button type='button' aria-label={(ru?'Удалить ':'Entfernen ')+name} onClick={onClickRemove} className='flex h-9 w-9 items-center justify-center'><Trash2Icon
                             className="text-gray-400 cursor-pointer hover:text-gray-600"
                             size={16}
-                            onClick={onClickRemove}
-                        />
+                        /></button>
                     </div>
                 </div>
 

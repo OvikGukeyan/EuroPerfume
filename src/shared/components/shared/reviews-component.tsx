@@ -21,7 +21,7 @@ export const ReviewsComponent: FC<Props> = ({ product, className }) => {
     <div id="reviews" className={cn("px-4 md:px-0", className)}>
       {product.reviews.length > 0 ? (
         <>
-          <Title text={t("title")} size="lg" className="font-extrabold my-10" />
+          <Title text={t("title")} size="lg" className="font-semibold my-7 !text-xl md:!text-2xl" />
           <ReviewsList
             reviews={product.reviews as (Review & { user: User })[]}
             className="mb-10"
@@ -31,7 +31,7 @@ export const ReviewsComponent: FC<Props> = ({ product, className }) => {
         <Title
           text={t("noReviews")}
           size="lg"
-          className="font-extrabold my-10"
+          className="font-semibold my-7 !text-xl md:!text-2xl"
         />
       )}
 

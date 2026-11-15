@@ -16,14 +16,14 @@ export const FreeShippingProgress: FC<Props> = ({ className, totalAmount }) => {
   const t = useTranslations("Cart");
   return (
     <div
-      className={cn("w-full p-7 flex flex-col gap-2 items-center", className)}
+      className={cn("w-full py-4 px-2 flex flex-col gap-2 items-center text-center text-xs", className)}
     >
       <div>
         {isFreeShipping && (
-          <span className="text-green-500">{t("freeShipping")}</span>
+          <span className="text-neutral-800">{t("freeShipping")}</span>
         )}
         {!isFreeShipping && (
-          <span className="text-red-500">
+          <span className="text-neutral-600">
             {t("freeShippingRemaining", {
               amount: remainingAmount,
             })}
@@ -31,7 +31,7 @@ export const FreeShippingProgress: FC<Props> = ({ className, totalAmount }) => {
         )}
       </div>
       {!isFreeShipping && (
-        <Progress value={currentProgress} className="w-[80%]" />
+        <Progress value={currentProgress} className="w-full h-1" />
       )}
     </div>
   );

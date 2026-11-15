@@ -170,12 +170,12 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
           <Title
             text={product.brand.name}
             size="md"
-            className="font-extrabold mb-2"
+            className="font-semibold mb-2 tracking-tight"
           />
           <Title
             text={product.name}
             size="sm"
-            className="font-extrabold mb-2"
+            className="font-semibold mb-2 tracking-tight"
           />
 
           <Separator />
@@ -223,24 +223,21 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
             >
               <TabsList
                 className={cn(
-                  "grid w-full gap-4 h-24 mb-7",
-                  activeIngredients.length
-                    ? "grid-cols-2 md:grid-cols-3"
-                    : "md:grid-cols-2 grid-cols-3"
+                  "flex h-auto w-full flex-wrap justify-start gap-x-5 gap-y-1 rounded-none border-b border-neutral-200 bg-white p-0 pb-1 mb-5"
                 )}
               >
-                <TabsTrigger className="h-10" value="characteristics">
+                <TabsTrigger className="min-h-11 rounded-none border-b-2 border-transparent px-0 text-xs sm:text-sm data-[state=active]:border-neutral-900 data-[state=active]:shadow-none" value="characteristics">
                   {t("characteristics")}
                 </TabsTrigger>
-                <TabsTrigger className="h-10" value="description">
+                <TabsTrigger className="min-h-11 rounded-none border-b-2 border-transparent px-0 text-xs sm:text-sm data-[state=active]:border-neutral-900 data-[state=active]:shadow-none" value="description">
                   {t("description")}
                 </TabsTrigger>
                 {activeIngredients && (
-                  <TabsTrigger className="h-10" value="activeIngredients">
+                  <TabsTrigger className="min-h-11 rounded-none border-b-2 border-transparent px-0 text-xs sm:text-sm data-[state=active]:border-neutral-900 data-[state=active]:shadow-none" value="activeIngredients">
                     {t("activeIngredients")}
                   </TabsTrigger>
                 )}
-                <TabsTrigger className="h-10 md:hidden" value="comments">
+                <TabsTrigger className="min-h-11 rounded-none border-b-2 border-transparent px-0 text-xs data-[state=active]:border-neutral-900 data-[state=active]:shadow-none md:hidden" value="comments">
                   {t("comments")}
                 </TabsTrigger>
               </TabsList>

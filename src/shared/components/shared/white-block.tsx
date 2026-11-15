@@ -17,9 +17,9 @@ export const WhiteBlock: React.FC<React.PropsWithChildren<Props>> = ({
   children,
 }) => {
   return (
-    <div className={cn('bg-white rounded-3xl', className)}>
+    <div className={cn('bg-white rounded-xl border border-neutral-200', className)}>
       {title && (
-        <div className="flex items-center justify-between py-5 px-2 md:px-7 border-b border-gray-100">
+        <div className="flex items-center justify-between py-4 px-5 md:px-7 border-b border-gray-100">
           <Title text={title} size="sm" className="font-bold" />
           {endAdornment}
         </div>

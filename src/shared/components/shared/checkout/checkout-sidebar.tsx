@@ -51,13 +51,13 @@ export const CheckoutSidebar: FC<Props> = ({
   const t = useTranslations("Checkout.sidebar");
 
   return (
-    <WhiteBlock className="p-2 md:p-6 sticky top-4">
+    <WhiteBlock className="sticky top-4" contentClassName="p-5 md:p-6">
       <div className="flex flex-col gap-1">
         <span className="text-xl">{t("totalPriceLabel")}</span>
         {loading ? (
           <Skeleton className="h-11 w-40" />
         ) : (
-          <span className="h-11 text-[34px] font-extrabold">
+          <span className="h-11 text-[30px] font-semibold">
             {formatMoney(totalAmountWithDelivery)} €
           </span>
         )}
@@ -99,12 +99,12 @@ export const CheckoutSidebar: FC<Props> = ({
         />
       ) : null}
 
-      <div className="flex justify-between ">
+      <div className="flex items-start gap-2">
         <FormField
           name="promocode"
           control={control as Control<CheckoutFormValues>}
           render={({ field }) => (
-            <FormItem className="mb-5">
+            <FormItem className="mb-5 min-w-0 flex-1">
               <FormControl>
                 <FormInput
                   {...field}
@@ -119,7 +119,7 @@ export const CheckoutSidebar: FC<Props> = ({
         <Button
           onClick={onPromocodeSubmit}
           disabled={!totalAmount}
-          className=" h-12 rounded-2xl  text-base font-bold"
+          className=" h-12 rounded-lg  text-base font-bold"
           variant="outline"
           type="button"
         >
@@ -141,7 +141,7 @@ export const CheckoutSidebar: FC<Props> = ({
         loading={loading || itemLoading}
         type="submit"
         disabled={!totalAmount || !isMinOrderAmount}
-        className="w-full h-14 rounded-2xl mt-6 text-base font-bold bg-green-500"
+        className="w-full h-14 rounded-lg mt-6 text-base font-semibold bg-neutral-900 hover:bg-neutral-800"
       >
         {t("submitButton")}
         <ArrowRight className="w-5 ml-2" />
