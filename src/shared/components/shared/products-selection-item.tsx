@@ -93,6 +93,8 @@ export const ProductSelectionItem: React.FC<Props> = ({
           <Button
             className="absolute top-3 right-1 md:right-5 hover:bg-transparent p-2"
             onClick={(e) => onToggleFavorite(e)}
+            aria-pressed={isFavorite}
+            aria-label={isFavorite ? "Aus Favoriten entfernen / Удалить из избранного" : "Zu Favoriten / В избранное"}
             variant="ghost"
           >
             {isFavorite ? <HeartBlack /> : <Heart />}

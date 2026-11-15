@@ -2,16 +2,18 @@
 import { Link } from "@/src/i18n/navigation";
 import { Button, Container, ProductCard, Title } from "@/src/shared/components";
 import { useFavorites } from "@/src/shared/hooks";
+import { useLocale } from "next-intl";
 import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 
 export default function Favorites() {
-  const { items, addFavoritesItem } = useFavorites();
+  const ru=useLocale()==="ru";
+  const { items, favoriteIds, favoritesLoading, addFavoritesItem } = useFavorites();
   return (
     <Container>
-      {items.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-[50px] p-10">
-          {items.map((item) => (
+      {favoritesLoading ? <p role="status" className="py-10 text-center">{ru?"Загружаем избранное…":"Favoriten werden geladen…"}</p> : items.some(i=>favoriteIds.includes(i.productId)) ? (
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 p-4 md:gap-8">
+          {items.filter(i=>favoriteIds.includes(i.productId)).map((item) => (
             <ProductCard
               brand={item.brand}
               productGroup={item.productGroup}
@@ -36,16 +38,16 @@ export default function Favorites() {
           />
           <Title
             size="sm"
-            text={"Your favorites is empty"}
+            text={ru?"В избранном пока пусто":"Noch keine Favoriten"}
             className="text-center font-bold my-2"
           />
           <p className="text-center text-neutral-500 mb-5">
-            Add some products to the favorites
+            {ru?"Нажмите на сердечко у понравившегося аромата.":"Speichern Sie Ihre Lieblingsdüfte mit dem Herzsymbol."}
           </p>
           <Link href="/">
             <Button className="w-56 h-12 text-base" size="lg">
               <ArrowLeft className="w-5 mr-2" />
-              Continue shopping
+              {ru?"Продолжить покупки":"Weiter einkaufen"}
             </Button>
           </Link>
         </div>

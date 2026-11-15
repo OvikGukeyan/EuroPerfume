@@ -13,7 +13,7 @@ type Props = {
 };
 
 export const RecentReviewsList: FC<Props> = ({ className, reviews }) => {
-  const { items: favorites, addFavoritesItem } = useFavorites();
+  const { favoriteIds, addFavoritesItem } = useFavorites();
 
   return (
     <div
@@ -35,9 +35,7 @@ export const RecentReviewsList: FC<Props> = ({ className, reviews }) => {
               review.product.variations[0].imageUrl
             }
             variations={review.product.variations}
-            isFavorite={favorites.some(
-              (item) => item.productId === review.product.id
-            )}
+            isFavorite={favoriteIds.includes(review.product.id)}
             toggleIsFavorite={addFavoritesItem}
             discountPrice={review.product.discountPrice || undefined}
             isBestseller={!!review.product.isBestseller}

@@ -15,7 +15,7 @@ type Props = {
 
 export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 4000 }), []);
-  const { items: favorites, addFavoritesItem } = useFavorites();
+  const { favoriteIds, addFavoritesItem } = useFavorites();
 
   return (
     <div className={cn("", className)}>
@@ -46,9 +46,7 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
                   discountPrice={item.discountPrice || undefined}
                   price={item.price}
                   isBestseller={!!item.isBestseller}
-                  isFavorite={favorites.some(
-                    (favorite) => favorite.productId === item.id
-                  )}
+                  isFavorite={favoriteIds.includes(item.id)}
                   toggleIsFavorite={addFavoritesItem}
                 />
             </CarouselItem>

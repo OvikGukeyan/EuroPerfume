@@ -13,7 +13,7 @@ interface Props {
 export const ProductsGroupList: React.FC<Props> = ({ className }) => {
   const { items: products, loading } = useProducts();
   const [categories] = useCategoryStore((state) => [state.categories]);
-  const { items, addFavoritesItem } = useFavorites();
+  const { favoriteIds, addFavoritesItem } = useFavorites();
 
   const productGroups = categories.flatMap(
     (category) => category.productGroups
@@ -72,7 +72,7 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
                 productGroup={product.productGroup}
                 discountPrice={product.discountPrice || undefined}
                 isBestseller={!!product.isBestseller}
-                isFavorite={items.some((item) => item.productId === product.id)}
+                isFavorite={favoriteIds.includes(product.id)}
                 toggleIsFavorite={addFavoritesItem}
                 reviews={product.reviews}
                 brand={product.brand}

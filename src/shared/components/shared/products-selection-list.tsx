@@ -17,7 +17,7 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
   const t = useTranslations("ProductsSelection");
   const productsToShow = isOpen ? products : products.slice(0, 12);
 
-  const { items: favorites, addFavoritesItem } = useFavorites();
+  const { favoriteIds, addFavoritesItem } = useFavorites();
   return (
     <div className={cn(className, "w-full flex flex-col items-center  ")}>
       <div
@@ -37,7 +37,7 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
             concentration={product.concentration || undefined}
             discountPrice={product.discountPrice || undefined}
             isBestseller={!!product.isBestseller}
-            isFavorite={favorites.some((item) => item.productId === product.id)}
+            isFavorite={favoriteIds.includes(product.id)}
             toggleIsFavorite={addFavoritesItem}
             reviews={product.reviews}
             brand={product.brand}

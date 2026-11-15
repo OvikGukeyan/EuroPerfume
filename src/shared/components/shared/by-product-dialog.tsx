@@ -17,7 +17,8 @@ import { Volume, volumes } from "../../constants/perfume";
 import { useCartStore } from "../../store";
 import toast from "react-hot-toast";
 import { calcPrice } from "../../lib";
-import Link from "next/link";
+import { useRouter } from "@/src/i18n/navigation";
+import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
 import { ShoppingCart } from "lucide-react";
 
@@ -41,6 +42,10 @@ export const ByProductDialog: FC<Props> = ({
   discountPrice,
   variations,
 }) => {
+  const router=useRouter();
+  const ru=useLocale()==="ru";
+  const [open,setOpen]=useState(false);
+  const [busy,setBusy]=useState(false);
   const [volume, setVolume] = useState<Volume>(volumes[0]);
   const [activeVariationId, setActiveVariationId] = useState<number>(
     variations[0]?.id
@@ -55,18 +60,22 @@ export const ByProductDialog: FC<Props> = ({
     state.loading,
   ]);
 
-  const onSubmit = async (e: React.MouseEvent) => {
+  const onSubmit = async (checkout=false) => {
+    if(busy)return;
+    setBusy(true);
     try {
       await addCartItem({
         productId: id,
         volume: productGroup.onTap ? volume : 1,
         variationId: activeVariation ? activeVariation.id : undefined,
       });
-      toast.success(name + " added to cart");
+      setOpen(false);
+      toast.success(ru?"Добавлено в корзину":"Zum Warenkorb hinzugefügt");
+      if(checkout)router.push("/checkout");
     } catch (error) {
       console.error(error);
-      toast.error("Something went wrong");
-    }
+      toast.error(ru?"Не удалось добавить товар":"Artikel konnte nicht hinzugefügt werden");
+    } finally {setBusy(false);}
   };
   const finalPrice = productGroup.onTap ? calcPrice(volume, price) : price;
   const finalDiscountPrice =
@@ -76,15 +85,15 @@ export const ByProductDialog: FC<Props> = ({
 
       const t = useTranslations("ByProductDialog");
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button  className="w-full bg-gray-200 text-black flex gap-3 hover:text-white" >
+        <Button  className="w-full bg-white border border-neutral-200 text-black flex gap-3 hover:bg-neutral-50" >
             <ShoppingCart size={16}/>
           {t("by")}
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+      <DialogContent className="w-[calc(100%-2rem)] max-h-[90dvh] overflow-y-auto rounded-xl sm:max-w-[425px]">
+        <DialogHeader className="min-h-8 pr-10 text-left">
             <DialogTitle>{t("title")}</DialogTitle>
             {/* <DialogDescription>
               Make changes to your profile here. Click save when you&apos;re
@@ -130,20 +139,8 @@ export const ByProductDialog: FC<Props> = ({
         )}
         <DialogFooter>
           <div className="flex flex-col gap-5 w-full">
-            <DialogClose asChild>
-              <Button onClick={(e) => onSubmit(e)}  className=" bg-green-500">
-                {t("addToCart")}
-              </Button>
-            </DialogClose>
-            <Link className="w-full" href="/checkout">
-              <Button
-                className="w-full"
-                onClick={(e) => onSubmit(e)}
-                type="submit"
-              >
-                {t("checkout")}
-              </Button>
-            </Link>
+            <Button type="button" loading={busy} disabled={loading} onClick={()=>onSubmit()} className="h-12 rounded-lg bg-neutral-900 hover:bg-neutral-800">{t("addToCart")}</Button>
+            <Button type="button" disabled={loading || busy} variant="outline" onClick={()=>onSubmit(true)} className="h-12 rounded-lg">{t("checkout")}</Button>
           </div>
         </DialogFooter>
       </DialogContent>
