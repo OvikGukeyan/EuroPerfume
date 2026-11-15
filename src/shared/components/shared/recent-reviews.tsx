@@ -12,20 +12,13 @@ export const RecentReviews: FC<Props> = ({ className }) => {
   const reviews = use(getRecentReviews());
   const t = useTranslations("RecentReviews");
   return (
-    <div className={cn(className)}>
+    <section className={cn("home-section home-reviews", className)}>
       {reviews.length > 0 && (
         <>
-          <div className="flex items-center justify-center gap-4 w-full">
-            <div className="h-1 w-12 bg-black"></div>
-            <Title
-              className="text-2xl sm:text-3xl  md:text-5xl   font-extrabold text-center my-10"
-              text={t("title").toUpperCase()}
-            />
-            <div className="h-1 w-12 bg-black"></div>
-          </div>
+          <div className="home-section-heading"><div><p className="home-eyebrow">EURO PERFUME</p><h2>{t("title")}</h2></div></div>
          <RecentReviewsList reviews={reviews} />
         </>
       )}
-    </div>
+    </section>
   );
 };

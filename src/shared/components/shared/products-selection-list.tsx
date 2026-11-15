@@ -13,17 +13,16 @@ interface Props {
 }
 
 export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [visibleCount, setVisibleCount] = useState(8);
   const t = useTranslations("ProductsSelection");
-  const productsToShow = isOpen ? products : products.slice(0, 12);
+  const productsToShow = products.slice(0, visibleCount);
 
   const { favoriteIds, addFavoritesItem } = useFavorites();
   return (
     <div className={cn(className, "w-full flex flex-col items-center  ")}>
       <div
         className={cn(
-          "w-full grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3 md:gap-5 transition-all duration-700 overflow-hidden p-4 md:p-5",
-          isOpen ? "md:max-h-[2400px]" : "md:max-h-[1200px]"
+          "home-products-grid w-full"
         )}
       >
         {productsToShow.map((product) => (
@@ -46,12 +45,12 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
         ))}
       </div>
 
-      {products.length > 12 && (
+      {products.length > visibleCount && (
         <Button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => setVisibleCount(count => count + 8)}
           className="w-full sm:w-[200px] mt-10"
         >
-          {isOpen ? t("showLess") : t("showAll")}
+          {t("loadMore")}
         </Button>
       )}
     </div>

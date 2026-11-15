@@ -2,8 +2,8 @@
 import React, { FC } from "react";
 import { cn } from "../../lib/utils";
 import { Rating } from "./rating";
-import { ProductSelectionItem, Separator } from "..";
-import { useFavorites } from "../../hooks";
+import { Link } from "@/src/i18n/navigation";
+import { useLocale } from "next-intl";
 import { Review, User } from "@prisma/client";
 import { SelectedProductDTO } from "../../server-lib/get-popular-products";
 
@@ -13,43 +13,14 @@ type Props = {
 };
 
 export const RecentReviewsList: FC<Props> = ({ className, reviews }) => {
-  const { favoriteIds, addFavoritesItem } = useFavorites();
-
-  return (
-    <div
-      className={cn(
-        "grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6  gap-4 px-5 mb-5",
-        className
-      )}
-    >
-      {reviews.map((review) => (
-        <div key={review.id}>
-          <ProductSelectionItem
-            brand={review.product.brand}
-            price={review.product.price}
-            productGroup={review.product.productGroup}
-            id={review.product.id}
-            name={review.product.name}
-            imageUrl={
-              review.product.imageUrl[0] ||
-              review.product.variations[0].imageUrl
-            }
-            variations={review.product.variations}
-            isFavorite={favoriteIds.includes(review.product.id)}
-            toggleIsFavorite={addFavoritesItem}
-            discountPrice={review.product.discountPrice || undefined}
-            isBestseller={!!review.product.isBestseller}
-          />
-          <div>
-            <Rating className="my-5" value={review.rating} withNumber />
-            <Separator className="mb-5" />
-
-            <p className="mb-2">{review.user.fullName}</p>
-
-            <p className="text-sm text-gray-500">{review.text}</p>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+  const ru = useLocale() === "ru";
+  return <div className={cn("home-reviews-grid", className)}>
+    {reviews.map(review => <article className="home-review-card" key={review.id}>
+      <div className="home-review-top"><Rating value={review.rating} /><time dateTime={String(review.createdAt)}>{new Date(review.createdAt).toLocaleDateString(ru ? "ru-RU" : "de-DE")}</time></div>
+      <Link href={`/product/${review.product.id}`}><h3>{review.product.name}</h3><p className="home-review-brand">{review.product.brand.name}</p></Link>
+      <p className="home-review-text">{review.text}</p>
+      <Link href={`/product-reviews/${review.product.id}`} className="home-review-more">{ru ? "Читать отзыв полностью" : "Vollständige Bewertung lesen"} ↗</Link>
+      <p className="home-review-author">{review.user.fullName?.split(" ")[0] || (ru ? "Покупатель" : "Kunde")}</p>
+    </article>)}
+  </div>;
 };

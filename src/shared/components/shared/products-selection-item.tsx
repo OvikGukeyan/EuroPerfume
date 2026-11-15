@@ -1,10 +1,10 @@
 "use client";
 
+import { HomePriceNote } from "./home-price-note";
 import { formatMoney } from "@/src/shared/lib/money";
 import Image from "next/image";
 import React from "react";
-import { ByProductDialog, Title } from ".";
-import { Button } from "../ui";
+import { ByProductDialog } from ".";
 import { Heart } from "lucide-react";
 import { HeartBlack } from "@/src/shared/icons";
 import {
@@ -76,106 +76,30 @@ export const ProductSelectionItem: React.FC<Props> = ({
     discountPrice && productGroup.onTap ? discountPrice * 2 + 1 : discountPrice;
 
   return (
-    <div
-      className={cn(
-        " w-full md:hover:scale-105 transition-all duration-300 active:scale-95 active:border-2 bg-gray-50",
-        className
-      )}
-    >
-        <div className="w-full max-w-[400px] aspect-[4/5] relative bg-white">
-          <Link href={`/product/${id}`} className="absolute inset-0">
-          <Image
-            src={imageUrl || variations?.[0]?.imageUrl || ""}
-            alt={name}
-            fill
-            className="object-contain "
-          />
-          </Link>
-          <Button
-            className="absolute top-3 right-1 md:right-5 hover:bg-transparent p-2"
-            onClick={(e) => onToggleFavorite(e)}
-            aria-pressed={isFavorite}
-            aria-label={isFavorite ? "Aus Favoriten entfernen / Удалить из избранного" : "Zu Favoriten / В избранное"}
-            variant="ghost"
-          >
-            {isFavorite ? <HeartBlack /> : <Heart />}
-          </Button>
-          <div>
-            {discountPrice && (
-              <p className="absolute top-0 left-3 md:left-5 text-sm text-white bg-red-500 px-2">
-                SALE
-              </p>
-            )}
-          </div>
-          <div>
-            {isBestseller && (
-              <p className="absolute bottom-0 right-3 md:right-5 text-sm text-white bg-green-500 px-2">
-                BESTSELLER
-              </p>
-            )}
-          </div>
-        </div>
-      {reviews && (
-        <Link href={`/product-reviews/${id}`}>
-          <Rating
-            className="my-5 justify-center"
-            value={averageRating}
-            withNumber
-            reviewsCount={count}
-          />
+    <article className={cn("home-product", className)}>
+      <div className="home-product-photo">
+        <Link href={`/product/${id}`} className="absolute inset-0 p-5 md:p-8" aria-label={`${brand.name} ${name}`}>
+          <Image src={imageUrl || variations?.[0]?.imageUrl || ""} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" className="object-contain p-4 md:p-7" />
         </Link>
-      )}
-      <Link href={`/product/${id}`}>
-        <div className="h-40 flex flex-col justify-between mb-5">
-          <div className="flex-1 ">
-            <Title
-              text={brand.name}
-              size="xs"
-              className="md:text-lg mt-2 font-bold"
-            />
-            <Title
-              text={name}
-              size="xs"
-              className="md:text-md mt-1 font-semibold"
-            />
-            <p className="text-sm">
-              {concentratioName || productGroup?.[labelLocale]}
-            </p>
-          </div>
-
-          <p className="text-[20px] ">
-            <span className="hidden md:inline"></span>{" "}
-            {discountPrice ? (
-              <>
-                <span className="line-through text-base mr-2">
-                  {formatMoney(finalPrice)} €
-                </span>
-                <b className="text-red-500">{formatMoney(finalDiscountPrice ?? finalPrice)} € </b>
-                <span className="text-base">
-                  {productGroup.onTap && " (2ml)"}
-                </span>
-              </>
-            ) : (
-              <>
-                <b>{formatMoney(finalPrice)} €</b>
-                <span className="text-base ">
-                  {productGroup.onTap && " (2ml)"}
-                </span>
-              </>
-            )}
-          </p>
-        </div>
+        <button type="button" className="home-product-heart" onClick={onToggleFavorite} aria-pressed={isFavorite} aria-label={locale === "ru" ? (isFavorite ? `Удалить ${name} из избранного` : `Добавить ${name} в избранное`) : (isFavorite ? `${name} aus Favoriten entfernen` : `${name} zu Favoriten hinzufügen`)}>
+          {isFavorite ? <HeartBlack /> : <Heart />}
+        </button>
+        {discountPrice ? <span className="home-product-badge home-sale">SALE</span> : isBestseller ? <span className="home-product-badge">BESTSELLER</span> : null}
+      </div>
+      <Link href={`/product/${id}`} className="home-product-description">
+        <p className="home-product-brand">{brand.name}</p>
+        <h3>{name}</h3>
+        <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
       </Link>
-      <ByProductDialog
-        id={id}
-        variations={variations}
-        price={price}
-        discountPrice={discountPrice}
-        brand={brand}
-        imageUrl={imageUrl}
-        name={name}
-        productGroup={productGroup}
-      />
-    </div>
+      {reviews && count > 0 && <Link href={`/product-reviews/${id}`} className="home-product-rating"><Rating value={averageRating} reviewsCount={count} /></Link>}
+      <p className="home-product-price">
+        {discountPrice ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
+      </p>
+      {productGroup.onTap && <p className="home-product-volume">{locale === "ru" ? "Отливант 2 мл" : "2 ml Abfüllung"} · {formatMoney((finalDiscountPrice ?? finalPrice) / 0.002)} €/l</p>}
+      <HomePriceNote />
+      <div className="home-product-buy">
+        <ByProductDialog id={id} variations={variations} price={price} discountPrice={discountPrice} brand={brand} imageUrl={imageUrl} name={name} productGroup={productGroup} />
+      </div>
+    </article>
   );
 };

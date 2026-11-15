@@ -164,7 +164,8 @@
   },
   "ProductsSelection": {
     "showAll": "Посмотреть все",
-    "showLess": "Назад"
+    "showLess": "Назад",
+    "loadMore": "Загрузить ещё"
   },
   "RecentReviews": {
     "title": "Последние отзывы"

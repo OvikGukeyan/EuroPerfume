@@ -20,18 +20,14 @@ export const ProductsSelection: FC<Props> = ({
     <>
       {products.length > 0 && (
         
-        <div className={cn( "flex flex-col items-center ", className)}>
-          <div className="flex items-center justify-center gap-4 w-full">
-            <div className="h-1 w-12 bg-black"></div>
-            <Title
-              className="text-2xl sm:text-3xl  md:text-5xl   font-extrabold text-center my-10"
-              text={title.toUpperCase()}
-            />
-            <div className="h-1 w-12 bg-black"></div>
-          </div>
+        <section className={cn("home-section flex flex-col items-center", className)}>
+          <div className="home-section-heading w-full"><div>
+            <p className="home-eyebrow">EURO PERFUME</p>
+            <h2>{title}</h2>
+          </div></div>
 
           <ProductsSelectionList products={products}/>
-        </div>
+        </section>
       )}
     </>
   );
