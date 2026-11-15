@@ -82,14 +82,15 @@ export const ProductSelectionItem: React.FC<Props> = ({
         className
       )}
     >
-      <Link href={`/product/${id}`}>
         <div className="w-full max-w-[400px] aspect-[4/5] relative bg-white">
+          <Link href={`/product/${id}`} className="absolute inset-0">
           <Image
             src={imageUrl || variations?.[0]?.imageUrl || ""}
             alt={name}
             fill
             className="object-contain "
           />
+          </Link>
           <Button
             className="absolute top-3 right-1 md:right-5 hover:bg-transparent p-2"
             onClick={(e) => onToggleFavorite(e)}
@@ -114,7 +115,6 @@ export const ProductSelectionItem: React.FC<Props> = ({
             )}
           </div>
         </div>
-      </Link>
       {reviews && (
         <Link href={`/product-reviews/${id}`}>
           <Rating
