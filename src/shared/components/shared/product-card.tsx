@@ -37,7 +37,7 @@ interface Props {
   discountPrice?: number;
   isBestseller?: boolean;
   isFavorite: boolean;
-  toggleIsFavorite: (id: number) => void;
+  toggleIsFavorite: (id: number, title?:string) => void;
   reviews?: Review[];
   brand: Brand;
   className?: string;
@@ -72,7 +72,7 @@ export const ProductCard: React.FC<Props> = ({
   const onToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    toggleIsFavorite(id);
+    toggleIsFavorite(id,brand.name+" · "+name);
   };
 
   const [addCartItem, loading] = useCartStore((state) => [

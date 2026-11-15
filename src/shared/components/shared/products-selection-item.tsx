@@ -32,7 +32,7 @@ interface Props {
   discountPrice?: number;
   isBestseller?: boolean;
   isFavorite: boolean;
-  toggleIsFavorite: (id: number) => void;
+  toggleIsFavorite: (id: number, title?:string) => void;
   reviews?: Review[];
   brand: Brand;
   price: number;
@@ -58,7 +58,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
   const onToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
-    toggleIsFavorite(id);
+    toggleIsFavorite(id,brand.name+" · "+name);
   };
 
   const { averageRating, count } = calcAverageRating(reviews as Review[]);

@@ -21,14 +21,10 @@ export async function GET(req: NextRequest) {
           },
           include: {
             product: {
-              include: {
-                variations: {
-                  where: {
-                    available: true,
-                  },
-                },
-                productGroup: true,
-                brand: true,
+              select: {
+                name:true,price:true,imageUrl:true,
+                variations:{where:{available:true},select:{imageUrl:true}},
+                productGroup:true,brand:true,
               },
             },
           },
@@ -53,7 +49,9 @@ export async function POST(req: NextRequest) {
       token = crypto.randomUUID();
     }
 
-    const productId = await req.json();
+    const body=await req.json();
+    const productId=typeof body==="number"?body:body?.productId;
+    const selected=typeof body?.selected==="boolean"?body.selected:undefined;
     if(!Number.isSafeInteger(productId)||productId<=0) return NextResponse.json({message:"Invalid product"},{status:400});
     const favorites = await findOrCreateFavorites(token);
     await prisma.$transaction(async tx=>{
@@ -66,13 +64,13 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    if (findFavoritesItem) {
+    if (findFavoritesItem && selected!==true) {
       await tx.favoritesItem.delete({
         where: {
           id: findFavoritesItem.id,
         },
       });
-    } else {
+    } else if(!findFavoritesItem && selected!==false) {
       await tx.favoritesItem.create({
         data: {
           favoritesId: favorites.id,
@@ -92,7 +90,7 @@ export async function POST(req: NextRequest) {
             createdAt: "desc",
           },
           include: {
-            product: {include:{productGroup:true,brand:true,variations:{where:{available:true}}}},
+            product: {select:{name:true,price:true,imageUrl:true,productGroup:true,brand:true,variations:{where:{available:true},select:{imageUrl:true}}}},
           },
         },
       },

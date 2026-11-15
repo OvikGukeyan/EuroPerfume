@@ -1,3 +1,7 @@
+const exitQuiz=document.querySelector(".discovery-exit");
+exitQuiz?.addEventListener("click",e=>{
+  if(window.parent!==window){e.preventDefault();window.parent.postMessage({type:"close-discovery-box"},window.location.origin);}
+});
 import {questions,optionsFor,facets,avoidLabel,conflicts,resolvePreferences,profileSummary,rank,selectEight,selectDiscovery,totals} from './engine.js';
 const app=document.querySelector('#app'),dialog=document.querySelector('#replace');let step=-1,answers={},catalog=[],selected=[],ranked=[],syncedAt='',replaceIndex=0,busy=false;
 const money=n=>new Intl.NumberFormat('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n)+' €';

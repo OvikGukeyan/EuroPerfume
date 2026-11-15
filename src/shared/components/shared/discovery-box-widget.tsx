@@ -7,6 +7,13 @@ export function DiscoveryBoxWidget() {
   const [open, setOpen] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const de = useLocale() === "de";
+  useEffect(()=>{
+    const close=(e:MessageEvent)=>{
+      if(e.origin===window.location.origin && e.data?.type==="close-discovery-box" && e.source===dialog.current?.querySelector("iframe")?.contentWindow) setOpen(false);
+    };
+    window.addEventListener("message",close);
+    return ()=>window.removeEventListener("message",close);
+  },[]);
   useEffect(() => {
     if (!open) return;
     dialog.current?.showModal();
