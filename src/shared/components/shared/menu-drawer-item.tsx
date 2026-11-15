@@ -1,4 +1,5 @@
 "use client";
+import NativeLink from "next/link";
 import React, { FC } from "react";
 import { cn } from "@/src/lib/utils";
 import {
@@ -87,7 +88,7 @@ export const MenuDrawerItem: FC<Props> = ({
           </div>
         </Link>
         {category.productGroups.map((productGroup) => productGroup.id === 30 ? (
-          <a key={productGroup.id} href="/discovery/index.html" onClick={()=>setOpen(false)} className="block px-4 py-2 text-xl hover:bg-gray-100">Discovery Box</a>
+          <NativeLink prefetch={false} key={productGroup.id} href="/discovery/index.html" onClick={()=>setOpen(false)} className="block px-4 py-2 text-xl hover:bg-gray-100">Discovery Box</NativeLink>
         ) : (
           <Link
             key={productGroup.id}
