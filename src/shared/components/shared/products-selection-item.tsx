@@ -1,7 +1,6 @@
 "use client";
 import "./compact-product-card.css";
 
-import { HomePriceNote } from "./home-price-note";
 import { formatMoney } from "@/src/shared/lib/money";
 import Image from "next/image";
 import React from "react";
@@ -93,6 +92,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
       </Link>
       <div className="compact-product-meta">
         <p className="home-product-price">
+          {productGroup.onTap && <small className="compact-product-from">{locale === "ru" ? "от" : "ab"}</small>}
           {discountPrice ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
         </p>
         {productGroup.onTap && <span className="compact-product-size">2 ml</span>}
@@ -102,8 +102,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
       </div>
       <div className="compact-product-extra">
         <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
-        {productGroup.onTap && <p className="home-product-volume">{locale === "ru" ? "Отливант" : "Abfüllung"} · {formatMoney((finalDiscountPrice ?? finalPrice) / 0.002)} €/l</p>}
-        <HomePriceNote />
+        {productGroup.onTap && <p className="home-product-volume">{formatMoney((finalDiscountPrice ?? finalPrice) / 0.002)} €/l</p>}
         {reviews && count > 0 && <Link href={`/product-reviews/${id}`} className="home-product-rating"><Rating value={averageRating} reviewsCount={count} /></Link>}
       </div>
     </article>

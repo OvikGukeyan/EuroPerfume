@@ -17,8 +17,8 @@
 .compact-product .home-product-price del+strong{color:#914f46}
 .compact-product .compact-product-size{font-size:12px;font-weight:500;line-height:1.3;color:#454545;white-space:nowrap}
 .compact-product .home-product-buy{margin-top:0;padding-top:0;width:100%}
-.compact-product .home-product-buy>button{width:100%;min-height:44px;height:44px;gap:7px;padding:7px 10px;border:1px solid #c8c8c8;border-radius:3px!important;background:white;color:#171717;font-size:12px;font-weight:500;line-height:1.3;touch-action:manipulation}
-.compact-product .home-product-buy>button:hover{background:#171717;color:#fff}
+.compact-product .home-product-buy>button{width:100%;min-height:44px;height:44px;gap:7px;padding:7px 10px;border:1px solid #171717;border-radius:3px!important;background:#171717;color:#fff;font-size:12px;font-weight:500;line-height:1.3;touch-action:manipulation}
+.compact-product .home-product-buy>button:hover{background:#333;color:#fff}
 .compact-product .home-product-buy>button svg{width:16px;height:16px;flex-shrink:0}
 .compact-product .compact-product-extra{margin-top:7px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .compact-product .home-product-concentration,.compact-product .home-product-volume,.compact-product .home-price-note{font-size:11px;line-height:1.4;color:#626262;margin:0;min-height:0;overflow-wrap:anywhere}
@@ -47,3 +47,7 @@
  .compact-product .home-product-badge{font-size:7px;top:10px;left:7px}
 }
 @media(prefers-reduced-motion:reduce){.compact-product *{transition:none!important}}
+
+.compact-product .compact-product-from{font-size:11px;font-weight:400;line-height:1.3;color:#626262}
+.home-price-note.catalog-price-note{font-size:11px;line-height:1.5;color:#626262;margin:0 0 12px;width:100%;text-align:left}
+.catalog-price-note a{text-decoration:underline;text-underline-offset:2px}

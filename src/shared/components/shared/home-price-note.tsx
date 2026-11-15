@@ -12,5 +12,5 @@ export function HomePriceProvider({ children }: { children: ReactNode }) {
 export function HomePriceNote() {
   const policy = useContext(PricePolicy);
   const ru = useLocale() === "ru";
-  return <p className="home-price-note">{policy?.mode === "exempt" ? (ru ? "НДС не выделяется (§ 19 UStG). " : "Kein USt-Ausweis (§ 19 UStG). ") : policy?.mode === "vat" ? (ru ? "Включая применимый НДС. " : "Inkl. anwendbarer MwSt. ") : (ru ? "Конечная цена. " : "Endpreis. ")}<Link href="/delivery-and-payment">{ru ? "Дополнительно доставка" : "Zzgl. Versand"}</Link></p>;
+  return <p className="home-price-note catalog-price-note">{ru ? "Все цены: " : "Alle Preise: "}{policy?.mode === "exempt" ? (ru ? "НДС не выделяется (§ 19 UStG). " : "Kein USt-Ausweis (§ 19 UStG). ") : policy?.mode === "vat" ? (ru ? "Включая применимый НДС. " : "Inkl. anwendbarer MwSt. ") : (ru ? "Конечная цена. " : "Endpreis. ")}<Link href="/delivery-and-payment">{ru ? "Дополнительно доставка" : "Zzgl. Versand"}</Link></p>;
 }

@@ -1,3 +1,4 @@
+import { HomePriceNote } from "./home-price-note";
 import React, { FC, use } from "react";
 import { ProductsSelectionList, Title } from "..";
 import { SelectedProductDTO } from "../../server-lib/get-popular-products";
@@ -26,6 +27,7 @@ export const ProductsSelection: FC<Props> = ({
             <h2>{title}</h2>
           </div></div>
 
+          <HomePriceNote />
           <ProductsSelectionList products={products}/>
         </section>
       )}

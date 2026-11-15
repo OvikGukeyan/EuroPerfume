@@ -1,5 +1,5 @@
 "use client";
-import { HomePriceProvider } from "./home-price-note";
+import { HomePriceProvider, HomePriceNote } from "./home-price-note";
 import { ProductCard, ProductCardSkeleton, SelectedFiltersContainer, Title } from ".";
 import { cn } from "@/src/shared/lib/utils";
 import { useFavorites, useProducts } from "@/src/shared/hooks";
@@ -49,6 +49,7 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
         </div>
       )}
       <SelectedFiltersContainer />
+      <HomePriceNote />
 
       <div
         id="products-section"
