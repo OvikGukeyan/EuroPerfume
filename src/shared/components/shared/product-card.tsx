@@ -1,11 +1,13 @@
 "use client";
+import "./compact-product-card.css";
+import { HomePriceNote } from "./home-price-note";
 
 import { formatMoney } from "@/src/shared/lib/money";
 import Image from "next/image";
 import React, { useState } from "react";
-import { ChooseVariation, Title, VolumeSelection } from ".";
+import { ChooseVariation, VolumeSelection } from ".";
 import { Button } from "../ui";
-import { Heart, Plus, ShoppingCart } from "lucide-react";
+import { Heart, ShoppingCart } from "lucide-react";
 import toast from "react-hot-toast";
 import { useCartStore } from "@/src/shared/store";
 import { Volume, volumes } from "@/src/shared/constants/perfume";
@@ -109,105 +111,39 @@ export const ProductCard: React.FC<Props> = ({
   const image = imageUrl || activeVariation?.imageUrl || "";
 
   return (
-    <div
-      className={cn(
-        "md:hover:scale-105 transition-all duration-300 active:scale-95 active:border-2 ",
-        className
-      )}
-    >
-        <div className="w-full max-w-[400px] aspect-[4/5] relative bg-white">
-          <Link href={`/product/${id}`} className="absolute inset-0">
-          <Image src={image} alt={name} fill className="object-contain " />
-          </Link>
-          <Button
-            className="absolute top-3 right-1 md:right-5 hover:bg-transparent p-2"
-            onClick={(e) => onToggleFavorite(e)}
-            aria-pressed={isFavorite}
-            aria-label={isFavorite ? "Aus Favoriten entfernen / Удалить из избранного" : "Zu Favoriten / В избранное"}
-            variant="ghost"
-          >
-            {isFavorite ? <HeartBlack /> : <Heart />}
-          </Button>
-          <div>
-            {discountPrice && (
-              <p className="absolute top-0 left-3 md:left-5 text-sm text-white bg-red-500 px-2">
-                SALE
-              </p>
-            )}
-          </div>
-          <div>
-            {isBestseller && (
-              <p className="absolute bottom-0 right-3 md:right-5 text-sm text-white bg-green-500 px-2">
-                BESTSELLER
-              </p>
-            )}
-          </div>
-        </div>
-
-      {reviews && (
-        <Link href={`/product-reviews/${id}`}>
-          <Rating
-            className="my-5 justify-center"
-            value={averageRating}
-            withNumber
-            reviewsCount={count}
-          />
+    <article className={cn("home-product compact-product catalogue-product", className)}>
+      <div className="home-product-photo">
+        <Link href={`/product/${id}`} className="absolute inset-0" aria-label={`${brand.name} ${name}`}>
+          <Image src={image} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" className="object-contain p-4 md:p-7" />
         </Link>
-      )}
-      <Link href={`/product/${id}`}>
-        <div className="h-32">
-          <Title text={brand.name} size="xs" className="md:text-lg mt-2 font-bold" />
-          <Title text={name} size="xs" className="md:text-md mt-1 font-semibold" />
-          <p className="text-sm">
-            {concentratioName || productGroup?.[labelLocale]}
-          </p>
-        </div>
+        <button type="button" className="home-product-heart" onClick={onToggleFavorite} aria-pressed={isFavorite} aria-label={locale === "ru" ? (isFavorite ? `Удалить ${name} из избранного` : `Добавить ${name} в избранное`) : (isFavorite ? `${name} aus Favoriten entfernen` : `${name} zu Favoriten hinzufügen`)}>
+          {isFavorite ? <HeartBlack /> : <Heart />}
+        </button>
+        {discountPrice ? <span className="home-product-badge home-sale">SALE</span> : isBestseller ? <span className="home-product-badge">BESTSELLER</span> : null}
+      </div>
+      <Link href={`/product/${id}`} className="home-product-description">
+        <p className="home-product-brand">{brand.name}</p>
+        <h3>{name}</h3>
       </Link>
-
-      {productGroup.onTap && (
-        <VolumeSelection
-          className="mb-4"
-          volumes={[...volumes]}
-          volume={volume}
-          setVolume={setVolume}
-        />
-      )}
-
-      {variations.length > 1 && (
-        <ChooseVariation
-          setActiveVariationId={setActiveVariationId}
-          activeVariationId={activeVariationId}
-          className="mb-4"
-          items={variations}
-        />
-      )}
-
-      <div className="flex justify-between items-center ">
-        <div className="flex flex-col">
-          <p className="text-[20px] ">
-            <span className="hidden md:inline">{t("price")}</span>{" "}
-            {discountPrice ? (
-              <>
-                <span className="line-through text-base mr-2">
-                  {formatMoney(finalPrice)} €
-                </span>
-                <b className="text-red-500">{formatMoney(finalDiscountPrice ?? finalPrice)} €</b>
-              </>
-            ) : (
-              <b>{formatMoney(finalPrice)} €</b>
-            )}
-          </p>
-        </div>
-
-        <Button
-          onClick={(e) => onSubmit(e)}
-          variant="outline"
-          className="text-base font-bold"
-        >
-          <Plus size={20} className="mr-1" />
-          <ShoppingCart size={20} />
+      <div className="compact-product-meta">
+        <p className="home-product-price">
+          {discountPrice ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
+        </p>
+        {productGroup.onTap && <span className="compact-product-size">{volume} ml</span>}
+      </div>
+      {productGroup.onTap && <VolumeSelection className="compact-product-volumes" volumes={[...volumes]} volume={volume} setVolume={setVolume} />}
+      {variations.length > 1 && <ChooseVariation setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId} className="compact-product-variations" items={variations} />}
+      <div className="home-product-buy">
+        <Button onClick={onSubmit} variant="outline" className="w-full" aria-label={`${t("addToCart")} ${name}`}>
+          <ShoppingCart size={16} />{t("addToCart")}
         </Button>
       </div>
-    </div>
+      <div className="compact-product-extra">
+        <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
+        {productGroup.onTap && <p className="home-product-volume">{locale === "ru" ? "Отливант" : "Abfüllung"} · {formatMoney((finalDiscountPrice ?? finalPrice) / (volume / 1000))} €/l</p>}
+        <HomePriceNote />
+        {reviews && count > 0 && <Link href={`/product-reviews/${id}`} className="home-product-rating"><Rating value={averageRating} reviewsCount={count} /></Link>}
+      </div>
+    </article>
   );
 };

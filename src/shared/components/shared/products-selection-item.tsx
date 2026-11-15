@@ -1,4 +1,5 @@
 "use client";
+import "./compact-product-card.css";
 
 import { HomePriceNote } from "./home-price-note";
 import { formatMoney } from "@/src/shared/lib/money";
@@ -76,7 +77,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
     discountPrice && productGroup.onTap ? discountPrice * 2 + 1 : discountPrice;
 
   return (
-    <article className={cn("home-product", className)}>
+    <article className={cn("home-product compact-product", className)}>
       <div className="home-product-photo">
         <Link href={`/product/${id}`} className="absolute inset-0 p-5 md:p-8" aria-label={`${brand.name} ${name}`}>
           <Image src={imageUrl || variations?.[0]?.imageUrl || ""} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" className="object-contain p-4 md:p-7" />
@@ -89,16 +90,21 @@ export const ProductSelectionItem: React.FC<Props> = ({
       <Link href={`/product/${id}`} className="home-product-description">
         <p className="home-product-brand">{brand.name}</p>
         <h3>{name}</h3>
-        <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
       </Link>
-      {reviews && count > 0 && <Link href={`/product-reviews/${id}`} className="home-product-rating"><Rating value={averageRating} reviewsCount={count} /></Link>}
-      <p className="home-product-price">
-        {discountPrice ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
-      </p>
-      {productGroup.onTap && <p className="home-product-volume">{locale === "ru" ? "Отливант 2 мл" : "2 ml Abfüllung"} · {formatMoney((finalDiscountPrice ?? finalPrice) / 0.002)} €/l</p>}
-      <HomePriceNote />
+      <div className="compact-product-meta">
+        <p className="home-product-price">
+          {discountPrice ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
+        </p>
+        {productGroup.onTap && <span className="compact-product-size">2 ml</span>}
+      </div>
       <div className="home-product-buy">
         <ByProductDialog id={id} variations={variations} price={price} discountPrice={discountPrice} brand={brand} imageUrl={imageUrl} name={name} productGroup={productGroup} />
+      </div>
+      <div className="compact-product-extra">
+        <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
+        {productGroup.onTap && <p className="home-product-volume">{locale === "ru" ? "Отливант" : "Abfüllung"} · {formatMoney((finalDiscountPrice ?? finalPrice) / 0.002)} €/l</p>}
+        <HomePriceNote />
+        {reviews && count > 0 && <Link href={`/product-reviews/${id}`} className="home-product-rating"><Rating value={averageRating} reviewsCount={count} /></Link>}
       </div>
     </article>
   );
