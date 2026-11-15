@@ -37,6 +37,11 @@ export const OrderSuccessTemplate: React.FC<Props> = ({
       <li>
         Datum: <strong>{orderDate}</strong>
       </li>
+      {pricing && <>
+        <li>Warenwert: <strong>{(pricing.subtotalGrossCents / 100).toFixed(2)} €</strong></li>
+        {pricing.discountGrossCents > 0 && <li>Rabatt: <strong>−{(pricing.discountGrossCents / 100).toFixed(2)} €</strong></li>}
+        <li>Versandkosten: <strong>{(pricing.shippingGrossCents / 100).toFixed(2)} €</strong></li>
+      </>}
       <li>
         Gesamtbetrag inkl. Versand: <strong>€{total.toFixed(2)}</strong>
       </li>

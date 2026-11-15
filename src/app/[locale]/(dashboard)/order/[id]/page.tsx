@@ -1,4 +1,5 @@
 import { formatMoney } from "@/src/shared/lib/money";
+import { readPricing } from "@/src/shared/lib/tax";
 import { OrderStatuses } from "@/prisma/constants";
 import { prisma } from "@/prisma/prisma-client";
 import {
@@ -44,6 +45,14 @@ export default async function Order({
   // const date = order?.createdAt;
 
   const t = await getTranslations("Checkout");
+  const snapshot = readPricing(order?.pricingSnapshot);
+  const breakdown = snapshot && snapshot.totalGrossCents === Math.round(Number(order?.totalAmount) * 100)
+    ? [
+        ["Товары", snapshot.subtotalGrossCents],
+        ...(snapshot.discountGrossCents > 0 ? [["Скидка", -snapshot.discountGrossCents]] as const : []),
+        ["Доставка", snapshot.shippingGrossCents],
+      ] as const
+    : [];
   return (
     <div className="my-4 md:px-7">
       <OrderItemsList />
@@ -52,6 +61,12 @@ export default async function Order({
           Номер заказа:
           <span className="font-bold mr-2 w-1/2">{order?.id}</span>
         </li>
+        {breakdown.map(([label, amount]) => (
+          <li key={label} className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
+            {label}:
+            <span className="font-bold mr-2 w-1/2">{formatMoney(amount / 100)} €</span>
+          </li>
+        ))}
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Общая сумма:
           <span className="font-bold mr-2 w-1/2">
