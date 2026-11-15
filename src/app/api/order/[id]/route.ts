@@ -1,9 +1,12 @@
+import { getUserSession } from "@/src/shared/server-lib/get-user-session";
 import { prisma } from "@/prisma/prisma-client";
 import { OrderStatus } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
 
 export async function PATCH(req: NextRequest,  { params }: { params: Promise<{ id: string }> }) {
+    const session=await getUserSession();
+    if(session?.role!=="ADMIN") return NextResponse.json({message:"Forbidden"},{status:403});
     try {
         const id = Number((await params).id);
         if (isNaN(id)) {
@@ -43,6 +46,8 @@ export async function PATCH(req: NextRequest,  { params }: { params: Promise<{ i
 }
 
 export async function DELETE(req: NextRequest,  { params }: { params: Promise<{ id: string }> }) {
+    const session=await getUserSession();
+    if(session?.role!=="ADMIN") return NextResponse.json({message:"Forbidden"},{status:403});
     try {
         const id = Number((await params).id);
         if (isNaN(id)) {

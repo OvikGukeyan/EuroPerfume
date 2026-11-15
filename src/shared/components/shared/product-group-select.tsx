@@ -1,6 +1,7 @@
 "use client";
 
 import React, { FC } from "react";
+import { bottleGroup } from "@/src/shared/lib/full-bottle";
 import { cn } from "@/src/lib/utils";
 import { Button, CreateGroupForm, Popover } from "..";
 import { PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -40,7 +41,7 @@ export const ProductGroupSelect: FC<Props> = ({
         name="productGroupId"
         control={control}
         items={productGroups
-          .filter((item) => item.categoryId === categoryId)
+          .filter((item) => item.categoryId === categoryId && item.labelDe !== bottleGroup.labelDe)
           .map((item) => ({
             value: item.id.toString(),
             name: item.labelRu,
@@ -69,7 +70,7 @@ export const ProductGroupSelect: FC<Props> = ({
           <PopoverContent className="w-80">
             <ul>
               {productGroups
-                .filter((item) => item.categoryId === categoryId)
+                .filter((item) => item.categoryId === categoryId && item.labelDe !== bottleGroup.labelDe)
                 .map((item) => (
                   <li
                     className="flex items-center justify-between cursor-pointer mb-2 hover:bg-slate-100 h-8 px-2"

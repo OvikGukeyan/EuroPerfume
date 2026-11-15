@@ -20,10 +20,12 @@ import {
   Recommendations,
   Title,
 } from "@/src/shared/components";
-import { useTranslations } from "next-intl";
+import { useCartStore } from "@/src/shared/store/cart";
+import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/src/i18n/navigation";
 
 export default function Checkout() {
+  const locale=useLocale();
   const [submitting, setSubmitting] = useState(false);
   const [promoError, setPromoError] = useState<string | null>(null);
   const {
@@ -89,7 +91,12 @@ export default function Checkout() {
   const onSubmit = async (data: CheckoutFormValues) => {
     try {
       setSubmitting(true);
-      await createOrder(data);
+      const result=await createOrder(data);
+      if(result?.code==="BOTTLE_STOCK"){
+        await useCartStore.getState().fetchCartItems();
+        toast.error(locale==="ru"?"Этот объём закончился или его осталось меньше. Проверьте количество в корзине.":"Dieser Flakon ist nicht mehr in der gewünschten Menge verfügbar. Bitte prüfen Sie Ihren Warenkorb.");
+        return;
+      }
       toast.success("Order created successfully! ", {
         icon: "✅",
       });

@@ -25,6 +25,8 @@ import {
 } from "@/src/shared/components/ui/form";
 
 import { NoteType } from "@prisma/client";
+import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
 import { Control, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,7 +46,7 @@ interface Props {
   categoryId: number;
   submitFunction:
     | ((data: FormData & CreateProductFormValues, id: number) => Promise<void>)
-    | ((data: FormData & CreateProductFormValues) => Promise<void>);
+    | ((data: FormData & CreateProductFormValues) => Promise<void|number>);
 }
 
 export const CreateProductForm: FC<Props> = ({
@@ -52,6 +54,7 @@ export const CreateProductForm: FC<Props> = ({
   submitFunction,
   categoryId,
 }) => {
+  const locale=useLocale(), router=useRouter();
   const [loading, setLoading] = useState(false);
   const {
     loading: videoLoading,
@@ -286,10 +289,11 @@ export const CreateProductForm: FC<Props> = ({
       formData.append("baseNotes", JSON.stringify(data.baseNotes));
       formData.append("classification", JSON.stringify(data.classification));
 
-      await submitFunction(
+      const created = await submitFunction(
         formData as FormData & CreateProductFormValues,
         product?.id || 0
       );
+      if(!product && categoryId===1 && typeof created==="number") router.push("/"+locale+"/update/"+created+"#full-bottles");
       form.reset();
       toast.success("Product created 📝", { icon: "✅" });
     } catch (error) {

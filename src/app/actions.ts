@@ -1,4 +1,5 @@
 "use server";
+import { bottleGroup } from "@/src/shared/lib/full-bottle";
 import { aromaBoxItems } from "@/src/shared/lib/aroma-box";
 
 import {
@@ -355,115 +356,122 @@ export async function createOrder(data: CheckoutFormValues) {
       throw new Error("Cart token not found!");
     }
 
-    const userCart = await prisma.cart.findFirst({
-      include: {
-        user: true,
-        items: {
-          include: {
-            product: {
-              include: {
-                brand: true,
-                productGroup: true,
+    const boxCookie=(await cookieStore).get("discoveryBoxIds")?.value;
+    const {order,pricing,userCart,boxLabel}=await prisma.$transaction(async tx=>{
+      await tx.$queryRaw`SELECT id FROM public."Cart" WHERE token=${cartToken} FOR UPDATE`;
+      const userCart = await tx.cart.findFirst({
+        include: {
+          user: true,
+          items: {
+            include: {
+              product: {
+                include: {
+                  brand: true,
+                  productGroup: true,
+                },
               },
+              variation: true,
             },
-            variation: true,
           },
         },
-      },
-      where: {
-        token: cartToken,
-      },
-    });
-
-    if (!userCart) {
-      throw new Error("Cart not found!");
-    }
-
-    if (userCart?.totalAmount.toNumber() === 0) {
-      throw new Error("Cart is empty!");
-    }
-
-    const boxItems = aromaBoxItems((await cookieStore).get("discoveryBoxIds")?.value, userCart.items);
-    const boxItemIds = new Set(boxItems.map(item => item.id));
-    if (userCart.items.some(item => !item.product.available)) {
-      throw new Error("Один из товаров больше недоступен. Обновите корзину.");
-    }
-    const boxLabel = boxItems.length ? "Aroma Box · 8 × 2 мл\n" + boxItems.map(item => `${item.product.brand?.name || ""} ${item.product.name} — 2 мл`).join("\n") : "";
-    const deliveryCountry = deliveryCountryForCheckout(data);
-    const orderedAt = new Date();
-    const pricing = capturePricing(userCart.items.map(item => boxItemIds.has(item.id) ? { ...item, product: { ...item.product, name: "Aroma Box · " + item.product.name } } : item), deliveryCountry, data.discount ?? 0, orderedAt);
-    const totalAmountWithDelivery = pricing.totalGrossCents / 100;
-    const fullName = data.firstName + " " + data.lastName;
-    const deliveryFullNmae =
-      data.deliveryFirstName && data.deliveryFirstName.length > 0
-        ? data.deliveryFirstName + " " + data.deliveryLastName
-        : fullName;
-
-    const order = await prisma.order.create({
-      data: {
-        fullName: fullName,
-        deliveryFullNmae: deliveryFullNmae,
-        email: data.email,
-        phone: data.phone,
-        city: data.city,
-        country: data.country,
-        deliveryCountry,
-        deliveryCity: data.deliveryCity ? data.deliveryCity : data.city,
-        zip: data.zip,
-        deliveryZip: data.deliveryZip ? data.deliveryZip : data.zip,
-        shippingMethod: data.shippingMethod,
-        postNumber: data.postNumber,
-        postOffice: data.postOffice,
-        packstationNumber: data.packstationNumber,
-        address: data.address,
-        houseNumber: data.houseNumber,
-        deliveryAddress: data.deliveryAddress
-          ? data.deliveryAddress
-          : data.address,
-        deliveryHouseNumber: data.deliveryHouseNumber
-          ? data.deliveryHouseNumber
-          : data.houseNumber,
-        comment: [boxLabel, data.comment].filter(Boolean).join("\n"),
-        token: cartToken,
-        totalAmount: totalAmountWithDelivery,
-        createdAt: orderedAt,
-        pricingSnapshot: pricing,
-        contactForm: data.contactForm,
-        promocode: data.promocode,
-        discount: data.discount,
-        status: OrderStatus.NEW,
-        items: {
-          create: userCart.items.map((item) => ({
-            name: (boxItemIds.has(item.id) ? "Aroma Box · " : "") + item.product.name,
-            quantity: item.quantity,
-            variationId: item.variationId,
-            productId: item.productId,
-          })),
+        where: {
+          token: cartToken,
         },
-      },
-      include: {
-        items: {
-          include: {
-            product: true,
+      });
+
+      if (!userCart) {
+        throw new Error("Cart not found!");
+      }
+
+      if (!userCart.items.length) {
+        throw new Error("Cart is empty!");
+      }
+
+      const boxItems = aromaBoxItems(boxCookie, userCart.items);
+      const boxItemIds = new Set(boxItems.map(item => item.id));
+      if (userCart.items.some(i=>i.product.bottleParentId!==null && (!i.product.available || i.variationId!==null || i.quantity<1 || i.quantity>i.product.stockPieces))) throw new Error("Not enough full bottles in stock");
+      if (userCart.items.some(item => !item.product.available)) {
+        throw new Error("Один из товаров больше недоступен. Обновите корзину.");
+      }
+      const boxLabel = boxItems.length ? "Aroma Box · 8 × 2 мл\n" + boxItems.map(item => `${item.product.brand?.name || ""} ${item.product.name} — 2 мл`).join("\n") : "";
+      const deliveryCountry = deliveryCountryForCheckout(data);
+      const orderedAt = new Date();
+      const pricing = capturePricing(userCart.items.map(item => boxItemIds.has(item.id) ? { ...item, product: { ...item.product, name: "Aroma Box · " + item.product.name } } : item), deliveryCountry, data.discount ?? 0, orderedAt);
+      const totalAmountWithDelivery = pricing.totalGrossCents / 100;
+      const fullName = data.firstName + " " + data.lastName;
+      const deliveryFullNmae =
+        data.deliveryFirstName && data.deliveryFirstName.length > 0
+          ? data.deliveryFirstName + " " + data.deliveryLastName
+          : fullName;
+
+      const order = await tx.order.create({
+        data: {
+          fullName: fullName,
+          deliveryFullNmae: deliveryFullNmae,
+          email: data.email,
+          phone: data.phone,
+          city: data.city,
+          country: data.country,
+          deliveryCountry,
+          deliveryCity: data.deliveryCity ? data.deliveryCity : data.city,
+          zip: data.zip,
+          deliveryZip: data.deliveryZip ? data.deliveryZip : data.zip,
+          shippingMethod: data.shippingMethod,
+          postNumber: data.postNumber,
+          postOffice: data.postOffice,
+          packstationNumber: data.packstationNumber,
+          address: data.address,
+          houseNumber: data.houseNumber,
+          deliveryAddress: data.deliveryAddress
+            ? data.deliveryAddress
+            : data.address,
+          deliveryHouseNumber: data.deliveryHouseNumber
+            ? data.deliveryHouseNumber
+            : data.houseNumber,
+          comment: [boxLabel, data.comment].filter(Boolean).join("\n"),
+          token: cartToken,
+          totalAmount: totalAmountWithDelivery,
+          createdAt: orderedAt,
+          pricingSnapshot: pricing,
+          contactForm: data.contactForm,
+          promocode: data.promocode,
+          discount: data.discount,
+          status: OrderStatus.NEW,
+          items: {
+            create: userCart.items.map((item) => ({
+              name: (boxItemIds.has(item.id) ? "Aroma Box · " : "") + item.product.name,
+              quantity: item.quantity,
+              variationId: item.variationId,
+              productId: item.productId,
+            })),
           },
         },
-      },
-    });
+        include: {
+          items: {
+            include: {
+              product: true,
+            },
+          },
+        },
+      });
 
-    await prisma.cart.update({
-      where: {
-        id: userCart.id,
-      },
-      data: {
-        totalAmount: 0,
-      },
-    });
+      await tx.cart.update({
+        where: {
+          id: userCart.id,
+        },
+        data: {
+          totalAmount: 0,
+        },
+      });
 
-    await prisma.cartItem.deleteMany({
-      where: {
-        cartId: userCart.id,
-      },
-    });
+      await tx.cartItem.deleteMany({
+        where: {
+          cartId: userCart.id,
+        },
+      });
+
+      return {order,pricing,userCart,boxLabel};
+    }, {timeout:15000});
 
     // const paymentData = await createPayment({
     //   orderId: order.id,
@@ -514,6 +522,7 @@ export async function createOrder(data: CheckoutFormValues) {
     notificationResults.forEach((result, index) => { if (result.status === "rejected") console.error("[order notification]", index, "delivery failed"); });
     (await cookieStore).delete("discoveryBoxIds");
   } catch (error) {
+    if(error instanceof Error && error.message.includes("Not enough full bottles in stock")) return {code:"BOTTLE_STOCK"} as const;
     console.error("[createOrder] Server error", error);
     throw error;
   }
@@ -709,6 +718,7 @@ export async function createProduct(
 
     const parsedData = parseProductFormData(formData);
 
+    if ((await prisma.productGroup.findUnique({where:{id:parsedData.productGroupId}}))?.labelDe===bottleGroup.labelDe) throw new Error("Добавьте флакон через карточку аромата.");
     const imageUploads = await Promise.all(
       parsedData.image.map(async (file, index) => {
         const fileName = `${index}-${file.name}--${new Date().toISOString()}`;
@@ -737,7 +747,7 @@ export async function createProduct(
       }),
     );
 
-    await prisma.product.create({
+    const created=await prisma.product.create({
       data: {
         name: parsedData.productName,
         imageUrl: imageUploads,
@@ -841,6 +851,7 @@ export async function createProduct(
         },
       },
     });
+    return created.id;
   } catch (error) {
     console.error("Error [CREATE_PRODUCT]", error);
     throw error;
@@ -901,7 +912,9 @@ export async function updateProduct(
       throw new Error("Product not found");
     }
 
+    if(product.bottleParentId) throw new Error("Используйте раздел полных флаконов.");
     const parsedData = parseProductFormData(formData);
+    if ((await prisma.productGroup.findUnique({where:{id:parsedData.productGroupId}}))?.labelDe===bottleGroup.labelDe) throw new Error("Добавьте флакон через карточку аромата.");
 
     if (parsedData.video && product.videoUrl) {
       const getRelativePath = (url: string) =>
@@ -1196,6 +1209,7 @@ export async function deleteProduct(id: number) {
       throw new Error("Product not found");
     }
 
+    if(product.bottleParentId || await prisma.product.count({where:{bottleParentId:id}})) throw new Error("Для снятия флакона с продажи укажите остаток 0.");
     if (product.imageUrl.length > 0) {
       const getRelativePath = (url: string) =>
         url.split("/storage/v1/object/public/images/")[1];

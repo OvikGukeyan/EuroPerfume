@@ -1,3 +1,6 @@
+import { FullBottleEditor } from "@/src/shared/components/shared/full-bottle-editor";
+import { publicBottle } from "@/src/shared/lib/full-bottle";
+import { redirect } from "next/navigation";
 import { updateProduct } from "@/src/app/actions";
 import { CreateProductForm, Title } from "@/src/shared/components";
 
@@ -6,14 +9,15 @@ import { prisma } from "@/prisma/prisma-client";
 export default async function Update({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 }) {
-  const { id } = await params;
+  const { id,locale } = await params;
   const product = await prisma.product.findFirst({
     where: {
       id: Number(id),
     },
     include: {
+      fullBottles: {orderBy:{id:"asc"}},
       productGroup: true,
       translations: true,
       aromas: true,
@@ -40,8 +44,10 @@ export default async function Update({
     <h1>Product not found</h1>;
   }
 
+  if(product.bottleParentId) redirect("/"+locale+"/update/"+product.bottleParentId+"#full-bottles");
+  const {fullBottles,...base}=product;
   const safeProduct = {
-    ...product,
+    ...base,
     price: product.price.toNumber(),
     discountPrice: product.discountPrice?.toNumber() || null,
   };
@@ -50,6 +56,7 @@ export default async function Update({
     <div className=" px-10 mb-10">
       <Title className="mb-5" text="Update product" />
 
+      {product.productGroup.onTap && <FullBottleEditor parentId={product.id} bottles={fullBottles.map(b=>({...publicBottle(b),stock:b.stockPieces,version:b.updatedAt.toISOString()})).sort((a,b)=>a.ml-b.ml)}/>}
       <CreateProductForm
         product={safeProduct}
         submitFunction={updateProduct}

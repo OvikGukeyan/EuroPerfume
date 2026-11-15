@@ -1,5 +1,6 @@
 "use client";
 import { formatMoney } from "@/src/shared/lib/money";
+import type { BottleOption } from "@/src/shared/lib/full-bottle";
 import { TaxPriceNotice } from "./tax-price-notice";
 
 import { cn } from "@/src/shared/lib/utils";
@@ -38,9 +39,11 @@ export interface ProductWithTranslations extends ProductDTO {
 }
 interface Props {
   product: ProductWithTranslations;
+  bottles?: BottleOption[];
+  initialBottleId?: number;
   className?: string;
 }
-export const ChooseProductForm: FC<Props> = ({ product, className }) => {
+export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], initialBottleId }) => {
   const reviewsRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState("characteristics");
   const [activeVariationId, setActiveVariationId] = useState<number>(
@@ -52,11 +55,15 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
 
   const [volume, setVolume] = useState<Volume>(volumes[0]);
 
-  const finalPrice = product.productGroup.onTap
+  const firstBottle=bottles.find(b=>b.available) ?? bottles[0];
+  const [bottleId,setBottleId]=useState<number|null>(()=>
+    bottles.find(b=>b.id===initialBottleId)?.id ?? (!product.available ? firstBottle?.id : null) ?? null);
+  const bottle=bottles.find(b=>b.id===bottleId);
+  const finalPrice = bottle ? bottle.price : product.productGroup.onTap
     ? calcPrice(volume, product.price)
     : product.price;
   const finalDiscountPrice =
-    product.discountPrice && product.productGroup.onTap
+    bottle ? null : product.discountPrice && product.productGroup.onTap
       ? calcPrice(volume, product.discountPrice)
       : product.discountPrice;
   const { averageRating, count } = calcAverageRating(product.reviews);
@@ -85,14 +92,14 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
   const onSubmit = async () => {
     try {
       await addCartItem({
-        productId: product.id,
-        volume: product.productGroup.onTap ? volume : 1,
-        variationId: activeVariation?.id,
+        productId: bottle?.id ?? product.id,
+        volume: !bottle && product.productGroup.onTap ? volume : 1,
+        variationId: bottle ? undefined : activeVariation?.id,
       });
-      toast.success(product.name + " added to cart");
+      toast.success(locale==="ru"?"Добавлено в корзину":"Zum Warenkorb hinzugefügt");
     } catch (error) {
       console.error(error);
-      toast.error("Something went wrong");
+      toast.error(locale==="ru"?"Не удалось добавить товар. Проверьте наличие и количество в корзине.":"Der Artikel konnte nicht hinzugefügt werden. Bitte Bestand und Menge im Warenkorb prüfen.");
     }
   };
 
@@ -146,34 +153,19 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
   return (
     <div
       className={cn(
-        "flex flex-col lg:flex-row flex-1 max-w-[100vw] bg-[#f2f2f2] ",
+        "flex flex-col lg:flex-row flex-1 max-w-full gap-4 bg-white",
         className
       )}
     >
-      <div className="flex  items-center justify-center flex-1 relative w-full  lg:w-2/5 bg-[#f2f2f2] p-2  min-h-[500px] self-start">
-        {media.length > 1 || variationsMedia.length > 1 ? (
-          <ProductCarousel
-            slides={media.length > 1 ? media : variationsMedia}
-            setActiveVariationId={setActiveVariationId}
-            activeVariationId={activeVariationId}
-          />
-        ) : (
-          <Image
-            layout="fill"
-            objectFit="contain"
-            src={activeVariation?.imageUrl || product.imageUrl[0]}
-            alt={""}
-          />
-        )}
+      <div className="relative flex min-h-[min(90vw,460px)] w-full items-center justify-center self-start overflow-hidden bg-white lg:w-1/2 lg:min-h-[32rem]">
+        {bottle?.image ? <Image src={bottle.image} fill sizes="(min-width:1024px) 50vw, 100vw" className="object-contain p-4" alt={product.name+" · "+bottle.ml+" ml"}/> :
+          media.length>1 || variationsMedia.length>1 ? (
+          <ProductCarousel slides={media.length>1 ? media : variationsMedia} setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId}/>
+        ) : (activeVariation?.imageUrl || product.imageUrl[0]) ? (
+          <Image fill sizes="(min-width:1024px) 50vw, 100vw" className="object-contain p-4" src={activeVariation?.imageUrl || product.imageUrl[0]} alt={product.name}/>
+        ) : null}
       </div>
-      {/* <ShareButton
-        title={product.name}
-        text="Посмотри, какой классный аромат!"
-        // url можно не передавать — возьмётся текущий.
-        utm={{ source: "share", medium: "product", campaign: "referral" }}
-        className="mt-2"
-      /> */}
-      <div className="w-full flex flex-col justify-between lg:w-3/5  bg-[#f2f2f2] p-1 md:p-7">
+      <div className="w-full bg-white p-4 md:p-7 lg:w-1/2">
         <div>
           <Title
             text={product.brand.name}
@@ -187,7 +179,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
           />
 
           <Separator />
-          {product.variations.length > 0 && (
+          {!bottle && product.variations.length > 0 && (
             <ChooseVariation
               setActiveVariationId={setActiveVariationId}
               activeVariationId={activeVariationId}
@@ -195,6 +187,29 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
               items={product.variations}
             />
           )}
+          <section className="my-5 space-y-4" aria-label={locale==="ru"?"Покупка":"Kaufen"}>
+            {bottles.length>0 && <div className="grid grid-cols-2 gap-1 rounded-xl bg-neutral-100 p-1">
+              {[{title:locale==="ru"?"Отливант":"Abfüllung",active:!bottle,select:()=>setBottleId(null)},
+                {title:locale==="ru"?"Полный флакон":"Originalflakon",active:!!bottle,select:()=>setBottleId(firstBottle.id)}]
+                .map(b=><button type="button" key={b.title} aria-pressed={b.active} onClick={b.select} className={cn("min-h-11 rounded-lg px-2 text-sm font-semibold",b.active&&"bg-white shadow-sm")}>{b.title}</button>)}
+            </div>}
+            {product.productGroup.onTap && <div>
+              <p className="mb-2 text-sm font-semibold">{locale==="ru"?"Объём":"Größe"}</p>
+              {bottle ? <div className="flex flex-wrap gap-2">{bottles.map(b=><button type="button" key={b.id} aria-pressed={b.id===bottle.id} onClick={()=>setBottleId(b.id)} className={cn("min-h-10 rounded-lg border px-4 text-sm", b.id===bottle.id && "border-neutral-900 bg-neutral-900 text-white")}>{b.ml} ml</button>)}</div> :
+                <VolumeSelection volume={volume} setVolume={setVolume} volumes={[...volumes]}/>}
+            </div>}
+            {!bottle && product.productGroup.onTap && <p className="text-xs text-neutral-600">{locale==="ru"?"Отливант из оригинального флакона. Не является официальным пробником производителя.":"Duftabfüllung aus einem Originalflakon. Keine offizielle Herstellerprobe."}</p>}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
+              <div aria-live="polite"><div className="text-2xl font-semibold tabular-nums">{formatMoney(finalDiscountPrice ?? finalPrice)} €</div>
+                {finalDiscountPrice!=null && <del className="text-sm text-neutral-500">{formatMoney(finalPrice)} €</del>}
+                {product.productGroup.onTap && <p className="text-xs text-neutral-600">{formatMoney((finalDiscountPrice ?? finalPrice)*1000/(bottle?.ml ?? volume))} €/l</p>}
+              </div>
+              <Button loading={loading} disabled={bottle ? !bottle.available : !product.available} onClick={onSubmit} className="min-h-12 grow rounded-lg px-5 sm:grow-0">
+                {(bottle ? !bottle.available : !product.available) ? (locale==="ru"?"Нет в наличии":"Ausverkauft") : (locale==="ru"?"В корзину":"In den Warenkorb")}
+              </Button>
+            </div>
+            <TaxPriceNotice gross={finalDiscountPrice ?? finalPrice}/>
+          </section>
           <div
             style={{ scrollbarWidth: "none" }}
             className={cn("overflow-scroll  overflow-x-hidden")}
@@ -260,8 +275,6 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
             </Tabs>
           </div>
 
-          {product.productGroup.onTap && <p className="text-xs text-slate-600">{locale === "ru" ? "Отливант из оригинального флакона. Не является официальным пробником производителя." : "Duftabfüllung aus einem Originalflakon. Keine offizielle Herstellerprobe."}</p>}
-
           <Separator />
           <div onClick={handleRatingClick}>
             <Rating
@@ -272,37 +285,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className }) => {
             />
           </div>
 
-          {product.productGroup.onTap && (
-            <VolumeSelection
-              volume={volume}
-              setVolume={setVolume}
-              volumes={[...volumes]}
-              className="my-4"
-            />
-          )}
-
-          <Separator />
         </div>
-
-        <Button
-          loading={loading}
-          onClick={onSubmit}
-          className="h-[55px] px-10 text-base rounded-[18px] w-full mt-6 "
-        >
-          <span className="mr-1">{t("addToCartFor")}</span>
-
-          {product.discountPrice ? (
-            <>
-              <span className="line-through text-base mr-2">
-                {formatMoney(finalPrice)} €
-              </span>
-              <b className="text-red-500">{formatMoney(finalDiscountPrice ?? finalPrice)} €</b>
-            </>
-          ) : (
-            <b>{formatMoney(finalPrice)} €</b>
-          )}
-        </Button>
-        <TaxPriceNotice />
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { create } from "zustand";
 import { Api } from "../services/api-client";
 import { getCartDetails } from "../lib";
@@ -58,6 +59,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       set(getCartDetails(data));
     } catch (error) {
       console.error(error);
+      toast.error(document.documentElement.lang === "ru" ? "Не удалось изменить количество. Проверьте остаток." : "Menge konnte nicht geändert werden. Bitte Bestand prüfen.");
       set({ error: true });
     } finally {
       set(state => ({ itemLoading: false, items: state.items.map(item => ({ ...item, disabled: false })) }));
@@ -71,6 +73,7 @@ export const useCartStore = create<CartState>((set, get) => ({
     } catch (error) {
       console.error(error);
       set({ error: true });
+      throw error;
     } finally {
       set({ loading: false });
     }

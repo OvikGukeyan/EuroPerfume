@@ -22,19 +22,19 @@ export const VolumeSelection: FC<Props> = ({
   return (
     <div
       className={cn(
-        "w-full grid grid-cols-3 gap-2 md:grid-cols-4 lg:grid-cols-5 ",
+        "w-full grid grid-cols-3 gap-2 xl:grid-cols-6 ",
         className
       )}
     >
       {volumes.map((item, index) => (
         <Button
-          onPointerDown={() =>  {setVolume(item)}}
-          disabled={volume === item}
-          className=" h-8 rounded-none  disabled:bg-slate-300"
+          type="button" onClick={() => setVolume(item)}
+          aria-pressed={volume === item}
+          className={cn("min-h-10 rounded-lg px-1",volume===item && "bg-neutral-900 text-white hover:bg-neutral-800")}
           key={item}
           variant={"outline"}
         >
-          {item}ml
+          {item} ml
         </Button>
       ))}
     </div>

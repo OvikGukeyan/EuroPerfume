@@ -98,6 +98,10 @@ model Product {
   updatedAt       DateTime          @updatedAt
   popularProducts PopularProducts[] @relation("PopularProductsOnProducts")
   StockMovement   StockMovement[]
+  bottleParentId Int?
+  bottleParent Product? @relation("FullBottles", fields: [bottleParentId], references: [id], onDelete: Restrict)
+  fullBottles Product[] @relation("FullBottles")
+  @@unique([bottleParentId, volume])
   stockMl         Int               @default(0)
   stockPieces     Int               @default(0)
 

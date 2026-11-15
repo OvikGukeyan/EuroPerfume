@@ -1,5 +1,6 @@
 import { prisma } from "@/prisma/prisma-client";
-import { notFound } from "next/navigation";
+import { publicBottle } from "@/src/shared/lib/full-bottle";
+import { notFound, redirect } from "next/navigation";
 import React from "react";
 import {
   BreadcrumbComponent,
@@ -11,14 +12,16 @@ import {
 import { Recommendations } from "@/src/shared/components/shared/recommendations";
 
 export default async function Product({
-  params,
+  params,searchParams,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale:string }>;
+  searchParams: Promise<{bottle?:string}>;
 }) {
   const productId = Number((await params).id);
   const product = await prisma.product.findFirst({
     where: { id: productId },
     include: {
+      fullBottles: {select:{id:true,volume:true,price:true,discountPrice:true,imageUrl:true,stockPieces:true,available:true}},
       reviews: {
         include: {
           user: true,
@@ -56,8 +59,12 @@ export default async function Product({
     return notFound();
   }
 
+  if(product.bottleParentId) redirect("/"+(await params).locale+"/product/"+product.bottleParentId+"?bottle="+product.id);
+  const {fullBottles,...base}=product;
+  const bottles=fullBottles.map(publicBottle).sort((a,b)=>a.ml-b.ml);
+  const requested=Number((await searchParams).bottle);
   const safeProduct = {
-    ...product,
+    ...base,
     price: product.price.toNumber(),
     discountPrice: product.discountPrice?.toNumber() || null,
   };
@@ -71,7 +78,7 @@ export default async function Product({
         productCategory={product.category}
         productGroup={product.productGroup}
       />
-      <ChooseProductForm product={safeProduct} />
+      <ChooseProductForm key={product.id+":"+requested} product={safeProduct} bottles={bottles} initialBottleId={requested} />
       <ReviewsComponent className="hidden md:block" product={safeProduct} />
       <Recommendations searchParams={safeProduct} className="my-20" />
       <RecentlyViewed />

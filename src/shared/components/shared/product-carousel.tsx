@@ -64,12 +64,12 @@ export const ProductCarousel: React.FC<PropType> = ({
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-4 w-full min-h-400 ",
+        "flex flex-col items-center gap-2 w-full ",
         className
       )}
     >
       <div
-        className="relative w-full max-w-md overflow-hidden"
+        className="relative w-full max-w-[min(100%,65vh)] overflow-hidden"
         ref={emblaMainRef}
       >
         <div className="flex transition-transform duration-0 w-full">
@@ -90,7 +90,7 @@ export const ProductCarousel: React.FC<PropType> = ({
                   className="w-full h-auto"
                 />
               ) : (
-                <img src={slide.url} alt={"image"} />
+                <img src={slide.url} alt="" className="h-full w-full object-contain" />
               )}
             </div>
           ))}
@@ -109,7 +109,7 @@ export const ProductCarousel: React.FC<PropType> = ({
                 <button
                   onClick={() => onThumbClick(index)}
                   type="button"
-                  className={`flex items-center justify-center w-16 h-16 border overflow-hidden  ${
+                  className={`flex items-center justify-center w-12 h-12 border overflow-hidden  ${
                     index === selectedIndex
                       ? "border-gray-500"
                       : "border-gray-300"

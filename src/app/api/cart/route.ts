@@ -76,32 +76,20 @@ export async function POST(req: NextRequest) {
 
     const userCart = await findOrCreateCart(token);
     const data = (await req.json()) as CreateCartItemValues;
-    const findCartItem = await prisma.cartItem.findFirst({
-      where: {
-        cartId: userCart.id,
-        productId: data.productId,
-      },
+    if (!Number.isSafeInteger(data.volume) || data.volume<1 || !Number.isSafeInteger(data.productId))
+      return NextResponse.json({message:"Invalid quantity or product"},{status:400});
+    const ok=await prisma.$transaction(async tx=>{
+      await tx.$queryRaw`SELECT id FROM public."Cart" WHERE id=${userCart.id} FOR UPDATE`;
+      const product=await tx.product.findUnique({where:{id:data.productId},select:{available:true,bottleParentId:true,stockPieces:true}});
+      if(!product?.available || (product.bottleParentId!==null && data.variationId!=null)) return false;
+      const existing=await tx.cartItem.findFirst({where:{cartId:userCart.id,productId:data.productId,variationId:data.variationId??null}});
+      const quantity=(existing?.quantity??0)+data.volume;
+      if(product.bottleParentId!==null && quantity>product.stockPieces) return false;
+      if(existing) await tx.cartItem.update({where:{id:existing.id},data:{quantity}});
+      else await tx.cartItem.create({data:{cartId:userCart.id,productId:data.productId,quantity,variationId:data.variationId}});
+      return true;
     });
-
-    if (findCartItem) {
-      await prisma.cartItem.update({
-        where: {
-          id: findCartItem.id,
-        },
-        data: {
-          quantity: findCartItem.quantity + data.volume,
-        },
-      });
-    } else {
-      await prisma.cartItem.create({
-        data: {
-          cartId: userCart.id,
-          productId: data.productId,
-          quantity: data.volume,
-          variationId: data.variationId,
-        },
-      });
-    }
+    if(!ok) return NextResponse.json({message:"Requested quantity unavailable"},{status:409});
 
     const updatedUserCart = await updateCartTotalAmount(token);
 
