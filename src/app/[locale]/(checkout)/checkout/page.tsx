@@ -23,7 +23,6 @@ import {
 import { useCartStore } from "@/src/shared/store/cart";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/src/i18n/navigation";
-import { useSearchParams } from "next/navigation";
 
 export default function Checkout() {
   const locale=useLocale();
@@ -32,6 +31,7 @@ export default function Checkout() {
   const {
     totalAmount,
     items,
+    promotions,
     updateItemQuantity,
     removeCartItem,
     loading,
@@ -39,7 +39,6 @@ export default function Checkout() {
   } = useCart();
   const { data: session } = useSession();
   const router = useRouter();
-  const searchParams = useSearchParams();
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
     defaultValues: {
@@ -60,7 +59,6 @@ export default function Checkout() {
       deliveryZip: "",
       contactForm: ContactForms.WA,
       comment: "",
-      campaignCode: undefined,
       postNumber: "",
       postOffice: "",
       packstationNumber: "",
@@ -71,13 +69,6 @@ export default function Checkout() {
   });
 
 
-  useEffect(() => {
-    if (searchParams.get("campaign") === "WOOD_TRIO_GIFT_2026") {
-      form.setValue("campaignCode", "WOOD_TRIO_GIFT_2026");
-    }
-  }, [searchParams, form]);
-
-  const campaignActive = searchParams.get("campaign") === "WOOD_TRIO_GIFT_2026";
   const discount = form.watch("discount");
   const deliveryCountry = deliveryCountryForCheckout({ shippingMethod: form.watch("shippingMethod"), deliveryCountry: form.watch("deliveryCountry"), country: form.watch("country") });
   const { totalAmountWithDelivery, deliveryPrice } =
@@ -176,12 +167,10 @@ export default function Checkout() {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
             <div className="flex min-w-0 flex-col gap-5 flex-1 mb-2">
-              {campaignActive && <div role="status" className="rounded-xl border border-[#b4a27d] bg-[#faf7ef] p-4 text-sm text-[#443923]">
-                {locale === "ru" ? "Акция «Три оттенка древесины»: при покупке Cedar Chic 5 мл и Bois Impérial 5 мл Encre Noire 2 мл вложим бесплатно. Подарок комплектуется вручную." : "Holz-Trio-Aktion: Bei Cedar Chic 5 ml und Bois Impérial 5 ml legen wir Encre Noire 2 ml kostenlos bei. Das Geschenk wird manuell verpackt."}
-              </div>}
               <CheckoutCart
                 loading={loading}
                 items={items}
+                promotions={promotions}
                 totalAmount={totalAmount}
                 removeCartItem={removeCartItem}
                 onClickCountButton={onClickCountButton}
