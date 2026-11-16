@@ -16,7 +16,7 @@ export default async function WoodTrioCampaignPage() {
     },
     include: { brand: true, productGroup: true },
   });
-  const canonical = (name: string) => name.trim().normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase();
+  const canonical = (name: string) => name.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   const find = (name: string) => products.find(p => canonical(p.name) === canonical(name) && p.productGroup.onTap);
   const cedar = find("Cedar Chic");
   const bois = find("Bois Impérial");
