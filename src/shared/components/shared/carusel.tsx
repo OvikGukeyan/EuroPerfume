@@ -1,4 +1,5 @@
 "use client";
+import { trackPromotion } from "./promotion-tracker";
 import type { HeroPromotion } from "@/src/shared/server-lib/get-hero-promotion";
 import { useDayOfferClock } from "../../hooks/use-day-offer";
 
@@ -36,7 +37,7 @@ export const Carusel: FC<Props> = ({ slides, promotion }) => {
       <CarouselContent>
         {promotion && (
           <CarouselItem className="w-full">
-            <Link href={promotion.preview ? "/wood-trio" : `/offers/${promotion.slug}`} className="group block">
+            <Link href={promotion.preview ? "/wood-trio" : `/offers/${promotion.slug}`} onClick={()=>{if(!promotion.preview) void trackPromotion(promotion.slug,"click")}} className="group block">
               <div className="relative flex h-[190px] w-full items-center overflow-hidden rounded-lg bg-[#eeeae2] px-5 md:h-[310px] md:px-16">
                 <div className="relative z-10 flex w-[59%] flex-col items-start gap-3 md:w-1/2 md:gap-5">
                   <span className="text-[8px] font-medium tracking-[.2em] text-[#827b71] md:text-[11px]">EURO PERFUME · SPECIAL OFFER</span>
