@@ -1,9 +1,12 @@
+import { getPromotion, promotionLive } from "@/src/shared/server-lib/promotions";
 import { prisma } from "@/prisma/prisma-client";
 import { WoodTrioOffer } from "@/src/shared/components/shared/wood-trio-offer";
 
 export const dynamic = "force-dynamic";
 
 export default async function WoodTrioCampaignPage() {
+  const campaign = await getPromotion("wood-trio");
+  const campaignReady = Boolean(campaign && promotionLive(campaign));
   const products = await prisma.product.findMany({
     where: {
       bottleParentId: null,
@@ -22,7 +25,7 @@ export default async function WoodTrioCampaignPage() {
   const bois = find("Bois Impérial");
   const gift = find("Encre Noire");
   return (
-    <WoodTrioOffer
+    <WoodTrioOffer enabled={campaignReady}
       cedar={cedar ? { id: cedar.id, name: cedar.name, brand: cedar.brand.name, image: cedar.imageUrl[0] || "" } : null}
       bois={bois ? { id: bois.id, name: bois.name, brand: bois.brand.name, image: bois.imageUrl[0] || "" } : null}
       gift={gift ? { id: gift.id, name: gift.name, brand: gift.brand.name, image: gift.imageUrl[0] || "" } : null}
