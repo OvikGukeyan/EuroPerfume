@@ -63,7 +63,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
         </TableHeader>
         <TableBody>
           {orders
-            .filter((order) => order.id.toString().includes(searchQuery))
+            .filter((order) => [order.id.toString(), order.fullName, order.comment || "", order.email].some(value => value.toLowerCase().includes(searchQuery.toLowerCase())))
             .map((order) => (
               <TableRow
                 onClick={() => router.push(`/order/${order.id}`)}
@@ -83,7 +83,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                   </div> */}
                 </TableCell>
                 <TableCell>{order.totalAmount} </TableCell>
-                <TableCell>{order.fullName}</TableCell>
+                <TableCell><div className="flex flex-col gap-1"><span>{order.fullName}</span>{order.comment?.includes("[AKTION WOOD_TRIO_GIFT_2026:") && <span className="w-fit rounded bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-900">🎁 WOOD TRIO · Encre Noire 2 мл</span>}</div></TableCell>
                 <TableCell>{order.phone}</TableCell>
                 <TableCell>{order.contactForm}</TableCell>
                 <TableCell>
