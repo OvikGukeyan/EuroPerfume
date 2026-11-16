@@ -397,7 +397,7 @@ export async function createOrder(data: CheckoutFormValues) {
       const campaignCode = "WOOD_TRIO_GIFT_2026";
       const campaignRequested = (data.comment || "").includes(campaignCode);
       const hasCampaignItem = (name: string) => userCart.items.some(item =>
-        item.product.name.trim().toLocaleLowerCase() === name.toLocaleLowerCase() &&
+        item.product.name.trim().normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase() === name.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase() &&
         Boolean(item.product.productGroup?.onTap) &&
         item.product.bottleParentId === null &&
         item.quantity >= 5 &&
