@@ -27,6 +27,7 @@ import { useTranslations } from "next-intl";
 import { ShoppingCart } from "lucide-react";
 
 interface Props {
+  preferredBottleId?: number;
   bottles?: BottleOption[];
   available?: boolean;
   id: number;
@@ -39,6 +40,7 @@ interface Props {
   variations: ProductVariation[];
 }
 export const ByProductDialog: FC<Props> = ({
+  preferredBottleId,
   id,
   bottles = [],
   available = true,
@@ -52,7 +54,8 @@ export const ByProductDialog: FC<Props> = ({
 }) => {
   const router=useRouter();
   const ru=useLocale()==="ru";
-  const [bottleId,setBottleId]=useState<number|null>(()=>!available?(bottles.find(b=>b.available)?.id ?? null):null);
+  const initialBottleId = preferredBottleId ?? (!available ? bottles.find(b=>b.available)?.id : undefined) ?? null;
+  const [bottleId,setBottleId]=useState<number|null>(initialBottleId);
   const bottle=bottles.find(b=>b.id===bottleId);
   const selectedAvailable=bottle?bottle.available:available;
   const [open,setOpen]=useState(false);
@@ -96,7 +99,7 @@ export const ByProductDialog: FC<Props> = ({
 
       const t = useTranslations("ByProductDialog");
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={next=>{if(next)setBottleId(initialBottleId);setOpen(next);}}>
       <DialogTrigger asChild>
         <Button  className="w-full bg-white border border-neutral-200 text-black flex gap-3 hover:bg-neutral-50" >
             <ShoppingCart size={16}/>
@@ -118,7 +121,7 @@ export const ByProductDialog: FC<Props> = ({
             <Title size="xs" text={name} />
             <p className="text-[20px] ">
               <span className="hidden md:inline">{t("price")}</span>{" "}
-              {discountPrice ? (
+              {!bottle && discountPrice ? (
                 <>
                   <span className="line-through text-base mr-2">
                     {formatMoney(finalPrice)} €

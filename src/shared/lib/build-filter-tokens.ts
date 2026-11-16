@@ -3,6 +3,7 @@ import { categories, productGroups } from "@/prisma/constants";
 import { FilterToken } from "../components/shared/selected-filters-bar";
 import { Filters } from "../store/filters";
 import { AvailableFilters } from "../store/product";
+import { bottleGroup } from "./full-bottle";
 
 
 export function buildFilterTokens(
@@ -95,7 +96,7 @@ export function buildFilterTokens(
     add({
       type: "productGroup",
       value: f.productGroup,
-      label: productGroups.find((c) => c.id === f.productGroup)?.[language] ?? "",
+      label: productGroups.find((c) => c.id === f.productGroup)?.[language] ?? (f.productGroup === 31 ? bottleGroup[language] : (locale === "ru" ? "Категория товаров" : "Produktgruppe")),
       key: `productGroup:${f.productGroup}`,
     });
   }

@@ -1,6 +1,7 @@
 "use client";
 import { HomePriceProvider, HomePriceNote } from "./home-price-note";
-import { ProductCard, ProductCardSkeleton, SelectedFiltersContainer, Title } from ".";
+import { ProductSelectionItem, ProductCardSkeleton, SelectedFiltersContainer, Title } from ".";
+import { bottleGroup } from "../../lib/full-bottle";
 import { cn } from "@/src/shared/lib/utils";
 import { useFavorites, useProducts } from "@/src/shared/hooks";
 import { useFiltersStore } from "../../store/filters";
@@ -61,14 +62,14 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
         {loading
           ? [...Array(9)].map((_, index) => <ProductCardSkeleton key={index} />)
           : products.map((product) => (
-              <ProductCard
+              <ProductSelectionItem
                 key={product.id}
                 id={product.id}
                 name={product.name}
                 imageUrl={product.imageUrl[0]}
                 price={product.price}
                 available={product.available}
-                categoryId={product.categoryId}
+                preferBottle={activeProductGroup?.labelRu === bottleGroup.labelRu || activeProductGroup?.labelDe === bottleGroup.labelDe}
                 variations={product.variations}
                 concentration={product.concentration || undefined}
                 productGroup={product.productGroup}

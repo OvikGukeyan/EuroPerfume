@@ -23,6 +23,7 @@ import { calcAverageRating } from "../../lib";
 import { Link } from "@/src/i18n/navigation";
 
 interface Props {
+  preferBottle?: boolean;
   bottles?: BottleOption[];
   id: number;
   productGroup: ProductGroup;
@@ -42,6 +43,7 @@ interface Props {
 }
 
 export const ProductSelectionItem: React.FC<Props> = ({
+  preferBottle = false,
   imageUrl,
   bottles = [],
   available = true,
@@ -74,7 +76,8 @@ export const ProductSelectionItem: React.FC<Props> = ({
   const locale = useLocale();
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
 
-  const displayBottle=!available ? bottles.find(b=>b.available) : undefined;
+  const displayBottle=preferBottle ? (bottles.find(b=>b.available) ?? bottles[0]) : !available ? bottles.find(b=>b.available) : undefined;
+  const productHref = `/product/${id}${displayBottle ? `?bottle=${displayBottle.id}` : ""}`;
   const finalPrice = displayBottle ? displayBottle.price : productGroup.onTap ? price * 2 + 1 : price;
 
   const finalDiscountPrice =
@@ -83,16 +86,16 @@ export const ProductSelectionItem: React.FC<Props> = ({
   return (
     <article className={cn("home-product compact-product", className)}>
       <div className="home-product-photo">
-        <Link href={`/product/${id}`} className="absolute inset-0 p-5 md:p-8" aria-label={`${brand.name} ${name}`}>
+        <Link href={productHref} className="absolute inset-0 p-5 md:p-8" aria-label={`${brand.name} ${name}`}>
           <Image src={displayBottle?.image || imageUrl || variations?.[0]?.imageUrl || ""} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" className="object-contain p-4 md:p-7" />
         </Link>
         <button type="button" className="home-product-heart" onClick={onToggleFavorite} aria-pressed={isFavorite} aria-label={locale === "ru" ? (isFavorite ? `Удалить ${name} из избранного` : `Добавить ${name} в избранное`) : (isFavorite ? `${name} aus Favoriten entfernen` : `${name} zu Favoriten hinzufügen`)}>
           {isFavorite ? <HeartBlack /> : <Heart />}
         </button>
-        {bottles.length > 0 && <span className="compact-format-badge">{locale === "ru" ? "Есть полный флакон" : "Auch als Originalflakon"}</span>}
+        {bottles.length > 0 && <span className="compact-format-badge">{displayBottle ? (locale === "ru" ? "Полный флакон" : "Originalflakon") : (locale === "ru" ? "Есть полный флакон" : "Auch als Originalflakon")}</span>}
         {discountPrice ? <span className="home-product-badge home-sale">SALE</span> : isBestseller ? <span className="home-product-badge">BESTSELLER</span> : null}
       </div>
-      <Link href={`/product/${id}`} className="home-product-description">
+      <Link href={productHref} className="home-product-description">
         <p className="home-product-brand">{brand.name}</p>
         <h3>{name}</h3>
       </Link>
@@ -104,7 +107,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
         {productGroup.onTap && <span className="compact-product-size">{displayBottle?.ml ?? 2} ml</span>}
       </div>
       <div className="home-product-buy">
-        <ByProductDialog bottles={bottles} available={available} id={id} variations={variations} price={price} discountPrice={discountPrice} brand={brand} imageUrl={imageUrl} name={name} productGroup={productGroup} />
+        <ByProductDialog preferredBottleId={displayBottle?.id} bottles={bottles} available={available} id={id} variations={variations} price={price} discountPrice={discountPrice} brand={brand} imageUrl={imageUrl} name={name} productGroup={productGroup} />
       </div>
       <div className="compact-product-extra">
         <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
