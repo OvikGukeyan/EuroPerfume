@@ -8,12 +8,14 @@ import {
   FreeShippingProgress,
   WhiteBlock,
 } from "..";
+import type { CartPromotionSummary } from "../../services/dto/cart.dto";
 import { CartStateItem } from "@/src/shared/lib/get-cart-details";
 import { useLocale } from "next-intl";
 import { useTranslations } from "use-intl";
 
 interface Props {
   items: CartStateItem[];
+  promotions?: CartPromotionSummary[];
   totalAmount: number;
   removeCartItem: (id: number) => void;
   onClickCountButton: (
@@ -30,6 +32,7 @@ interface Props {
 export const CheckoutCart: FC<Props> = ({
   className,
   items,
+  promotions = [],
   totalAmount,
   removeCartItem,
   onClickCountButton,
@@ -53,6 +56,7 @@ export const CheckoutCart: FC<Props> = ({
     >
       <div className="flex flex-col">
         {!loading && <AromaBoxSummary items={items} />}
+        {promotions.map(p=><div key={p.id} role="status" className="mb-3 rounded-lg border border-[#d8ccaf] bg-[#f8f5ed] p-3 text-sm"><strong>🎁 {ru?p.titleRu:p.titleDe}</strong><p className="mt-1 text-xs">{p.eligible?`${p.giftName} ${p.giftMl} ml · 0,00 €`:(ru?"Для подарка нужно сохранить все акционные позиции.":"Für das Geschenk müssen alle Aktionsprodukte im Warenkorb bleiben.")}</p></div>)}
         {loading
           ? [...Array(4)].map((_, index) => (
               <CheckoutItemSkeleton key={index} />
