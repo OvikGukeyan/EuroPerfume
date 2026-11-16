@@ -38,7 +38,7 @@ export function PromotionOffer({slug,titleRu,titleDe,requiredMl,giftMl,available
       {[...items.map(p=>({...p,isGift:false})),...(gift?[{...gift,isGift:true}]:[])].map((p,i)=><article key={p.id??i} className="relative min-w-0 rounded-[15px] bg-[#f7f3ee] p-2.5 pb-4 md:rounded-[22px] md:p-5">
         {p.isGift&&<span className="absolute right-2 top-2 z-10 rounded-full bg-[#564638] px-2 py-1 text-[9px] font-semibold text-white md:right-4 md:top-4 md:px-3 md:text-[11px]">{ru?"ПОДАРОК":"GRATIS"}</span>}
         <div className="flex aspect-[4/4.5] items-center justify-center overflow-hidden rounded-lg">
-          {p.image&&<img src={p.image} alt={p.name} className="h-[88%] w-[88%] object-contain drop-shadow-[0_10px_9px_rgba(66,53,45,0.12)]" />}
+          {p.image&&<img src={p.image} alt={p.name} className="h-[88%] w-[88%] object-contain mix-blend-multiply drop-shadow-[0_10px_9px_rgba(66,53,45,0.12)]" />}
         </div>
         <p className="mt-2 min-h-[28px] text-[9px] uppercase leading-[1.3] tracking-[.045em] text-[#85786d] md:min-h-0 md:text-[11px]">{p.brand}</p>
         <h2 className="mt-1 min-h-[30px] break-words text-[12px] font-semibold leading-tight md:min-h-0 md:text-[18px]">{p.name}</h2>
