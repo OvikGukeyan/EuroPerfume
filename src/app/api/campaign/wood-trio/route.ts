@@ -15,13 +15,14 @@ export async function POST(req: NextRequest) {
           bottleParentId: null, available: true,
           OR: [
             { name: { equals: "Cedar Chic", mode: "insensitive" } },
-            { name: { equals: "Bois Impérial", mode: "insensitive" } },
+            { name: { contains: "Bois Imp", mode: "insensitive" } },
             { name: { equals: "Encre Noire", mode: "insensitive" } },
           ],
         },
         include: { productGroup: true },
       });
-      const find = (name: string) => candidates.find(p => p.name.toLocaleLowerCase() === name.toLocaleLowerCase() && p.productGroup.onTap);
+      const canonical = (name: string) => name.trim().normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase();
+      const find = (name: string) => candidates.find(p => canonical(p.name) === canonical(name) && p.productGroup.onTap);
       const cedar = find("Cedar Chic"), bois = find("Bois Impérial"), gift = find("Encre Noire");
       if (!cedar || !bois || !gift) return false;
       for (const product of [cedar, bois]) {
