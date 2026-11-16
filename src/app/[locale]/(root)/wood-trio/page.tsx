@@ -10,14 +10,14 @@ export default async function WoodTrioCampaignPage() {
       available: true,
       OR: [
         { name: { equals: "Cedar Chic", mode: "insensitive" } },
-        { name: { equals: "Bois Impérial", mode: "insensitive" } },
+        { name: { contains: "Bois Imp", mode: "insensitive" } },
         { name: { equals: "Encre Noire", mode: "insensitive" } },
       ],
     },
     include: { brand: true, productGroup: true },
   });
-  const find = (name: string) =>
-    products.find((p) => p.name.toLocaleLowerCase() === name.toLocaleLowerCase() && p.productGroup.onTap);
+  const canonical = (name: string) => name.trim().normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase();
+  const find = (name: string) => products.find(p => canonical(p.name) === canonical(name) && p.productGroup.onTap);
   const cedar = find("Cedar Chic");
   const bois = find("Bois Impérial");
   const gift = find("Encre Noire");
