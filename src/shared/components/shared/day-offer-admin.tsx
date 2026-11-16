@@ -5,7 +5,7 @@ type Option={id:number;name:string;brand:string;image:string;regular:number;sale
 type Active={id:number;brand:string;name:string;endLabel:string}|null;
 const euro=(v:number)=>new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR"}).format(v);
 export function DayOfferAdmin({products,active}:{products:Option[];active:Active}){
- const [selectedId,setSelectedId]=useState(active?.id||0);
+ const [selectedId,setSelectedId]=useState(active?.id||products.find(p=>p.name.trim().toLowerCase()==="addictive vibration")?.id||0);
  const current=useMemo(()=>products.find(p=>p.id===selectedId)||null,[products,selectedId]);
  return <main className="mx-auto max-w-5xl space-y-6 px-4 py-7 md:px-8">
   <header><p className="text-xs font-semibold uppercase tracking-[.2em] text-[#9d8a7b]">EURO PERFUME · ADMIN</p><h1 className="mt-2 font-serif text-3xl text-[#282622] md:text-4xl">Аромат дня −10%</h1><p className="mt-2 max-w-2xl text-sm leading-relaxed text-stone-600">Выбери аромат и нажми «Сохранить». Предыдущая скидка исчезнет сразу, новая появится в слайдере, каталоге и карточке товара. Она закончится в 00:00 по времени Германии.</p></header>
