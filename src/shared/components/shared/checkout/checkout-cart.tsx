@@ -8,7 +8,7 @@ import {
   FreeShippingProgress,
   WhiteBlock,
 } from "..";
-import type { CartPromotionSummary } from "../../services/dto/cart.dto";
+import type { CartPromotionSummary } from "@/src/shared/services/dto/cart.dto";
 import { CartStateItem } from "@/src/shared/lib/get-cart-details";
 import { useLocale } from "next-intl";
 import { useTranslations } from "use-intl";
