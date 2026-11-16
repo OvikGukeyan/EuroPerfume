@@ -44,18 +44,22 @@ function WeekEditor({slot,products,entry,otherId,week}:{
     </button>
    </form>
   </div>
-  <aside className="flex flex-col rounded-[20px] bg-[#eee8df] p-4 md:p-5" aria-label="Предпросмотр">
-   <p className="text-[10px] font-semibold uppercase tracking-[.18em] text-[#8c796a]">EURO PERFUME · АРОМАТ НЕДЕЛИ</p>
-   <h3 className="mt-3 font-serif text-[25px] leading-tight">{selected?.name||"Выбери аромат"}</h3>
-   <p className="mt-1 text-xs uppercase tracking-wide text-[#74685e]">{selected?.brand||"−10%"}</p>
-   <div className="my-4 flex min-h-40 flex-1 items-center justify-center rounded-xl bg-[#f8f5f0]/50 p-3">
-    {selected?.image&&<img src={selected.image} alt={selected.name} className="max-h-48 w-full object-contain mix-blend-multiply"/>}
+  <aside className="relative isolate flex min-h-[360px] flex-col overflow-hidden rounded-[20px] bg-[linear-gradient(115deg,#f4f0eb_0%,#e9e5df_55%,#d4cec8_100%)] p-5 md:p-6" aria-label="Предпросмотр">
+   <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-24 h-[290px] w-[290px] rounded-full border-[32px] border-[#6a565b]/20" />
+   <div className="relative z-10">
+    <p className="text-[10px] font-medium uppercase tracking-[.17em] text-[#6b5c5e]">EURO PERFUME · АРОМАТ НЕДЕЛИ</p>
+    <div aria-hidden="true" className="mt-4 h-px w-10 bg-[#89767c]/65"/>
+    <h3 className="mt-4 break-words font-serif text-[30px] font-normal leading-[1.08] tracking-[-.03em]">{selected?.name||"Выбери аромат"}</h3>
+    <p className="mt-2 text-[11px] uppercase tracking-[.12em] text-[#74656a]">{selected?.brand||"EURO PERFUME"}</p>
    </div>
-   {selected&&<div className="flex flex-wrap items-center gap-2">
-    <strong className="text-[24px]">{euro(selected.sale)}</strong><del className="text-xs text-stone-500">{euro(selected.regular)}</del>
-    <span className="rounded-full bg-[#292825] px-2 py-1 text-[11px] font-semibold text-white">−10%</span>
+   <div className="relative z-10 my-4 flex min-h-40 flex-1 items-center justify-center">
+    {selected?.image&&<img src={selected.image} alt={selected.name} className="max-h-52 w-full object-contain mix-blend-multiply [mask-image:radial-gradient(ellipse_79%_85%_at_center,#000_66%,transparent_100%)]"/>}
+   </div>
+   {selected&&<div className="relative z-10">
+    <p className="font-serif text-[37px] leading-none text-[#522f3e]">−10%</p>
+    <div className="mt-2 flex flex-wrap items-baseline gap-2"><strong className="text-[19px]">{euro(selected.sale)}</strong><del className="text-[12px] text-stone-500">{euro(selected.regular)}</del><span className="text-xs text-stone-500">5 ml</span></div>
    </div>}
-   <p className="mt-2 text-[11px] text-[#75695e]">Пример за 5 мл. Фотография, название и цены слайда обновляются автоматически.</p>
+   <p className="relative z-10 mt-3 text-[11px] text-[#75695e]">Нишевая парфюмерия · Отливанты. Фото и цена автоматически изменятся при выборе другого аромата.</p>
   </aside>
  </section>;
 }
