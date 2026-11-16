@@ -9,7 +9,7 @@ const schema = z.object({
   slug:z.string().regex(/^[a-z0-9-]{3,60}$/),
   titleRu:z.string().trim().min(3).max(100),
   titleDe:z.string().trim().min(3).max(100),
-  productIds:z.array(z.number().int().positive()).min(2).max(6),
+  productIds:z.array(z.number().int().positive()).length(2),
   giftProductId:z.number().int().positive(),
   requiredMl:z.number().int().min(1).max(30).default(5),
   giftMl:z.number().int().min(1).max(30).default(2),
@@ -47,8 +47,8 @@ export async function POST(req:Request) {
   if (!parsed.success) return NextResponse.json({error:parsed.error.flatten()},{status:400});
   const {id,startsAt,endsAt,...data}=parsed.data;
   if (startsAt && endsAt && startsAt>=endsAt) return NextResponse.json({error:"Invalid date range"},{status:400});
-  const products=await prisma.product.findMany({where:{id:{in:[...data.productIds,data.giftProductId]}}});
-  if(products.length!==data.productIds.length+1 || products.some(p=>p.bottleParentId!==null))
+  const products=await prisma.product.findMany({where:{id:{in:[...data.productIds,data.giftProductId]}},include:{productGroup:true}});
+  if(products.length!==data.productIds.length+1 || products.some(p=>p.bottleParentId!==null || !p.available || !p.productGroup?.onTap))
     return NextResponse.json({error:"Choose valid parent fragrance products"},{status:400});
   try {
     const value={...data,startsAt:startsAt?new Date(startsAt):null,endsAt:endsAt?new Date(endsAt):null};
