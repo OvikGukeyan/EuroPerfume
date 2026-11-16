@@ -361,7 +361,7 @@ export async function createOrder(data: CheckoutFormValues) {
     const boxCookie=(await cookieStore).get("discoveryBoxIds")?.value;
     // Preview can build before a separate staging migration is applied.
     const promotionTablesReady = await prisma.promotion.findFirst({select:{id:true}}).then(()=>true).catch(()=>false);
-    const {order,pricing,userCart,boxLabel,campaignNote}=await prisma.$transaction(async tx=>{
+    const {order,pricing,userCart,boxLabel,campaignNote,snapshots}=await prisma.$transaction(async tx=>{
       await tx.$queryRaw`SELECT id FROM public."Cart" WHERE token=${cartToken} FOR UPDATE`;
       const userCart = await tx.cart.findFirst({
         include: {
@@ -504,7 +504,7 @@ export async function createOrder(data: CheckoutFormValues) {
         },
       });
 
-      return {order,pricing,userCart,boxLabel,campaignNote};
+      return {order,pricing,userCart,boxLabel,campaignNote,snapshots};
     }, {timeout:15000});
 
     // const paymentData = await createPayment({
