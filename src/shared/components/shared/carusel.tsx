@@ -64,7 +64,7 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
   if (!visibleSlides.length && !featuredCount) {
     return null;
   }
-  if(promotions.length||showDay)return <FeaturedOffersCarousel featured={featured} promotions={promotions} slides={visibleSlides}/>;
+  if(promotions.length||showDay||showBlackFriday)return <FeaturedOffersCarousel blackFriday={showBlackFriday} featured={featured} promotions={promotions} slides={visibleSlides}/>;
   return (
     <Carousel className="mx-auto w-full max-w-[1440px] px-4 md:px-8" opts={{loop:featuredCount+visibleSlides.length>1}} setApi={setApi} plugins={[autoplayPlugin]}>
       <CarouselContent className="items-start">

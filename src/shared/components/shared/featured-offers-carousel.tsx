@@ -8,19 +8,23 @@ import { Languages, Slide, SlideImage } from "@prisma/client";
 import type { FeaturedDayFragrance } from "@/src/shared/server-lib/get-active-day-fragrance";
 import type { HeroPromotion } from "@/src/shared/server-lib/get-hero-promotion";
 import { FragranceDayHero } from "./fragrance-day-hero";
+import { BlackFridayHero } from "./black-friday-hero";
 import { PromotionHero } from "./promotion-hero";
 
 type SlideWithImages=Slide & {images:SlideImage[]};
 type Item=
+ | {kind:"black-friday";key:string}
  | {kind:"week";key:string;offer:FeaturedDayFragrance}
  | {kind:"promo";key:string;offer:HeroPromotion}
  | {kind:"slide";key:string;slide:SlideWithImages};
 
-export function FeaturedOffersCarousel({featured,promotions,slides}:{
+export function FeaturedOffersCarousel({featured,promotions,slides,blackFriday=false}:{
+ blackFriday?:boolean;
  featured?:FeaturedDayFragrance;promotions:HeroPromotion[];slides:SlideWithImages[];
 }){
  const locale=useLocale(),language=locale==="de"?Languages.DE:Languages.RU;
  const offers:Item[]=[
+  ...(blackFriday?[{kind:"black-friday" as const,key:"black-friday-2026"}]:[]),
   ...(featured?[{kind:"week" as const,key:"fragrance-week",offer:featured}]:[]),
   ...promotions.map(p=>({kind:"promo" as const,key:p.slug,offer:p})),
   ...slides.map(p=>({kind:"slide" as const,key:"slide-"+p.id,slide:p}))
@@ -48,7 +52,8 @@ export function FeaturedOffersCarousel({featured,promotions,slides}:{
  return <div className="mx-auto w-full max-w-[1440px] px-4 md:px-8">
   <div className="w-full min-w-0 overflow-hidden" aria-label={locale==="ru"?"Слайдер предложений":"Angebotskarussell"} onTouchStart={onStart} onTouchEnd={onEnd} onClickCapture={e=>{if(swipeClick.current){e.preventDefault();e.stopPropagation();swipeClick.current=false;}}}>
    <div key={item.key} className="w-full min-w-0 animate-in fade-in duration-300">
-    {item.kind==="week"?<FragranceDayHero offer={item.offer}/>:
+    {item.kind==="black-friday"?<BlackFridayHero/>:
+     item.kind==="week"?<FragranceDayHero offer={item.offer}/>:
      item.kind==="promo"?<PromotionHero promotion={item.offer}/>:
       <Link href={item.slide.href} className="block w-full overflow-hidden rounded-[18px] md:rounded-[25px]">
        <picture>
