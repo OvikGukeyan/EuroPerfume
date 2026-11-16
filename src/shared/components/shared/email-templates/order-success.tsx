@@ -11,6 +11,7 @@ interface Props {
   items: CartItemDTO[];
   pricing?: PricingSnapshot;
   aromaBox?: string;
+  campaignGifts?: string[];
 }
 
 export const OrderSuccessTemplate: React.FC<Props> = ({
@@ -20,6 +21,7 @@ export const OrderSuccessTemplate: React.FC<Props> = ({
   items,
   pricing,
   aromaBox,
+  campaignGifts = [],
 }) => (
   <div>
     <h1>Vielen Dank für Ihren Einkauf!</h1>
@@ -78,6 +80,7 @@ export const OrderSuccessTemplate: React.FC<Props> = ({
     <hr />
 
     {aromaBox && <section><h3>Aroma Box · 8 × 2 ml</h3><p style={{ whiteSpace: "pre-line" }}>{aromaBox}</p></section>}
+    {campaignGifts.length > 0 && <section><h3>Aktion · Gratisgeschenke</h3><ul>{campaignGifts.map((gift,index)=><li key={index}>{gift}</li>)}</ul></section>}
     <h3>Bestellübersicht:</h3>
     <ul>
       {pricing ? pricing.lines.map((line, index) => <li key={index}>{line.title}{line.dayOfferPercent ? " · Tagesangebot / Товар дня −10%" : ""} × {line.quantity} {line.onTap ? "ml" : "Stk."} = <strong>{(line.grossCents / 100).toFixed(2)} €</strong></li>) : items.map((item) => (
