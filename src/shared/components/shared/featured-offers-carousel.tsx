@@ -38,7 +38,7 @@ export function FeaturedOffersCarousel({featured,promotions,slides}:{
  if(!count)return null;
  const go=(n:number)=>setActive((n+count)%count);
  const item=offers[index];
- const onStart=(e:React.TouchEvent)=>{start.current=e.changedTouches[0]?.clientX??null;};
+ const onStart=(e:React.TouchEvent)=>{swipeClick.current=false;start.current=e.changedTouches[0]?.clientX??null;};
  const onEnd=(e:React.TouchEvent)=>{
    if(start.current===null)return;
    const delta=(e.changedTouches[0]?.clientX??start.current)-start.current;
