@@ -1,4 +1,5 @@
 import "server-only";
+import { getCartPromotions, promotionQualified, promotionLive } from "./promotions";
 import { cookies } from "next/headers";
 import { aromaBoxItems } from "../lib/aroma-box";
 import { sumMoney } from "../lib/money";
@@ -76,10 +77,21 @@ export const updateCartTotalAmount = async (token: string) => {
     },
   });
 
+  const cartCampaigns = await getCartPromotions(cart.id);
+  const promoSummaries = cartCampaigns.map(({promotion})=>({
+    id:promotion.id, slug:promotion.slug, titleRu:promotion.titleRu, titleDe:promotion.titleDe,
+    giftMl:promotion.giftMl, eligible:promotionLive(promotion) && promotionQualified(promotion,cart.items),
+    giftProductId:promotion.giftProductId
+  }));
+  const giftProducts=await prisma.product.findMany({where:{id:{in:promoSummaries.map(p=>p.giftProductId).filter((id):id is number=>id!==null)}}});
+  const promotions=promoSummaries.map(p=>({
+    ...p,giftName:giftProducts.find(g=>g.id===p.giftProductId)?.name||"",
+  }));
   const box = aromaBoxItems((await cookies()).get("discoveryBoxIds")?.value, cart.items);
   const safeCart = {
     ...cart,
     totalAmount: cart.totalAmount.toNumber(),
+    promotions,
     items: cart.items.map((item) => ({
       ...item,
       aromaBox: box.some(b => b.id === item.id),
