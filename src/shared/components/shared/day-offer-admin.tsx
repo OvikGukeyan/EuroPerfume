@@ -1,0 +1,44 @@
+"use client";
+import { useMemo, useState } from "react";
+import { saveDayOffer, cancelDayOffer } from "@/src/app/day-offer-actions";
+type Option={id:number;name:string;brand:string;image:string;regular:number;sale:number;allowed:boolean};
+type Active={id:number;brand:string;name:string;endLabel:string}|null;
+const euro=(v:number)=>new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR"}).format(v);
+export function DayOfferAdmin({products,active}:{products:Option[];active:Active}){
+ const [selectedId,setSelectedId]=useState(active?.id||products.find(p=>p.name.trim().toLowerCase()==="addictive vibration")?.id||0);
+ const current=useMemo(()=>products.find(p=>p.id===selectedId)||null,[products,selectedId]);
+ return <main className="mx-auto max-w-5xl space-y-6 px-4 py-7 md:px-8">
+  <header><p className="text-xs font-semibold uppercase tracking-[.2em] text-[#9d8a7b]">EURO PERFUME · ADMIN</p><h1 className="mt-2 font-serif text-3xl text-[#282622] md:text-4xl">Аромат дня −10%</h1><p className="mt-2 max-w-2xl text-sm leading-relaxed text-stone-600">Выбери аромат и нажми «Сохранить». Предыдущая скидка исчезнет сразу, новая появится в слайдере, каталоге и карточке товара. Она закончится в 00:00 по времени Германии.</p></header>
+  {active&&<section className="rounded-[22px] border border-emerald-200 bg-emerald-50 p-5">
+    <p className="text-xs font-semibold uppercase tracking-wider text-emerald-800">СЕЙЧАС АКТИВЕН</p>
+    <h2 className="mt-2 text-xl font-semibold">{active.brand} · {active.name}</h2>
+    <p className="mt-1 text-sm text-neutral-700">До {active.endLabel}. Сохранение нового аромата автоматически завершит эту акцию.</p>
+    <form action={cancelDayOffer} className="mt-3"><input type="hidden" name="productId" value={active.id}/><button type="submit" className="rounded-full border border-emerald-700 px-4 py-2 text-sm font-medium">Выключить аромат дня</button></form>
+  </section>}
+  <div className="grid gap-6 md:grid-cols-[1.1fr_.9fr]">
+   <form action={saveDayOffer} className="space-y-5 rounded-[24px] border border-stone-200 bg-white p-5 md:p-7">
+    <h2 className="font-serif text-2xl">Выбрать аромат</h2>
+    <label className="block text-sm font-semibold">Аромат из каталога
+      <select name="productId" required value={selectedId||""} onChange={e=>setSelectedId(Number(e.target.value))} className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm">
+        <option value="" disabled>Выбрать аромат</option>
+        {products.map(p=><option key={p.id} value={p.id} disabled={!p.allowed}>{p.brand} · {p.name}{!p.allowed?" (уже есть скидка)":""}</option>)}
+      </select>
+    </label>
+    <p className="rounded-xl bg-[#f6f1ea] p-4 text-sm leading-relaxed text-stone-700">Скидка <strong>−10%</strong> действует на все объёмы отливантов выбранного аромата, включая атомайзер. Полные флаконы в акцию не входят. Слайд создаётся автоматически из каталога.</p>
+    <label className="flex items-start gap-3 text-sm leading-relaxed"><input type="checkbox" name="referenceConfirmed" required className="mt-1 h-4 w-4 accent-neutral-900"/><span>Подтверждаю проверку низшей цены за предыдущие 30 дней по § 11 PAngV. Заявленная цена до скидки должна соответствовать этой проверке.</span></label>
+    <button type="submit" disabled={!current?.allowed} className="w-full rounded-full bg-[#292825] px-6 py-4 text-sm font-semibold text-white hover:bg-[#4f4439] disabled:opacity-40">{active?"Заменить аромат дня":"Сохранить аромат дня −10%"}</button>
+    <p className="text-xs leading-relaxed text-stone-500">Изменение действует сразу после сохранения. В 00:00 по Германии акция завершится автоматически. Новую можно выбрать в любой момент.</p>
+   </form>
+   <aside className="overflow-hidden rounded-[24px] bg-[#eee8df] p-5 md:p-7">
+     <p className="text-xs font-semibold uppercase tracking-[.2em] text-[#8a7566]">ПРЕДПРОСМОТР СЛАЙДА</p>
+     <h2 className="mt-4 font-serif text-3xl leading-tight">{current?.name||"Выберите аромат"}</h2>
+     <p className="mt-1 text-xs uppercase tracking-wider text-[#8a7566]">{current?.brand||"EURO PERFUME"}</p>
+     <div className="mx-auto my-3 flex h-48 items-center justify-center rounded-xl bg-white/40">
+       {current?.image&&<img src={current.image} alt={current.name} className="h-full w-full object-contain mix-blend-multiply"/>}
+     </div>
+     {current&&<div className="flex flex-wrap items-center gap-3"><strong className="text-2xl">{euro(current.sale)}</strong><del className="text-sm text-stone-500">{euro(current.regular)}</del><span className="rounded-full bg-[#292825] px-3 py-1 text-xs text-white">−10%</span></div>}
+     <p className="mt-2 text-xs text-stone-600">Пример стоимости 5 мл. Слайд и остальные объёмы автоматически используют актуальные цены из каталога.</p>
+   </aside>
+  </div>
+ </main>;
+}

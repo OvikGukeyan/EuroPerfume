@@ -1,5 +1,8 @@
 "use client";
 import { PromotionHero } from "./promotion-hero";
+import { FragranceDayHero } from "./fragrance-day-hero";
+import type { FeaturedDayFragrance } from "@/src/shared/server-lib/get-active-day-fragrance";
+import { dayOfferActive } from "@/src/shared/lib/day-offer";
 import type { HeroPromotion } from "@/src/shared/server-lib/get-hero-promotion";
 import { useDayOfferClock } from "../../hooks/use-day-offer";
 
@@ -22,16 +25,19 @@ interface Props {
   slides: (Slide & { images: SlideImage[] })[];
   className?: string;
   promotions?: HeroPromotion[];
+  dayFragrance?: FeaturedDayFragrance | null;
 }
-export const Carusel: FC<Props> = ({ slides, promotions = [] }) => {
+export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrance = null }) => {
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 6000, stopOnInteraction: false }), []);
   const [api,setApi] = useState<CarouselApi>();
   const [selected,setSelected] = useState(0);
   const locale = useLocale();
   const language = locale === "de" ? Languages.DE : Languages.RU;
   
-  const now = useDayOfferClock(slides.map(s=>({dayOfferStartsAt:s.visibleFrom,dayOfferEndsAt:s.visibleUntil})));
+  const now = useDayOfferClock([...slides.map(s=>({dayOfferStartsAt:s.visibleFrom,dayOfferEndsAt:s.visibleUntil})),...(dayFragrance?[{dayOfferStartsAt:dayFragrance.startsAt,dayOfferEndsAt:dayFragrance.endsAt}]:[])]);
   const visibleSlides = slides.filter(s=>(!s.visibleFrom || new Date(s.visibleFrom).getTime() <= now) && (!s.visibleUntil || new Date(s.visibleUntil).getTime() > now));
+  const showDay=Boolean(dayFragrance && dayOfferActive({dayOfferStartsAt:dayFragrance.startsAt,dayOfferEndsAt:dayFragrance.endsAt},now));
+  const featuredCount=promotions.length+(showDay?1:0);
   useEffect(()=>{
     if(!api) return;
     const update=()=>setSelected(api.selectedScrollSnap());
@@ -40,12 +46,13 @@ export const Carusel: FC<Props> = ({ slides, promotions = [] }) => {
     api.on("reInit",update);
     return ()=>{api.off("select",update);api.off("reInit",update);};
   },[api]);
-  if (!visibleSlides.length && !promotions.length) {
+  if (!visibleSlides.length && !featuredCount) {
     return null;
   }
   return (
-    <Carousel className="mx-auto w-full max-w-[1440px] px-4 md:px-8" opts={{loop:promotions.length+visibleSlides.length>1}} setApi={setApi} plugins={[autoplayPlugin]}>
+    <Carousel className="mx-auto w-full max-w-[1440px] px-4 md:px-8" opts={{loop:featuredCount+visibleSlides.length>1}} setApi={setApi} plugins={[autoplayPlugin]}>
       <CarouselContent>
+        {showDay && dayFragrance && <CarouselItem className="w-full" key="fragrance-day"><FragranceDayHero offer={dayFragrance}/></CarouselItem>}
         {promotions.map((promotion,index)=>(
           <CarouselItem className="w-full" key={promotion.slug}>
             <PromotionHero promotion={promotion}/>
@@ -74,11 +81,11 @@ export const Carusel: FC<Props> = ({ slides, promotions = [] }) => {
           </CarouselItem>
         ))}
       </CarouselContent>
-      {promotions.length>1 && (
-        <nav aria-label={locale==="ru"?"Переключение акций":"Aktionen wechseln"} className="mt-3 flex items-center justify-center gap-3">
-          <span className="text-xs font-medium text-neutral-600">{locale==="ru"?"Другие акции":"Weitere Aktionen"}</span>
-          {promotions.map((promotion,index)=><button key={promotion.slug} type="button" onClick={()=>api?.scrollTo(index)} aria-label={`${locale==="ru"?"Акция":"Aktion"} ${index+1} ${locale==="ru"?"из":"von"} ${promotions.length}`} aria-current={selected===index?"true":undefined} className={`h-3 rounded-full transition-all ${selected===index?"w-8 bg-neutral-900":"w-3 bg-neutral-300 hover:bg-neutral-500"}`}/>)}
-          <button type="button" className="rounded-full border border-neutral-300 px-3 py-1 text-xs text-neutral-800 hover:bg-neutral-100" onClick={()=>api?.scrollTo((selected+1)%promotions.length)}>{locale==="ru"?"Следующая акция →":"Nächste Aktion →"}</button>
+      {featuredCount>1 && (
+        <nav aria-label={locale==="ru"?"Предложения и аромат дня":"Angebote und Duft des Tages"} className="mt-3 flex flex-wrap items-center justify-center gap-3">
+          <span className="text-xs font-medium text-neutral-600">{locale==="ru"?"Наши предложения":"Unsere Angebote"}</span>
+          {Array.from({length:featuredCount},(_,index)=><button key={index} type="button" onClick={()=>api?.scrollTo(index)} aria-label={`${locale==="ru"?"Слайд":"Folie"} ${index+1} ${locale==="ru"?"из":"von"} ${featuredCount}`} aria-current={selected===index?"true":undefined} className={`h-3 rounded-full transition-all ${selected===index?"w-8 bg-neutral-900":"w-3 bg-neutral-300 hover:bg-neutral-500"}`}/>)}
+          <button type="button" className="rounded-full border border-neutral-300 px-3 py-1 text-xs text-neutral-800 hover:bg-neutral-100" onClick={()=>api?.scrollTo((selected+1)%featuredCount)}>{locale==="ru"?"Следующее предложение →":"Weiteres Angebot →"}</button>
         </nav>
       )}
       <CarouselPrevious className="left-5 hidden md:flex" />

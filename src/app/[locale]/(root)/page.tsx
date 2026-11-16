@@ -14,12 +14,14 @@ import { getDiscountedItems } from "@/src/shared/server-lib/get-discouted-items"
 import { getNewProducts } from "@/src/shared/server-lib/get-new-products";
 import { getPopularProducts } from "@/src/shared/server-lib/get-popular-products";
 import { getHeroPromotions } from "@/src/shared/server-lib/get-hero-promotion";
+import { getActiveDayFragrance } from "@/src/shared/server-lib/get-active-day-fragrance";
 import { getSlides } from "@/src/shared/server-lib/get-slides";
 import { getStories } from "@/src/shared/server-lib/get-stories";
 import { Slide, SlideImage } from "@prisma/client";
 import { getTranslations } from "next-intl/server";
+export const dynamic = "force-dynamic";
 export default async function Home() {
-  const [slides, stories, catalog, heroPromotions] = await Promise.all([getSlides(), getStories(), getHomeCatalog(), getHeroPromotions()]);
+  const [slides, stories, catalog, heroPromotions, dayFragrance] = await Promise.all([getSlides(), getStories(), getHomeCatalog(), getHeroPromotions(), getActiveDayFragrance()]);
 
   const t = await getTranslations("Home");
   const topSlides = slides.filter((s) => s.location === 1) as (Slide & {
@@ -30,7 +32,7 @@ export default async function Home() {
   })[];
   return (
     <HomePriceProvider><div className="storefront-home bg-white">
-      <Carusel slides={topSlides} promotions={heroPromotions} />
+      <Carusel slides={topSlides} promotions={heroPromotions} dayFragrance={dayFragrance} />
       <TopBar />
       <ProductsSelection
         getFunction={getNewProducts}
