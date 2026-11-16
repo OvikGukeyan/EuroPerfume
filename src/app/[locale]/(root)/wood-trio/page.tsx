@@ -17,5 +17,5 @@ export default async function WoodTrioPage() {
     requiredMl={5} giftMl={2} available={ready}
     items={items.map(p=>({id:p.id,name:p.name,brand:p.brand.name,image:p.imageUrl[0]||"",
       price:calcCartItemTotalPrice(Number(p.price),5,true,p.discountPrice?Number(p.discountPrice):undefined,p)}))}
-    gift={gift?{name:gift.name,brand:gift.brand.name,image:gift.imageUrl[0]||""}:null}/>;
+    gift={gift?{name:gift.name,brand:gift.brand.name,image:gift.imageUrl[0]||"",price:calcCartItemTotalPrice(Number(gift.price),2,true,gift.discountPrice?Number(gift.discountPrice):undefined,gift)}:null}/>;
 }

@@ -38,19 +38,24 @@ export const Carusel: FC<Props> = ({ slides, promotion }) => {
         {promotion && (
           <CarouselItem className="w-full">
             <Link href={promotion.preview ? "/wood-trio" : `/offers/${promotion.slug}`} onClick={()=>{if(!promotion.preview) void trackPromotion(promotion.slug,"click")}} className="group block">
-              <div className="relative flex h-[190px] w-full items-center overflow-hidden rounded-lg bg-[#eeeae2] px-5 md:h-[310px] md:px-16">
-                <div className="relative z-10 flex w-[59%] flex-col items-start gap-3 md:w-1/2 md:gap-5">
-                  <span className="text-[8px] font-medium tracking-[.2em] text-[#827b71] md:text-[11px]">EURO PERFUME · SPECIAL OFFER</span>
-                  <h2 className="font-serif text-[20px] font-medium leading-tight text-[#282822] md:text-[44px]">{locale==="ru" ? promotion.titleRu : promotion.titleDe}</h2>
-                  <span className="rounded-sm bg-[#282822] px-3 py-2 text-[10px] font-medium text-white transition-colors group-hover:bg-[#474740] md:px-6 md:py-3 md:text-[13px]">
-                    {locale==="ru"?"Открыть акцию":"Aktion entdecken"}
+              <div className="relative isolate h-[224px] overflow-hidden rounded-[20px] bg-[#eee8df] px-5 py-6 sm:h-[250px] md:h-[350px] md:rounded-[28px] md:px-14 md:py-12">
+                <div aria-hidden="true" className="pointer-events-none absolute -right-10 -top-20 h-[250px] w-[290px] rounded-full bg-[#dfd2c5]/55 blur-[65px] md:right-4 md:h-[400px] md:w-[520px]" />
+                <div className="relative z-10 flex h-full w-[58%] flex-col items-start justify-center md:w-[52%]">
+                  <span className="text-[9px] font-semibold uppercase tracking-[.15em] text-[#877769] md:text-[12px]">EURO PERFUME · {locale==="ru"?"ПОДБОРКА":"DUFT-SET"}</span>
+                  <h2 className="mt-3 max-w-[320px] font-serif text-[25px] leading-[1.1] tracking-[-.03em] text-[#2b2925] sm:text-[30px] md:mt-5 md:text-[49px]">{locale==="ru" ? promotion.titleRu : promotion.titleDe}</h2>
+                  <p className="mt-2 max-w-[240px] text-[11px] leading-snug text-[#625a51] sm:text-[12px] md:mt-4 md:max-w-[370px] md:text-[16px]">{locale==="ru"?"Два древесных аромата + третий в подарок":"Zwei holzige Düfte + eine Gratisprobe"}</p>
+                  <span className="mt-4 inline-flex items-center rounded-full bg-[#292825] px-4 py-2.5 text-[11px] font-medium text-white transition-colors group-hover:bg-[#51463c] md:mt-6 md:px-7 md:py-3 md:text-[14px]">
+                    {locale==="ru"?"Смотреть предложение":"Angebot entdecken"} <span aria-hidden="true" className="ml-2">→</span>
                   </span>
                 </div>
-                <div className="absolute inset-y-3 right-2 flex w-[42%] items-center justify-center gap-1 md:right-8 md:w-[45%] md:gap-3">
-                  {promotion.image ? <img src={promotion.image} alt="" className="h-full w-full object-contain" /> :
-                  promotion.products.slice(0,3).map((p,i)=><div key={p.id} className="flex h-[75%] min-w-0 flex-1 items-center justify-center overflow-hidden rounded-md bg-[#eeeae2]">
-                    {p.image && <img src={p.image} alt={p.name} className="h-full max-h-[185px] w-full object-contain mix-blend-multiply brightness-[1.08] contrast-[1.04]" style={{maskImage:"radial-gradient(ellipse 75% 80% at center, black 62%, transparent 100%)"}}/>}
-                  </div>)}
+                <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 right-0 w-[49%] md:right-8 md:w-[48%]">
+                  <div className="absolute bottom-[10%] right-[2%] h-[20%] w-[92%] rounded-[50%] bg-[#b6a596]/20 blur-[17px]" />
+                  {promotion.image ? <img src={promotion.image} alt="" className="absolute inset-0 h-full w-full object-contain" /> :
+                    promotion.products.slice(0,3).map((p,i)=>(
+                      <div key={p.id} className={`absolute bottom-[13%] flex h-[67%] w-[48%] items-end justify-center md:bottom-[11%] md:h-[78%] ${i===0?"right-[47%] z-[2]":i===1?"right-[26%] z-[3]":"right-[0%] z-[1]"}`}>
+                        {p.image&&<img src={p.image} alt="" className="h-full w-full object-contain mix-blend-multiply drop-shadow-[0_16px_12px_rgba(70,54,42,0.17)]" />}
+                      </div>
+                    ))}
                 </div>
               </div>
             </Link>
