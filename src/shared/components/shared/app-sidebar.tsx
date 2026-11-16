@@ -41,6 +41,7 @@ export const AppSidebar: FC<Props> = ({ className }) => {
   const locale = useLocale();
   const tools = [
     { name: "Продукты", icon: <Settings2 />, href: "/products" },
+    { name: "Акции", icon: <GalleryHorizontalEnd />, href: "/promotions" },
     { name: locale === "ru" ? "Составы / INCI" : "Inhaltsstoffe / INCI", icon: <Settings2 />, href: "/ingredients" },
 
     {
