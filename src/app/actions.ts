@@ -395,7 +395,7 @@ export async function createOrder(data: CheckoutFormValues) {
         throw new Error("Один из товаров больше недоступен. Обновите корзину.");
       }
       const campaignCode = "WOOD_TRIO_GIFT_2026";
-      const campaignRequested = (data.comment || "").includes(campaignCode);
+      const campaignRequested = data.campaignCode === campaignCode;
       const hasCampaignItem = (name: string) => userCart.items.some(item =>
         item.product.name.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() === name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase() &&
         Boolean(item.product.productGroup?.onTap) &&
