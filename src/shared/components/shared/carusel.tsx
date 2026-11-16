@@ -28,8 +28,9 @@ interface Props {
   className?: string;
   promotions?: HeroPromotion[];
   dayFragrances?: FeaturedDayFragrance[];
+  blackFriday?: boolean;
 }
-export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = [] }) => {
+export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = [], blackFriday = false }) => {
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 8000, stopOnInteraction: true }), []);
   const [api,setApi] = useState<CarouselApi>();
   const [selected,setSelected] = useState(0);
@@ -40,7 +41,7 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
   const visibleSlides = slides.filter(s=>(!s.visibleFrom || new Date(s.visibleFrom).getTime() <= now) && (!s.visibleUntil || new Date(s.visibleUntil).getTime() > now));
   const featured=dayFragrances.find(f=>dayOfferActive({dayOfferStartsAt:f.startsAt,dayOfferEndsAt:f.endsAt},now));
   const showDay=Boolean(featured);
-  const showBlackFriday = now < Date.parse(BLACK_FRIDAY.endsAt);
+  const showBlackFriday = blackFriday && now < Date.parse(BLACK_FRIDAY.endsAt);
   const featuredCount=promotions.length+(showDay?1:0)+(showBlackFriday?1:0);
   useEffect(()=>{
     if(!api) return;

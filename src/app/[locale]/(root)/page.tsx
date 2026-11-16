@@ -32,7 +32,7 @@ export default async function Home() {
   })[];
   return (
     <HomePriceProvider><div className="storefront-home bg-white">
-      <Carusel slides={topSlides} promotions={heroPromotions} dayFragrances={dayFragrances} />
+      <Carusel blackFriday slides={topSlides} promotions={heroPromotions} dayFragrances={dayFragrances} />
       <TopBar />
       <ProductsSelection
         getFunction={getNewProducts}
