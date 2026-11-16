@@ -90,10 +90,10 @@ Leistungsdatum: ${tax.supplyDate}`,
   }
   tableHeader();
   for (const [index, line] of pricing.lines.entries()) {
-    const height = Math.max(22, doc.heightOfString(line.title + (line.dayOfferPercent ? "\nТовар дня / Tagesangebot: −10%" : ""), { width: 260 }) + 8);
+    const height = Math.max(22, doc.heightOfString(line.title + (line.dayOfferPercent ? "\nТовар дня / Tagesangebot −10%: " + ((line.regularGrossCents ?? line.grossCents)/100).toFixed(2) + " € → " + (line.grossCents/100).toFixed(2) + " €" : ""), { width: 260 }) + 8);
     if (y + height > 590) { doc.addPage(); y = 80; tableHeader(); }
     doc.text(String(index + 1), 50, y);
-    doc.text(line.title + (line.dayOfferPercent ? "\nТовар дня / Tagesangebot: −10%" : ""), 90, y, { width: 260 });
+    doc.text(line.title + (line.dayOfferPercent ? "\nТовар дня / Tagesangebot −10%: " + ((line.regularGrossCents ?? line.grossCents)/100).toFixed(2) + " € → " + (line.grossCents/100).toFixed(2) + " €" : ""), 90, y, { width: 260 });
     doc.text(String(line.quantity) + (line.onTap ? " ml" : " Stk."), 370, y, { width: 70, align: "right" });
     doc.text((line.grossCents / 100).toFixed(2) + " €", 465, y, { width: 80, align: "right" });
     y += height;

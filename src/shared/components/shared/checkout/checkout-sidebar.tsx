@@ -1,3 +1,4 @@
+"use client";
 import { formatMoney } from "@/src/shared/lib/money";
 import { deliveryCountryForCheckout } from "@/src/shared/lib/tax";
 import { TaxPriceNotice } from "../tax-price-notice";

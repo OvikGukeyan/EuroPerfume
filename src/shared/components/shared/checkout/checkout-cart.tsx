@@ -9,6 +9,7 @@ import {
   WhiteBlock,
 } from "..";
 import { CartStateItem } from "@/src/shared/lib/get-cart-details";
+import { useLocale } from "next-intl";
 import { useTranslations } from "use-intl";
 
 interface Props {
@@ -34,6 +35,7 @@ export const CheckoutCart: FC<Props> = ({
   onClickCountButton,
   loading,
 }) => {
+  const ru = useLocale() === "ru";
   const t = useTranslations("Checkout.cart");
 
   return (
@@ -60,7 +62,7 @@ export const CheckoutCart: FC<Props> = ({
                 key={item.id}
                 id={item.id}
                 imageUrl={item.imageUrl as string}
-                name={item.name}
+                name={item.name + (item.dayOffer ? (ru ? " · Товар дня −10%" : " · Tagesangebot −10%") : "")}
                 brand={item.brand}
                 price={item.price}
                 onTap={Boolean(item.productGroup?.onTap)}

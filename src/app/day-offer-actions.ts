@@ -31,7 +31,7 @@ export async function saveDayOffer(form: FormData) {
     if (product.discountPrice) throw new Error("У товара уже есть скидка. Сначала завершите её.");
     if (product.dayOfferEndsAt && product.dayOfferEndsAt.getTime() > Date.now()) throw new Error("У товара уже запланирована акция. Сначала отмените её.");
     // Serialize schedule changes and reject overlapping featured slots.
-    await tx.$queryRaw`SELECT pg_advisory_xact_lock(734119)`;
+    await tx.$queryRaw`SELECT pg_advisory_xact_lock(734119)::text`;
     const overlap = await tx.product.findFirst({where:{id:{not:productId},dayOfferStartsAt:{lt:end},dayOfferEndsAt:{gt:start}}});
     if (overlap) throw new Error("В этом интервале уже запланирован другой товар дня");
     await tx.slide.deleteMany({where:{dayOfferProductId:productId}});

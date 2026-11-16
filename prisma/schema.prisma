@@ -81,6 +81,7 @@ model Product {
 
   price         Decimal
   discountPrice Decimal?
+  dayOfferSlides Slide[] @relation("DayOfferSlides")
   dayOfferReferenceCheckedAt DateTime? @db.Timestamptz(3)
   dayOfferStartsAt DateTime? @db.Timestamptz(3)
   dayOfferEndsAt DateTime? @db.Timestamptz(3)
@@ -444,6 +445,7 @@ model VerificationCode {
 
 model Slide {
   dayOfferProductId Int?
+  dayOfferProduct Product? @relation("DayOfferSlides", fields:[dayOfferProductId], references:[id], onDelete:Cascade)
   visibleFrom DateTime? @db.Timestamptz(3)
   visibleUntil DateTime? @db.Timestamptz(3)
   id       Int          @id @default(autoincrement())

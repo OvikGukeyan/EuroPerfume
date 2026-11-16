@@ -98,7 +98,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                   <CartDrawerItem
                     id={item.id}
                     imageUrl={item.imageUrl as string}
-                    name={item.name}
+                    name={item.name + (item.dayOffer ? (ru ? " · Товар дня −10%" : " · Tagesangebot −10%") : "")}
                     brand={item.brand}
                     price={item.price}
                     quantity={item.quantity}
