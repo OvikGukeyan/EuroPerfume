@@ -1,6 +1,7 @@
 "use client";
 
 import React, { FC } from "react";
+import { useLocale } from "next-intl";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -29,6 +30,7 @@ export const BreadcrumbComponent: FC<Props> = ({
   productCategory,
   productGroup,
 }) => {
+  const ru = useLocale() === "ru";
   const { setSelectedBrands, setProductGroup, setCategory } = useFiltersStore();
   const handleBrandClick = () => {
     setProductGroup(null);
@@ -47,54 +49,54 @@ export const BreadcrumbComponent: FC<Props> = ({
     setCategory(productCategory?.id || 0);
   };
   return (
-    <div className={cn("", className)}>
-      <Breadcrumb>
-        <BreadcrumbList>
-          <BreadcrumbItem>
+    <div className={cn("min-w-0 max-w-full border-b border-neutral-200", className)}>
+      <Breadcrumb className="overflow-x-auto overscroll-x-contain [scrollbar-width:none] [&::-webkit-scrollbar]:hidden" tabIndex={0} aria-label={ru ? "Навигация по каталогу" : "Brotkrümelnavigation"}>
+        <BreadcrumbList className="w-max flex-nowrap gap-2 whitespace-nowrap py-3 text-[13px] leading-5 text-neutral-600 sm:gap-2">
+          <BreadcrumbItem className="shrink-0">
             <BreadcrumbLink asChild>
-              <Link className="text-xl" href={"/"}>
-                Home
+              <Link className="text-[13px]" href={"/"}>
+                {ru ? "Главная" : "Home"}
               </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
+          <BreadcrumbSeparator className="shrink-0 text-neutral-400">/</BreadcrumbSeparator>
+          <BreadcrumbItem className="shrink-0">
             <BreadcrumbLink asChild onClick={handleCategoryClick}>
               <Link
-                className="text-xl"
+                className="text-[13px]"
                 href={`/items/?category=${productCategory?.id}`}
               >
-                {productCategory?.labelDe}
+                {ru ? productCategory?.labelRu : productCategory?.labelDe}
               </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator />
-          <BreadcrumbItem>
+          <BreadcrumbSeparator className="shrink-0 text-neutral-400">/</BreadcrumbSeparator>
+          <BreadcrumbItem className="shrink-0">
             <BreadcrumbLink asChild onClick={handleProductGroupClick}>
               <Link
-                className="text-xl"
+                className="text-[13px]"
                 href={`/items/?productGroup=${productGroup?.id}`}
               >
-                {productGroup?.labelDe}
+                {ru ? productGroup?.labelRu : productGroup?.labelDe}
               </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator />
+          <BreadcrumbSeparator className="shrink-0 text-neutral-400">/</BreadcrumbSeparator>
 
-          <BreadcrumbItem>
+          <BreadcrumbItem className="shrink-0">
             <BreadcrumbLink asChild onClick={handleBrandClick}>
               <Link
-                className="text-xl"
+                className="text-[13px]"
                 href={`/items/?brands=${productBrand?.id}`}
               >
                 {productBrand?.name}
               </Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
-          <BreadcrumbSeparator />
+          <BreadcrumbSeparator className="shrink-0 text-neutral-400">/</BreadcrumbSeparator>
 
-          <BreadcrumbItem>
-            <BreadcrumbPage className="text-xl">{productName}</BreadcrumbPage>
+          <BreadcrumbItem className="shrink-0">
+            <BreadcrumbPage className="text-[13px]">{productName}</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
