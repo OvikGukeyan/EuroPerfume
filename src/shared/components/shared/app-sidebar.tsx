@@ -39,6 +39,7 @@ export const AppSidebar: FC<Props> = ({ className }) => {
   const pathName = usePathname();
   const tools = [
     { name: "Продукты", icon: <Settings2 />, href: "/products" },
+    { name: "Составы / INCI", icon: <Settings2 />, href: "/ingredients" },
 
     {
       name: "Создать Верхний Слайд",

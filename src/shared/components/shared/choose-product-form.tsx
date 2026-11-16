@@ -1,4 +1,5 @@
 "use client";
+import { ProductIngredients } from "./product-ingredients";
 import { formatMoney } from "@/src/shared/lib/money";
 import { BottleOption, unitPricePerLitre } from "@/src/shared/lib/full-bottle";
 import "./fragrance-detail.css";
@@ -122,12 +123,6 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
       (t) => t.language.toLocaleLowerCase() === locale.toLocaleLowerCase()
     )?.description || "";
 
-  const activeIngredients =
-    product.translations.find(
-      (t) => t.language.toLocaleLowerCase() === locale.toLocaleLowerCase()
-    )?.activeIngredients || "";
-
-
   const ru=locale==="ru";
   const noteGroups=[
     {type:"TOP",title:ru?"Верхние ноты":"Kopfnoten"},
@@ -164,8 +159,9 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
       </div>
     </div>
     {description && <section className="fragrance-reading"><h2>{ru?"Знакомство с ароматом":"Den Duft entdecken"}</h2><div className="fragrance-description">{description.split(/\n\s*\n/).map((paragraph,i)=><p key={i} className="mb-4">{paragraph.trim()}</p>)}</div></section>}
-    {noteGroups.some(g=>g.notes.length>0) && <section className="fragrance-reading"><h2>{ru?"Как раскрывается аромат":"Die Duftpyramide"}</h2><div className="fragrance-notes">{noteGroups.filter(g=>g.notes.length>0).map(g=><div className="fragrance-note-stage" key={g.type}><h3>{g.title}</h3><ul>{g.notes.map((note,i)=><li key={i}>{note}</li>)}</ul></div>)}</div></section>}
-    <section className="fragrance-reading"><details><summary className="cursor-pointer py-3 text-lg">{t("characteristics")}</summary><ProductCharacteristics charactiristics={charactiristics}/></details>{activeIngredients && <details className="border-t mt-3"><summary className="cursor-pointer py-3 text-lg">{t("activeIngredients")}</summary><p className="fragrance-description whitespace-pre-line">{activeIngredients}</p></details>}</section>
+    {noteGroups.some(g=>g.notes.length>0) && <section className="fragrance-reading"><h2>{ru?"Как раскрывается аромат":"Die Duftpyramide"}</h2><div className="fragrance-notes">{noteGroups.filter(g=>g.notes.length>0).map(g=><div className="fragrance-note-stage" data-stage={g.type} key={g.type}><h3>{g.title}</h3><ul>{g.notes.map((note,i)=><li key={i}>{note}</li>)}</ul></div>)}</div></section>}
+    <section className="fragrance-reading"><details><summary className="cursor-pointer py-3 text-lg">{t("characteristics")}</summary><ProductCharacteristics charactiristics={charactiristics}/></details></section>
+    <ProductIngredients productId={product.id} translations={product.translations} locale={locale}/>
     {product.productGroup.onTap && <aside className="fragrance-advice"><div><h2>{ru?"Сначала познакомьтесь с ароматом":"Erst kennenlernen, dann entscheiden"}</h2><p>{ru?"Выберите небольшой объём и попробуйте аромат на своей коже. Если уже нашли любимый — переключитесь на полный флакон.":"Entdecke den Duft mit einer kleinen Abfüllung auf deiner Haut. Schon dein Favorit? Wähle oben den Originalflakon, sofern verfügbar."}</p></div><a href="#" onClick={e=>{e.preventDefault();setBottleId(null);document.querySelector('.fragrance-purchase')?.scrollIntoView({behavior:'smooth',block:'center'});}}>{ru?"Выбрать отливант":"Abfüllung wählen"}</a></aside>}
   </div>;
 };

@@ -1,4 +1,5 @@
 "use client";
+import { LoadMoreButton } from "./load-more-button";
 import { HomePriceNote } from "./home-price-note";
 import { useEffect, useRef, useState } from "react";
 import { useLocale } from "next-intl";
@@ -47,7 +48,7 @@ export function HomeCatalog({ initialPage }: { initialPage: HomeCatalogPage }) {
     <div className="home-load-more">
       <p role="status" aria-live="polite">{ru ? "Показано товаров: " : "Angezeigte Produkte: "}{page.products.length}</p>
       {failed && <p role="alert">{ru ? "Не удалось загрузить товары. Попробуй ещё раз." : "Die Produkte konnten nicht geladen werden. Bitte versuche es erneut."}</p>}
-      {page.nextCursor !== null ? <button type="button" disabled={loading} onClick={loadMore}>{loading ? (ru ? "Загружаем…" : "Wird geladen…") : failed ? (ru ? "Попробовать ещё раз" : "Erneut versuchen") : (ru ? "Загрузить ещё" : "Mehr laden")}</button> : <p>{ru ? "Ты просмотрел все доступные товары" : "Du hast alle verfügbaren Produkte gesehen"}</p>}
+      {page.nextCursor !== null ? <LoadMoreButton disabled={loading} onClick={loadMore}>{loading ? (ru ? "Загружаем…" : "Wird geladen…") : failed ? (ru ? "Попробовать ещё раз" : "Erneut versuchen") : (ru ? "Загрузить ещё" : "Mehr laden")}</LoadMoreButton> : <p>{ru ? "Ты просмотрел все доступные товары" : "Du hast alle verfügbaren Produkte gesehen"}</p>}
     </div>
   </section>;
 }

@@ -1,82 +1,18 @@
 import React, { FC } from "react";
 import { cn } from "@/src/lib/utils";
-import Image from "next/image";
+import { Instagram, Facebook, Send } from "lucide-react";
 import { useTranslations } from "next-intl";
-
-type Props = {
-  className?: string;
-};
-
-export const SocialMediaBar: FC<Props> = ({ className }) => {
-  const t = useTranslations("SocialMedia");
-  return (
-    <div className={cn("flex flex-col items-center  gap-6 bg-white", className)}>
-      <div className="text-center">
-        <p className="text-lg font-semibold">{t("follow")}</p>
-      </div>
-      <div className="flex gap-7">
-          <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.instagram.com/europerfumedeutschland?igsh=MWY1YWZ0Z25ybnYwcA%3D%3D&utm_source=qr"
-        >
-          <Image
-            src={"/assets/images/instagram.png"}
-            width={35}
-            height={35}
-            alt={"instagram"}
-          />
-        </a>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.facebook.com/share/1AS6TtmyrW/?mibextid=wwXIfr"
-        >
-          <Image
-            src={"/assets/images/facebook.png"}
-            width={35}
-            height={35}
-            alt={"facebook"}
-          />
-        </a>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.tiktok.com/@europerfumede?_t=ZN-8vlgwwUxpfK&_r=1"
-        >
-          <Image
-            src={"/assets/images/tiktok.png"}
-            width={35}
-            height={35}
-            alt={"tiktok"}
-          />
-        </a>
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://wa.me/4915231651047"
-        >
-          <Image
-            src={"/assets/images/whatsapp.png"}
-            width={35}
-            height={35}
-            alt={"instagram"}
-          />
-        </a>
-
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://t.me/EuroPerfum"
-        >
-          <Image
-            src={"/assets/images/telegram.png"}
-            width={35}
-            height={35}
-            alt={"youtube"}
-          />
-        </a>
-      </div>
-    </div>
-  );
+const networks = [
+ {name:"Instagram",href:"https://www.instagram.com/europerfumedeutschland?igsh=MWY1YWZ0Z25ybnYwcA%3D%3D&utm_source=qr",Icon:Instagram},
+ {name:"Facebook",href:"https://www.facebook.com/share/1AS6TtmyrW/?mibextid=wwXIfr",Icon:Facebook},
+ {name:"Telegram",href:"https://t.me/EuroPerfum",Icon:Send},
+];
+export const SocialMediaBar: FC<{className?:string}> = ({className}) => {
+ const t=useTranslations("SocialMedia");
+ return <div className={cn("flex flex-col items-center gap-5 bg-white",className)}>
+  <p className="text-center text-base font-medium">{t("follow")}</p>
+  <div className="flex flex-wrap justify-center gap-5">
+   {networks.map(({name,href,Icon})=><a key={name} href={href} target="_blank" rel="noopener noreferrer" aria-label={name} className="flex min-h-11 min-w-11 flex-col items-center justify-center gap-2 rounded text-neutral-700 hover:text-[#304a3d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"><Icon size={23} strokeWidth={1.5} aria-hidden="true"/><span className="text-xs">{name}</span></a>)}
+  </div>
+ </div>;
 };

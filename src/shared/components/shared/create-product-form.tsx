@@ -585,11 +585,7 @@ export const CreateProductForm: FC<Props> = ({
                   render={({ field }) => (
                     <FormItem className="mb-5">
                       <FormControl>
-                        <FormInput
-                          label={"Активные ингредиенты Ru"}
-                          {...field}
-                          placeholder="Активные ингредиенты"
-                        />
+                        <label className="block text-sm">Полный состав (INCI), RU<textarea {...field} value={field.value ?? ""} rows={5} className="mt-2 w-full rounded border p-3 text-sm leading-6" placeholder="INCI: точный список с упаковки, включая аллергены"/><span className="mt-2 block text-xs text-neutral-600">Полный список с упаковки продаваемой партии. INCI не переводится. Ноты аромата не заменяют состав.</span></label>
                       </FormControl>
                     </FormItem>
                   )}
@@ -601,11 +597,7 @@ export const CreateProductForm: FC<Props> = ({
                   render={({ field }) => (
                     <FormItem className="mb-5">
                       <FormControl>
-                        <FormInput
-                          label={"Активные ингредиенты De"}
-                          {...field}
-                          placeholder="Активные ингредиенты"
-                        />
+                        <label className="block text-sm">Vollständige Inhaltsstoffe (INCI), DE<textarea {...field} value={field.value ?? ""} rows={5} className="mt-2 w-full rounded border p-3 text-sm leading-6" placeholder="INCI: точный список с упаковки, включая аллергены"/><span className="mt-2 block text-xs text-neutral-600">Полный список с упаковки продаваемой партии. INCI не переводится. Ноты аромата не заменяют состав.</span></label>
                       </FormControl>
                     </FormItem>
                   )}

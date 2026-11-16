@@ -53,3 +53,10 @@
 .catalog-price-note a{text-decoration:underline;text-underline-offset:2px}
 
 .compact-product .compact-bottle-link{display:flex;align-items:center;min-height:44px;font-size:11px;text-decoration:underline;text-underline-offset:3px;margin:-3px 0 4px;line-height:1.5}
+
+/* Format availability lives on the photo, keeping purchase rows aligned. */
+.compact-product .compact-format-badge{position:absolute;bottom:8px;left:8px;right:8px;width:fit-content;max-width:calc(100% - 16px);padding:4px 7px;border-radius:3px;background:#e9eee8;color:#304a3d;font-size:10px;line-height:1.4;pointer-events:none}
+.compact-product .home-product-description{min-height:68px;padding-bottom:2px}
+.compact-product .home-product-buy>button:hover{background:#304a3d;border-color:#304a3d}
+.compact-product .home-product-heart[aria-pressed=true]{color:#824b50}
+@media(max-width:767px){.compact-product .home-product-description{min-height:66px}.compact-product .compact-format-badge{font-size:9px}}

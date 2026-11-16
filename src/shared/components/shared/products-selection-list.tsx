@@ -1,7 +1,7 @@
 "use client";
 import React, { FC, useState } from "react";
 import { ProductSelectionItem } from ".";
-import { Button } from "..";
+import { LoadMoreButton } from "./load-more-button";
 import { useTranslations } from "next-intl";
 import { cn } from "../../lib/utils";
 import { SelectedProductDTO } from "../../server-lib/get-popular-products";
@@ -48,12 +48,11 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
       </div>
 
       {products.length > visibleCount && (
-        <Button
+        <LoadMoreButton
           onClick={() => setVisibleCount(count => count + 8)}
-          className="w-full sm:w-[200px] mt-10"
         >
           {t("loadMore")}
-        </Button>
+        </LoadMoreButton>
       )}
     </div>
   );

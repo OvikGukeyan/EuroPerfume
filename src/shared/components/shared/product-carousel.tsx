@@ -76,7 +76,7 @@ export const ProductCarousel: React.FC<PropType> = ({
           {slides.map((slide, index) => (
             <div
               key={index}
-              className="flex items-center justify-center  flex-shrink-0 aspect-square w-full  bg-white "
+              className="product-media-slide flex items-center justify-center flex-shrink-0 aspect-square w-full bg-white"
             >
               {slide.type === "video" ? (
                 <video
