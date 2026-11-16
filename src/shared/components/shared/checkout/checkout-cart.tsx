@@ -1,5 +1,6 @@
 "use client";
 
+import { PromotionCartGroup } from "./promotion-cart-group";
 import { AromaBoxSummary } from "@/src/shared/components/shared/aroma-box-summary";
 import React, { FC } from "react";
 import {
@@ -38,6 +39,8 @@ export const CheckoutCart: FC<Props> = ({
   onClickCountButton,
   loading,
 }) => {
+  const claimedIds=new Set(promotions.flatMap(p=>p.productIds));
+  const regularItems=items.filter(item=>!claimedIds.has(item.productId));
   const ru = useLocale() === "ru";
   const t = useTranslations("Checkout.cart");
 
@@ -56,10 +59,8 @@ export const CheckoutCart: FC<Props> = ({
     >
       <div className="flex flex-col">
         {!loading && <AromaBoxSummary items={items} />}
-        {promotions.map(p=><div key={p.id} role="status" className="mb-3 rounded-lg border border-[#d8ccaf] bg-[#f8f5ed] p-3 text-sm"><strong>🎁 {ru?p.titleRu:p.titleDe}</strong><p className="mt-1 text-xs">{p.eligible?`${p.giftName} ${p.giftMl} ml · 0,00 €`:(ru?"Для подарка нужно сохранить все акционные позиции.":"Für das Geschenk müssen alle Aktionsprodukte im Warenkorb bleiben.")}</p></div>)}
-        {loading
-          ? [...Array(4)].map((_, index) => (
-              <CheckoutItemSkeleton key={index} />
+        {promotions.map(p=><PromotionCartGroup key={p.id} promotion={p} items={items} onRemove={removeCartItem} renderItem={item=>(
+                        <CheckoutItemSkeleton key={index} />
             ))
           : items.map((item) => (
               <CheckoutItem
@@ -78,7 +79,30 @@ export const CheckoutCart: FC<Props> = ({
                 }
                 onClickRemove={() => removeCartItem(item.id)}
               />
-            ))}
+
+        )}/>)}
+        {loading ? [...Array(4)].map((_,index)=><CheckoutItemSkeleton key={index}/>) : regularItems.map(item=>(
+                        <CheckoutItemSkeleton key={index} />
+            ))
+          : items.map((item) => (
+              <CheckoutItem
+                key={item.id}
+                id={item.id}
+                imageUrl={item.imageUrl as string}
+                name={item.name + (item.dayOffer ? (ru ? " · Товар дня −10%" : " · Tagesangebot −10%") : "")}
+                brand={item.brand}
+                price={item.price}
+                onTap={Boolean(item.productGroup?.onTap)}
+                quantity={item.quantity}
+                disabled={item.disabled}
+                variation={item.variationName}
+                onClickCountButton={(type) =>
+                  onClickCountButton(item.id, item.quantity, type, item.productGroup?.id || 2)
+                }
+                onClickRemove={() => removeCartItem(item.id)}
+              />
+
+        ))}
       </div>
 
       {!totalAmount && !loading && (
