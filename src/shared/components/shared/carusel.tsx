@@ -25,18 +25,19 @@ interface Props {
   slides: (Slide & { images: SlideImage[] })[];
   className?: string;
   promotions?: HeroPromotion[];
-  dayFragrance?: FeaturedDayFragrance | null;
+  dayFragrances?: FeaturedDayFragrance[];
 }
-export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrance = null }) => {
+export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = [] }) => {
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 6000, stopOnInteraction: false }), []);
   const [api,setApi] = useState<CarouselApi>();
   const [selected,setSelected] = useState(0);
   const locale = useLocale();
   const language = locale === "de" ? Languages.DE : Languages.RU;
   
-  const now = useDayOfferClock([...slides.map(s=>({dayOfferStartsAt:s.visibleFrom,dayOfferEndsAt:s.visibleUntil})),...(dayFragrance?[{dayOfferStartsAt:dayFragrance.startsAt,dayOfferEndsAt:dayFragrance.endsAt}]:[])]);
+  const now = useDayOfferClock([...slides.map(s=>({dayOfferStartsAt:s.visibleFrom,dayOfferEndsAt:s.visibleUntil})),...dayFragrances.map(f=>({dayOfferStartsAt:f.startsAt,dayOfferEndsAt:f.endsAt}))]);
   const visibleSlides = slides.filter(s=>(!s.visibleFrom || new Date(s.visibleFrom).getTime() <= now) && (!s.visibleUntil || new Date(s.visibleUntil).getTime() > now));
-  const showDay=Boolean(dayFragrance && dayOfferActive({dayOfferStartsAt:dayFragrance.startsAt,dayOfferEndsAt:dayFragrance.endsAt},now));
+  const featured=dayFragrances.find(f=>dayOfferActive({dayOfferStartsAt:f.startsAt,dayOfferEndsAt:f.endsAt},now));
+  const showDay=Boolean(featured);
   const featuredCount=promotions.length+(showDay?1:0);
   useEffect(()=>{
     if(!api) return;
@@ -52,7 +53,7 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrance = nul
   return (
     <Carousel className="mx-auto w-full max-w-[1440px] px-4 md:px-8" opts={{loop:featuredCount+visibleSlides.length>1}} setApi={setApi} plugins={[autoplayPlugin]}>
       <CarouselContent>
-        {showDay && dayFragrance && <CarouselItem className="w-full" key="fragrance-day"><FragranceDayHero offer={dayFragrance}/></CarouselItem>}
+        {showDay && featured && <CarouselItem className="w-full" key="fragrance-week"><FragranceDayHero offer={featured}/></CarouselItem>}
         {promotions.map((promotion,index)=>(
           <CarouselItem className="w-full" key={promotion.slug}>
             <PromotionHero promotion={promotion}/>
@@ -82,7 +83,7 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrance = nul
         ))}
       </CarouselContent>
       {featuredCount>1 && (
-        <nav aria-label={locale==="ru"?"Предложения и аромат дня":"Angebote und Duft des Tages"} className="mt-3 flex flex-wrap items-center justify-center gap-3">
+        <nav aria-label={locale==="ru"?"Предложения и аромат недели":"Angebote und Duft der Woche"} className="mt-3 flex flex-wrap items-center justify-center gap-3">
           <span className="text-xs font-medium text-neutral-600">{locale==="ru"?"Наши предложения":"Unsere Angebote"}</span>
           {Array.from({length:featuredCount},(_,index)=><button key={index} type="button" onClick={()=>api?.scrollTo(index)} aria-label={`${locale==="ru"?"Слайд":"Folie"} ${index+1} ${locale==="ru"?"из":"von"} ${featuredCount}`} aria-current={selected===index?"true":undefined} className={`h-3 rounded-full transition-all ${selected===index?"w-8 bg-neutral-900":"w-3 bg-neutral-300 hover:bg-neutral-500"}`}/>)}
           <button type="button" className="rounded-full border border-neutral-300 px-3 py-1 text-xs text-neutral-800 hover:bg-neutral-100" onClick={()=>api?.scrollTo((selected+1)%featuredCount)}>{locale==="ru"?"Следующее предложение →":"Weiteres Angebot →"}</button>
