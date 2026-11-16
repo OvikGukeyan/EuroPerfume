@@ -7,6 +7,8 @@ import { berlinDate,validateSupplyDate,readPricing,capturePricing,cents,invoiceT
 export async function createProtectedInvoice(orderId:number,supplyDateValue:string) {
  await requireInvoiceAdmin();
  if(!Number.isSafeInteger(orderId)||orderId<=0) throw new Error('Некорректный номер заказа');
+ const promotionRecords=await prisma.orderPromotion.findMany({where:{orderId}}).catch(()=>[]);
+ const giftLines=promotionRecords.map(record=>record.snapshot as {giftName:string;giftMl:number}).filter(p=>p.giftName && p.giftMl>0).map(p=>({title:p.giftName,ml:p.giftMl}));
  return prisma.$transaction(async tx=>{
   await tx.$queryRaw`SELECT id FROM "Order" WHERE id=${orderId} FOR UPDATE`;
   const exists=await tx.invoice.findUnique({where:{orderId}});
@@ -21,7 +23,7 @@ export async function createProtectedInvoice(orderId:number,supplyDateValue:stri
   const issuedAt=new Date(),year=Number(berlinDate(issuedAt).slice(0,4));
   const counters=await tx.$queryRaw<{lastValue:number}[]>`INSERT INTO "InvoiceCounter" (year,"lastValue") VALUES (${year},1) ON CONFLICT (year) DO UPDATE SET "lastValue"="InvoiceCounter"."lastValue"+1 RETURNING "lastValue"`;
   const invoiceNumber=`EP-${year}-${String(counters[0].lastValue).padStart(6,'0')}`;
-  const pdf=await generateInvoicePdf(order,invoiceNumber,pricing,taxSnapshot,issuedAt);
+  const pdf=await generateInvoicePdf(order,invoiceNumber,pricing,taxSnapshot,issuedAt,giftLines);
   const invoice=await tx.invoice.create({data:{orderId,pdfUrl:invoiceUrl,supplyDate,taxSnapshot,issuedAt,year,invoiceNumber}});
   const sha256=pdfHash(pdf);
   await tx.$executeRaw`INSERT INTO "InvoiceDocument" ("invoiceId",pdf,sha256) VALUES (${invoice.id},${pdf},${sha256})`;
