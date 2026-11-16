@@ -2,9 +2,9 @@
 import React, { FC, Suspense, useEffect, useState } from "react";
 import { cn } from "@/src/lib/utils";
 import { LanguageSwitcher, MenuDrawerItem, SocialMediaBar } from ".";
-import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "../ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from "../ui/sheet";
 import { Button } from "..";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { useCategories } from "@/src/shared/hooks";
 import { useLocale } from "next-intl";
 import { Link } from "@/src/i18n/navigation";
@@ -30,9 +30,14 @@ export const MenuDrawer:FC<Props>=({className})=>{
       <Menu size={23}/><span className="text-xs">Menü</span>
      </Button>
     </SheetTrigger>
-    <SheetContent side="left" className="flex h-[100dvh] w-full max-w-none flex-col overflow-y-auto border-0 bg-white px-5 pb-8 pt-6 text-[#202020] shadow-none sm:w-[620px] sm:max-w-none sm:px-8 xl:hidden [&>button]:right-5 [&>button]:top-7 [&>button_svg]:h-6 [&>button_svg]:w-6">
-     <header className="sticky top-0 z-10 mb-4 flex min-h-11 items-center justify-center border-b border-[#ededeb] bg-white pb-5">
+    <SheetContent side="left" className="flex h-[100dvh] w-full max-w-none flex-col overflow-y-auto border-0 bg-white px-5 pb-8 pt-6 text-[#202020] shadow-none sm:w-[620px] sm:max-w-none sm:px-8 xl:hidden [&>button]:hidden">
+     <header className="sticky top-0 z-10 mb-4 flex min-h-11 items-center justify-center px-11 border-b border-[#ededeb] bg-white pb-5">
       <SheetTitle asChild><Link href="/" onClick={()=>{setOpen(false);window.scrollTo({top:0,behavior:"auto"});}} aria-label={locale==="ru"?"EURO PERFUME — на главную":"EURO PERFUME – zur Startseite"} className="font-sans text-[18px] font-semibold uppercase tracking-[.17em] text-[#202020] transition-opacity hover:opacity-65">EURO PERFUME</Link></SheetTitle>
+      <SheetClose asChild>
+       <button type="button" aria-label={locale==="ru"?"Закрыть меню":"Menü schließen"} className="absolute right-0 top-0 z-20 flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#202020] transition-colors hover:bg-neutral-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-900">
+        <X size={24} strokeWidth={1.8} aria-hidden="true"/>
+       </button>
+      </SheetClose>
      </header>
      <div>
       {categories.map((category,index)=><MenuDrawerItem key={category.id} setOpen={setOpen} category={category} locale={locale} featured={featured} showFeatured={index===0}/>)}
