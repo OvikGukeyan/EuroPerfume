@@ -394,6 +394,22 @@ export async function createOrder(data: CheckoutFormValues) {
       if (userCart.items.some(item => !item.product.available)) {
         throw new Error("Один из товаров больше недоступен. Обновите корзину.");
       }
+      const campaignCode = "WOOD_TRIO_GIFT_2026";
+      const campaignRequested = (data.comment || "").includes(campaignCode);
+      const hasCampaignItem = (name: string) => userCart.items.some(item =>
+        item.product.name.trim().toLocaleLowerCase() === name.toLocaleLowerCase() &&
+        Boolean(item.product.productGroup?.onTap) &&
+        item.product.bottleParentId === null &&
+        item.quantity >= 5 &&
+        item.variationId === null
+      );
+      const campaignValid = hasCampaignItem("Cedar Chic") && hasCampaignItem("Bois Impérial");
+      if (campaignRequested && !campaignValid) throw new Error("CAMPAIGN_INVALID");
+      const campaignNote = campaignRequested && campaignValid
+        ? "[AKTION WOOD_TRIO_GIFT_2026: Encre Noire 2 ml GRATIS beilegen; bei Versand Bestand manuell prüfen]"
+        : "";
+      // Remove client-provided campaign markup; only the server may confirm eligibility.
+      const cleanComment = (data.comment || "").split(/\\r?\\n/).filter(line => !line.includes(campaignCode)).join("\\n");
       const boxLabel = boxItems.length ? "Aroma Box · 8 × 2 мл\n" + boxItems.map(item => `${item.product.brand?.name || ""} ${item.product.name} — 2 мл`).join("\n") : "";
       const deliveryCountry = deliveryCountryForCheckout(data);
       const orderedAt = new Date();
@@ -433,7 +449,7 @@ export async function createOrder(data: CheckoutFormValues) {
           deliveryHouseNumber: data.deliveryHouseNumber
             ? data.deliveryHouseNumber
             : data.houseNumber,
-          comment: [boxLabel, data.comment].filter(Boolean).join("\n"),
+          comment: [boxLabel, cleanComment, campaignNote].filter(Boolean).join("\n"),
           token: cartToken,
           totalAmount: totalAmountWithDelivery,
           createdAt: orderedAt,
@@ -519,7 +535,7 @@ export async function createOrder(data: CheckoutFormValues) {
         items: safeCartItems as CartItemDTO[],
       }),
     ), sendTelegramMessage(
-      `${boxLabel ? boxLabel + "\n\n" : ""}Order #${
+      `${campaignNote ? campaignNote + "\n\n" : ""}${boxLabel ? boxLabel + "\n\n" : ""}Order #${
         order.id
       } : Total amount: ${order.totalAmount.toNumber()}, Items: ${safeCartItems
         .map((item) => item.product.name + " * " + item.quantity)
@@ -528,6 +544,7 @@ export async function createOrder(data: CheckoutFormValues) {
     notificationResults.forEach((result, index) => { if (result.status === "rejected") console.error("[order notification]", index, "delivery failed"); });
     (await cookieStore).delete("discoveryBoxIds");
   } catch (error) {
+    if(error instanceof Error && error.message==="CAMPAIGN_INVALID") return {code:"CAMPAIGN_INVALID"} as const;
     if(error instanceof Error && error.message==="PRICES_CHANGED") return {code:"PRICES_CHANGED"} as const;
     if(error instanceof Error && error.message.includes("Not enough full bottles in stock")) return {code:"BOTTLE_STOCK"} as const;
     console.error("[createOrder] Server error", error);
