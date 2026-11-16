@@ -1,30 +1,35 @@
 "use client";
 import { useLocale } from "next-intl";
 import { Link } from "@/src/i18n/navigation";
-import { BLACK_FRIDAY, blackFridayActive } from "@/src/shared/lib/black-friday";
+import { BLACK_FRIDAY } from "@/src/shared/lib/black-friday";
 import { useDayOfferClock } from "@/src/shared/hooks/use-day-offer";
 import toast from "react-hot-toast";
 
+// Original catalogue photography, kept separate from the generated studio scene.
+const bottles = [
+  { name: "Parfums de Marly Delina Exclusif", src: "/assets/campaigns/delina-exclusif-original.webp", position: "left-[-5%] top-[50%] h-[35%] w-[35%] -rotate-6" },
+  { name: "Ex Nihilo Blue Talisman", src: "/assets/campaigns/blue-talisman-original.webp", position: "right-[-4%] top-[51%] h-[34%] w-[34%] rotate-6" },
+  { name: "Maison Francis Kurkdjian Baccarat Rouge 540 Extrait", src: "/assets/campaigns/baccarat-rouge-540-extrait-original.webp", position: "left-[36%] top-[73%] h-[23%] w-[28%]" },
+];
 export function BlackFridayHero() {
   const ru = useLocale() === "ru";
-  const now = useDayOfferClock({dayOfferStartsAt:BLACK_FRIDAY.startsAt,dayOfferEndsAt:BLACK_FRIDAY.endsAt});
+  const now = useDayOfferClock({ dayOfferStartsAt: BLACK_FRIDAY.startsAt, dayOfferEndsAt: BLACK_FRIDAY.endsAt });
   if (now >= Date.parse(BLACK_FRIDAY.endsAt)) return null;
   async function copyCode() {
-    try { await navigator.clipboard.writeText(BLACK_FRIDAY.code); toast.success(ru ? "Промокод BLACK15 скопирован" : "Gutscheincode BLACK15 kopiert"); }
-    catch { toast(ru ? "Промокод: BLACK15" : "Gutscheincode: BLACK15"); }
+    try { await navigator.clipboard.writeText(BLACK_FRIDAY.code); toast.success(ru ? "BLACK15 скопирован · действует только 27 ноября" : "BLACK15 kopiert · gültig nur am 27. November"); }
+    catch { toast("BLACK15 · 27.11.2026"); }
   }
-  return <section aria-label={ru ? "Чёрная пятница — 27 ноября, скидка 15% по промокоду BLACK15" : "Black Friday — 27. November, 15% Rabatt mit BLACK15"} className="overflow-hidden rounded-[24px] bg-[#f5a8c5] md:grid md:grid-cols-2">
-    <div className="relative mx-auto w-full self-center md:max-w-[480px]">
-    <img src="/assets/campaigns/black-friday-2026-niche.webp" width="1122" height="1402" fetchPriority="high" alt={ru ? "EURO PERFUME. BLACK FRIDAY SALE. −15%. Промокод BLACK15. Только 27.11.2026, 00:00–23:59 по берлинскому времени. Не действует на товары со скидкой." : "EURO PERFUME. BLACK FRIDAY SALE. −15% mit BLACK15. Nur am 27.11.2026, 00:00–23:59 Berliner Zeit. Nicht auf bereits reduzierte Artikel."} className="block h-auto w-full"/>
-    <div className="absolute left-[29.4%] top-[0.6%] flex h-[7%] w-[38.3%] items-center justify-center bg-white p-[1%]"><img src="/assets/logo.png" width="2886" height="573" alt="EURO PERFUME" className="h-auto w-full object-contain"/></div>
-    </div>
-    <div className="flex flex-col justify-center gap-4 px-6 py-5 text-[#211820] md:p-10">
-      <img src="/assets/logo.png" width="2886" height="573" alt="EURO PERFUME · Niche & Luxury Perfumery" className="hidden h-auto w-full max-w-[320px] rounded bg-white p-2 md:block"/>
-      <h2 className="hidden text-5xl font-black leading-none md:block">BLACK<br/>FRIDAY <span className="text-[#d90069]">−15%</span></h2>
-      <p className="text-sm md:text-xl">{ru ? "Только 27 ноября 2026 · 00:00–23:59" : "Nur am 27. November 2026 · 00:00–23:59"}<br/><span className="text-xs md:text-sm">{ru ? "По берлинскому времени" : "Berliner Zeit"}</span></p>
-      <button onClick={copyCode} type="button" className="rounded-xl bg-[#211820] px-5 py-3 font-bold text-white">{ru ? "Промокод" : "Gutscheincode"}: BLACK15 <span className="ml-2 text-xs font-normal">{ru ? "Скопировать" : "Kopieren"}</span></button>
-      <p className="text-xs md:text-sm">{ru ? "Не действует на товары, на которые уже есть скидка. Скидки не суммируются." : "Gilt nicht für bereits reduzierte Artikel. Rabatte sind nicht kombinierbar."}</p>
-      <Link href="/items" className="text-sm font-semibold underline underline-offset-4">{blackFridayActive(now) ? (ru ? "Выбрать ароматы →" : "Düfte entdecken →") : (ru ? "Смотреть каталог · акция начнётся 27 ноября →" : "Katalog ansehen · Aktion startet am 27. November →")}</Link>
+  return <section aria-label={ru ? "Чёрная пятница — 15% по промокоду BLACK15, только 27 ноября" : "Black Friday — 15% mit BLACK15, nur am 27. November"} className="relative isolate overflow-hidden rounded-[22px] bg-[#f4a7c6] md:rounded-[32px]">
+    <div className="relative mx-auto aspect-[1.05/1] w-full md:h-[540px] md:w-[567px]">
+      <img src="/assets/campaigns/black-friday-square-scene.webp" width="1254" height="1254" alt="Black Friday SALE −15% · BLACK15" fetchPriority="high" className="absolute inset-0 h-full w-full object-fill"/>
+      <Link href="/items" aria-label={ru ? "Выбрать ароматы в каталоге" : "Düfte im Katalog entdecken"} className="absolute inset-0 z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-black"/>
+      <img src="/assets/logo.png" width="2886" height="573" alt="EURO PERFUME · Niche & Luxury Perfumery" className="pointer-events-none absolute left-[32%] top-[1.5%] w-[36%] mix-blend-multiply"/>
+      {bottles.map(bottle => <img key={bottle.name} src={bottle.src} width="500" height="500" alt={bottle.name} className={`pointer-events-none absolute object-contain mix-blend-multiply ${bottle.position}`}/>)}
+      <button type="button" onClick={copyCode} aria-label={ru ? "Скопировать промокод BLACK15" : "Gutscheincode BLACK15 kopieren"} title={ru ? "Нажмите, чтобы скопировать BLACK15" : "BLACK15 kopieren"} className="absolute left-[28%] top-[46%] z-20 h-[6%] w-[47%] rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"><span className="sr-only">BLACK15</span></button>
+      <div className="pointer-events-none absolute inset-x-[3%] bottom-[1%] text-center text-[9px] font-medium leading-[1.35] text-[#291c24] min-[390px]:text-[10px] md:text-[13px]">
+        <p>27.11.2026 · 00:00–23:59 · {ru ? "по берлинскому времени" : "Berliner Zeit"}</p>
+        <p>{ru ? "Не действует на товары со скидкой" : "Gilt nicht für bereits reduzierte Artikel"}</p>
+      </div>
     </div>
   </section>;
 }

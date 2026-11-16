@@ -30,7 +30,7 @@ interface Props {
   dayFragrances?: FeaturedDayFragrance[];
 }
 export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = [] }) => {
-  const autoplayPlugin = useMemo(() => Autoplay({ delay: 6000, stopOnInteraction: false }), []);
+  const autoplayPlugin = useMemo(() => Autoplay({ delay: 8000, stopOnInteraction: true }), []);
   const [api,setApi] = useState<CarouselApi>();
   const [selected,setSelected] = useState(0);
   const locale = useLocale();
@@ -44,18 +44,27 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
   const featuredCount=promotions.length+(showDay?1:0)+(showBlackFriday?1:0);
   useEffect(()=>{
     if(!api) return;
-    const update=()=>setSelected(api.selectedScrollSnap());
+    const viewport = api.rootNode();
+    const update=()=>{
+      const index = api.selectedScrollSnap();
+      setSelected(index);
+      const slide = api.slideNodes()[index];
+      if (slide) viewport.style.height = `${Math.ceil(slide.getBoundingClientRect().height)}px`;
+    };
+    viewport.style.transition = "height 220ms ease";
+    const observer = new ResizeObserver(update);
+    api.slideNodes().forEach(slide => observer.observe(slide));
     update();
     api.on("select",update);
     api.on("reInit",update);
-    return ()=>{api.off("select",update);api.off("reInit",update);};
+    return ()=>{ observer.disconnect(); api.off("select",update);api.off("reInit",update);viewport.style.removeProperty("height");viewport.style.removeProperty("transition"); };
   },[api]);
   if (!visibleSlides.length && !featuredCount) {
     return null;
   }
   return (
     <Carousel className="mx-auto w-full max-w-[1440px] px-4 md:px-8" opts={{loop:featuredCount+visibleSlides.length>1}} setApi={setApi} plugins={[autoplayPlugin]}>
-      <CarouselContent>
+      <CarouselContent className="items-start">
         {showBlackFriday && <CarouselItem className="w-full" key="black-friday-2026"><BlackFridayHero/></CarouselItem>}
         {showDay && featured && <CarouselItem className="w-full" key="fragrance-week"><FragranceDayHero offer={featured}/></CarouselItem>}
         {promotions.map((promotion,index)=>(
