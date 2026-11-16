@@ -74,10 +74,11 @@ export default function Checkout() {
     if (searchParams.get("campaign") === "WOOD_TRIO_GIFT_2026") {
       const note = "[AKTION WOOD_TRIO_GIFT_2026: Encre Noire 2 ml gratis beilegen]";
       const old = form.getValues("comment") || "";
-      if (!old.includes("WOOD_TRIO_GIFT_2026")) form.setValue("comment", [old, note].filter(Boolean).join("\\n"));
+      if (!old.includes("WOOD_TRIO_GIFT_2026")) form.setValue("comment", [old, note].filter(Boolean).join("\n"));
     }
   }, [searchParams, form]);
 
+  const campaignActive = searchParams.get("campaign") === "WOOD_TRIO_GIFT_2026";
   const discount = form.watch("discount");
   const deliveryCountry = deliveryCountryForCheckout({ shippingMethod: form.watch("shippingMethod"), deliveryCountry: form.watch("deliveryCountry"), country: form.watch("country") });
   const { totalAmountWithDelivery, deliveryPrice } =
@@ -107,6 +108,11 @@ export default function Checkout() {
         form.setValue("discount",0); form.setValue("promocode","");
         await useCartStore.getState().fetchCartItems();
         toast.error(locale==="ru"?"Цена или срок акции изменились. Проверьте сумму и отправьте заявку ещё раз.":"Preis oder Aktionszeitraum geändert. Bitte Betrag prüfen und Anfrage erneut senden.");
+        return;
+      }
+      if(result?.code==="CAMPAIGN_INVALID") {
+        await useCartStore.getState().fetchCartItems();
+        toast.error(locale==="ru" ? "Для подарка нужны Cedar Chic 5 мл и Bois Impérial 5 мл в одном заказе." : "Für das Geschenk müssen Cedar Chic 5 ml und Bois Impérial 5 ml im Warenkorb sein.");
         return;
       }
       if(result?.code==="BOTTLE_STOCK"){
@@ -171,6 +177,9 @@ export default function Checkout() {
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
             <div className="flex min-w-0 flex-col gap-5 flex-1 mb-2">
+              {campaignActive && <div role="status" className="rounded-xl border border-[#b4a27d] bg-[#faf7ef] p-4 text-sm text-[#443923]">
+                {locale === "ru" ? "Акция «Три оттенка древесины»: при покупке Cedar Chic 5 мл и Bois Impérial 5 мл Encre Noire 2 мл вложим бесплатно. Подарок комплектуется вручную." : "Holz-Trio-Aktion: Bei Cedar Chic 5 ml und Bois Impérial 5 ml legen wir Encre Noire 2 ml kostenlos bei. Das Geschenk wird manuell verpackt."}
+              </div>}
               <CheckoutCart
                 loading={loading}
                 items={items}
