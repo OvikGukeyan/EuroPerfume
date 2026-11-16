@@ -9,17 +9,17 @@ export default async function WoodTrioCampaignPage() {
       bottleParentId: null,
       available: true,
       OR: [
-        { name: { contains: "Cedar Chic", mode: "insensitive" } },
-        { name: { contains: "Bois Imp", mode: "insensitive" } },
-        { name: { contains: "Encre Noire", mode: "insensitive" } },
+        { name: { equals: "Cedar Chic", mode: "insensitive" } },
+        { name: { equals: "Bois Impérial", mode: "insensitive" } },
+        { name: { equals: "Encre Noire", mode: "insensitive" } },
       ],
     },
     include: { brand: true, productGroup: true },
   });
   const find = (name: string) =>
-    products.find((p) => p.name.toLowerCase().includes(name.toLowerCase()) && p.productGroup.onTap);
+    products.find((p) => p.name.toLocaleLowerCase() === name.toLocaleLowerCase() && p.productGroup.onTap);
   const cedar = find("Cedar Chic");
-  const bois = find("Bois Imp");
+  const bois = find("Bois Impérial");
   const gift = find("Encre Noire");
   return (
     <WoodTrioOffer
