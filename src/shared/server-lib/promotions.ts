@@ -9,6 +9,7 @@ export type PromoView = {
 };
 export type PromoLine = {id:number; quantity:number; variationId:number|null; productId:number};
 
+import { promotionLive } from "../lib/promotion-rules";
 export { promotionLive, promotionQualified } from "../lib/promotion-rules";
 export async function getPromotion(slug: string): Promise<PromoView | null> {
   try { return await prisma.promotion.findUnique({where:{slug}}); }
@@ -16,7 +17,7 @@ export async function getPromotion(slug: string): Promise<PromoView | null> {
 }
 export async function getActivePromotions() {
   try {
-    return await prisma.promotion.findMany({where:{active:true, OR:[{endsAt:null},{endsAt:{gt:new Date()}}]},orderBy:{priority:"desc"}});
+    return (await prisma.promotion.findMany({where:{active:true, OR:[{endsAt:null},{endsAt:{gt:new Date()}}]},orderBy:{priority:"desc"}})).filter(p=>promotionLive(p));
   } catch { return []; }
 }
 export async function getCartPromotions(cartId: number) {
