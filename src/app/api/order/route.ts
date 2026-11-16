@@ -24,9 +24,11 @@ export async function GET(req: NextRequest) {
         },
       },
     });
+    const promoRecords = await prisma.orderPromotion.findMany({where:{orderId:{in:orders.map(o=>o.id)}}}).catch(()=>[]);
     const safeOrders = orders.map((order) => ({
       ...order,
       totalAmount: order.totalAmount.toNumber(),
+      promotions: promoRecords.filter(p=>p.orderId===order.id).map(p=>p.snapshot),
     }));
     return NextResponse.json(safeOrders);
   } catch (error) {
