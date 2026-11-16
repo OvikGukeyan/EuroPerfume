@@ -1,3 +1,4 @@
+import { calcCartItemTotalPrice } from "@/src/shared/lib/calc-cart-item-total-price";
 import { notFound } from "next/navigation";
 import { getPromotion, promotionLive, promotionProducts } from "@/src/shared/server-lib/promotions";
 import { PromotionOffer } from "@/src/shared/components/shared/promotion-offer";
@@ -11,6 +12,6 @@ export default async function Offer({params}:{params:Promise<{slug:string}>}) {
   const gift=products.find(p=>p.id===promotion.giftProductId);
   return <PromotionOffer slug={promotion.slug} titleRu={promotion.titleRu} titleDe={promotion.titleDe}
     requiredMl={promotion.requiredMl} giftMl={promotion.giftMl} available={items.length===promotion.productIds.length && !!gift}
-    items={items.map(p=>({id:p.id,name:p.name,brand:p.brand.name,image:p.imageUrl[0]||"",price:Number(p.discountPrice||p.price)*promotion.requiredMl}))}
+    items={items.map(p=>({id:p.id,name:p.name,brand:p.brand.name,image:p.imageUrl[0]||"",price:calcCartItemTotalPrice(Number(p.price),promotion.requiredMl,true,p.discountPrice?Number(p.discountPrice):undefined,p)}))}
     gift={gift?{name:gift.name,brand:gift.brand.name,image:gift.imageUrl[0]||""}:null}/>;
 }
