@@ -29,7 +29,16 @@ export async function GET() {
   if (!await guard()) return NextResponse.json({error:"Forbidden"},{status:403});
   try {
     const promotions=await prisma.promotion.findMany({orderBy:{createdAt:"desc"},include:{_count:{select:{orders:true,carts:true}}}});
-    return NextResponse.json(promotions);
+    const orders = await prisma.orderPromotion.findMany({select:{promotionId:true,snapshot:true,order:{select:{totalAmount:true,items:{select:{productId:true}}}}}});
+    const summary = promotions.map(p=>{
+      const matches=orders.filter(o=>o.promotionId===p.id);
+      const extraOrders=matches.filter(o=>{
+        const ids=(o.snapshot as {productIds?:number[]}).productIds||[];
+        return o.order.items.some(item=>!ids.includes(item.productId));
+      }).length;
+      return {...p,orderRevenue:matches.reduce((sum,o)=>sum+Number(o.order.totalAmount),0),extraOrders};
+    });
+    return NextResponse.json(summary);
   } catch { return NextResponse.json({error:"Promotion tables have not been migrated"},{status:503}); }
 }
 export async function POST(req:Request) {
