@@ -33,7 +33,7 @@ export function PromotionOffer({slug,titleRu,titleDe,requiredMl,giftMl,available
       <span className="rounded-full bg-[#ded0c1] px-3 py-1.5 text-[11px] font-semibold text-[#5a4435]">{ru?"ПОДАРОК В НАБОРЕ":"GRATISPROBE IM SET"}</span>
     </div>
     <h1 className="mt-5 font-serif text-[34px] leading-[1.07] tracking-[-.03em] md:text-[58px]">{ru?titleRu:titleDe}</h1>
-    <p className="mt-3 max-w-[650px] text-[14px] leading-relaxed text-[#675c52] md:text-[17px]">{ru?"Cedar Chic и Bois Impérial по 5 мл — Encre Noire 2 мл в подарок. Все три оттенка древесины в одной подборке.":"Cedar Chic und Bois Impérial je 5 ml – dazu Encre Noire 2 ml gratis. Drei Facetten von Holz in einem Set."}</p>
+    <p className="mt-3 max-w-[650px] text-[14px] leading-relaxed text-[#675c52] md:text-[17px]">{ru?`${items.map(p=>p.name.trim()).join(" и ")} по ${requiredMl} мл — ${gift?.name.trim()||"аромат"} ${giftMl} мл в подарок.`:`${items.map(p=>p.name.trim()).join(" und ")} je ${requiredMl} ml – ${gift?.name.trim()||"Duft"} ${giftMl} ml gratis.`}</p>
     <div className="mt-7 grid grid-cols-3 gap-2 md:mt-10 md:gap-5">
       {[...items.map(p=>({...p,isGift:false})),...(gift?[{...gift,isGift:true}]:[])].map((p,i)=><article key={p.id??i} className="relative min-w-0 rounded-[15px] bg-[#f7f3ee] p-2.5 pb-4 md:rounded-[22px] md:p-5">
         {p.isGift&&<span className="absolute right-2 top-2 z-10 rounded-full bg-[#564638] px-2 py-1 text-[9px] font-semibold text-white md:right-4 md:top-4 md:px-3 md:text-[11px]">{ru?"ПОДАРОК":"GRATIS"}</span>}
