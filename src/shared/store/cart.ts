@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import { create } from "zustand";
 import { Api } from "../services/api-client";
 import { getCartDetails } from "../lib";
+import type { CartPromotionSummary } from "../services/dto/cart.dto";
 import { CartStateItem } from "../lib/get-cart-details";
 import { CreateCartItemValues } from "../services/dto/cart.dto";
 
@@ -15,6 +16,7 @@ export interface CartState {
   error: boolean;
   totalAmount: number;
   items: CartStateItem[];
+  promotions: CartPromotionSummary[];
 
   fetchCartItems: () => Promise<void>;
   updateItemQuantity: (id: number, quantity: number) => Promise<void>;
@@ -25,6 +27,7 @@ export interface CartState {
 export const useCartStore = create<CartState>((set, get) => ({
   offerRefreshAt: null,
   items: [],
+  promotions: [],
   loading: true,
   itemLoading: false,
   error: false,
