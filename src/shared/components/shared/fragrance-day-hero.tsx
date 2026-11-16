@@ -19,6 +19,29 @@ export function FragranceDayHero({offer}:{offer:FeaturedDayFragrance}){
  if(!dayOfferActive({dayOfferStartsAt:offer.startsAt,dayOfferEndsAt:offer.endsAt},now))return null;
  const endDay=new Date(new Date(offer.endsAt).getTime()-1000);
  const until=new Intl.DateTimeFormat(ru?"ru-RU":"de-DE",{day:"numeric",month:"long",timeZone:"Europe/Berlin"}).format(endDay);
+ if(ru && offer.id===234 && offer.name.toLowerCase().includes("addictive vibration")){
+  // Use the actual previously approved complete artwork for the current fragrance.
+  // Future perfumes still use the generic live design below; never show Initio artwork for another item.
+  return <section aria-label="Аромат недели · Initio Addictive Vibration" className="overflow-hidden rounded-[18px] bg-[#e5dfd9] md:rounded-[25px]">
+    <Link href={offer.href} aria-label="Открыть Initio Addictive Vibration со скидкой 10%" className="block w-full md:hidden">
+      <img src="/assets/day-offers/approved-initio-art.webp" alt="EURO PERFUME — Аромат недели Addictive Vibration, скидка 10%, открыть аромат" className="block h-auto w-full" loading="eager"/>
+    </Link>
+    <div className="hidden md:grid md:min-h-[470px] md:grid-cols-[1fr_360px] md:items-center md:gap-10 md:px-14 md:py-10">
+      <div className="min-w-0">
+        <p className="text-xs font-medium uppercase tracking-[.24em] text-[#69545b]">EURO PERFUME · АРОМАТ НЕДЕЛИ</p>
+        <h2 className="mt-8 max-w-lg font-serif text-[56px] leading-[1.04] tracking-[-.035em] text-[#332a2a]">{offer.name}</h2>
+        <p className="mt-3 text-sm uppercase tracking-[.17em] text-[#725c60]">{offer.brand}</p>
+        <p className="mt-7 font-serif text-5xl text-[#542f3f]">−10%</p>
+        <p className="mt-4 text-xl text-[#332a2a]">{money(offer.salePrice)} <del className="ml-2 text-sm text-[#857a74]">{money(offer.regularPrice)}</del> <span className="text-sm">· {offer.volume} ml</span></p>
+        <p className="mt-4 text-sm text-[#6d625e]">Оригинальная парфюмерия · Премиальное качество</p>
+        <Link href={offer.href} className="mt-8 inline-flex items-center gap-2 bg-[#2b2525] px-7 py-3 text-sm text-white">Открыть аромат <ArrowUpRight size={16}/></Link>
+      </div>
+      <Link href={offer.href} className="block overflow-hidden rounded-xl" aria-label="Открыть аромат">
+        <img src="/assets/day-offers/approved-initio-art.webp" alt="Коллекционный баннер Initio Addictive Vibration" className="h-[470px] w-full object-cover object-center"/>
+      </Link>
+    </div>
+  </section>;
+ }
  return <section aria-label={ru?"Аромат недели":"Duft der Woche"} className="relative isolate min-h-[350px] overflow-hidden rounded-[18px] bg-[#eae5df] text-[#292525] md:min-h-[410px] md:rounded-[25px]">
    {/* Restrained architectural depth: a continuous neutral scene for any bottle color. */}
    <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,#f4f0eb_0%,#e9e5df_48%,#d4cec8_100%)]"/>
