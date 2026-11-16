@@ -17,7 +17,8 @@ export async function generateInvoicePdf(
   invoiceNumber: string,
   pricing: PricingSnapshot,
   tax: ReturnType<typeof invoiceTax>,
-  issuedAt = new Date()
+  issuedAt = new Date(),
+  giftLines: {title:string;ml:number}[] = []
 ): Promise<Buffer> {
   const doc = new PDFDocument({
     size: "A4",
@@ -97,6 +98,14 @@ Leistungsdatum: ${tax.supplyDate}`,
     doc.text(String(line.quantity) + (line.onTap ? " ml" : " Stk."), 370, y, { width: 70, align: "right" });
     doc.text((line.grossCents / 100).toFixed(2) + " €", 465, y, { width: 80, align: "right" });
     y += height;
+  }
+  for(const [index,gift] of giftLines.entries()) {
+    if(y+30>590) {doc.addPage();y=80;tableHeader();}
+    doc.text(String(pricing.lines.length+index+1),50,y);
+    doc.text(gift.title+" · Gratisgeschenk / Подарок",90,y,{width:260});
+    doc.text(String(gift.ml)+" ml",370,y,{width:70,align:"right"});
+    doc.text("0,00 €",465,y,{width:80,align:"right"});
+    y+=28;
   }
   if (y > 540) { doc.addPage(); y = 80; }
   y += 10;

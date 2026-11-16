@@ -1,7 +1,7 @@
 import { dayOfferActive } from "./day-offer";
 import { roundMoney } from "./money";
 import { Brand, ProductGroup } from "@prisma/client";
-import { CartDTO } from "../services/dto/cart.dto";
+import { CartDTO, CartPromotionSummary } from "../services/dto/cart.dto";
 import { calcCartItemTotalPrice } from "./calc-cart-item-total-price";
 
 export type CartStateItem = {
@@ -21,6 +21,7 @@ export type CartStateItem = {
 };
 interface ReturnProps {
   items: CartStateItem[];
+  promotions: CartPromotionSummary[];
   totalAmount: number;
   offerRefreshAt: number | null;
 }
@@ -50,5 +51,6 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
     offerRefreshAt: boundaries.length ? Math.min(...boundaries) : null,
     totalAmount: roundMoney(items.reduce((sum, item) => sum + item.price, 0)),
     items,
+    promotions:data.promotions||[],
   };
 };

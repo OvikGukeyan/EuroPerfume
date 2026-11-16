@@ -1,5 +1,6 @@
 "use server";
 import { offerPrices } from "../shared/lib/day-offer";
+import { promotionLive, promotionQualified } from "../shared/server-lib/promotions";
 import { bottleGroup } from "@/src/shared/lib/full-bottle";
 import { aromaBoxItems } from "@/src/shared/lib/aroma-box";
 
@@ -358,7 +359,9 @@ export async function createOrder(data: CheckoutFormValues) {
     }
 
     const boxCookie=(await cookieStore).get("discoveryBoxIds")?.value;
-    const {order,pricing,userCart,boxLabel}=await prisma.$transaction(async tx=>{
+    // Preview can build before a separate staging migration is applied.
+    const promotionTablesReady = await prisma.promotion.findFirst({select:{id:true}}).then(()=>true).catch(()=>false);
+    const {order,pricing,userCart,boxLabel,campaignNote,snapshots}=await prisma.$transaction(async tx=>{
       await tx.$queryRaw`SELECT id FROM public."Cart" WHERE token=${cartToken} FOR UPDATE`;
       const userCart = await tx.cart.findFirst({
         include: {
@@ -394,6 +397,29 @@ export async function createOrder(data: CheckoutFormValues) {
       if (userCart.items.some(item => !item.product.available)) {
         throw new Error("Один из товаров больше недоступен. Обновите корзину.");
       }
+      const orderPromotions = promotionTablesReady
+        ? await tx.cartPromotion.findMany({ where:{cartId:userCart.id}, include:{promotion:true} })
+        : [];
+      const eligiblePromotions = orderPromotions.filter(link =>
+        promotionLive(link.promotion) && promotionQualified(link.promotion,userCart.items)
+      );
+      const giftIds=eligiblePromotions.map(link=>link.promotion.giftProductId).filter((id):id is number=>id!==null);
+      const gifts=giftIds.length ? await tx.product.findMany({where:{id:{in:giftIds},available:true,bottleParentId:null}}) : [];
+      const validPromotions=eligiblePromotions.filter(link=>gifts.some(g=>g.id===link.promotion.giftProductId));
+      const snapshots=validPromotions.map(link=>{
+        const p=link.promotion;
+        const gift=gifts.find(g=>g.id===p.giftProductId)!;
+        return {promotionId:p.id,snapshot:{
+          slug:p.slug,titleRu:p.titleRu,titleDe:p.titleDe,productIds:p.productIds,
+          requiredMl:p.requiredMl,giftId:gift.id,giftName:gift.name,giftMl:p.giftMl,
+          giftGrossCents:0,qualifiedAt:new Date().toISOString()
+        }};
+      });
+      const campaignNote=snapshots.map(s=>{
+        const gift=s.snapshot;
+        return `[AKTION ${gift.slug}: ${gift.giftName} ${gift.giftMl} ml GRATIS beilegen]`;
+      }).join("\n");
+      const cleanComment=(data.comment||"").split(/\\r?\\n/).filter(line=>!line.startsWith("[AKTION ")).join("\n");
       const boxLabel = boxItems.length ? "Aroma Box · 8 × 2 мл\n" + boxItems.map(item => `${item.product.brand?.name || ""} ${item.product.name} — 2 мл`).join("\n") : "";
       const deliveryCountry = deliveryCountryForCheckout(data);
       const orderedAt = new Date();
@@ -433,7 +459,8 @@ export async function createOrder(data: CheckoutFormValues) {
           deliveryHouseNumber: data.deliveryHouseNumber
             ? data.deliveryHouseNumber
             : data.houseNumber,
-          comment: [boxLabel, data.comment].filter(Boolean).join("\n"),
+          comment: [boxLabel, cleanComment, campaignNote].filter(Boolean).join("\n"),
+          promotions: snapshots.length ? {create:snapshots} : undefined,
           token: cartToken,
           totalAmount: totalAmountWithDelivery,
           createdAt: orderedAt,
@@ -470,13 +497,14 @@ export async function createOrder(data: CheckoutFormValues) {
         },
       });
 
+      if(promotionTablesReady) await tx.cartPromotion.deleteMany({where:{cartId:userCart.id}});
       await tx.cartItem.deleteMany({
         where: {
           cartId: userCart.id,
         },
       });
 
-      return {order,pricing,userCart,boxLabel};
+      return {order,pricing,userCart,boxLabel,campaignNote,snapshots};
     }, {timeout:15000});
 
     // const paymentData = await createPayment({
@@ -516,10 +544,11 @@ export async function createOrder(data: CheckoutFormValues) {
         total: order.totalAmount.toNumber(),
         pricing,
         aromaBox: boxLabel,
+        campaignGifts: snapshots.map(s=>`${s.snapshot.giftName} ${s.snapshot.giftMl} ml · 0,00 €`),
         items: safeCartItems as CartItemDTO[],
       }),
     ), sendTelegramMessage(
-      `${boxLabel ? boxLabel + "\n\n" : ""}Order #${
+      `${campaignNote ? campaignNote + "\n\n" : ""}${boxLabel ? boxLabel + "\n\n" : ""}Order #${
         order.id
       } : Total amount: ${order.totalAmount.toNumber()}, Items: ${safeCartItems
         .map((item) => item.product.name + " * " + item.quantity)
@@ -528,6 +557,7 @@ export async function createOrder(data: CheckoutFormValues) {
     notificationResults.forEach((result, index) => { if (result.status === "rejected") console.error("[order notification]", index, "delivery failed"); });
     (await cookieStore).delete("discoveryBoxIds");
   } catch (error) {
+    if(error instanceof Error && error.message==="CAMPAIGN_INVALID") return {code:"CAMPAIGN_INVALID"} as const;
     if(error instanceof Error && error.message==="PRICES_CHANGED") return {code:"PRICES_CHANGED"} as const;
     if(error instanceof Error && error.message.includes("Not enough full bottles in stock")) return {code:"BOTTLE_STOCK"} as const;
     console.error("[createOrder] Server error", error);

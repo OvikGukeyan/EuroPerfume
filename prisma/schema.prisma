@@ -291,6 +291,7 @@ model Cart {
   updatedAt   DateTime   @updatedAt
   user        User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
   items       CartItem[]
+  promotions CartPromotion[]
 }
 
 model CartItem {
@@ -386,6 +387,7 @@ model Order {
   shipments           Shipment[]
   user                User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
   invoice             Invoice?
+  promotions          OrderPromotion[]
 }
 
 model Shipment {
@@ -649,4 +651,49 @@ model InvoiceDocument {
  sha256 String
  sourceUrl String?
  archivedAt DateTime @default(now()) @db.Timestamptz(6)
+}
+
+model Promotion {
+  id             String   @id @default(uuid())
+  slug           String   @unique
+  titleRu        String
+  titleDe        String
+  active         Boolean  @default(false)
+  startsAt       DateTime?
+  endsAt         DateTime?
+  priority       Int      @default(0)
+  viewCount      Int      @default(0)
+  clickCount     Int      @default(0)
+  addCount       Int      @default(0)
+  requiredMl     Int      @default(5)
+  giftMl         Int      @default(2)
+  heroImage      String?
+  productIds     Int[]    @default([])
+  giftProductId  Int?
+  allowMultiple  Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  carts          CartPromotion[]
+  orders         OrderPromotion[]
+}
+
+model CartPromotion {
+  id          String @id @default(uuid())
+  cartId      Int
+  promotionId String
+  cart        Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  addedAt     DateTime @default(now())
+  @@unique([cartId,promotionId])
+}
+
+model OrderPromotion {
+  id          String @id @default(uuid())
+  orderId     Int
+  promotionId String
+  snapshot    Json
+  order       Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Restrict)
+  createdAt   DateTime @default(now())
+  @@unique([orderId,promotionId])
 }

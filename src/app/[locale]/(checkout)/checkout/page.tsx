@@ -31,6 +31,7 @@ export default function Checkout() {
   const {
     totalAmount,
     items,
+    promotions,
     updateItemQuantity,
     removeCartItem,
     loading,
@@ -99,6 +100,11 @@ export default function Checkout() {
         toast.error(locale==="ru"?"Цена или срок акции изменились. Проверьте сумму и отправьте заявку ещё раз.":"Preis oder Aktionszeitraum geändert. Bitte Betrag prüfen und Anfrage erneut senden.");
         return;
       }
+      if(result?.code==="CAMPAIGN_INVALID") {
+        await useCartStore.getState().fetchCartItems();
+        toast.error(locale==="ru" ? "Для подарка нужны Cedar Chic 5 мл и Bois Impérial 5 мл в одном заказе." : "Für das Geschenk müssen Cedar Chic 5 ml und Bois Impérial 5 ml im Warenkorb sein.");
+        return;
+      }
       if(result?.code==="BOTTLE_STOCK"){
         await useCartStore.getState().fetchCartItems();
         toast.error(locale==="ru"?"Этот объём закончился или его осталось меньше. Проверьте количество в корзине.":"Dieser Flakon ist nicht mehr in der gewünschten Menge verfügbar. Bitte prüfen Sie Ihren Warenkorb.");
@@ -164,6 +170,7 @@ export default function Checkout() {
               <CheckoutCart
                 loading={loading}
                 items={items}
+                promotions={promotions}
                 totalAmount={totalAmount}
                 removeCartItem={removeCartItem}
                 onClickCountButton={onClickCountButton}

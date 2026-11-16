@@ -16,4 +16,5 @@ export type SafeOrder = Omit<Order, "totalAmount"> & {
 };
 export interface OrderDTO extends SafeOrder {
   items: OrderItemDTO[];
+  promotions?: Array<{slug:string;titleRu:string;titleDe:string;giftName:string;giftMl:number}>;
 }

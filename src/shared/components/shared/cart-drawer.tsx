@@ -26,6 +26,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
   const {
     totalAmount,
     items,
+    promotions,
     updateItemQuantity,
     removeCartItem,
     loading,
@@ -93,6 +94,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
               <FreeShippingProgress totalAmount={totalAmount} />
               <AromaBoxSummary items={items} />
+              {promotions.map(p=><div key={p.id} role="status" className="mb-3 rounded-lg bg-[#f7f4ec] p-3 text-sm"><strong>🎁 {ru?p.titleRu:p.titleDe}</strong><p className="text-xs">{p.eligible?`${p.giftName} ${p.giftMl} ml · 0,00 €`:(ru?"Условия акции не выполнены":"Aktionsbedingungen nicht erfüllt")}</p></div>)}
               {items.map((item) => (
                 <div key={item.id} className="border-b border-neutral-100">
                   <CartDrawerItem

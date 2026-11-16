@@ -1,0 +1,49 @@
+-- Apply to a staging database first. Do not run on the production shared Supabase database automatically.
+CREATE TABLE IF NOT EXISTS "Promotion" (
+  "id" TEXT PRIMARY KEY,
+  "slug" TEXT NOT NULL UNIQUE,
+  "titleRu" TEXT NOT NULL,
+  "titleDe" TEXT NOT NULL,
+  "active" BOOLEAN NOT NULL DEFAULT FALSE,
+  "startsAt" TIMESTAMP(3),
+  "endsAt" TIMESTAMP(3),
+  "priority" INTEGER NOT NULL DEFAULT 0,
+  "viewCount" INTEGER NOT NULL DEFAULT 0,
+  "clickCount" INTEGER NOT NULL DEFAULT 0,
+  "addCount" INTEGER NOT NULL DEFAULT 0,
+  "requiredMl" INTEGER NOT NULL DEFAULT 5,
+  "giftMl" INTEGER NOT NULL DEFAULT 2,
+  "heroImage" TEXT,
+  "productIds" INTEGER[] NOT NULL DEFAULT ARRAY[]::INTEGER[],
+  "giftProductId" INTEGER,
+  "allowMultiple" BOOLEAN NOT NULL DEFAULT FALSE,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TABLE IF NOT EXISTS "CartPromotion" (
+  "id" TEXT PRIMARY KEY,
+  "cartId" INTEGER NOT NULL REFERENCES "Cart"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  "promotionId" TEXT NOT NULL REFERENCES "Promotion"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  "addedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "CartPromotion_cartId_promotionId_key" UNIQUE ("cartId","promotionId")
+);
+CREATE TABLE IF NOT EXISTS "OrderPromotion" (
+  "id" TEXT PRIMARY KEY,
+  "orderId" INTEGER NOT NULL REFERENCES "Order"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  "promotionId" TEXT NOT NULL REFERENCES "Promotion"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+  "snapshot" JSONB NOT NULL,
+  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT "OrderPromotion_orderId_promotionId_key" UNIQUE ("orderId","promotionId")
+);
+
+-- Deny public PostgREST access: access only through server-side Prisma.
+REVOKE ALL ON "Promotion", "CartPromotion", "OrderPromotion" FROM anon, authenticated;
+ALTER TABLE "Promotion" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "CartPromotion" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "OrderPromotion" ENABLE ROW LEVEL SECURITY;
+
+-- Initial promotion stays a draft until reviewed and activated in the dashboard.
+-- Product IDs checked against the live catalog on 2026-11-16.
+INSERT INTO "Promotion" ("id","slug","titleRu","titleDe","active","priority","requiredMl","giftMl","productIds","giftProductId","updatedAt")
+VALUES (gen_random_uuid()::text,'wood-trio','Три оттенка древесины','Drei Facetten von Holz',FALSE,10,5,2,ARRAY[563,92]::INTEGER[],164,CURRENT_TIMESTAMP)
+ON CONFLICT ("slug") DO NOTHING;
