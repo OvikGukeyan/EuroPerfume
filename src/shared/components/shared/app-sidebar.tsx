@@ -1,5 +1,6 @@
 "use client";
 
+import { useLocale } from "next-intl";
 import React, { FC } from "react";
 import { cn } from "@/src/lib/utils";
 import {
@@ -37,9 +38,10 @@ type Props = {
 
 export const AppSidebar: FC<Props> = ({ className }) => {
   const pathName = usePathname();
+  const locale = useLocale();
   const tools = [
     { name: "Продукты", icon: <Settings2 />, href: "/products" },
-    { name: "Составы / INCI", icon: <Settings2 />, href: "/ingredients" },
+    { name: locale === "ru" ? "Составы / INCI" : "Inhaltsstoffe / INCI", icon: <Settings2 />, href: "/ingredients" },
 
     {
       name: "Создать Верхний Слайд",
