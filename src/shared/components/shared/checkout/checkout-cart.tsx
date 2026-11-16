@@ -1,90 +1,38 @@
 "use client";
-
-import { AromaBoxSummary } from "@/src/shared/components/shared/aroma-box-summary";
 import React, { FC } from "react";
-import {
-  CheckoutItem,
-  CheckoutItemSkeleton,
-  FreeShippingProgress,
-  WhiteBlock,
-} from "..";
+import { PromotionCartGroup } from "../promotion-cart-group";
+import { AromaBoxSummary } from "../aroma-box-summary";
+import { CheckoutItem,CheckoutItemSkeleton,FreeShippingProgress,WhiteBlock } from "..";
 import type { CartPromotionSummary } from "@/src/shared/services/dto/cart.dto";
-import { CartStateItem } from "@/src/shared/lib/get-cart-details";
+import type { CartStateItem } from "@/src/shared/lib/get-cart-details";
 import { useLocale } from "next-intl";
 import { useTranslations } from "use-intl";
-
 interface Props {
-  items: CartStateItem[];
-  promotions?: CartPromotionSummary[];
-  totalAmount: number;
-  removeCartItem: (id: number) => void;
-  onClickCountButton: (
-    id: number,
-    quantity: number,
-    type: "plus" | "minus",
-    productGroup: number
-  ) => void;
-  loading?: boolean;
-  itemLoading?: boolean;
-  className?: string;
+  items:CartStateItem[];promotions?:CartPromotionSummary[];totalAmount:number;
+  removeCartItem:(id:number)=>void;
+  onClickCountButton:(id:number,quantity:number,type:"plus"|"minus",productGroup:number)=>void;
+  loading?:boolean;itemLoading?:boolean;className?:string;
 }
-
-export const CheckoutCart: FC<Props> = ({
-  className,
-  items,
-  promotions = [],
-  totalAmount,
-  removeCartItem,
-  onClickCountButton,
-  loading,
-}) => {
-  const ru = useLocale() === "ru";
-  const t = useTranslations("Checkout.cart");
-
-  return (
-    <WhiteBlock
-      className={className}
-      title={t('stepTitle')}
-      // endAdornment={
-      //   totalAmount > 0 && (
-      //     <button className="flex items-center gap-3 text-gray-400 hover:text-gray-600">
-      //       <Trash2 size={16} />
-      //       {t('clearCart')}
-      //     </button>
-      //   )
-      // }
-    >
-      <div className="flex flex-col">
-        {!loading && <AromaBoxSummary items={items} />}
-        {promotions.map(p=><div key={p.id} role="status" className="mb-3 rounded-lg border border-[#d8ccaf] bg-[#f8f5ed] p-3 text-sm"><strong>🎁 {ru?p.titleRu:p.titleDe}</strong><p className="mt-1 text-xs">{p.eligible?`${p.giftName} ${p.giftMl} ml · 0,00 €`:(ru?"Для подарка нужно сохранить все акционные позиции.":"Für das Geschenk müssen alle Aktionsprodukte im Warenkorb bleiben.")}</p></div>)}
-        {loading
-          ? [...Array(4)].map((_, index) => (
-              <CheckoutItemSkeleton key={index} />
-            ))
-          : items.map((item) => (
-              <CheckoutItem
-                key={item.id}
-                id={item.id}
-                imageUrl={item.imageUrl as string}
-                name={item.name + (item.dayOffer ? (ru ? " · Товар дня −10%" : " · Tagesangebot −10%") : "")}
-                brand={item.brand}
-                price={item.price}
-                onTap={Boolean(item.productGroup?.onTap)}
-                quantity={item.quantity}
-                disabled={item.disabled}
-                variation={item.variationName}
-                onClickCountButton={(type) =>
-                  onClickCountButton(item.id, item.quantity, type, item.productGroup?.id || 2)
-                }
-                onClickRemove={() => removeCartItem(item.id)}
-              />
-            ))}
-      </div>
-
-      {!totalAmount && !loading && (
-        <p className="text-center text-gray-400 p-10">{t('emptyText')}</p>
-      )}
-      <FreeShippingProgress totalAmount={totalAmount} />
-    </WhiteBlock>
-  );
+export const CheckoutCart:FC<Props>=({className,items,promotions=[],totalAmount,removeCartItem,onClickCountButton,loading})=>{
+  const ru=useLocale()==="ru";
+  const t=useTranslations("Checkout.cart");
+  const claimedIds=new Set(promotions.flatMap(p=>p.productIds));
+  const regularItems=items.filter(item=>!claimedIds.has(item.productId));
+  const renderItem=(item:CartStateItem)=><CheckoutItem
+    key={item.id} id={item.id} imageUrl={item.imageUrl as string}
+    name={item.name+(item.dayOffer?(ru?" · Товар дня −10%":" · Tagesangebot −10%"):"")}
+    brand={item.brand} price={item.price} onTap={Boolean(item.productGroup?.onTap)}
+    quantity={item.quantity} disabled={item.disabled} variation={item.variationName}
+    onClickCountButton={type=>onClickCountButton(item.id,item.quantity,type,item.productGroup?.id||2)}
+    onClickRemove={()=>removeCartItem(item.id)}
+  />;
+  return <WhiteBlock className={className} title={t("stepTitle")}>
+    <div className="flex flex-col">
+      {!loading&&<AromaBoxSummary items={items}/>}
+      {!loading&&promotions.map(p=><PromotionCartGroup key={p.id} promotion={p} items={items} onRemove={removeCartItem} renderItem={renderItem}/>)}
+      {loading?[...Array(4)].map((_,i)=><CheckoutItemSkeleton key={i}/>):regularItems.map(item=>renderItem(item))}
+    </div>
+    {!totalAmount&&!loading&&<p className="p-10 text-center text-gray-400">{t("emptyText")}</p>}
+    <FreeShippingProgress totalAmount={totalAmount}/>
+  </WhiteBlock>;
 };

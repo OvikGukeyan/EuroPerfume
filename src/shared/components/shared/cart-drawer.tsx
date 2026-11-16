@@ -1,5 +1,6 @@
 "use client";
 
+import { PromotionCartGroup } from "./promotion-cart-group";
 import { formatMoney } from "@/src/shared/lib/money";
 import { AromaBoxSummary } from "@/src/shared/components/shared/aroma-box-summary";
 import React, { FC } from "react";
@@ -33,6 +34,12 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
     itemLoading,
   } = useCart();
   const [redirecting, setRedirecting] = React.useState(false);
+  const [open,setOpen]=React.useState(false);
+  React.useEffect(()=>{
+    const handler=()=>setOpen(true);
+    document.addEventListener("europerfume:open-cart",handler);
+    return ()=>document.removeEventListener("europerfume:open-cart",handler);
+  },[]);
 
   const onClickCountButton = (
     id: number,
@@ -51,10 +58,12 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
 
   const isMinOrderAmount = totalAmount >= SHOP_SETTINGS.MIN_ORDER_EUR;
 
+  const claimedIds=new Set(promotions.flatMap(p=>p.productIds));
+  const regularItems=items.filter(item=>!claimedIds.has(item.productId));
   const ru=useLocale()==="ru";
   const t = useTranslations("Cart");
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>{children}</SheetTrigger>
       <SheetContent className="flex w-full flex-col gap-0 bg-white px-5 pt-6 pb-0 sm:max-w-[480px]">
         {totalAmount > 0 && (
@@ -94,10 +103,8 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
               <FreeShippingProgress totalAmount={totalAmount} />
               <AromaBoxSummary items={items} />
-              {promotions.map(p=><div key={p.id} role="status" className="mb-3 rounded-lg bg-[#f7f4ec] p-3 text-sm"><strong>🎁 {ru?p.titleRu:p.titleDe}</strong><p className="text-xs">{p.eligible?`${p.giftName} ${p.giftMl} ml · 0,00 €`:(ru?"Условия акции не выполнены":"Aktionsbedingungen nicht erfüllt")}</p></div>)}
-              {items.map((item) => (
-                <div key={item.id} className="border-b border-neutral-100">
-                  <CartDrawerItem
+              {promotions.map(p=><PromotionCartGroup key={p.id} promotion={p} items={items} onRemove={removeCartItem} renderItem={item=>(
+                                  <CartDrawerItem
                     id={item.id}
                     imageUrl={item.imageUrl as string}
                     name={item.name + (item.dayOffer ? (ru ? " · Товар дня −10%" : " · Tagesangebot −10%") : "")}
@@ -117,8 +124,29 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                     variation={item.variationName}
                     onClickRemove={() => removeCartItem(item.id)}
                   />
-                </div>
-              ))}
+              )}/>)}
+              {regularItems.map(item=><div key={item.id} className="border-b border-neutral-100">
+                                  <CartDrawerItem
+                    id={item.id}
+                    imageUrl={item.imageUrl as string}
+                    name={item.name + (item.dayOffer ? (ru ? " · Товар дня −10%" : " · Tagesangebot −10%") : "")}
+                    brand={item.brand}
+                    price={item.price}
+                    quantity={item.quantity}
+                    disabled={item.disabled}
+                    productGroup={item.productGroup}
+                    onClickCountButton={(type) =>
+                      onClickCountButton(
+                        item.id,
+                        item.quantity,
+                        type,
+                        item.productGroup?.id as number
+                      )
+                    }
+                    variation={item.variationName}
+                    onClickRemove={() => removeCartItem(item.id)}
+                  />
+              </div>)}
             </div>
 
             <SheetFooter className="-mx-5 border-t border-neutral-200 bg-white px-5 pt-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]">

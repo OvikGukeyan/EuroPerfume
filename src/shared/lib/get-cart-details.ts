@@ -9,6 +9,7 @@ export type CartStateItem = {
   offerBoundary?: string | null;
   aromaBox?: boolean;
   id: number;
+  productId:number;
   quantity: number;
   name: string;
   brand: Brand;
@@ -30,6 +31,7 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
     dayOffer: dayOfferActive(item.product),
     offerBoundary: item.product.dayOfferEndsAt ? String(item.product.dayOfferEndsAt) : null,
     id: item.id,
+    productId:item.productId,
     aromaBox: item.aromaBox,
     quantity: item.quantity,
     name: item.product.name,
