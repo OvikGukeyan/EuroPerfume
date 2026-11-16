@@ -32,11 +32,10 @@ export const MenuDrawer:FC<Props>=({className})=>{
     </SheetTrigger>
     <SheetContent side="left" className="flex h-[100dvh] w-full max-w-none flex-col overflow-y-auto border-0 bg-white px-5 pb-8 pt-6 text-[#202020] shadow-none sm:w-[620px] sm:max-w-none sm:px-8 xl:hidden [&>button]:right-5 [&>button]:top-7 [&>button_svg]:h-6 [&>button_svg]:w-6">
      <header className="sticky top-0 z-10 mb-4 flex min-h-11 items-center justify-center border-b border-[#ededeb] bg-white pb-5">
-      <SheetTitle asChild><Link href="/" onClick={()=>setOpen(false)} aria-label={locale==="ru"?"EURO PERFUME — на главную":"EURO PERFUME – zur Startseite"} className="font-sans text-[18px] font-semibold uppercase tracking-[.17em] text-[#202020] transition-opacity hover:opacity-65">EURO PERFUME</Link></SheetTitle>
+      <SheetTitle asChild><Link href="/" onClick={()=>{setOpen(false);window.scrollTo({top:0,behavior:"auto"});}} aria-label={locale==="ru"?"EURO PERFUME — на главную":"EURO PERFUME – zur Startseite"} className="font-sans text-[18px] font-semibold uppercase tracking-[.17em] text-[#202020] transition-opacity hover:opacity-65">EURO PERFUME</Link></SheetTitle>
      </header>
-     <div className="flex-1">
+     <div>
       {categories.map((category,index)=><MenuDrawerItem key={category.id} setOpen={setOpen} category={category} locale={locale} featured={featured} showFeatured={index===0}/>)}
-
      </div>
      <footer className="mt-4">
       <p className="text-center text-[13px] text-[#555]">{locale==="ru"?"Мы в социальных сетях":"Folgen Sie uns"}</p>
