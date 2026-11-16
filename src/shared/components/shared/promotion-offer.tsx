@@ -12,6 +12,9 @@ export function PromotionOffer({slug,titleRu,titleDe,requiredMl,giftMl,available
  const ru=useLocale()==="ru",router=useRouter(),refresh=useCartStore(s=>s.fetchCartItems);
  const [busy,setBusy]=useState(false);
  const price=items.reduce((sum,item)=>sum+(item.price||0),0);
+ const giftValue=gift?.price&&gift.price>0?gift.price:0;
+ const regular=price+giftValue;
+ const money=(value:number)=>new Intl.NumberFormat(ru?"ru-RU":"de-DE",{style:"currency",currency:"EUR"}).format(value);
  async function add() {
   setBusy(true);
   try {
@@ -22,24 +25,43 @@ export function PromotionOffer({slug,titleRu,titleDe,requiredMl,giftMl,available
   }catch{toast.error(ru?"Не удалось добавить набор. Проверьте наличие.":"Set nicht verfügbar. Bitte Bestand prüfen.");}
   finally{setBusy(false);}
  }
- return <main className="mx-auto max-w-[1120px] px-4 py-8 md:py-14">
+ return <main className="mx-auto max-w-[1160px] px-4 py-6 md:py-14">
   <PromotionViewTracker slug={slug}/>
-  <div className="rounded-2xl bg-[#eeeae2] px-6 py-9 md:px-14 md:py-14">
-   <p className="text-[10px] tracking-[.2em] text-[#746d62]">EURO PERFUME · SPECIAL OFFER</p>
-   <h1 className="mt-3 font-serif text-3xl text-[#262622] md:text-5xl">{ru?titleRu:titleDe}</h1>
-   <p className="mt-4 max-w-2xl text-sm text-[#555049] md:text-base">{ru?"Выберите ароматы из предложения и получите подарок.":"Aktionsdüfte auswählen und ein Gratisgeschenk erhalten."}</p>
-   <div className="mt-8 grid grid-cols-3 gap-2 md:gap-5">
-    {[...items.map(p=>({...p,isGift:false})),...(gift?[{...gift,isGift:true}]:[])].map((p,i)=><article key={i} className="min-w-0 rounded-xl bg-[#f4f1eb] p-2 md:p-4">
-     <div className="flex aspect-square items-center justify-center overflow-hidden rounded-md bg-[#f4f1eb]">{p.image&&<img src={p.image} alt={p.name} className="h-full w-full object-contain mix-blend-multiply brightness-[1.08] contrast-[1.04]" style={{maskImage:"radial-gradient(ellipse 75% 80% at center, black 62%, transparent 100%)"}}/>}</div>
-     <p className="mt-2 text-[9px] uppercase tracking-wider text-[#827b72]">{p.brand}</p>
-     <h2 className="mt-1 break-words text-xs font-medium leading-tight md:text-lg">{p.name}</h2>
-     <p className="mt-1 text-[11px] text-[#524c45]">{p.isGift?giftMl:requiredMl} ml {p.isGift?(ru?"· Подарок":"· Geschenk"):""}</p>
-    </article>)}
-   </div>
-   <p className="mt-7 text-base font-medium">{ru?"Стоимость набора: ":"Setpreis: "}{price.toFixed(2)} €</p>
-   <p className="mt-1 text-xs text-neutral-600">{ru?"Подарок 0,00 € · Доставка рассчитывается отдельно.":"Geschenk 0,00 € · Versand wird separat berechnet."}</p>
-   <button type="button" disabled={!available||busy} onClick={add} className="mt-6 w-full rounded-md bg-[#252521] px-8 py-3.5 text-sm text-white disabled:opacity-50 md:w-auto">{busy?(ru?"Добавляем…":"Wird hinzugefügt…"):(ru?"Добавить набор в корзину":"Set in den Warenkorb")}</button>
-   {!available&&<p role="status" className="mt-3 text-sm text-red-800">{ru?"Акция временно недоступна":"Aktion derzeit nicht verfügbar"}</p>}
-  </div>
+  <section className="overflow-hidden rounded-[24px] bg-[#eee8df] px-5 py-7 text-[#292823] md:rounded-[32px] md:px-14 md:py-12">
+    <div className="flex flex-wrap items-center justify-between gap-2">
+      <span className="text-[10px] font-semibold uppercase tracking-[.18em] text-[#8a7565]">EURO PERFUME · {ru?"СПЕЦИАЛЬНОЕ ПРЕДЛОЖЕНИЕ":"EXKLUSIVES ANGEBOT"}</span>
+      <span className="rounded-full bg-[#ded0c1] px-3 py-1.5 text-[11px] font-semibold text-[#5a4435]">{ru?"ПОДАРОК В НАБОРЕ":"GRATISPROBE IM SET"}</span>
+    </div>
+    <h1 className="mt-5 font-serif text-[34px] leading-[1.07] tracking-[-.03em] md:text-[58px]">{ru?titleRu:titleDe}</h1>
+    <p className="mt-3 max-w-[650px] text-[14px] leading-relaxed text-[#675c52] md:text-[17px]">{ru?"Cedar Chic и Bois Impérial по 5 мл — Encre Noire 2 мл в подарок. Все три оттенка древесины в одной подборке.":"Cedar Chic und Bois Impérial je 5 ml – dazu Encre Noire 2 ml gratis. Drei Facetten von Holz in einem Set."}</p>
+    <div className="mt-7 grid grid-cols-3 gap-2 md:mt-10 md:gap-5">
+      {[...items.map(p=>({...p,isGift:false})),...(gift?[{...gift,isGift:true}]:[])].map((p,i)=><article key={p.id??i} className="relative min-w-0 rounded-[15px] bg-[#f7f3ee] p-2.5 pb-4 md:rounded-[22px] md:p-5">
+        {p.isGift&&<span className="absolute right-2 top-2 z-10 rounded-full bg-[#564638] px-2 py-1 text-[9px] font-semibold text-white md:right-4 md:top-4 md:px-3 md:text-[11px]">{ru?"ПОДАРОК":"GRATIS"}</span>}
+        <div className="flex aspect-[4/4.5] items-center justify-center overflow-hidden rounded-lg">
+          {p.image&&<img src={p.image} alt={p.name} className="h-[88%] w-[88%] object-contain drop-shadow-[0_10px_9px_rgba(66,53,45,0.12)]" />}
+        </div>
+        <p className="mt-2 min-h-[28px] text-[9px] uppercase leading-[1.3] tracking-[.045em] text-[#85786d] md:min-h-0 md:text-[11px]">{p.brand}</p>
+        <h2 className="mt-1 min-h-[30px] break-words text-[12px] font-semibold leading-tight md:min-h-0 md:text-[18px]">{p.name}</h2>
+        <p className="mt-2 text-[11px] text-[#75675a] md:text-[14px]">{p.isGift?giftMl:requiredMl} ml</p>
+        <p className="mt-1 text-[11px] font-semibold md:text-[15px]">{p.isGift?<><span className="text-[#9b8e82] line-through">{giftValue>0?money(giftValue):""}</span> <span className="text-[#426043]">{money(0)}</span></>:money(p.price||0)}</p>
+      </article>)}
+    </div>
+    <div className="mt-7 rounded-[18px] bg-[#fffaf4] px-4 py-5 md:mt-9 md:px-7 md:py-6">
+      <div className="flex items-center justify-between gap-3 text-[13px] text-[#74695e] md:text-[17px]">
+        <span>{ru?"Обычная стоимость":"Regulärer Gesamtwert"}</span>
+        <span className="tabular-nums line-through">{regular>price?money(regular):money(price)}</span>
+      </div>
+      <div className="mt-2 flex items-center justify-between gap-3">
+        <span className="text-[16px] font-semibold md:text-[21px]">{ru?"Цена по акции":"Aktionspreis"}</span>
+        <strong className="text-[28px] tabular-nums tracking-tight md:text-[40px]">{money(price)}</strong>
+      </div>
+      {giftValue>0&&<div className="mt-3 flex items-center justify-between gap-3 border-t border-[#e7dcd0] pt-3 text-[13px] font-semibold text-[#37613e] md:text-[17px]">
+        <span>{ru?"Ваша выгода":"Dein Vorteil"}</span><span className="tabular-nums">{money(giftValue)}</span>
+      </div>}
+      <p className="mt-3 text-[11px] leading-relaxed text-[#736a60] md:text-[13px]">{ru?"Подарок включён бесплатно. Доставка рассчитывается отдельно.":"Die Gratisprobe ist enthalten. Versand wird separat berechnet."}</p>
+    </div>
+    <button type="button" disabled={!available||busy} onClick={add} className="mt-5 w-full rounded-[12px] bg-[#292825] px-8 py-4 text-[14px] font-semibold text-white transition-colors hover:bg-[#4e423a] disabled:cursor-not-allowed disabled:opacity-50 md:text-[16px]">{busy?(ru?"Добавляем…":"Wird hinzugefügt…"):(ru?"Добавить весь набор в корзину":"Gesamtes Set in den Warenkorb")}</button>
+    {!available&&<p role="status" className="mt-3 text-sm text-red-800">{ru?"Акция временно недоступна":"Aktion derzeit nicht verfügbar"}</p>}
+  </section>
  </main>
 }
