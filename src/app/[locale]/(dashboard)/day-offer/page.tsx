@@ -2,27 +2,53 @@ import { prisma } from "@/prisma/prisma-client";
 import { getUserSession } from "@/src/shared/server-lib/get-user-session";
 import { saveDayOffer, cancelDayOffer } from "@/src/app/day-offer-actions";
 import { notFound } from "next/navigation";
+import { offerPrices } from "@/src/shared/lib/day-offer";
 
-export const dynamic = "force-dynamic";
+export const dynamic="force-dynamic";
+const eur=(v:number)=>new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR"}).format(v);
 export default async function DayOfferPage() {
-  const user = await getUserSession();
-  if (user?.role !== "ADMIN") notFound();
-  const products = await prisma.product.findMany({where:{categoryId:1,available:true},include:{brand:true,productGroup:true},orderBy:{name:"asc"}});
-  const active = products.filter(p=>p.dayOfferEndsAt && p.dayOfferEndsAt.getTime()>Date.now());
-  const input = "block w-full border rounded p-2 mt-1";
-  return <main className="max-w-3xl p-6 space-y-6">
-    <h1 className="text-2xl">Товар дня / Tagesangebot −10%</h1>
-    <p>Скидка на выбранный товар, включая атомайзер. Формат флакона — отдельный товар. Время по Германии (Europe/Berlin). Обычная цена не изменяется. После окончания акция и слайд отключаются автоматически.</p>
-    {active.map(p=><div key={p.id} className="border p-4 rounded"><strong>{p.brand.name} {p.name} {p.bottleParentId ? p.volume+" ml":""}</strong><p>До {p.dayOfferEndsAt!.toLocaleString("de-DE",{timeZone:"Europe/Berlin"})}</p><form action={cancelDayOffer}><input type="hidden" name="productId" value={p.id}/><button className="underline" type="submit">Отменить акцию</button></form></div>)}
-    <form action={saveDayOffer} className="space-y-4">
-      <label className="block">Аромат / формат<select name="productId" className={input} required defaultValue=""><option disabled value="">Выберите товар</option>{products.map(p=><option key={p.id} value={p.id}>{p.brand.name} · {p.name} {p.bottleParentId ? "· флакон "+p.volume+" ml":"· отливанты"}</option>)}</select></label>
-      <label className="block">Начало по Германии (пусто — сейчас)<input className={input} name="start" type="datetime-local"/></label>
-      <label className="block">Окончание по Германии (в этот момент скидка выключится)<input className={input} name="end" type="datetime-local" required/></label>
-      <p>Для 24 часов задайте окончание через сутки. Для «по 20 ноября включительно» — 21 ноября, 00:00. Можно заранее запланировать следующие товары дня. Интервалы не должны пересекаться.</p>
-      {["desktopRu","mobileRu","desktopDe","mobileDe"].map(name=><label key={name} className="block">{({desktopRu:"Баннер RU — компьютер",mobileRu:"Баннер RU — телефон",desktopDe:"Баннер DE — компьютер",mobileDe:"Баннер DE — телефон"} as Record<string,string>)[name]}<input className={input} name={name} type="url" required placeholder="https://…/storage/v1/object/public/slides/…"/></label>)}
-      <label className="flex gap-2"><input type="checkbox" name="referenceConfirmed" required/>Подтверждаю: базовая цена каждого объёма соответствует низшей цене за 30 дней до акции (§11 PAngV). Баннеры содержат правильный товар, −10% и срок акции.</label>
-      <p>Публикация включает скидку и баннер вместе. Наличие проверяется по отметке на сайте; физический остаток продавец подтверждает перед выставлением счёта.</p>
-      <button type="submit" className="bg-black text-white px-5 py-3 rounded">Опубликовать товар дня</button>
-    </form>
+  const user=await getUserSession();
+  if(user?.role!=="ADMIN")notFound();
+  const products=await prisma.product.findMany({
+    where:{categoryId:1,available:true,bottleParentId:null,productGroup:{onTap:true}},
+    include:{brand:true,productGroup:true},
+    orderBy:{name:"asc"}
+  });
+  const now=Date.now();
+  const active=products.find(p=>p.dayOfferStartsAt && p.dayOfferEndsAt && new Date(p.dayOfferStartsAt).getTime()<=now && new Date(p.dayOfferEndsAt).getTime()>now);
+  const representative=products.find(p=>p.name.trim().toLowerCase()==="addictive vibration");
+  const preview=active||representative;
+  const priced=preview?offerPrices({price:Number(preview.price),discountPrice:preview.discountPrice?Number(preview.discountPrice):undefined,dayOfferStartsAt:new Date(now-1000),dayOfferEndsAt:new Date(now+86400000)},5,true,now):null;
+  return <main className="mx-auto max-w-5xl space-y-6 px-4 py-7 md:px-8">
+    <header><p className="text-xs font-semibold uppercase tracking-[.2em] text-[#9d8a7b]">EURO PERFUME · ADMIN</p><h1 className="mt-2 font-serif text-3xl text-[#282622] md:text-4xl">Аромат дня −10%</h1><p className="mt-2 max-w-2xl text-sm leading-relaxed text-stone-600">Выбираешь аромат, проверяешь цену и нажимаешь «Сохранить». Старая акция снимается сразу. Новая действует до 00:00 по Германии и автоматически исчезает из слайдера и карточки товара.</p></header>
+    {active&&<section className="rounded-[22px] border border-emerald-200 bg-emerald-50 p-5">
+      <p className="text-xs font-semibold uppercase tracking-wider text-emerald-800">СЕЙЧАС АКТИВЕН</p>
+      <h2 className="mt-2 text-xl font-semibold">{active.brand.name} · {active.name}</h2>
+      <p className="mt-1 text-sm text-neutral-700">До {active.dayOfferEndsAt!.toLocaleString("de-DE",{timeZone:"Europe/Berlin"})}. При выборе другого аромата эта акция отключится автоматически.</p>
+      <form action={cancelDayOffer} className="mt-3"><input type="hidden" name="productId" value={active.id}/><button type="submit" className="rounded-full border border-emerald-700 px-4 py-2 text-sm font-medium">Выключить аромат дня</button></form>
+    </section>}
+    <div className="grid gap-6 md:grid-cols-[1.1fr_.9fr]">
+      <form action={saveDayOffer} className="space-y-5 rounded-[24px] border border-stone-200 bg-white p-5 md:p-7">
+       <h2 className="font-serif text-2xl">Выбрать аромат</h2>
+       <label className="block text-sm font-semibold">Товар из каталога
+         <select name="productId" required defaultValue={active?.id||""} className="mt-2 w-full rounded-xl border border-stone-300 bg-white px-4 py-3 text-sm">
+          <option value="" disabled>Выбрать аромат</option>
+          {products.map(p=><option key={p.id} value={p.id}>{p.brand.name} · {p.name.trim()}</option>)}
+         </select>
+       </label>
+       <p className="rounded-xl bg-[#f6f1ea] p-4 text-sm leading-relaxed text-stone-700">Скидка <strong>−10%</strong> действует на все объёмы отливантов этого аромата, включая атомайзер. Полные флаконы — отдельные товары. Баннер создаётся автоматически из фотографии и данных каталога.</p>
+       <label className="flex items-start gap-3 text-sm leading-relaxed"><input type="checkbox" name="referenceConfirmed" required className="mt-1 h-4 w-4 accent-neutral-900"/><span>Подтверждаю, что проверил(а) низшую цену за предыдущие 30 дней и корректность информации о скидке по § 11 PAngV. При необходимости условия скидки на сайте должны соответствовать этой цене.</span></label>
+       <button type="submit" className="w-full rounded-full bg-[#292825] px-6 py-4 text-sm font-semibold text-white hover:bg-[#4f4439]">{active?"Заменить аромат дня":"Сохранить аромат дня −10%"}</button>
+       <p className="text-xs leading-relaxed text-stone-500">Сохранение немедленно заменяет предыдущий товар. После полуночи по Берлину скидка выключается сама, даже если новый аромат ещё не выбран.</p>
+      </form>
+      <aside className="overflow-hidden rounded-[24px] bg-[#eee8df] p-5 md:p-7">
+       <p className="text-xs font-semibold uppercase tracking-[.2em] text-[#8a7566]">ПРИМЕР СЛАЙДА</p>
+       <h2 className="mt-4 font-serif text-3xl leading-tight">{preview?.name.trim()||"Аромат дня"}</h2>
+       <p className="mt-1 text-xs uppercase tracking-wider text-[#8a7566]">{preview?.brand.name||"EURO PERFUME"}</p>
+       {preview?.imageUrl[0]&&<div className="mx-auto my-3 flex h-48 items-center justify-center rounded-xl bg-white/40"><img src={preview.imageUrl[0]} alt={preview.name} className="h-full w-full object-contain mix-blend-multiply"/></div>}
+       {priced&&<div className="flex items-center gap-3"><strong className="text-2xl">{eur(priced.effective)}</strong><del className="text-sm text-stone-500">{eur(priced.regular)}</del><span className="rounded-full bg-[#292825] px-3 py-1 text-xs text-white">−10%</span></div>}
+       <p className="mt-2 text-xs text-stone-600">Пример цены за 5 мл. Акция на Initio Addictive Vibration не включается автоматически — только после выбора и сохранения.</p>
+      </aside>
+    </div>
   </main>;
 }
