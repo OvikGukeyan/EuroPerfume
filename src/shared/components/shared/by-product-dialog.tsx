@@ -152,7 +152,7 @@ export const ByProductDialog: FC<Props> = ({
             items={variations}
           />
         )}
-        {(bottle || productGroup.onTap) && <p className="my-3 text-xs text-neutral-600">{formatMoney(unitPricePerLitre(finalDiscountPrice ?? finalPrice,bottle?.ml ?? volume) ?? 0)} €/l</p>}
+        {(bottle || productGroup.onTap) && <p className="my-3 text-xs text-neutral-600">{bottle?.ml ?? volume} ml ({formatMoney(unitPricePerLitre(finalDiscountPrice ?? finalPrice,bottle?.ml ?? volume) ?? 0)} € / 1 l)</p>}
         <TaxPriceNotice gross={finalDiscountPrice ?? finalPrice}/>
         <p className="mb-4 text-xs text-neutral-600"><Link href="/delivery-and-payment" className="underline">{ru?"Дополнительно доставка":"Zzgl. Versand"}</Link></p>
         <DialogFooter>
