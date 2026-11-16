@@ -12,7 +12,7 @@
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",
     "prisma:seed": "prisma db seed",
-    "test:day-offer": "node --experimental-strip-types scripts/test-day-offer.mjs && tsx scripts/test-day-offer-snapshot.ts",
+    "test:day-offer": "node --experimental-strip-types scripts/test-day-offer.mjs && tsx scripts/test-day-offer-snapshot.ts && tsx scripts/test-day-offer-week.ts",
     "test:promotions": "tsx scripts/test-promotions.ts"
   },
   "prisma": {

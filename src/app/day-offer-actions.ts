@@ -1,42 +1,59 @@
 "use server";
 import { prisma } from "@/prisma/prisma-client";
 import { getUserSession } from "@/src/shared/server-lib/get-user-session";
-import { berlinOfferTime } from "@/src/shared/lib/day-offer";
+import { offerWeekSlots } from "@/src/shared/lib/day-offer-week";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-function nextBerlinMidnight(now:Date) {
-  const date=new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Berlin",year:"numeric",month:"2-digit",day:"2-digit"}).format(now);
-  const [year,month,day]=date.split("-").map(Number);
-  const following=new Date(Date.UTC(year,month-1,day+1));
-  const local=`${following.getUTCFullYear()}-${String(following.getUTCMonth()+1).padStart(2,"0")}-${String(following.getUTCDate()).padStart(2,"0")}T00:00`;
-  return berlinOfferTime(local);
-}
+const refresh=()=>{
+  revalidatePath("/[locale]","layout");
+  revalidatePath("/ru");
+  revalidatePath("/de");
+};
+const slotFrom=(value:FormDataEntryValue|null):"current"|"next"=>{
+  if(value==="current" || value==="next")return value;
+  throw new Error("Выберите текущую или следующую неделю");
+};
 
 export async function saveDayOffer(form:FormData) {
   const user=await getUserSession();
   if(user?.role!=="ADMIN")throw new Error("Forbidden");
+  const slot=slotFrom(form.get("slot"));
   const productId=Number(form.get("productId"));
   if(!Number.isSafeInteger(productId)||productId<=0)throw new Error("Выберите аромат");
-  if(form.get("referenceConfirmed")!=="on")throw new Error("Подтвердите проверку низшей цены за предыдущие 30 дней");
-  const start=new Date(),end=nextBerlinMidnight(start);
-  if(end<=start)throw new Error("Невозможно определить окончание дня");
+  if(form.get("referenceConfirmed")!=="on")throw new Error("Подтвердите проверку цены за предыдущие 30 дней");
+  const now=new Date();
+  const weeks=offerWeekSlots(now);
+  const start=slot==="current"?now:weeks.next.start;
+  const end=slot==="current"?weeks.current.end:weeks.next.end;
+  if(end<=start)throw new Error("Срок акции уже завершился");
   await prisma.$transaction(async tx=>{
-    // Serialize every replacement, including concurrent administrator requests.
+    // Both slots use a single transaction lock, so two saves cannot overlap.
     await tx.$queryRaw`SELECT pg_advisory_xact_lock(734119)::text`;
     const chosen=await tx.product.findUnique({where:{id:productId},include:{productGroup:true}});
     if(!chosen?.available || chosen.bottleParentId!==null || !chosen.productGroup.onTap || chosen.categoryId!==1)
       throw new Error("Выберите доступный аромат в формате отливантов");
     if(chosen.discountPrice && Number(chosen.discountPrice)>0 && Number(chosen.discountPrice)<Number(chosen.price))
-      throw new Error("На товар уже действует другая скидка — выберите другой аромат");
-    // Clear both live and scheduled offers, so only one perfume can ever be featured.
-    await tx.product.updateMany({where:{dayOfferEndsAt:{not:null}},data:{dayOfferStartsAt:null,dayOfferEndsAt:null}});
-    await tx.slide.deleteMany({where:{dayOfferProductId:{not:null}}});
-    await tx.product.update({where:{id:productId},data:{dayOfferStartsAt:start,dayOfferEndsAt:end,dayOfferReferenceCheckedAt:start}});
+      throw new Error("На этом товаре уже действует другая скидка");
+    // One product can hold only one scheduling window. Prevent duplicate selection
+    // in both weeks, which would silently overwrite the first window.
+    if(chosen.dayOfferStartsAt && chosen.dayOfferEndsAt &&
+       chosen.dayOfferEndsAt>now &&
+       (chosen.dayOfferStartsAt>=end || chosen.dayOfferEndsAt<=start))
+      throw new Error("Этот аромат уже назначен на другую неделю. Выберите другой.");
+    const previous=await tx.product.findMany({
+      where:{dayOfferStartsAt:{lt:end},dayOfferEndsAt:{gt:start}},
+      select:{id:true}
+    });
+    const ids=previous.map(p=>p.id);
+    if(ids.length) {
+      await tx.product.updateMany({where:{id:{in:ids}},data:{dayOfferStartsAt:null,dayOfferEndsAt:null}});
+      await tx.slide.deleteMany({where:{dayOfferProductId:{in:ids}}});
+    }
+    await tx.product.update({where:{id:productId},data:{dayOfferStartsAt:start,dayOfferEndsAt:end,dayOfferReferenceCheckedAt:now}});
+    // The fragrance slide is generated from live catalog data; no manual images.
   },{timeout:15000});
-  revalidatePath("/[locale]","layout");
-  revalidatePath("/ru");
-  revalidatePath("/de");
+  refresh();
   redirect("/day-offer");
 }
 
@@ -50,8 +67,6 @@ export async function cancelDayOffer(form:FormData) {
     await tx.product.update({where:{id:productId},data:{dayOfferStartsAt:null,dayOfferEndsAt:null}});
     await tx.slide.deleteMany({where:{dayOfferProductId:productId}});
   });
-  revalidatePath("/[locale]","layout");
-  revalidatePath("/ru");
-  revalidatePath("/de");
+  refresh();
   redirect("/day-offer");
 }

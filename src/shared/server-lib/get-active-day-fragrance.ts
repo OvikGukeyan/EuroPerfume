@@ -1,6 +1,7 @@
 import "server-only";
 import { prisma } from "@/prisma/prisma-client";
 import { offerPrices } from "@/src/shared/lib/day-offer";
+import { offerWeekSlots } from "@/src/shared/lib/day-offer-week";
 
 export type FeaturedDayFragrance = {
   id:number; name:string; brand:string; image:string;
@@ -9,26 +10,30 @@ export type FeaturedDayFragrance = {
   href:string;
 };
 
-export async function getActiveDayFragrance():Promise<FeaturedDayFragrance|null>{
-  const now=new Date();
-  const p=await prisma.product.findFirst({
+/** Return the live and next-week offer so the client can switch at midnight without a page reload. */
+export async function getWeekFragrances():Promise<FeaturedDayFragrance[]> {
+  const now=new Date(),slots=offerWeekSlots(now);
+  const products=await prisma.product.findMany({
     where:{
       available:true,bottleParentId:null,
-      dayOfferStartsAt:{lte:now},
+      dayOfferStartsAt:{lt:slots.next.end},
       dayOfferEndsAt:{gt:now},
       productGroup:{onTap:true}
     },
     include:{brand:true,productGroup:true},
-    orderBy:{dayOfferStartsAt:"desc"}
+    orderBy:{dayOfferStartsAt:"asc"}
   });
-  if(!p)return null;
-  const volume=5;
-  const prices=offerPrices({price:Number(p.price),discountPrice:p.discountPrice?Number(p.discountPrice):undefined,dayOfferStartsAt:p.dayOfferStartsAt,dayOfferEndsAt:p.dayOfferEndsAt},volume,true,now.getTime());
-  return {
-    id:p.id,name:p.name.trim(),brand:p.brand.name,
-    image:p.imageUrl[0]||"",startsAt:p.dayOfferStartsAt!.toISOString(),
-    endsAt:p.dayOfferEndsAt!.toISOString(),volume,
-    regularPrice:prices.regular,salePrice:prices.effective,
-    href:"/product/"+p.id
-  };
+  return products.map(p=>{
+    const volume=5;
+    // Price at the effective start; future offers are still discounted in their previews.
+    const pricingTime=Math.max(now.getTime(),p.dayOfferStartsAt!.getTime());
+    const prices=offerPrices({price:Number(p.price),discountPrice:p.discountPrice?Number(p.discountPrice):undefined,dayOfferStartsAt:p.dayOfferStartsAt,dayOfferEndsAt:p.dayOfferEndsAt},volume,true,pricingTime);
+    return {
+      id:p.id,name:p.name.trim(),brand:p.brand.name,
+      image:p.imageUrl[0]||"",startsAt:p.dayOfferStartsAt!.toISOString(),
+      endsAt:p.dayOfferEndsAt!.toISOString(),volume,
+      regularPrice:prices.regular,salePrice:prices.effective,
+      href:"/product/"+p.id
+    };
+  });
 }
