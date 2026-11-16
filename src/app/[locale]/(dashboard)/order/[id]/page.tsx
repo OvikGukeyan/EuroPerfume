@@ -44,6 +44,8 @@ export default async function Order({
   // };
   // const date = order?.createdAt;
 
+  const promotions = await prisma.orderPromotion.findMany({where:{orderId:Number(id)}}).catch(()=>[]);
+  const gifts=promotions.map(p=>p.snapshot as {slug:string;titleRu:string;giftName:string;giftMl:number});
   const t = await getTranslations("Checkout");
   const snapshot = readPricing(order?.pricingSnapshot);
   const breakdown = snapshot && snapshot.totalGrossCents === Math.round(Number(order?.totalAmount) * 100)
@@ -56,6 +58,7 @@ export default async function Order({
   return (
     <div className="my-4 md:px-7">
       <OrderItemsList />
+      {gifts.map(p=><section key={p.slug} className="m-3 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm"><strong>🎁 Акция: {p.titleRu}</strong><p>Подарок: {p.giftName} · {p.giftMl} мл · 0,00 €</p><p className="text-xs">Код: {p.slug}. Вложить при комплектации.</p></section>)}
       <ul className="md:columns-2">
         <li className="break-inside-avoid flex justify-between px-2 py-1 even:bg-gray-100 odd:bg-white">
           Номер заказа:
