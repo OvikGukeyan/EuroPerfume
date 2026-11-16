@@ -1,4 +1,5 @@
 "use client";
+import { PromotionViewTracker } from "./promotion-tracker";
 import { useLocale } from "next-intl";
 import { useRouter } from "@/src/i18n/navigation";
 import { useState } from "react";
@@ -22,6 +23,7 @@ export function PromotionOffer({slug,titleRu,titleDe,requiredMl,giftMl,available
   finally{setBusy(false);}
  }
  return <main className="mx-auto max-w-[1120px] px-4 py-8 md:py-14">
+  <PromotionViewTracker slug={slug}/>
   <div className="rounded-2xl bg-[#eeeae2] px-6 py-9 md:px-14 md:py-14">
    <p className="text-[10px] tracking-[.2em] text-[#746d62]">EURO PERFUME · SPECIAL OFFER</p>
    <h1 className="mt-3 font-serif text-3xl text-[#262622] md:text-5xl">{ru?titleRu:titleDe}</h1>
