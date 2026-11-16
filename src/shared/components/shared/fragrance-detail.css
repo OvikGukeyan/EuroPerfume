@@ -19,4 +19,7 @@
 .fragrance-inci summary{cursor:pointer;padding:12px 0;font-size:20px;font-weight:500}
 .fragrance-inci p{font-size:13px;line-height:1.8;color:#514a45;margin:12px 0;overflow-wrap:anywhere}
 .fragrance-inci a{color:#304a3d;text-decoration:underline;text-underline-offset:3px}
-\n/* One bounded media frame for single photos, carousels and video on every entry route. */\n.fragrance-gallery{height:clamp(400px,42vw,560px);min-height:0;min-width:0}\n@media(max-width:767px){.fragrance-gallery{height:clamp(280px,85vw,390px);min-height:0}}\n
+
+/* One bounded media frame for single photos, carousels and video on every entry route. */
+.fragrance-gallery{height:clamp(400px,42vw,560px);min-height:0;min-width:0}
+@media(max-width:767px){.fragrance-gallery{height:clamp(280px,85vw,390px);min-height:0}}
