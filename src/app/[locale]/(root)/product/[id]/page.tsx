@@ -81,7 +81,7 @@ export default async function Product({
       <ChooseProductForm key={product.id+":"+requested} product={safeProduct} bottles={bottles} initialBottleId={requested} />
       <ProductRecommendations searchParams={safeProduct} />
       <ReviewsComponent className="my-8" product={safeProduct} />
-      <RecentlyViewed />
+      <RecentlyViewed excludeId={product.id} />
     </Container>
   );
 }

@@ -157,16 +157,12 @@ export const findProducts = async (
       bottleParentId: null,
       OR: [{available:true},{fullBottles:{some:{available:true,stockPieces:{gt:0}}}}],
       categoryId: categoryId || 1,
-      productGroupId: productGroupId
-        ? productGroupId
-        : categoryId === 1 || !categoryId
-        ? { in: [1, 2, 3] }
-        : undefined,
       aromas:
         aromas.length > 0
           ? { some: { id: { in: aromas.map((aroma) => Number(aroma)) } } }
           : undefined,
       AND: [
+        ...(productGroupId ? [{OR:[{productGroupId},{fullBottles:{some:{productGroupId,available:true,stockPieces:{gt:0}}}}]}] : categoryId===1 || !categoryId ? [{productGroupId:{in:[1,2,3]}}] : []),
         ...(noteFilters.length ? noteFilters : []),
         ...(searchAND.length ? searchAND : []),
       ],

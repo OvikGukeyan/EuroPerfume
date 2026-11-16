@@ -6,17 +6,19 @@ import { useTranslations } from "next-intl";
 
 type Props = {
   className?: string;
+  excludeId?: number;
 };
 
-export const RecentlyViewed: FC<Props> = ({ className }) => {
+export const RecentlyViewed: FC<Props> = ({ className, excludeId }) => {
   const recentlyViewed = useRecentlyViewed();
+  const otherViewed=recentlyViewed.filter(p=>p.id!==excludeId);
   const t = useTranslations("RecentlyViewed");
   return (
     <>
-      {recentlyViewed.length > 0 && (
+      {otherViewed.length > 0 && (
         <ProductsCarusel
           className={className}
-          items={recentlyViewed}
+          items={otherViewed}
           title={t("title")}
         />
       )}

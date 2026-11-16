@@ -2,6 +2,7 @@
 import { formatMoney } from "@/src/shared/lib/money";
 import { BottleOption, unitPricePerLitre } from "@/src/shared/lib/full-bottle";
 import "./fragrance-detail.css";
+import { noteLabel } from "../../lib/note-label";
 import { FragranceFormatPicker } from "./fragrance-format-picker";
 import { Link } from "@/src/i18n/navigation";
 import { concentrations } from "@/../../prisma/constants";
@@ -132,7 +133,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
     {type:"TOP",title:ru?"Верхние ноты":"Kopfnoten"},
     {type:"HEART",title:ru?"Ноты сердца":"Herznoten"},
     {type:"BASE",title:ru?"Базовые ноты":"Basisnoten"},
-  ].map(g=>({...g,notes:product.productNotes.filter(n=>n.noteType===g.type).map(n=>n.note[ru?"labelRu":"labelDe"])}));
+  ].map(g=>({...g,notes:product.productNotes.filter(n=>n.noteType===g.type).map(n=>noteLabel(n.note,locale))}));
   const scentNotes=noteGroups.flatMap(g=>g.notes).slice(0,5);
   const concentrationName=concentrations.find(c=>c.value===product.concentration)?.name;
   const selectedMl=bottle?.ml ?? (product.productGroup.onTap ? volume : Number(product.volume));
@@ -153,7 +154,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
         <section className="fragrance-purchase" aria-label={ru?"Выбрать формат и купить":"Format auswählen und kaufen"}>
           <FragranceFormatPicker bottles={bottles} selected={bottleId} onSelect={setBottleId} decantAvailable={product.available}/>
           {!bottle && product.variations.length>0 && <ChooseVariation setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId} items={product.variations}/>}
-          {!bottle && product.productGroup.onTap && <div><p className="fragrance-volume-label">{ru?"Выберите объём":"Größe wählen"}</p><VolumeSelection volume={volume} setVolume={setVolume} volumes={[...volumes]}/></div>}
+          {!bottle && product.productGroup.onTap && <div><p className="fragrance-volume-label">{ru?"Выберите объём":"Größe wählen"}</p><VolumeSelection className="fragrance-volumes" volume={volume} setVolume={setVolume} volumes={[...volumes]}/></div>}
           {!bottle && product.productGroup.onTap && <p className="fragrance-disclosure">{ru?"Отливант из оригинального флакона. Не является официальным пробником производителя.":"Duftabfüllung aus einem Originalflakon. Keine offizielle Herstellerprobe."}</p>}
           {bottle && <p className="fragrance-disclosure">{ru?"Полный оригинальный флакон · ":"Originalflakon · "}{bottle.ml} ml</p>}
           <div aria-live="polite"><p className="fragrance-price">{formatMoney(finalDiscountPrice ?? finalPrice)} €</p>{finalDiscountPrice!=null && <del className="text-sm text-neutral-500">{formatMoney(finalPrice)} €</del>}{unitPrice!==null && <p className="fragrance-unit">{formatMoney(unitPrice)} €/l · {selectedMl} ml</p>}<TaxPriceNotice gross={finalDiscountPrice ?? finalPrice}/><p className="fragrance-disclosure"><Link href="/delivery-and-payment">{ru?"Дополнительно доставка — условия и стоимость":"Zzgl. Versand — Kosten und Lieferbedingungen"}</Link></p></div>

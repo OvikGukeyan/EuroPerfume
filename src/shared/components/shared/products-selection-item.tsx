@@ -74,16 +74,17 @@ export const ProductSelectionItem: React.FC<Props> = ({
   const locale = useLocale();
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
 
-  const finalPrice = productGroup.onTap ? price * 2 + 1 : price;
+  const displayBottle=!available ? bottles.find(b=>b.available) : undefined;
+  const finalPrice = displayBottle ? displayBottle.price : productGroup.onTap ? price * 2 + 1 : price;
 
   const finalDiscountPrice =
-    discountPrice && productGroup.onTap ? discountPrice * 2 + 1 : discountPrice;
+    displayBottle ? undefined : discountPrice && productGroup.onTap ? discountPrice * 2 + 1 : discountPrice;
 
   return (
     <article className={cn("home-product compact-product", className)}>
       <div className="home-product-photo">
         <Link href={`/product/${id}`} className="absolute inset-0 p-5 md:p-8" aria-label={`${brand.name} ${name}`}>
-          <Image src={imageUrl || variations?.[0]?.imageUrl || ""} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" className="object-contain p-4 md:p-7" />
+          <Image src={displayBottle?.image || imageUrl || variations?.[0]?.imageUrl || ""} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" className="object-contain p-4 md:p-7" />
         </Link>
         <button type="button" className="home-product-heart" onClick={onToggleFavorite} aria-pressed={isFavorite} aria-label={locale === "ru" ? (isFavorite ? `Удалить ${name} из избранного` : `Добавить ${name} в избранное`) : (isFavorite ? `${name} aus Favoriten entfernen` : `${name} zu Favoriten hinzufügen`)}>
           {isFavorite ? <HeartBlack /> : <Heart />}
@@ -96,10 +97,10 @@ export const ProductSelectionItem: React.FC<Props> = ({
       </Link>
       <div className="compact-product-meta">
         <p className="home-product-price">
-          {productGroup.onTap && <small className="compact-product-from">{locale === "ru" ? "от" : "ab"}</small>}
-          {discountPrice ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
+          {!displayBottle && productGroup.onTap && <small className="compact-product-from">{locale === "ru" ? "от" : "ab"}</small>}
+          {!displayBottle && discountPrice ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
         </p>
-        {productGroup.onTap && <span className="compact-product-size">2 ml</span>}
+        {productGroup.onTap && <span className="compact-product-size">{displayBottle?.ml ?? 2} ml</span>}
       </div>
       {bottles.length > 0 && <Link className="compact-bottle-link" href={`/product/${id}?bottle=${(bottles.find(b=>b.available) ?? bottles[0]).id}`}>{locale==="ru"?"Полный флакон":"Originalflakon"} · {bottles.map(b=>b.ml+" ml").join(" / ")}</Link>}
       <div className="home-product-buy">
@@ -107,7 +108,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
       </div>
       <div className="compact-product-extra">
         <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
-        {productGroup.onTap && <p className="home-product-volume">{formatMoney((finalDiscountPrice ?? finalPrice) / 0.002)} €/l</p>}
+        {productGroup.onTap && <p className="home-product-volume">{formatMoney((finalDiscountPrice ?? finalPrice) / ((displayBottle?.ml ?? 2) / 1000))} €/l</p>}
         {reviews && count > 0 && <Link href={`/product-reviews/${id}`} className="home-product-rating"><Rating value={averageRating} reviewsCount={count} /></Link>}
       </div>
     </article>
