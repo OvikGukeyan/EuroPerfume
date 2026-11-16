@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
         },
         include: { productGroup: true },
       });
-      const canonical = (name: string) => name.trim().normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase();
+      const canonical = (name: string) => name.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
       const find = (name: string) => candidates.find(p => canonical(p.name) === canonical(name) && p.productGroup.onTap);
       const cedar = find("Cedar Chic"), bois = find("Bois Impérial"), gift = find("Encre Noire");
       if (!cedar || !bois || !gift) return false;
