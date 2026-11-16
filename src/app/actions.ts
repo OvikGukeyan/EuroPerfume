@@ -358,7 +358,7 @@ export async function createOrder(data: CheckoutFormValues) {
     }
 
     const boxCookie=(await cookieStore).get("discoveryBoxIds")?.value;
-    const {order,pricing,userCart,boxLabel}=await prisma.$transaction(async tx=>{
+    const {order,pricing,userCart,boxLabel,campaignNote}=await prisma.$transaction(async tx=>{
       await tx.$queryRaw`SELECT id FROM public."Cart" WHERE token=${cartToken} FOR UPDATE`;
       const userCart = await tx.cart.findFirst({
         include: {
@@ -492,7 +492,7 @@ export async function createOrder(data: CheckoutFormValues) {
         },
       });
 
-      return {order,pricing,userCart,boxLabel};
+      return {order,pricing,userCart,boxLabel,campaignNote};
     }, {timeout:15000});
 
     // const paymentData = await createPayment({
