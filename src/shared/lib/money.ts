@@ -4,6 +4,7 @@ export function roundMoney(value: number): number {
 }
 
 const euroNumber = new Intl.NumberFormat("en-GB", {
+  useGrouping: false,
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
