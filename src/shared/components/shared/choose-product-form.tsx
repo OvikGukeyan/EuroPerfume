@@ -1,21 +1,16 @@
 "use client";
 import { formatMoney } from "@/src/shared/lib/money";
-import type { BottleOption } from "@/src/shared/lib/full-bottle";
+import { BottleOption, unitPricePerLitre } from "@/src/shared/lib/full-bottle";
+import "./fragrance-detail.css";
+import { FragranceFormatPicker } from "./fragrance-format-picker";
+import { Link } from "@/src/i18n/navigation";
+import { concentrations } from "@/../../prisma/constants";
 import { TaxPriceNotice } from "./tax-price-notice";
 
 import { cn } from "@/src/shared/lib/utils";
-import React, { FC, useEffect, useRef, useState } from "react";
-import { Button, Separator } from "../ui";
-import {
-  Title,
-  Text,
-  VolumeSelection,
-  ProductCharacteristics,
-  ChooseVariation,
-  ProductCarousel,
-  ReviewsComponent,
-  ShareButton,
-} from ".";
+import React, { FC, useEffect, useState } from "react";
+import { Button } from "../ui";
+import { VolumeSelection, ProductCharacteristics, ChooseVariation, ProductCarousel } from ".";
 import { Volume, volumes } from "@/src/shared/constants/perfume";
 import { ProductTranslation } from "@prisma/client";
 import {
@@ -24,7 +19,6 @@ import {
   createCharacteristicsArray,
 } from "@/src/shared/lib";
 import { Rating } from "./rating";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useCartStore } from "../../store";
@@ -44,8 +38,6 @@ interface Props {
   className?: string;
 }
 export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], initialBottleId }) => {
-  const reviewsRef = useRef<HTMLDivElement>(null);
-  const [activeTab, setActiveTab] = useState("characteristics");
   const [activeVariationId, setActiveVariationId] = useState<number>(
     product.variations[0]?.id
   );
@@ -122,23 +114,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
       : []),
   ];
 
-  const handleRatingClick = () => {
-    setTimeout(() => {
-      const reviewsEl = document.getElementById("reviews");
-      const isVisible = reviewsEl && reviewsEl.offsetParent !== null;
-      if (!isVisible) {
-        setActiveTab("comments");
-      }
-      const targetOffset = isVisible
-        ? reviewsEl.offsetTop
-        : reviewsRef.current?.offsetTop || 0;
-
-      window.scrollTo({
-        top: targetOffset,
-        behavior: "smooth",
-      });
-    }, 200);
-  };
+  const handleRatingClick = () => document.getElementById("reviews")?.scrollIntoView({behavior:"smooth",block:"start"});
 
   const description =
     product.translations.find(
@@ -150,140 +126,45 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
       (t) => t.language.toLocaleLowerCase() === locale.toLocaleLowerCase()
     )?.activeIngredients || "";
 
-  return (
-    <div
-      className={cn(
-        "flex flex-col lg:flex-row flex-1 max-w-full gap-4 bg-white",
-        className
-      )}
-    >
-      <div className="relative flex min-h-[min(90vw,460px)] w-full items-center justify-center self-start overflow-hidden bg-white lg:w-1/2 lg:min-h-[32rem]">
-        {bottle?.image ? <Image src={bottle.image} fill sizes="(min-width:1024px) 50vw, 100vw" className="object-contain p-4" alt={product.name+" · "+bottle.ml+" ml"}/> :
-          media.length>1 || variationsMedia.length>1 ? (
-          <ProductCarousel slides={media.length>1 ? media : variationsMedia} setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId}/>
-        ) : (activeVariation?.imageUrl || product.imageUrl[0]) ? (
-          <Image fill sizes="(min-width:1024px) 50vw, 100vw" className="object-contain p-4" src={activeVariation?.imageUrl || product.imageUrl[0]} alt={product.name}/>
-        ) : null}
+
+  const ru=locale==="ru";
+  const noteGroups=[
+    {type:"TOP",title:ru?"Верхние ноты":"Kopfnoten"},
+    {type:"HEART",title:ru?"Ноты сердца":"Herznoten"},
+    {type:"BASE",title:ru?"Базовые ноты":"Basisnoten"},
+  ].map(g=>({...g,notes:product.productNotes.filter(n=>n.noteType===g.type).map(n=>n.note[ru?"labelRu":"labelDe"])}));
+  const scentNotes=noteGroups.flatMap(g=>g.notes).slice(0,5);
+  const concentrationName=concentrations.find(c=>c.value===product.concentration)?.name;
+  const selectedMl=bottle?.ml ?? (product.productGroup.onTap ? volume : Number(product.volume));
+  const unitPrice=unitPricePerLitre(finalDiscountPrice ?? finalPrice,selectedMl);
+  return <div className={cn("fragrance-detail",className)}>
+    <div className="fragrance-hero">
+      <div className="fragrance-gallery">
+        {bottle?.image ? <Image src={bottle.image} fill sizes="(min-width:1024px) 50vw, 100vw" className="object-contain p-6 md:p-10" alt={product.name+" · "+bottle.ml+" ml"}/> :
+          media.length>1 || variationsMedia.length>1 ? <ProductCarousel slides={media.length>1 ? media : variationsMedia} setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId}/> :
+          (activeVariation?.imageUrl || product.imageUrl[0]) ? <Image fill sizes="(min-width:1024px) 50vw, 100vw" className="object-contain p-6 md:p-10" src={activeVariation?.imageUrl || product.imageUrl[0]} alt={product.name}/> : null}
       </div>
-      <div className="w-full bg-white p-4 md:p-7 lg:w-1/2">
-        <div>
-          <Title
-            text={product.brand.name}
-            size="md"
-            className="font-semibold mb-2 tracking-tight"
-          />
-          <Title
-            text={product.name}
-            size="sm"
-            className="font-semibold mb-2 tracking-tight"
-          />
-
-          <Separator />
-          {!bottle && product.variations.length > 0 && (
-            <ChooseVariation
-              setActiveVariationId={setActiveVariationId}
-              activeVariationId={activeVariationId}
-              className="mt-4"
-              items={product.variations}
-            />
-          )}
-          <section className="my-5 space-y-4" aria-label={locale==="ru"?"Покупка":"Kaufen"}>
-            {bottles.length>0 && <div className="grid grid-cols-2 gap-1 rounded-xl bg-neutral-100 p-1">
-              {[{title:locale==="ru"?"Отливант":"Abfüllung",active:!bottle,select:()=>setBottleId(null)},
-                {title:locale==="ru"?"Полный флакон":"Originalflakon",active:!!bottle,select:()=>setBottleId(firstBottle.id)}]
-                .map(b=><button type="button" key={b.title} aria-pressed={b.active} onClick={b.select} className={cn("min-h-11 rounded-lg px-2 text-sm font-semibold",b.active&&"bg-white shadow-sm")}>{b.title}</button>)}
-            </div>}
-            {product.productGroup.onTap && <div>
-              <p className="mb-2 text-sm font-semibold">{locale==="ru"?"Объём":"Größe"}</p>
-              {bottle ? <div className="flex flex-wrap gap-2">{bottles.map(b=><button type="button" key={b.id} aria-pressed={b.id===bottle.id} onClick={()=>setBottleId(b.id)} className={cn("min-h-10 rounded-lg border px-4 text-sm", b.id===bottle.id && "border-neutral-900 bg-neutral-900 text-white")}>{b.ml} ml</button>)}</div> :
-                <VolumeSelection volume={volume} setVolume={setVolume} volumes={[...volumes]}/>}
-            </div>}
-            {!bottle && product.productGroup.onTap && <p className="text-xs text-neutral-600">{locale==="ru"?"Отливант из оригинального флакона. Не является официальным пробником производителя.":"Duftabfüllung aus einem Originalflakon. Keine offizielle Herstellerprobe."}</p>}
-            <div className="flex flex-wrap items-center justify-between gap-3 border-t pt-4">
-              <div aria-live="polite"><div className="text-2xl font-semibold tabular-nums">{formatMoney(finalDiscountPrice ?? finalPrice)} €</div>
-                {finalDiscountPrice!=null && <del className="text-sm text-neutral-500">{formatMoney(finalPrice)} €</del>}
-                {product.productGroup.onTap && <p className="text-xs text-neutral-600">{formatMoney((finalDiscountPrice ?? finalPrice)*1000/(bottle?.ml ?? volume))} €/l</p>}
-              </div>
-              <Button loading={loading} disabled={bottle ? !bottle.available : !product.available} onClick={onSubmit} className="min-h-12 grow rounded-lg px-5 sm:grow-0">
-                {(bottle ? !bottle.available : !product.available) ? (locale==="ru"?"Нет в наличии":"Ausverkauft") : (locale==="ru"?"В корзину":"In den Warenkorb")}
-              </Button>
-            </div>
-            <TaxPriceNotice gross={finalDiscountPrice ?? finalPrice}/>
-          </section>
-          <div
-            style={{ scrollbarWidth: "none" }}
-            className={cn("overflow-scroll  overflow-x-hidden")}
-          >
-            <Tabs
-              value={activeTab}
-              onValueChange={setActiveTab}
-              defaultValue="characteristics"
-              className="w-full"
-              ref={reviewsRef}
-            >
-              <TabsList
-                className={cn(
-                  "flex h-auto w-full flex-wrap justify-start gap-x-5 gap-y-1 rounded-none border-b border-neutral-200 bg-white p-0 pb-1 mb-5"
-                )}
-              >
-                <TabsTrigger className="min-h-11 rounded-none border-b-2 border-transparent px-0 text-xs sm:text-sm data-[state=active]:border-neutral-900 data-[state=active]:shadow-none" value="characteristics">
-                  {t("characteristics")}
-                </TabsTrigger>
-                <TabsTrigger className="min-h-11 rounded-none border-b-2 border-transparent px-0 text-xs sm:text-sm data-[state=active]:border-neutral-900 data-[state=active]:shadow-none" value="description">
-                  {t("description")}
-                </TabsTrigger>
-                {activeIngredients && (
-                  <TabsTrigger className="min-h-11 rounded-none border-b-2 border-transparent px-0 text-xs sm:text-sm data-[state=active]:border-neutral-900 data-[state=active]:shadow-none" value="activeIngredients">
-                    {t("activeIngredients")}
-                  </TabsTrigger>
-                )}
-                <TabsTrigger className="min-h-11 rounded-none border-b-2 border-transparent px-0 text-xs data-[state=active]:border-neutral-900 data-[state=active]:shadow-none md:hidden" value="comments">
-                  {t("comments")}
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent className="w-full" value="characteristics">
-                <ProductCharacteristics charactiristics={charactiristics} />
-              </TabsContent>
-              <TabsContent className="w-full min-h-[200px]" value="description">
-                <Text size="md" className="my-4">
-                  {description.split(/\n\s*\n/).map((paragraph, idx) => (
-                    <p key={idx} className="mb-4 leading-relaxed text-gray-800">
-                      {paragraph.trim()}
-                    </p>
-                  ))}
-                </Text>
-              </TabsContent>
-              <TabsContent
-                className="w-full min-h-[200px]"
-                value="activeIngredients"
-              >
-                <Text size="md" className="my-4">
-                  {activeIngredients.split(/\n\s*\n/).map((paragraph, idx) => (
-                    <p key={idx} className="mb-4 leading-relaxed text-gray-800">
-                      {paragraph.trim()}
-                    </p>
-                  ))}
-                </Text>
-              </TabsContent>
-
-              <TabsContent className="w-full md:hidden" value="comments">
-                <ReviewsComponent product={product} />
-              </TabsContent>
-            </Tabs>
-          </div>
-
-          <Separator />
-          <div onClick={handleRatingClick}>
-            <Rating
-              className="my-5"
-              value={averageRating}
-              withNumber
-              reviewsCount={count}
-            />
-          </div>
-
-        </div>
+      <div className="fragrance-summary">
+        <p className="fragrance-brand">{product.brand.name}</p>
+        <h1 className="fragrance-name">{product.name}</h1>
+        <p className="fragrance-perfumer">{concentrationName}{product.perfumer ? (ru?" · Парфюмер: ":" · Komponiert von ")+product.perfumer:""}</p>
+        <button type="button" className="fragrance-reviews" onClick={handleRatingClick} aria-label={ru?"Перейти к отзывам":"Bewertungen ansehen"}><Rating value={averageRating} reviewsCount={count}/></button>
+        {scentNotes.length>0 && <div className="fragrance-scent-summary"><strong>{ru?"В аромате":"Duftnoten"}</strong>{scentNotes.join(" · ")}</div>}
+        <section className="fragrance-purchase" aria-label={ru?"Выбрать формат и купить":"Format auswählen und kaufen"}>
+          <FragranceFormatPicker bottles={bottles} selected={bottleId} onSelect={setBottleId} decantAvailable={product.available}/>
+          {!bottle && product.variations.length>0 && <ChooseVariation setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId} items={product.variations}/>}
+          {!bottle && product.productGroup.onTap && <div><p className="fragrance-volume-label">{ru?"Выберите объём":"Größe wählen"}</p><VolumeSelection volume={volume} setVolume={setVolume} volumes={[...volumes]}/></div>}
+          {!bottle && product.productGroup.onTap && <p className="fragrance-disclosure">{ru?"Отливант из оригинального флакона. Не является официальным пробником производителя.":"Duftabfüllung aus einem Originalflakon. Keine offizielle Herstellerprobe."}</p>}
+          {bottle && <p className="fragrance-disclosure">{ru?"Полный оригинальный флакон · ":"Originalflakon · "}{bottle.ml} ml</p>}
+          <div aria-live="polite"><p className="fragrance-price">{formatMoney(finalDiscountPrice ?? finalPrice)} €</p>{finalDiscountPrice!=null && <del className="text-sm text-neutral-500">{formatMoney(finalPrice)} €</del>}{unitPrice!==null && <p className="fragrance-unit">{formatMoney(unitPrice)} €/l · {selectedMl} ml</p>}<TaxPriceNotice gross={finalDiscountPrice ?? finalPrice}/><p className="fragrance-disclosure"><Link href="/delivery-and-payment">{ru?"Дополнительно доставка — условия и стоимость":"Zzgl. Versand — Kosten und Lieferbedingungen"}</Link></p></div>
+          <Button loading={loading} disabled={bottle ? !bottle.available : !product.available} onClick={onSubmit} className="fragrance-buy">{(bottle ? !bottle.available : !product.available) ? (ru?"Нет в наличии":"Ausverkauft") : (ru?"В корзину":"In den Warenkorb")}</Button>
+          <div className="fragrance-service"><span>{ru?"Доставка по Германии и ЕС":"Versand nach Deutschland und in die EU"}</span><Link href="/return-and-exchange" className="underline">{ru?"Условия возврата":"Rückgabebedingungen"}</Link></div>
+        </section>
       </div>
     </div>
-  );
+    {description && <section className="fragrance-reading"><h2>{ru?"Знакомство с ароматом":"Den Duft entdecken"}</h2><div className="fragrance-description">{description.split(/\n\s*\n/).map((paragraph,i)=><p key={i} className="mb-4">{paragraph.trim()}</p>)}</div></section>}
+    {noteGroups.some(g=>g.notes.length>0) && <section className="fragrance-reading"><h2>{ru?"Как раскрывается аромат":"Die Duftpyramide"}</h2><div className="fragrance-notes">{noteGroups.filter(g=>g.notes.length>0).map(g=><div className="fragrance-note-stage" key={g.type}><h3>{g.title}</h3><ul>{g.notes.map((note,i)=><li key={i}>{note}</li>)}</ul></div>)}</div></section>}
+    <section className="fragrance-reading"><details><summary className="cursor-pointer py-3 text-lg">{t("characteristics")}</summary><ProductCharacteristics charactiristics={charactiristics}/></details>{activeIngredients && <details className="border-t mt-3"><summary className="cursor-pointer py-3 text-lg">{t("activeIngredients")}</summary><p className="fragrance-description whitespace-pre-line">{activeIngredients}</p></details>}</section>
+    {product.productGroup.onTap && <aside className="fragrance-advice"><div><h2>{ru?"Сначала познакомьтесь с ароматом":"Erst kennenlernen, dann entscheiden"}</h2><p>{ru?"Выберите небольшой объём и попробуйте аромат на своей коже. Если уже нашли любимый — переключитесь на полный флакон.":"Entdecke den Duft mit einer kleinen Abfüllung auf deiner Haut. Schon dein Favorit? Wähle oben den Originalflakon, sofern verfügbar."}</p></div><a href="#" onClick={e=>{e.preventDefault();setBottleId(null);document.querySelector('.fragrance-purchase')?.scrollIntoView({behavior:'smooth',block:'center'});}}>{ru?"Выбрать отливант":"Abfüllung wählen"}</a></aside>}
+  </div>;
 };

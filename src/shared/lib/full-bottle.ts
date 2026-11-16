@@ -17,3 +17,15 @@ export function bottleFields(ml: string, price: string, stock: string) {
 export function publicBottle(p: { id:number; volume:string|null; price:{toString():string}; discountPrice?:{toString():string}|null; stockPieces:number; available:boolean; imageUrl:string[] }): BottleOption {
   return { id:p.id, ml:Number(p.volume), price:Number(p.discountPrice ?? p.price), image:p.imageUrl[0] ?? "", available:p.available && p.stockPieces > 0 };
 }
+
+// Use the selling price of the selected format; invalid volumes must never produce NaN.
+export function unitPricePerLitre(price: number, ml: number): number | null {
+  return Number.isFinite(price) && price >= 0 && Number.isFinite(ml) && ml > 0
+    ? Math.round(price * 100000 / ml) / 100 : null;
+}
+export const fullBottleInclude = { select: { id:true, volume:true, price:true, discountPrice:true, imageUrl:true, stockPieces:true, available:true } } as const;
+type PublicBottleRow = Parameters<typeof publicBottle>[0];
+export function withBottleOptions<T extends { fullBottles: PublicBottleRow[] }>(product: T) {
+  const { fullBottles, ...base } = product;
+  return { ...base, bottles: fullBottles.map(publicBottle).filter(b => b.ml > 0 && Number.isFinite(b.ml)).sort((a,b) => a.ml-b.ml) };
+}

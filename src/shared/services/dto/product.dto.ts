@@ -1,3 +1,4 @@
+import type { BottleOption } from "../../lib/full-bottle";
 import {
   ApplicationMethod,
   Aroma,
@@ -20,6 +21,7 @@ import {
 } from "@prisma/client";
 import { AvailableFilters } from "../../store/product";
 export type SafeProduct = Omit<Product, "price" | "discountPrice"> & {
+  bottles?: BottleOption[];
   price: number;
   discountPrice: number | null;
 };

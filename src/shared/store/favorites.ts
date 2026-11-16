@@ -1,3 +1,4 @@
+import type { BottleOption } from "../lib/full-bottle";
 import { create } from "zustand";
 import { Api } from "../services/api-client";
 import { Brand, ProductGroup } from "@prisma/client";
@@ -5,6 +6,7 @@ import { FavoritesDTO } from "../services/dto/favorites.dto";
 import toast from "react-hot-toast";
 
 export type FavoritesStateItem = {
+  bottles?:BottleOption[]; available?:boolean;
   productGroup:ProductGroup; id:number; productId:number; name:string;
   imageUrl?:string; price:number; disabled:boolean; brand:Brand;
 };
@@ -15,6 +17,7 @@ export interface FavoritesState {
 }
 const mapItems=(data:FavoritesDTO):FavoritesStateItem[]=>(data?.items??[]).map(i=>({
   id:i.id,productId:i.productId,name:i.product.name,price:Number(i.product.price),
+  bottles:i.product.bottles,available:i.product.available,
   productGroup:i.product.productGroup,brand:i.product.brand,disabled:false,
   imageUrl:i.product.imageUrl[0] || i.product.variations?.[0]?.imageUrl,
 }));

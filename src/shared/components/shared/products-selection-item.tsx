@@ -1,5 +1,6 @@
 "use client";
 import "./compact-product-card.css";
+import type { BottleOption } from "../../lib/full-bottle";
 
 import { formatMoney } from "@/src/shared/lib/money";
 import Image from "next/image";
@@ -22,6 +23,7 @@ import { calcAverageRating } from "../../lib";
 import { Link } from "@/src/i18n/navigation";
 
 interface Props {
+  bottles?: BottleOption[];
   id: number;
   productGroup: ProductGroup;
   name: string;
@@ -41,6 +43,8 @@ interface Props {
 
 export const ProductSelectionItem: React.FC<Props> = ({
   imageUrl,
+  bottles = [],
+  available = true,
   className,
   name,
   id,
@@ -97,8 +101,9 @@ export const ProductSelectionItem: React.FC<Props> = ({
         </p>
         {productGroup.onTap && <span className="compact-product-size">2 ml</span>}
       </div>
+      {bottles.length > 0 && <Link className="compact-bottle-link" href={`/product/${id}?bottle=${(bottles.find(b=>b.available) ?? bottles[0]).id}`}>{locale==="ru"?"Полный флакон":"Originalflakon"} · {bottles.map(b=>b.ml+" ml").join(" / ")}</Link>}
       <div className="home-product-buy">
-        <ByProductDialog id={id} variations={variations} price={price} discountPrice={discountPrice} brand={brand} imageUrl={imageUrl} name={name} productGroup={productGroup} />
+        <ByProductDialog bottles={bottles} available={available} id={id} variations={variations} price={price} discountPrice={discountPrice} brand={brand} imageUrl={imageUrl} name={name} productGroup={productGroup} />
       </div>
       <div className="compact-product-extra">
         <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>

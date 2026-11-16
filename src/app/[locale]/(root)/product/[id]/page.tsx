@@ -9,7 +9,7 @@ import {
   RecentlyViewed,
   ReviewsComponent,
 } from "@/src/shared/components";
-import { Recommendations } from "@/src/shared/components/shared/recommendations";
+import { ProductRecommendations } from "@/src/shared/components/shared/product-recommendations";
 
 export default async function Product({
   params,searchParams,
@@ -72,15 +72,15 @@ export default async function Product({
   return (
     <Container className="flex flex-col mb-10 p-0 md:p-4">
       <BreadcrumbComponent
-        className="mb-10 mt-5 ml-5 md:ml-0 md:mt-0"
+        className="mb-5 mt-5 ml-5 md:ml-0 md:mt-0"
         productBrand={product.brand}
         productName={product.name}
         productCategory={product.category}
         productGroup={product.productGroup}
       />
       <ChooseProductForm key={product.id+":"+requested} product={safeProduct} bottles={bottles} initialBottleId={requested} />
-      <ReviewsComponent className="hidden md:block" product={safeProduct} />
-      <Recommendations searchParams={safeProduct} className="my-20" />
+      <ProductRecommendations searchParams={safeProduct} />
+      <ReviewsComponent className="my-8" product={safeProduct} />
       <RecentlyViewed />
     </Container>
   );

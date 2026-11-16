@@ -1,6 +1,6 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
-import {bottleFields,publicBottle} from "../src/shared/lib/full-bottle";
+import {bottleFields,publicBottle,unitPricePerLitre,withBottleOptions} from "../src/shared/lib/full-bottle";
 import {capturePricing} from "../src/shared/lib/tax";
 
 test("a bottle and a decant of the same fragrance retain separate prices and units",()=>{
@@ -18,4 +18,17 @@ test("stock and volume are integral; prices accept a German decimal comma",()=>{
   for(const input of [["0","1","1"],["50","0","1"],["50","1.123","1"],["50","2","-1"],["50","2","1.5"]])
     assert.throws(()=>bottleFields(input[0],input[1],input[2]));
   assert.equal(publicBottle({id:1,volume:"50",price:120,imageUrl:[],stockPieces:0,available:true}).available,false);
+});
+
+
+test("unit prices use each selected format and its actual selling price",()=>{
+  assert.equal(unitPricePerLitre(350,100),3500);
+  assert.equal(unitPricePerLitre(300,100),3000);
+  assert.equal(unitPricePerLitre(10.8,2),5400);
+  assert.equal(unitPricePerLitre(79.95,50),1599);
+  for(const ml of [0,-1,NaN,Infinity]) assert.equal(unitPricePerLitre(350,ml),null);
+});
+test("public variants preserve item identity, discount and stock without leaking Decimal rows",()=>{
+  const result=withBottleOptions({id:369,fullBottles:[{id:586,volume:"100",price:350,discountPrice:300,imageUrl:["bottle.webp"],stockPieces:2,available:true}]});
+  assert.deepEqual(result,{id:369,bottles:[{id:586,ml:100,price:300,image:"bottle.webp",available:true}]});
 });

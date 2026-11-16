@@ -1,3 +1,4 @@
+import { useLocale } from "next-intl";
 import React, { FC } from "react";
 import { cn } from "@/src/lib/utils";
 import { Title } from ".";
@@ -14,9 +15,10 @@ export const ProductCharacteristics: FC<Props> = ({
   className,
   charactiristics,
 }) => {
+  const ru=useLocale()==="ru";
   return (
     <div className={cn("w-full", className)}>
-      <Title text="Characteristics:" size="sm" className="font-bold" />
+      <Title text={ru?"Характеристики":"Eigenschaften"} size="sm" className="font-bold" />
 
       <div className="my-4">
         <ul className=" md:columns-2 ">

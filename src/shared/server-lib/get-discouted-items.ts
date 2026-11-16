@@ -1,3 +1,4 @@
+import { fullBottleInclude, withBottleOptions } from "../lib/full-bottle";
 import "server-only";
 
 import { prisma } from "@/prisma/prisma-client";
@@ -11,6 +12,7 @@ export const getDiscountedItems = async (): Promise<SelectedProductDTO[]> => {
           not: null,
         },
         available: true,
+        bottleParentId: null,
       },
       include: {
         variations: {
@@ -19,6 +21,7 @@ export const getDiscountedItems = async (): Promise<SelectedProductDTO[]> => {
           },
         },
         productGroup: true,
+            fullBottles: fullBottleInclude,
         reviews: true,
         brand: true,
       },
@@ -26,7 +29,7 @@ export const getDiscountedItems = async (): Promise<SelectedProductDTO[]> => {
     });
 
     const safeDiscountedItems = discountedItems.map((product) => ({
-      ...product,
+      ...withBottleOptions(product),
       discountPrice: product.discountPrice && product.discountPrice?.toNumber(),
       price: product.price.toNumber(),
     }));
