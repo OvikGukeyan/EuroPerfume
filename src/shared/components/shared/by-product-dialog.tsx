@@ -3,7 +3,7 @@ import { FragranceFormatPicker } from "./fragrance-format-picker";
 import { BottleOption, unitPricePerLitre } from "../../lib/full-bottle";
 import { TaxPriceNotice } from "./tax-price-notice";
 import { Link } from "@/src/i18n/navigation";
-import { formatMoney } from "@/src/shared/lib/money";
+import { formatMoney, formatUnitPrice } from "@/src/shared/lib/money";
 import { FC, useState } from "react";
 import { Button, ChooseVariation, Dialog, Title, VolumeSelection } from "..";
 import {
@@ -152,7 +152,7 @@ export const ByProductDialog: FC<Props> = ({
             items={variations}
           />
         )}
-        {(bottle || productGroup.onTap) && <p className="my-3 text-xs text-neutral-600">{bottle?.ml ?? volume} ml ({formatMoney(unitPricePerLitre(finalDiscountPrice ?? finalPrice,bottle?.ml ?? volume) ?? 0)} € / 1 l)</p>}
+        {(bottle || productGroup.onTap) && <p className="my-3 text-xs text-neutral-600">{bottle?.ml ?? volume} ml ({formatUnitPrice(unitPricePerLitre(finalDiscountPrice ?? finalPrice,bottle?.ml ?? volume) ?? 0)} € / 1 l)</p>}
         <TaxPriceNotice gross={finalDiscountPrice ?? finalPrice}/>
         <p className="mb-4 text-xs text-neutral-600"><Link href="/delivery-and-payment" className="underline">{ru?"Дополнительно доставка":"Zzgl. Versand"}</Link></p>
         <DialogFooter>

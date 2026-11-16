@@ -3,7 +3,7 @@ import "./compact-product-card.css";
 import { BottleOption, unitPricePerLitre } from "../../lib/full-bottle";
 import { FragranceFormatPicker } from "./fragrance-format-picker";
 
-import { formatMoney } from "@/src/shared/lib/money";
+import { formatMoney, formatUnitPrice } from "@/src/shared/lib/money";
 import Image from "next/image";
 import React, { useState } from "react";
 import { ChooseVariation, VolumeSelection } from ".";
@@ -150,7 +150,7 @@ export const ProductCard: React.FC<Props> = ({
       </div>
       <div className="compact-product-extra">
         <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
-        {productGroup.onTap && <p className="home-product-volume">{bottle?.ml ?? volume} ml ({formatMoney(unitPricePerLitre(finalDiscountPrice ?? finalPrice,bottle?.ml ?? volume) ?? 0)} € / 1 l)</p>}
+        {productGroup.onTap && <p className="home-product-volume">{bottle?.ml ?? volume} ml ({formatUnitPrice(unitPricePerLitre(finalDiscountPrice ?? finalPrice,bottle?.ml ?? volume) ?? 0)} € / 1 l)</p>}
         {reviews && count > 0 && <Link href={`/product-reviews/${id}`} className="home-product-rating"><Rating value={averageRating} reviewsCount={count} /></Link>}
       </div>
     </article>

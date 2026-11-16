@@ -17,3 +17,13 @@ export function formatMoney(value: number): string {
 export function sumMoney(values: number[]): number {
   return values.reduce((total, value) => total + Math.round((value + Number.EPSILON) * 100), 0) / 100;
 }
+
+/** German unit-price notation, matching the storefront reference. */
+const unitPriceNumber = new Intl.NumberFormat("de-DE", {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+export function formatUnitPrice(value: number): string {
+  return unitPriceNumber.format(roundMoney(value));
+}
