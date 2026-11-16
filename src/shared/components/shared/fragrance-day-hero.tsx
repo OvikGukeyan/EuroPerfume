@@ -20,10 +20,10 @@ export function FragranceDayHero({offer}:{offer:FeaturedDayFragrance}){
  const endDay=new Date(new Date(offer.endsAt).getTime()-1000);
  const until=new Intl.DateTimeFormat(ru?"ru-RU":"de-DE",{day:"numeric",month:"long",timeZone:"Europe/Berlin"}).format(endDay);
  if(ru && offer.id===234 && offer.name.toLowerCase().includes("addictive vibration")){
-  // One cohesive editorial composition: no image crop, split panel, or overlay.
-  return <section aria-label="Аромат недели · Initio Addictive Vibration" className="w-full overflow-hidden rounded-[18px] bg-[#e5d7cd] md:rounded-[25px]">
-    <Link href={offer.href} aria-label="Открыть аромат Initio Addictive Vibration со скидкой 10%" className="block w-full">
-      <img src="/assets/day-offers/initio-weekly-luxury-4x3.webp" alt="EURO PERFUME · Аромат недели — Addictive Vibration, Initio Parfums, −10%, открыть аромат" width={600} height={450} loading="eager" className="block aspect-[4/3] h-auto w-full object-contain"/>
+  // Match the compact campaign frame while preserving every detail of the approved artwork.
+  return <section aria-label="Аромат недели · Initio Addictive Vibration" className="w-full overflow-hidden rounded-[22px] bg-[#e5d7cd] md:rounded-[32px]">
+    <Link href={offer.href} aria-label="Открыть аромат Initio Addictive Vibration со скидкой 10%" className="flex aspect-[1.05/1] w-full items-center justify-center md:aspect-auto md:h-[540px]">
+      <img src="/assets/day-offers/initio-weekly-luxury-4x3.webp" alt="EURO PERFUME · Аромат недели — Addictive Vibration, Initio Parfums, −10%, открыть аромат" width={600} height={450} loading="eager" className="block h-full w-full object-contain"/>
     </Link>
   </section>;
  }

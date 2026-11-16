@@ -2,7 +2,6 @@
 import { BlackFridayHero } from "./black-friday-hero";
 import { BLACK_FRIDAY } from "@/src/shared/lib/black-friday";
 import { PromotionHero } from "./promotion-hero";
-import { FeaturedOffersCarousel } from "./featured-offers-carousel";
 import { FragranceDayHero } from "./fragrance-day-hero";
 import type { FeaturedDayFragrance } from "@/src/shared/server-lib/get-active-day-fragrance";
 import { dayOfferActive } from "@/src/shared/lib/day-offer";
@@ -32,7 +31,7 @@ interface Props {
   blackFriday?: boolean;
 }
 export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = [], blackFriday = false }) => {
-  const autoplayPlugin = useMemo(() => Autoplay({ delay: 8000, stopOnInteraction: true }), []);
+  const autoplayPlugin = useMemo(() => Autoplay({ delay: 6000, stopOnInteraction: false }), []);
   const [api,setApi] = useState<CarouselApi>();
   const [selected,setSelected] = useState(0);
   const locale = useLocale();
@@ -64,7 +63,6 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
   if (!visibleSlides.length && !featuredCount) {
     return null;
   }
-  if(promotions.length||showDay||showBlackFriday)return <FeaturedOffersCarousel blackFriday={showBlackFriday} featured={featured} promotions={promotions} slides={visibleSlides}/>;
   return (
     <Carousel className="mx-auto w-full max-w-[1440px] px-4 md:px-8" opts={{loop:featuredCount+visibleSlides.length>1}} setApi={setApi} plugins={[autoplayPlugin]}>
       <CarouselContent className="items-start">
