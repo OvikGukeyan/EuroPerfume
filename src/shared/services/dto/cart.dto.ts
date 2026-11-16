@@ -13,7 +13,7 @@ export type CartItemDTO = CartItem & {
   variation?: ProductVariation;
 };
 
-export type CartPromotionSummary={id:string;slug:string;titleRu:string;titleDe:string;giftMl:number;giftName:string;eligible:boolean;giftProductId:number|null};
+export type CartPromotionSummary={id:string;slug:string;titleRu:string;titleDe:string;giftMl:number;giftName:string;giftImage:string;giftPrice:number;requiredMl:number;productIds:number[];eligible:boolean;giftProductId:number|null};
 export interface CartDTO extends SafeCart {
   promotions?: CartPromotionSummary[];
   items: CartItemDTO[];
