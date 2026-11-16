@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { PromotionProductPicker } from "./promotion-product-picker";
 type Entry={id:string;slug:string;titleRu:string;titleDe:string;active:boolean;productIds:number[];giftProductId:number;requiredMl:number;giftMl:number;heroImage:string|null;priority:number;viewCount?:number;clickCount?:number;addCount?:number;_count?:{orders:number;carts:number}};
 const empty={slug:"",titleRu:"",titleDe:"",active:false,productIds:[] as number[],giftProductId:0,requiredMl:5,giftMl:2,heroImage:"",priority:10};
 export function PromotionAdmin() {
@@ -36,8 +37,8 @@ export function PromotionAdmin() {
       <label>Код ссылки<input className={input} required value={draft.slug} onChange={e=>setDraft({...draft,slug:e.target.value})} placeholder="woody-selection"/></label>
       <label>Название RU<input className={input} required value={draft.titleRu} onChange={e=>setDraft({...draft,titleRu:e.target.value})}/></label>
       <label>Название DE<input className={input} required value={draft.titleDe} onChange={e=>setDraft({...draft,titleDe:e.target.value})}/></label>
-      <label>ID обязательных ароматов через запятую<input className={input} required value={draft.productIds.join(",")} onChange={e=>setDraft({...draft,productIds:e.target.value.split(",").map(x=>Number(x.trim())).filter(Number.isInteger).filter(Boolean)})}/></label>
-      <label>ID подарка<input type="number" min="1" className={input} required value={draft.giftProductId||""} onChange={e=>setDraft({...draft,giftProductId:Number(e.target.value)})}/></label>
+      <PromotionProductPicker label="Ароматы для покупки" ids={draft.productIds} multiple onChange={ids=>setDraft({...draft,productIds:ids})}/>
+      <PromotionProductPicker label="Подарок" ids={draft.giftProductId?[draft.giftProductId]:[]} onChange={ids=>setDraft({...draft,giftProductId:ids[0]||0})} multiple={false}/>
       <div className="grid grid-cols-2 gap-3">
         <label>Объём покупки (мл)<input type="number" min="1" max="30" className={input} value={draft.requiredMl} onChange={e=>setDraft({...draft,requiredMl:Number(e.target.value)})}/></label>
         <label>Объём подарка (мл)<input type="number" min="1" max="30" className={input} value={draft.giftMl} onChange={e=>setDraft({...draft,giftMl:Number(e.target.value)})}/></label>
