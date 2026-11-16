@@ -16,47 +16,10 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ totalAmount: 0, items: [] });
     }
 
-    const deletedItemsCount = await prisma.cartItem.deleteMany({
-      where: {
-        cart: { token },
-        product: {
-          available: false,
-        },
-      },
-    });
+    await prisma.cartItem.deleteMany({ where: { cart: { token }, product: { available: false } } });
+    const current = await updateCartTotalAmount(token);
+    return NextResponse.json(current ?? { totalAmount: 0, items: [] }, { headers: { "Cache-Control": "no-store" } });
 
-    if (deletedItemsCount.count > 0) {
-      await updateCartTotalAmount(token);
-    }
-    
-    const userCart = await prisma.cart.findFirst({
-      where: {
-        token,
-      },
-      include: {
-        items: {
-          orderBy: {
-            createdAt: "desc",
-          },
-          include: {
-            product: {
-              include: {
-                productGroup: true,
-                brand: true,
-              },
-            },
-            variation: true,
-          },
-        },
-      },
-    });
-    const box = aromaBoxItems(req.cookies.get("discoveryBoxIds")?.value, userCart?.items || []);
-    const safeUserCart = {
-      ...userCart,
-      items: userCart?.items.map(item => ({ ...item, aromaBox: box.some(b => b.id === item.id) })) || [],
-      totalAmount: roundMoney(userCart?.totalAmount.toNumber() ?? 0),
-    };
-    return NextResponse.json(safeUserCart);
   } catch (error) {
     console.log("[CART_GET] Server error", error);
     return NextResponse.json(

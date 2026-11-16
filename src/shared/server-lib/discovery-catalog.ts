@@ -11,7 +11,7 @@ export async function discoveryCatalog(ids?: number[]) {
   return rows.filter(p => Number(p.discountPrice || p.price) > 0).map(p => ({
     id: p.id, name: p.name.trim(), brand: p.brand.name, gender: p.gender,
     image: p.imageUrl[0] || null,
-    price: calcCartItemTotalPrice(Number(p.price), 2, true, Number(p.discountPrice) || undefined),
+    price: calcCartItemTotalPrice(Number(p.price), 2, true, Number(p.discountPrice) || undefined, p),
     notes: [...new Set(p.productNotes.map(n => n.note.labelRu).filter(Boolean))],
     notePyramid: p.productNotes.map(n => ({ label: n.note.labelRu, type: n.noteType })),
     families: p.aromas.map(a => a.labelRu), concentration: p.concentration, available: true,

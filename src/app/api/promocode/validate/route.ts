@@ -7,6 +7,7 @@ export async function POST(req: Request) {
   const promo = await prisma.promoCode.findFirst({
     where: {
       code,
+      isActive: true,
       OR: [
         { expiresAt: null },
         { expiresAt: { gt: new Date() } },
@@ -18,13 +19,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ valid: false }, { status: 404 });
   }
 
-  if(promo.disposable) {
-    await prisma.promoCode.delete({
-      where: {
-        id: promo.id
-      }
-    })
-  }
 
   return NextResponse.json({
     valid: true,

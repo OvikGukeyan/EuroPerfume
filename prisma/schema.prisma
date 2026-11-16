@@ -81,6 +81,9 @@ model Product {
 
   price         Decimal
   discountPrice Decimal?
+  dayOfferReferenceCheckedAt DateTime? @db.Timestamptz(3)
+  dayOfferStartsAt DateTime? @db.Timestamptz(3)
+  dayOfferEndsAt DateTime? @db.Timestamptz(3)
   releaseYear   Int?
   isBestseller  Boolean?
 
@@ -440,6 +443,9 @@ model VerificationCode {
 }
 
 model Slide {
+  dayOfferProductId Int?
+  visibleFrom DateTime? @db.Timestamptz(3)
+  visibleUntil DateTime? @db.Timestamptz(3)
   id       Int          @id @default(autoincrement())
   name     String
   images   SlideImage[]

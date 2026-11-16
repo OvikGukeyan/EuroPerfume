@@ -1,4 +1,6 @@
 "use client";
+import { offerPrices, type DayOfferWindow } from "../../lib/day-offer";
+import { useDayOfferClock } from "../../hooks/use-day-offer";
 import "./compact-product-card.css";
 import { BottleOption, unitPricePerLitre } from "../../lib/full-bottle";
 import { FragranceFormatPicker } from "./fragrance-format-picker";
@@ -28,6 +30,7 @@ import { Rating } from "./rating";
 import { Link } from "@/src/i18n/navigation";
 
 interface Props {
+  dayOffer?: DayOfferWindow;
   bottles?: BottleOption[];
   id: number;
   productGroup: ProductGroup;
@@ -48,6 +51,7 @@ interface Props {
 }
 
 export const ProductCard: React.FC<Props> = ({
+  dayOffer,
   imageUrl,
   bottles = [],
   available = true,
@@ -105,11 +109,13 @@ export const ProductCard: React.FC<Props> = ({
       toast.error("Something went wrong");
     }
   };
-  const finalPrice = bottle ? bottle.price : productGroup.onTap ? calcPrice(volume, price) : price;
-  const finalDiscountPrice =
-    bottle ? null : discountPrice && productGroup.onTap
-      ? calcPrice(volume, discountPrice)
-      : discountPrice;
+  const offerNow = useDayOfferClock([dayOffer, ...bottles]);
+  const priced = bottle
+    ? offerPrices({ ...bottle, price: bottle.regularPrice ?? bottle.price, discountPrice: bottle.discountPrice }, 1, false, offerNow)
+    : offerPrices({ price, discountPrice, ...dayOffer }, productGroup.onTap ? volume : 1, Boolean(productGroup.onTap), offerNow);
+  const finalPrice = priced.regular;
+  const finalDiscountPrice = priced.discounted ? priced.effective : undefined;
+
   const concentratioName = concentrations.find(
     (item) => item.value === concentration
   )?.name;
@@ -127,7 +133,7 @@ export const ProductCard: React.FC<Props> = ({
         <button type="button" className="home-product-heart" onClick={onToggleFavorite} aria-pressed={isFavorite} aria-label={locale === "ru" ? (isFavorite ? `Удалить ${name} из избранного` : `Добавить ${name} в избранное`) : (isFavorite ? `${name} aus Favoriten entfernen` : `${name} zu Favoriten hinzufügen`)}>
           {isFavorite ? <HeartBlack /> : <Heart />}
         </button>
-        {discountPrice ? <span className="home-product-badge home-sale">SALE</span> : isBestseller ? <span className="home-product-badge">BESTSELLER</span> : null}
+        {priced.discounted ? <span className="home-product-badge home-sale">SALE</span> : isBestseller ? <span className="home-product-badge">BESTSELLER</span> : null}
       </div>
       <Link href={`/product/${id}`} className="home-product-description">
         <p className="home-product-brand">{brand.name}</p>
@@ -136,13 +142,14 @@ export const ProductCard: React.FC<Props> = ({
       <div className="compact-product-meta">
         <p className="home-product-price">
           {!bottle && productGroup.onTap && volume === volumes[0] && <small className="compact-product-from">{locale === "ru" ? "от" : "ab"}</small>}
-          {!bottle && discountPrice ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
+          {priced.discounted ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
         </p>
         {productGroup.onTap && <span className="compact-product-size">{bottle?.ml ?? volume} ml</span>}
       </div>
       <FragranceFormatPicker bottles={bottles} selected={bottleId} onSelect={setBottleId} decantAvailable={available}/>
       {!bottle && productGroup.onTap && <VolumeSelection className="compact-product-volumes" volumes={[...volumes]} volume={volume} setVolume={setVolume} />}
       {!bottle && variations.length > 1 && <ChooseVariation setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId} className="compact-product-variations" items={variations} />}
+      {priced.dayOffer && <p className="mt-1 text-[10px] text-neutral-500">{locale === "ru" ? "Низшая цена за 30 дней: " : "Niedrigster Preis der letzten 30 Tage: "}{formatMoney(finalPrice)} €</p>}
       <div className="home-product-buy">
         <Button disabled={!selectedAvailable || loading} onClick={onSubmit} variant="outline" className="w-full" aria-label={`${t("addToCart")} ${name}`}>
           <ShoppingCart size={16} />{selectedAvailable?t("addToCart"):(locale==="ru"?"Нет в наличии":"Ausverkauft")}

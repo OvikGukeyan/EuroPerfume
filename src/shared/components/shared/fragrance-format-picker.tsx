@@ -1,4 +1,6 @@
 "use client";
+import { offerPrices } from "../../lib/day-offer";
+import { useDayOfferClock } from "../../hooks/use-day-offer";
 import { useLocale } from "next-intl";
 import { formatMoney, formatUnitPrice } from "../../lib/money";
 import { BottleOption, unitPricePerLitre } from "../../lib/full-bottle";
@@ -7,6 +9,7 @@ import "./fragrance-detail.css";
 export function FragranceFormatPicker({ bottles, selected, onSelect, decantAvailable=true }: {
   bottles: BottleOption[]; selected: number | null; onSelect: (id:number|null)=>void; decantAvailable?: boolean;
 }) {
+  const now = useDayOfferClock(bottles);
   const ru=useLocale()==="ru";
   if (!bottles.length) return null;
   const first=bottles.find(b=>b.available) ?? bottles[0];
@@ -22,7 +25,7 @@ export function FragranceFormatPicker({ bottles, selected, onSelect, decantAvail
     {selected!==null && <div className="fragrance-bottle-options">{bottles.map(b=><button type="button" key={b.id} aria-pressed={selected===b.id} onClick={()=>onSelect(b.id)}>
       <strong className="fragrance-bottle-ml">{b.ml}<small> ml</small></strong>
       <span><strong>{ru?"Полный флакон":"Originalflakon"}</strong><small>{b.available?(ru?"В наличии":"Verfügbar"):(ru?"Нет в наличии":"Ausverkauft")}</small></span>
-      <span className="fragrance-bottle-price"><strong>{formatMoney(b.price)} €</strong><small>({formatUnitPrice(unitPricePerLitre(b.price,b.ml) ?? 0)} € / 1 l)</small></span>
+      <span className="fragrance-bottle-price"><strong>{formatMoney(offerPrices({ ...b, price:b.regularPrice ?? b.price },1,false,now).effective)} €</strong><small>({formatUnitPrice(unitPricePerLitre(offerPrices({ ...b, price:b.regularPrice ?? b.price },1,false,now).effective,b.ml) ?? 0)} € / 1 l)</small></span>
     </button>)}</div>}
   </div>;
 }

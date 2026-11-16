@@ -1,4 +1,5 @@
 "use client";
+import { useDayOfferClock } from "../../hooks/use-day-offer";
 
 import React, { FC, useMemo } from "react";
 import {
@@ -23,13 +24,15 @@ export const Carusel: FC<Props> = ({ slides }) => {
   const locale = useLocale();
   const language = locale === "de" ? Languages.DE : Languages.RU;
   
-  if (!slides.length) {
+  const now = useDayOfferClock(slides.map(s=>({dayOfferStartsAt:s.visibleFrom,dayOfferEndsAt:s.visibleUntil})));
+  const visibleSlides = slides.filter(s=>(!s.visibleFrom || new Date(s.visibleFrom).getTime() <= now) && (!s.visibleUntil || new Date(s.visibleUntil).getTime() > now));
+  if (!visibleSlides.length) {
     return null;
   }
   return (
     <Carousel className="w-full" plugins={[autoplayPlugin]}>
       <CarouselContent>
-        {slides.map((slide, index) => (
+        {visibleSlides.map((slide, index) => (
           <CarouselItem key={index} className="w-full">
             <Link href={slide.href}>
               <div className="relative w-full aspect-[3.6/4] md:aspect-[10/3.5]">

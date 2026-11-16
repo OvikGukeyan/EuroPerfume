@@ -4,6 +4,7 @@ import { z } from "zod";
 
 export const checkoutFormSchema = z
   .object({
+    quotedTotal: z.number().nonnegative().optional(),
     firstName: z
       .string()
       .min(2, { message: "Der Vorname muss mindestens 2 Zeichen lang sein." })

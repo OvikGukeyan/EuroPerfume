@@ -26,7 +26,7 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
         )}
       >
         {productsToShow.map((product) => (
-          <ProductSelectionItem
+          <ProductSelectionItem dayOffer={product}
             key={product.id}
             productGroup={product.productGroup}
             id={product?.id}

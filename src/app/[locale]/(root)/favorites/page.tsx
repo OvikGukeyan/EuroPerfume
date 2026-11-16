@@ -16,7 +16,7 @@ export default function Favorites() {
       {favoritesLoading ? <p role="status" className="py-10 text-center">{ru?"Загружаем избранное…":"Favoriten werden geladen…"}</p> : items.some(i=>favoriteIds.includes(i.productId)) ? (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 p-4 md:gap-8">
           {items.filter(i=>favoriteIds.includes(i.productId)).map((item) => (
-            <ProductCard
+            <ProductCard dayOffer={item} discountPrice={item.discountPrice}
               brand={item.brand}
               bottles={item.bottles}
               available={item.available}

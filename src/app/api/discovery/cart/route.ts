@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
       await tx.$queryRaw`SELECT 1 FROM pg_advisory_xact_lock(hashtext(${token}))`;
       const products = await tx.product.findMany({ where: { id: { in: ids }, available: true, productGroup: { onTap: true } } });
       if (products.length !== 8 || products.some(p => Number(p.discountPrice || p.price) <= 0)) return { status: 409, error: "Один из ароматов больше недоступен. Вернитесь к подбору и замените его." };
-      const prices = ids.map(id => { const p = products.find(p => p.id === id)!; return { id, price: calcCartItemTotalPrice(Number(p.price), 2, true, Number(p.discountPrice) || undefined) }; });
+      const prices = ids.map(id => { const p = products.find(p => p.id === id)!; return { id, price: calcCartItemTotalPrice(Number(p.price), 2, true, Number(p.discountPrice) || undefined, p) }; });
       if (prices.some((p, i) => Math.round(p.price * 100) !== Math.round(body.prices[i] * 100))) return { status: 409, error: "Цены изменились. Проверьте новую сумму и подтвердите переход ещё раз.", products: prices };
       let cart = await tx.cart.findFirst({ where: { token }, include: { items: true } });
       if (!cart) cart = await tx.cart.create({ data: { token }, include: { items: true } });

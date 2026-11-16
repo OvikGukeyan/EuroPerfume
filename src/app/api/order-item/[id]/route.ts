@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { UserRole } from "@prisma/client";
 import { getUserSession } from "@/src/shared/server-lib/get-user-session";
-import { capturePricing, readPricing } from "@/src/shared/lib/tax";
+import { capturePricing, readPricing, reviseOrderPricing } from "@/src/shared/lib/tax";
 import { prisma } from "@/prisma/prisma-client";
 import {
   calcCartItemTotalPrice,
@@ -86,7 +86,7 @@ export async function PATCH(
           Number(it.product.discountPrice) || undefined
         );
 
-      const pricing = capturePricing(updated.items, updated.deliveryCountry, updated.discount ?? 0, updated.createdAt, readPricing(updated.pricingSnapshot)?.policy);
+      const pricing = reviseOrderPricing(updated.items, updated.deliveryCountry, updated.discount ?? 0, updated.createdAt, readPricing(updated.pricingSnapshot));
       const totalAmountWithDelivery = pricing.totalGrossCents / 100;
 
       await tx.order.update({
@@ -164,7 +164,7 @@ export async function DELETE(
         );
       }
 
-      const pricing = capturePricing(remainingItems, order.deliveryCountry, order.discount ?? 0, order.createdAt, readPricing(order.pricingSnapshot)?.policy);
+      const pricing = reviseOrderPricing(remainingItems, order.deliveryCountry, order.discount ?? 0, order.createdAt, readPricing(order.pricingSnapshot));
       const totalAmount = pricing.totalGrossCents / 100;
 
       await tx.order.update({
@@ -279,7 +279,7 @@ export async function POST(req: NextRequest) {
           Number(it.product.discountPrice) || undefined
         );
 
-      const pricing = capturePricing(updated.items, order.deliveryCountry, order.discount ?? 0, order.createdAt, readPricing(order.pricingSnapshot)?.policy);
+      const pricing = reviseOrderPricing(updated.items, order.deliveryCountry, order.discount ?? 0, order.createdAt, readPricing(order.pricingSnapshot));
       const totalAmount = pricing.totalGrossCents / 100;
 
       await tx.order.update({

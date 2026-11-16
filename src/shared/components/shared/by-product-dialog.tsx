@@ -1,4 +1,6 @@
 "use client";
+import { offerPrices, type DayOfferWindow } from "../../lib/day-offer";
+import { useDayOfferClock } from "../../hooks/use-day-offer";
 import { FragranceFormatPicker } from "./fragrance-format-picker";
 import { BottleOption, unitPricePerLitre } from "../../lib/full-bottle";
 import { TaxPriceNotice } from "./tax-price-notice";
@@ -27,6 +29,7 @@ import { useTranslations } from "next-intl";
 import { ShoppingCart } from "lucide-react";
 
 interface Props {
+  dayOffer?: DayOfferWindow;
   preferredBottleId?: number;
   bottles?: BottleOption[];
   available?: boolean;
@@ -44,6 +47,7 @@ export const ByProductDialog: FC<Props> = ({
   id,
   bottles = [],
   available = true,
+  dayOffer,
   imageUrl,
   name,
   productGroup,
@@ -91,11 +95,12 @@ export const ByProductDialog: FC<Props> = ({
       toast.error(ru?"Не удалось добавить товар":"Artikel konnte nicht hinzugefügt werden");
     } finally {setBusy(false);}
   };
-  const finalPrice = bottle ? bottle.price : productGroup.onTap ? calcPrice(volume, price) : price;
-  const finalDiscountPrice =
-    bottle ? null : discountPrice && productGroup.onTap
-      ? calcPrice(volume, discountPrice)
-      : discountPrice;
+  const offerNow = useDayOfferClock([dayOffer, ...bottles]);
+  const priced = bottle
+    ? offerPrices({ ...bottle, price: bottle.regularPrice ?? bottle.price, discountPrice: bottle.discountPrice }, 1, false, offerNow)
+    : offerPrices({ price, discountPrice, ...dayOffer }, productGroup.onTap ? volume : 1, Boolean(productGroup.onTap), offerNow);
+  const finalPrice = priced.regular;
+  const finalDiscountPrice = priced.discounted ? priced.effective : undefined;
 
       const t = useTranslations("ByProductDialog");
   return (
@@ -121,7 +126,7 @@ export const ByProductDialog: FC<Props> = ({
             <Title size="xs" text={name} />
             <p className="text-[20px] ">
               <span className="hidden md:inline">{t("price")}</span>{" "}
-              {!bottle && discountPrice ? (
+              {priced.discounted ? (
                 <>
                   <span className="line-through text-base mr-2">
                     {formatMoney(finalPrice)} €
@@ -153,6 +158,7 @@ export const ByProductDialog: FC<Props> = ({
           />
         )}
         {(bottle || productGroup.onTap) && <p className="my-3 text-xs text-neutral-600">({formatUnitPrice(unitPricePerLitre(finalDiscountPrice ?? finalPrice,bottle?.ml ?? volume) ?? 0)} € / 1 l)</p>}
+        {priced.dayOffer && <p className="mt-1 text-[10px] text-neutral-500">{ru ? "Низшая цена за 30 дней: " : "Niedrigster Preis der letzten 30 Tage: "}{formatMoney(finalPrice)} €</p>}
         <TaxPriceNotice gross={finalDiscountPrice ?? finalPrice}/>
         <p className="mb-4 text-xs text-neutral-600"><Link href="/delivery-and-payment" className="underline">{ru?"Дополнительно доставка":"Zzgl. Versand"}</Link></p>
         <DialogFooter>

@@ -35,7 +35,7 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
               key={index}
               className="w-full basis-1/2 md:basis-1/3 lg:basis-1/4 py-5"
             >
-                <ProductSelectionItem
+                <ProductSelectionItem dayOffer={item}
                   brand={item.brand}
                   bottles={item.bottles}
                   available={item.available}

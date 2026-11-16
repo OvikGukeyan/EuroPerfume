@@ -43,7 +43,7 @@ export function HomeCatalog({ initialPage }: { initialPage: HomeCatalogPage }) {
     <div className="home-section-heading"><div><p className="home-eyebrow">EURO PERFUME</p><h2 id="home-catalog-title">{ru ? "Все товары" : "Alle Produkte"}</h2></div><p>{ru ? "Листай коллекцию в своём темпе" : "Entdecke die Kollektion in deinem Tempo"}</p></div>
     <HomePriceNote />
     <div className="home-products-grid" aria-busy={loading}>
-      {page.products.map(product => <ProductSelectionItem key={product.id} {...product} imageUrl={product.imageUrl[0] || product.variations[0]?.imageUrl || ""} concentration={product.concentration || undefined} discountPrice={product.discountPrice || undefined} isBestseller={!!product.isBestseller} isFavorite={favoriteIds.includes(product.id)} toggleIsFavorite={addFavoritesItem} />)}
+      {page.products.map(product => <ProductSelectionItem dayOffer={product} key={product.id} {...product} imageUrl={product.imageUrl[0] || product.variations[0]?.imageUrl || ""} concentration={product.concentration || undefined} discountPrice={product.discountPrice || undefined} isBestseller={!!product.isBestseller} isFavorite={favoriteIds.includes(product.id)} toggleIsFavorite={addFavoritesItem} />)}
     </div>
     <div className="home-load-more">
       <p role="status" aria-live="polite">{ru ? "Показано товаров: " : "Angezeigte Produkte: "}{page.products.length}</p>

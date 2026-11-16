@@ -1,3 +1,4 @@
+import type { DayOfferWindow } from "../lib/day-offer";
 import type { BottleOption } from "../lib/full-bottle";
 import { create } from "zustand";
 import { Api } from "../services/api-client";
@@ -5,7 +6,8 @@ import { Brand, ProductGroup } from "@prisma/client";
 import { FavoritesDTO } from "../services/dto/favorites.dto";
 import toast from "react-hot-toast";
 
-export type FavoritesStateItem = {
+export type FavoritesStateItem = DayOfferWindow & {
+  discountPrice?:number;
   bottles?:BottleOption[]; available?:boolean;
   productGroup:ProductGroup; id:number; productId:number; name:string;
   imageUrl?:string; price:number; disabled:boolean; brand:Brand;
@@ -16,6 +18,7 @@ export interface FavoritesState {
   fetchFavoritesItems:()=>Promise<void>; addFavoritesItem:(id:number,title?:string)=>Promise<void>;
 }
 const mapItems=(data:FavoritesDTO):FavoritesStateItem[]=>(data?.items??[]).map(i=>({
+  dayOfferStartsAt:i.product.dayOfferStartsAt,dayOfferEndsAt:i.product.dayOfferEndsAt,discountPrice:i.product.discountPrice ? Number(i.product.discountPrice) : undefined,
   id:i.id,productId:i.productId,name:i.product.name,price:Number(i.product.price),
   bottles:i.product.bottles,available:i.product.available,
   productGroup:i.product.productGroup,brand:i.product.brand,disabled:false,

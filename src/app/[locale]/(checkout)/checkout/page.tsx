@@ -88,10 +88,17 @@ export default function Checkout() {
     }
   }, [session]);
 
+  useEffect(() => { if (items.some(i=>i.dayOffer)) { form.setValue("discount",0); form.setValue("promocode",""); } }, [items, form]);
   const onSubmit = async (data: CheckoutFormValues) => {
     try {
       setSubmitting(true);
-      const result=await createOrder(data);
+      const result=await createOrder({ ...data, quotedTotal: totalAmountWithDelivery });
+      if(result?.code==="PRICES_CHANGED") {
+        form.setValue("discount",0); form.setValue("promocode","");
+        await useCartStore.getState().fetchCartItems();
+        toast.error(locale==="ru"?"Цена или срок акции изменились. Проверьте сумму и отправьте заявку ещё раз.":"Preis oder Aktionszeitraum geändert. Bitte Betrag prüfen und Anfrage erneut senden.");
+        return;
+      }
       if(result?.code==="BOTTLE_STOCK"){
         await useCartStore.getState().fetchCartItems();
         toast.error(locale==="ru"?"Этот объём закончился или его осталось меньше. Проверьте количество в корзине.":"Dieser Flakon ist nicht mehr in der gewünschten Menge verfügbar. Bitte prüfen Sie Ihren Warenkorb.");
@@ -114,6 +121,7 @@ export default function Checkout() {
   };
 
   const onPromocodeSubmit = async () => {
+    if (items.some(i => i.dayOffer)) { toast.error(locale==="ru"?"Товар дня не суммируется с промокодом.":"Tagesangebote sind nicht mit Gutscheinen kombinierbar."); return; }
     try {
       setSubmitting(true);
       const promoCode = form.watch("promocode") || "";

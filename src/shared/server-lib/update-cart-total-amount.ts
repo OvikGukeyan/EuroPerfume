@@ -51,7 +51,8 @@ export const updateCartTotalAmount = async (token: string) => {
         item.product.price,
         item.quantity,
         Boolean(item.product.productGroup?.onTap),
-        item.product.discountPrice || undefined
+        item.product.discountPrice || undefined,
+      item.product
       )
   ));
 

@@ -9,6 +9,7 @@ import { CreateCartItemValues } from "../services/dto/cart.dto";
 
 
 export interface CartState {
+  offerRefreshAt: number | null;
   loading: boolean;
   itemLoading: boolean;
   error: boolean;
@@ -22,6 +23,7 @@ export interface CartState {
 }
 
 export const useCartStore = create<CartState>((set, get) => ({
+  offerRefreshAt: null,
   items: [],
   loading: true,
   itemLoading: false,

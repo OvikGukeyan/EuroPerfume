@@ -1,4 +1,5 @@
 "use client";
+import { readPricing } from "../../lib/tax";
 
 import React, { FC } from "react";
 import { cn } from "../../lib/utils";
@@ -33,7 +34,7 @@ export const OrderItemsList: FC<Props> = ({ className }) => {
             name={item.name}
             brand={item.product.brand}
             onTap={Boolean(item.product.productGroup?.onTap)}
-            price={calcCartItemTotalPrice(
+            price={readPricing(order.pricingSnapshot)?.lines.find(line => line.productId === item.productId && line.variationId === item.variationId)?.grossCents !== undefined ? (readPricing(order.pricingSnapshot)!.lines.find(line => line.productId === item.productId && line.variationId === item.variationId)!.grossCents / 100) : calcCartItemTotalPrice(
               Number(item.product.price),
               item.quantity,
               Boolean(item.product.productGroup?.onTap),

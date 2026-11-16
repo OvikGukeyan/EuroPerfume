@@ -64,7 +64,7 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
             {loading
               ? [...Array(9)].map((_, index) => <ProductCardSkeleton key={index} />)
               : visibleProducts.map((product) => (
-                  <ProductSelectionItem
+                  <ProductSelectionItem dayOffer={product}
                     key={product.id}
                     id={product.id}
                     name={product.name}

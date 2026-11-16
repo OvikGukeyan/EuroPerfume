@@ -103,6 +103,7 @@ export const AppSidebar: FC<Props> = ({ className }) => {
                           <SidebarMenuButton>Other</SidebarMenuButton>
                         </SidebarMenuSubItem>
                       </Link>
+                      <Link href={"/day-offer"}><SidebarMenuSubItem><SidebarMenuButton>Товар дня −10%</SidebarMenuButton></SidebarMenuSubItem></Link>
                       <Link href={"/create-promocode"}>
                         <SidebarMenuSubItem>
                           <SidebarMenuButton>Promocode</SidebarMenuButton>

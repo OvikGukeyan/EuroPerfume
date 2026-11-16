@@ -80,7 +80,7 @@ export const OrderSuccessTemplate: React.FC<Props> = ({
     {aromaBox && <section><h3>Aroma Box · 8 × 2 ml</h3><p style={{ whiteSpace: "pre-line" }}>{aromaBox}</p></section>}
     <h3>Bestellübersicht:</h3>
     <ul>
-      {pricing ? pricing.lines.map((line, index) => <li key={index}>{line.title} × {line.quantity} {line.onTap ? "ml" : "Stk."} = <strong>{(line.grossCents / 100).toFixed(2)} €</strong></li>) : items.map((item) => (
+      {pricing ? pricing.lines.map((line, index) => <li key={index}>{line.title}{line.dayOfferPercent ? " · Tagesangebot / Товар дня −10%" : ""} × {line.quantity} {line.onTap ? "ml" : "Stk."} = <strong>{(line.grossCents / 100).toFixed(2)} €</strong></li>) : items.map((item) => (
         <li key={item.id}>
           {item.product.name} | {item.variation?.name} × {item.quantity} ={" "}
           <strong>

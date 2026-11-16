@@ -1,4 +1,6 @@
 "use client";
+import { offerPrices, type DayOfferWindow } from "../../lib/day-offer";
+import { useDayOfferClock } from "../../hooks/use-day-offer";
 import "./compact-product-card.css";
 import type { BottleOption } from "../../lib/full-bottle";
 
@@ -23,6 +25,7 @@ import { calcAverageRating } from "../../lib";
 import { Link } from "@/src/i18n/navigation";
 
 interface Props {
+  dayOffer?: DayOfferWindow;
   preferBottle?: boolean;
   bottles?: BottleOption[];
   id: number;
@@ -44,6 +47,7 @@ interface Props {
 
 export const ProductSelectionItem: React.FC<Props> = ({
   preferBottle = false,
+  dayOffer,
   imageUrl,
   bottles = [],
   available = true,
@@ -78,10 +82,12 @@ export const ProductSelectionItem: React.FC<Props> = ({
 
   const displayBottle=preferBottle ? (bottles.find(b=>b.available) ?? bottles[0]) : !available ? bottles.find(b=>b.available) : undefined;
   const productHref = `/product/${id}${displayBottle ? `?bottle=${displayBottle.id}` : ""}`;
-  const finalPrice = displayBottle ? displayBottle.price : productGroup.onTap ? price * 2 + 1 : price;
-
-  const finalDiscountPrice =
-    displayBottle ? undefined : discountPrice && productGroup.onTap ? discountPrice * 2 + 1 : discountPrice;
+  const offerNow = useDayOfferClock([dayOffer, ...bottles]);
+  const priced = displayBottle
+    ? offerPrices({ ...displayBottle, price: displayBottle.regularPrice ?? displayBottle.price, discountPrice: displayBottle.discountPrice }, 1, false, offerNow)
+    : offerPrices({ price, discountPrice, ...dayOffer }, productGroup.onTap ? 2 : 1, Boolean(productGroup.onTap), offerNow);
+  const finalPrice = priced.regular;
+  const finalDiscountPrice = priced.discounted ? priced.effective : undefined;
 
   return (
     <article className={cn("home-product compact-product", className)}>
@@ -93,7 +99,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
           {isFavorite ? <HeartBlack /> : <Heart />}
         </button>
         {bottles.length > 0 && <span className="compact-format-badge">{displayBottle ? (locale === "ru" ? "Полный флакон" : "Originalflakon") : (locale === "ru" ? "Есть полный флакон" : "Auch als Originalflakon")}</span>}
-        {discountPrice ? <span className="home-product-badge home-sale">SALE</span> : isBestseller ? <span className="home-product-badge">BESTSELLER</span> : null}
+        {priced.discounted ? <span className="home-product-badge home-sale">SALE</span> : isBestseller ? <span className="home-product-badge">BESTSELLER</span> : null}
       </div>
       <Link href={productHref} className="home-product-description">
         <p className="home-product-brand">{brand.name}</p>
@@ -102,12 +108,13 @@ export const ProductSelectionItem: React.FC<Props> = ({
       <div className="compact-product-meta">
         <p className="home-product-price">
           {!displayBottle && productGroup.onTap && <small className="compact-product-from">{locale === "ru" ? "от" : "ab"}</small>}
-          {!displayBottle && discountPrice ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
+          {priced.discounted ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
         </p>
         {productGroup.onTap && <span className="compact-product-size">{displayBottle?.ml ?? 2} ml</span>}
       </div>
+      {priced.dayOffer && <p className="mt-1 text-[10px] text-neutral-500">{locale === "ru" ? "Низшая цена за 30 дней: " : "Niedrigster Preis der letzten 30 Tage: "}{formatMoney(finalPrice)} €</p>}
       <div className="home-product-buy">
-        <ByProductDialog preferredBottleId={displayBottle?.id} bottles={bottles} available={available} id={id} variations={variations} price={price} discountPrice={discountPrice} brand={brand} imageUrl={imageUrl} name={name} productGroup={productGroup} />
+        <ByProductDialog dayOffer={dayOffer} preferredBottleId={displayBottle?.id} bottles={bottles} available={available} id={id} variations={variations} price={price} discountPrice={discountPrice} brand={brand} imageUrl={imageUrl} name={name} productGroup={productGroup} />
       </div>
       <div className="compact-product-extra">
         <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
