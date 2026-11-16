@@ -1,34 +1,21 @@
-import { getPromotion, promotionLive } from "@/src/shared/server-lib/promotions";
 import { prisma } from "@/prisma/prisma-client";
-import { WoodTrioOffer } from "@/src/shared/components/shared/wood-trio-offer";
-
+import { getPromotion, promotionLive } from "@/src/shared/server-lib/promotions";
+import { calcCartItemTotalPrice } from "@/src/shared/lib/calc-cart-item-total-price";
+import { PromotionOffer } from "@/src/shared/components/shared/promotion-offer";
 export const dynamic = "force-dynamic";
-
-export default async function WoodTrioCampaignPage() {
-  const campaign = await getPromotion("wood-trio");
-  const campaignReady = Boolean(campaign && promotionLive(campaign));
-  const products = await prisma.product.findMany({
-    where: {
-      bottleParentId: null,
-      available: true,
-      OR: [
-        { name: { equals: "Cedar Chic", mode: "insensitive" } },
-        { name: { contains: "Bois Imp", mode: "insensitive" } },
-        { name: { equals: "Encre Noire", mode: "insensitive" } },
-      ],
-    },
-    include: { brand: true, productGroup: true },
-  });
-  const canonical = (name: string) => name.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-  const find = (name: string) => products.find(p => canonical(p.name) === canonical(name) && p.productGroup.onTap);
-  const cedar = find("Cedar Chic");
-  const bois = find("Bois Impérial");
-  const gift = find("Encre Noire");
-  return (
-    <WoodTrioOffer enabled={campaignReady}
-      cedar={cedar ? { id: cedar.id, name: cedar.name, brand: cedar.brand.name, image: cedar.imageUrl[0] || "" } : null}
-      bois={bois ? { id: bois.id, name: bois.name, brand: bois.brand.name, image: bois.imageUrl[0] || "" } : null}
-      gift={gift ? { id: gift.id, name: gift.name, brand: gift.brand.name, image: gift.imageUrl[0] || "" } : null}
-    />
-  );
+const normalize=(name:string)=>name.trim().normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+export default async function WoodTrioPage() {
+  const campaign=await getPromotion("wood-trio");
+  const products=await prisma.product.findMany({where:{available:true,bottleParentId:null,
+    OR:[{name:{contains:"Cedar Chic",mode:"insensitive"}},{name:{contains:"Bois Imp",mode:"insensitive"}},{name:{contains:"Encre Noire",mode:"insensitive"}}]
+  },include:{brand:true,productGroup:true}});
+  const match=(name:string)=>products.find(p=>normalize(p.name)===normalize(name)&&p.productGroup.onTap);
+  const cedar=match("Cedar Chic"),bois=match("Bois Imperial"),gift=match("Encre Noire");
+  const items=[cedar,bois].filter((p):p is NonNullable<typeof p>=>Boolean(p));
+  const ready=Boolean(campaign&&promotionLive(campaign)&&cedar&&bois&&gift);
+  return <PromotionOffer slug="wood-trio" titleRu="Три оттенка древесины" titleDe="Drei Facetten von Holz"
+    requiredMl={5} giftMl={2} available={ready}
+    items={items.map(p=>({id:p.id,name:p.name,brand:p.brand.name,image:p.imageUrl[0]||"",
+      price:calcCartItemTotalPrice(Number(p.price),5,true,p.discountPrice?Number(p.discountPrice):undefined,p)}))}
+    gift={gift?{name:gift.name,brand:gift.brand.name,image:gift.imageUrl[0]||""}:null}/>;
 }
