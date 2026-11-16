@@ -28,3 +28,7 @@ The migration enables RLS and revokes anon/authenticated PostgREST access on new
 7. Visual QA at actual mobile viewport, including image edges, consistent heights, carousel and desktop.
 
 Do not merge this branch or enable the promotion until these checks pass.
+
+### Black Friday 2026
+
+Reserved campaign code `BLACK15` gives 15% off eligible lines only. The server validates the half-open Berlin interval `[2026-11-27T00:00:00+01:00, 2026-11-28T00:00:00+01:00)` both at validation and order submission. This code never falls through to a database code outside that interval. No schema migration or scheduled job is required. Existing sale prices and active daily offers are excluded line by line; delivery is excluded. Mixed carts retain their existing sale prices. The accepted pricing snapshot stores each line's coupon exclusion for later invoice/admin recalculation. The campaign banner appears before/during the campaign and hides automatically at its end. Test with `npm run test:black-friday`.

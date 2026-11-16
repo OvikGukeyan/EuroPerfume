@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "npm run test:day-offer && npm run test:promotions && prisma generate && next build",
+    "build": "npm run test:black-friday && npm run test:day-offer && npm run test:promotions && prisma generate && next build",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
     "start": "next start",
     "lint": "next lint",
@@ -13,7 +13,8 @@
     "prisma:studio": "prisma studio",
     "prisma:seed": "prisma db seed",
     "test:day-offer": "node --experimental-strip-types scripts/test-day-offer.mjs && tsx scripts/test-day-offer-snapshot.ts && tsx scripts/test-day-offer-week.ts",
-    "test:promotions": "tsx scripts/test-promotions.ts"
+    "test:promotions": "tsx scripts/test-promotions.ts",
+    "test:black-friday": "node --import tsx scripts/test-black-friday.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

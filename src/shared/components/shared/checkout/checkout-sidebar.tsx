@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { OrderDetails, WhiteBlock } from "..";
 import { Button, FormInput, Skeleton } from "../..";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { FormControl, FormField, FormItem } from "../../ui/form";
 import { Control } from "react-hook-form";
 import { CheckoutFormValues } from "@/src/shared/constants";
@@ -29,6 +29,7 @@ interface Props {
   control: Control<CheckoutFormValues>;
   onPromocodeSubmit: () => void;
   discount?: number;
+  excludeDiscounted?: boolean;
   promoError: string | null;
 }
 
@@ -42,6 +43,8 @@ export const CheckoutSidebar: FC<Props> = ({
   control,
   onPromocodeSubmit,
   discount,
+  excludeDiscounted,
+  promoError,
 }) => {
   const deliveryCountry = useWatch({ control, name: "deliveryCountry" });
   const billingCountry = useWatch({ control, name: "country" });
@@ -49,6 +52,7 @@ export const CheckoutSidebar: FC<Props> = ({
   const country = deliveryCountryForCheckout({ shippingMethod, deliveryCountry, country: billingCountry || "DEU" });
   const isMinOrderAmount = totalAmount >= SHOP_SETTINGS.MIN_ORDER_EUR;
 
+  const ru = useLocale() === "ru";
   const t = useTranslations("Checkout.sidebar");
 
   return (
@@ -100,6 +104,8 @@ export const CheckoutSidebar: FC<Props> = ({
         />
       ) : null}
 
+      {excludeDiscounted && <p className="mb-3 text-xs text-neutral-600">{ru ? "−15% только на товары без скидки. Действует 27.11.2026 по времени Германии." : "−15% nur auf nicht reduzierte Artikel. Gültig am 27.11.2026 (deutsche Zeit)."}</p>}
+      {promoError && <p role="alert" className="mb-3 text-sm text-red-600">{promoError}</p>}
       <div className="flex items-start gap-2">
         <FormField
           name="promocode"

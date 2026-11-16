@@ -1,4 +1,4 @@
-import { dayOfferActive } from "./day-offer";
+import { dayOfferActive, offerPrices } from "./day-offer";
 import { roundMoney } from "./money";
 import { Brand, ProductGroup } from "@prisma/client";
 import { CartDTO, CartPromotionSummary } from "../services/dto/cart.dto";
@@ -6,6 +6,7 @@ import { calcCartItemTotalPrice } from "./calc-cart-item-total-price";
 
 export type CartStateItem = {
   dayOffer?: boolean;
+  discounted?: boolean;
   offerBoundary?: string | null;
   aromaBox?: boolean;
   id: number;
@@ -29,6 +30,7 @@ interface ReturnProps {
 export const getCartDetails = (data: CartDTO): ReturnProps => {
   const items = data.items.map((item) => ({
     dayOffer: dayOfferActive(item.product),
+    discounted: offerPrices(item.product, item.quantity, Boolean(item.product.productGroup?.onTap)).discounted,
     offerBoundary: item.product.dayOfferEndsAt ? String(item.product.dayOfferEndsAt) : null,
     id: item.id,
     productId:item.productId,

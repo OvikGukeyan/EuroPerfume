@@ -1,4 +1,5 @@
 "use server";
+import { BLACK_FRIDAY, blackFridayActive, isBlackFridayCode } from "../shared/lib/black-friday";
 import { offerPrices } from "../shared/lib/day-offer";
 import { promotionLive, promotionQualified } from "../shared/server-lib/promotions";
 import { bottleGroup } from "@/src/shared/lib/full-bottle";
@@ -424,9 +425,10 @@ export async function createOrder(data: CheckoutFormValues) {
       const deliveryCountry = deliveryCountryForCheckout(data);
       const orderedAt = new Date();
       const activeDayOffer = userCart.items.some(i => offerPrices(i.product,i.quantity,Boolean(i.product.productGroup?.onTap),orderedAt.getTime()).dayOffer);
-      const promo = data.promocode ? await tx.promoCode.findFirst({where:{code:data.promocode,isActive:true,OR:[{expiresAt:null},{expiresAt:{gt:orderedAt}}]}}) : null;
-      const orderDiscount = activeDayOffer ? 0 : promo?.discount ?? 0;
-      const pricing = capturePricing(userCart.items.map(item => boxItemIds.has(item.id) ? { ...item, product: { ...item.product, name: "Aroma Box · " + item.product.name } } : item), deliveryCountry, orderDiscount, orderedAt);
+      const blackFriday = isBlackFridayCode(data.promocode);
+      const promo = data.promocode && !blackFriday ? await tx.promoCode.findFirst({where:{code:data.promocode,isActive:true,OR:[{expiresAt:null},{expiresAt:{gt:orderedAt}}]}}) : null;
+      const orderDiscount = blackFriday ? (blackFridayActive(orderedAt.getTime()) ? BLACK_FRIDAY.discount : 0) : activeDayOffer ? 0 : promo?.discount ?? 0;
+      const pricing = capturePricing(userCart.items.map(item => boxItemIds.has(item.id) ? { ...item, product: { ...item.product, name: "Aroma Box · " + item.product.name } } : item), deliveryCountry, orderDiscount, orderedAt, undefined, blackFriday);
       const totalAmountWithDelivery = pricing.totalGrossCents / 100;
       if (data.quotedTotal !== undefined && Math.round(data.quotedTotal*100) !== pricing.totalGrossCents) throw new Error("PRICES_CHANGED");
       const fullName = data.firstName + " " + data.lastName;
@@ -466,7 +468,7 @@ export async function createOrder(data: CheckoutFormValues) {
           createdAt: orderedAt,
           pricingSnapshot: pricing,
           contactForm: data.contactForm,
-          promocode: orderDiscount ? data.promocode : undefined,
+          promocode: pricing.discountGrossCents > 0 ? (blackFriday ? BLACK_FRIDAY.code : data.promocode) : undefined,
           discount: orderDiscount,
           status: OrderStatus.NEW,
           items: {

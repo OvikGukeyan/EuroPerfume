@@ -1,3 +1,4 @@
+import { couponDiscountCents } from "./black-friday";
 import { offerPrices, type DayOfferWindow } from "./day-offer";
 import { z } from "zod";
 import { TAX_SETTINGS } from "@/src/config/tax";
@@ -29,23 +30,24 @@ const amountSchema = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER)
 export const pricingSchema = z.object({
   version: z.literal(1), country: z.string(), capturedAt: z.string().datetime(), policy: policySchema,
   subtotalGrossCents: amountSchema, shippingGrossCents: amountSchema, discountGrossCents: amountSchema, totalGrossCents: amountSchema,
-  lines: z.array(z.object({ productId: z.number().int(), variationId: z.number().int().nullable(), title: z.string(), quantity: z.number().int().positive(), onTap: z.boolean(), grossCents: amountSchema, regularGrossCents: amountSchema.optional(), dayOfferPercent: z.literal(10).optional() })),
+  lines: z.array(z.object({ productId: z.number().int(), variationId: z.number().int().nullable(), title: z.string(), quantity: z.number().int().positive(), onTap: z.boolean(), grossCents: amountSchema, regularGrossCents: amountSchema.optional(), dayOfferPercent: z.literal(10).optional(), couponExcluded: z.boolean().optional() })),
 });
 export type PricingSnapshot = z.infer<typeof pricingSchema>;
 type PriceableItem = { productId: number; variationId: number | null; quantity: number; product: DayOfferWindow & { name: string; price: { toString(): string } | number; discountPrice: { toString(): string } | number | null; brand?: { name: string }; productGroup?: { onTap: boolean | null } | null } };
 
-export function capturePricing(items: PriceableItem[], country: string, discount = 0, at = new Date(), policy = taxPolicyAt(at, country)): PricingSnapshot {
+export function capturePricing(items: PriceableItem[], country: string, discount = 0, at = new Date(), policy = taxPolicyAt(at, country), excludeDiscounted = false): PricingSnapshot {
   if (!Number.isInteger(discount) || discount < 0 || discount > 100) throw new Error("Invalid discount");
   const lines = items.map(item => ({
     productId: item.productId, variationId: item.variationId,
+    ...(excludeDiscounted ? { couponExcluded: offerPrices(item.product, item.quantity, Boolean(item.product.productGroup?.onTap), at.getTime()).discounted } : {}),
     title: `${item.product.brand?.name ? item.product.brand.name + " | " : ""}${item.product.name}`,
     quantity: item.quantity, onTap: Boolean(item.product.productGroup?.onTap),
     grossCents: cents(calcCartItemTotalPrice(Number(item.product.price), item.quantity, Boolean(item.product.productGroup?.onTap), Number(item.product.discountPrice) || undefined, item.product, at.getTime())),
     ...(offerPrices(item.product, item.quantity, Boolean(item.product.productGroup?.onTap), at.getTime()).dayOffer ? { regularGrossCents: cents(offerPrices(item.product, item.quantity, Boolean(item.product.productGroup?.onTap), at.getTime()).regular), dayOfferPercent: 10 as const } : {}),
   }));
   const subtotalGrossCents = lines.reduce((sum, item) => sum + item.grossCents, 0);
-  const { totalAmountWithDelivery, deliveryPrice } = calcTotlalAmountWithDelivery(subtotalGrossCents / 100, country, discount);
-  const shippingGrossCents = cents(deliveryPrice), totalGrossCents = cents(totalAmountWithDelivery);
+  const { totalAmountWithDelivery, deliveryPrice } = calcTotlalAmountWithDelivery(subtotalGrossCents / 100, country, excludeDiscounted ? 0 : discount);
+  const shippingGrossCents = cents(deliveryPrice), totalGrossCents = cents(totalAmountWithDelivery) - (excludeDiscounted ? couponDiscountCents(lines.filter(l => !l.couponExcluded).reduce((s,l) => s+l.grossCents,0), discount) : 0);
   return { version: 1, country, capturedAt: at.toISOString(), policy, lines, subtotalGrossCents, shippingGrossCents, totalGrossCents, discountGrossCents: subtotalGrossCents + shippingGrossCents - totalGrossCents };
 }
 export function readPricing(value: unknown): PricingSnapshot | null {
@@ -76,7 +78,7 @@ export function deliveryCountryForCheckout(data: { shippingMethod: string; count
 /** Preserve the prices accepted in a submitted enquiry when an admin edits it. */
 export function reviseOrderPricing(items: PriceableItem[], country: string, discount: number, at: Date, previous: PricingSnapshot | null) {
   if (!previous) return capturePricing(items, country, discount, at);
-  const revised = capturePricing(items, country, discount, at, previous.policy);
+  const revised = capturePricing(items, country, discount, at, previous.policy, previous.lines.some(l => l.couponExcluded !== undefined));
   revised.lines = revised.lines.map(line => {
     const old = previous.lines.find(l => l.productId === line.productId && l.variationId === line.variationId);
     if (!old) return line;
@@ -89,9 +91,10 @@ export function reviseOrderPricing(items: PriceableItem[], country: string, disc
       ...(old.dayOfferPercent ? {regularGrossCents} : {}) };
   });
   revised.subtotalGrossCents = revised.lines.reduce((sum,l)=>sum+l.grossCents,0);
-  const totals = calcTotlalAmountWithDelivery(revised.subtotalGrossCents/100,country,discount);
+  const excludesSales = revised.lines.some(l => l.couponExcluded !== undefined);
+  const totals = calcTotlalAmountWithDelivery(revised.subtotalGrossCents/100,country,excludesSales ? 0 : discount);
   revised.shippingGrossCents = cents(totals.deliveryPrice);
-  revised.totalGrossCents = cents(totals.totalAmountWithDelivery);
+  revised.totalGrossCents = cents(totals.totalAmountWithDelivery) - (excludesSales ? couponDiscountCents(revised.lines.filter(l => !l.couponExcluded).reduce((s,l)=>s+l.grossCents,0),discount) : 0);
   revised.discountGrossCents = revised.subtotalGrossCents + revised.shippingGrossCents - revised.totalGrossCents;
   return revised;
 }

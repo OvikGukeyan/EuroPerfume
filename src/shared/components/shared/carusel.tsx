@@ -1,4 +1,6 @@
 "use client";
+import { BlackFridayHero } from "./black-friday-hero";
+import { BLACK_FRIDAY } from "@/src/shared/lib/black-friday";
 import { PromotionHero } from "./promotion-hero";
 import { FragranceDayHero } from "./fragrance-day-hero";
 import type { FeaturedDayFragrance } from "@/src/shared/server-lib/get-active-day-fragrance";
@@ -34,11 +36,12 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
   const locale = useLocale();
   const language = locale === "de" ? Languages.DE : Languages.RU;
   
-  const now = useDayOfferClock([...slides.map(s=>({dayOfferStartsAt:s.visibleFrom,dayOfferEndsAt:s.visibleUntil})),...dayFragrances.map(f=>({dayOfferStartsAt:f.startsAt,dayOfferEndsAt:f.endsAt}))]);
+  const now = useDayOfferClock([{dayOfferStartsAt:BLACK_FRIDAY.startsAt,dayOfferEndsAt:BLACK_FRIDAY.endsAt},...slides.map(s=>({dayOfferStartsAt:s.visibleFrom,dayOfferEndsAt:s.visibleUntil})),...dayFragrances.map(f=>({dayOfferStartsAt:f.startsAt,dayOfferEndsAt:f.endsAt}))]);
   const visibleSlides = slides.filter(s=>(!s.visibleFrom || new Date(s.visibleFrom).getTime() <= now) && (!s.visibleUntil || new Date(s.visibleUntil).getTime() > now));
   const featured=dayFragrances.find(f=>dayOfferActive({dayOfferStartsAt:f.startsAt,dayOfferEndsAt:f.endsAt},now));
   const showDay=Boolean(featured);
-  const featuredCount=promotions.length+(showDay?1:0);
+  const showBlackFriday = now < Date.parse(BLACK_FRIDAY.endsAt);
+  const featuredCount=promotions.length+(showDay?1:0)+(showBlackFriday?1:0);
   useEffect(()=>{
     if(!api) return;
     const update=()=>setSelected(api.selectedScrollSnap());
@@ -53,6 +56,7 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
   return (
     <Carousel className="mx-auto w-full max-w-[1440px] px-4 md:px-8" opts={{loop:featuredCount+visibleSlides.length>1}} setApi={setApi} plugins={[autoplayPlugin]}>
       <CarouselContent>
+        {showBlackFriday && <CarouselItem className="w-full" key="black-friday-2026"><BlackFridayHero/></CarouselItem>}
         {showDay && featured && <CarouselItem className="w-full" key="fragrance-week"><FragranceDayHero offer={featured}/></CarouselItem>}
         {promotions.map((promotion,index)=>(
           <CarouselItem className="w-full" key={promotion.slug}>

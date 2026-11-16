@@ -1,5 +1,7 @@
 "use client";
 
+import { BLACK_FRIDAY, blackFridayActive, isBlackFridayCode, couponDiscountCents } from "@/src/shared/lib/black-friday";
+import { useDayOfferClock } from "@/src/shared/hooks/use-day-offer";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import toast from "react-hot-toast";
@@ -69,10 +71,17 @@ export default function Checkout() {
   });
 
 
-  const discount = form.watch("discount");
+  const [appliedCode, setAppliedCode] = useState("");
+  const enteredCode = form.watch("promocode") || "";
+  const promoNow = useDayOfferClock({ dayOfferStartsAt: BLACK_FRIDAY.startsAt, dayOfferEndsAt: BLACK_FRIDAY.endsAt });
+  const blackFriday = isBlackFridayCode(appliedCode);
+  const configuredDiscount = form.watch("discount") || 0;
+  const discount = appliedCode === enteredCode && (!blackFriday || blackFridayActive(promoNow)) ? configuredDiscount : 0;
   const deliveryCountry = deliveryCountryForCheckout({ shippingMethod: form.watch("shippingMethod"), deliveryCountry: form.watch("deliveryCountry"), country: form.watch("country") });
-  const { totalAmountWithDelivery, deliveryPrice } =
-    calcTotlalAmountWithDelivery(totalAmount, deliveryCountry, discount);
+  const totals = calcTotlalAmountWithDelivery(totalAmount, deliveryCountry, blackFriday ? 0 : discount);
+  const eligibleCents = items.filter(i => !i.discounted).reduce((sum,i)=>sum+Math.round(i.price*100),0);
+  const totalAmountWithDelivery = blackFriday ? (Math.round(totals.totalAmountWithDelivery*100) - couponDiscountCents(eligibleCents,discount))/100 : totals.totalAmountWithDelivery;
+  const deliveryPrice = totals.deliveryPrice;
 
   useEffect(() => {
     async function fetchUserInfo() {
@@ -89,11 +98,11 @@ export default function Checkout() {
     }
   }, [session]);
 
-  useEffect(() => { if (items.some(i=>i.dayOffer)) { form.setValue("discount",0); form.setValue("promocode",""); } }, [items, form]);
+  useEffect(() => { if (!blackFriday && items.some(i=>i.dayOffer)) { form.setValue("discount",0); form.setValue("promocode",""); } }, [items, form, blackFriday]);
   const onSubmit = async (data: CheckoutFormValues) => {
     try {
       setSubmitting(true);
-      const result=await createOrder({ ...data, quotedTotal: totalAmountWithDelivery });
+      const result=await createOrder({ ...data, promocode: discount ? appliedCode : "", quotedTotal: totalAmountWithDelivery });
       if(result?.code==="PRICES_CHANGED") {
         form.setValue("discount",0); form.setValue("promocode","");
         await useCartStore.getState().fetchCartItems();
@@ -127,16 +136,23 @@ export default function Checkout() {
   };
 
   const onPromocodeSubmit = async () => {
-    if (items.some(i => i.dayOffer)) { toast.error(locale==="ru"?"Товар дня не суммируется с промокодом.":"Tagesangebote sind nicht mit Gutscheinen kombinierbar."); return; }
+    if (!isBlackFridayCode(enteredCode) && items.some(i => i.dayOffer)) { toast.error(locale==="ru"?"Товар дня не суммируется с промокодом.":"Tagesangebote sind nicht mit Gutscheinen kombinierbar."); return; }
     try {
       setSubmitting(true);
       const promoCode = form.watch("promocode") || "";
       const data = await Api.promocode.validatePromocode(promoCode);
+      setAppliedCode(promoCode);
+      setPromoError(null);
       form.setValue("discount", data.discount);
       form.setError("promocode", { message: "" });
     } catch (error) {
-      console.error(error);
-      toast.error("Something went wrong", { icon: "❌" });
+      setAppliedCode("");
+      form.setValue("discount",0);
+      const message = isBlackFridayCode(enteredCode)
+        ? (locale==="ru" ? "BLACK15 действует только 27 ноября 2026 по времени Германии." : "BLACK15 gilt nur am 27. November 2026 (deutsche Zeit).")
+        : (locale==="ru" ? "Промокод недействителен." : "Ungültiger Gutscheincode.");
+      setPromoError(message);
+      toast.error(message, { icon: "❌" });
       form.setError("promocode", { message: "Ungültiger Gutscheincode" });
     } finally {
       setSubmitting(false);
@@ -191,6 +207,7 @@ export default function Checkout() {
                 control={form.control}
                 onPromocodeSubmit={onPromocodeSubmit}
                 discount={discount}
+                excludeDiscounted={blackFriday && discount > 0}
                 promoError={promoError}
               />
             </div>
