@@ -2,6 +2,7 @@
 import { BlackFridayHero } from "./black-friday-hero";
 import { BLACK_FRIDAY } from "@/src/shared/lib/black-friday";
 import { PromotionHero } from "./promotion-hero";
+import { FeaturedOffersCarousel } from "./featured-offers-carousel";
 import { FragranceDayHero } from "./fragrance-day-hero";
 import type { FeaturedDayFragrance } from "@/src/shared/server-lib/get-active-day-fragrance";
 import { dayOfferActive } from "@/src/shared/lib/day-offer";
@@ -53,6 +54,7 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
   if (!visibleSlides.length && !featuredCount) {
     return null;
   }
+  if(promotions.length||showDay)return <FeaturedOffersCarousel featured={featured} promotions={promotions} slides={visibleSlides}/>;
   return (
     <Carousel className="mx-auto w-full max-w-[1440px] px-4 md:px-8" opts={{loop:featuredCount+visibleSlides.length>1}} setApi={setApi} plugins={[autoplayPlugin]}>
       <CarouselContent>
