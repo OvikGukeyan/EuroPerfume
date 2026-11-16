@@ -8,12 +8,12 @@ import toast from "react-hot-toast";
 
 type Item = { id: number; name: string; brand: string; image: string } | null;
 const CAMPAIGN = "WOOD_TRIO_GIFT_2026";
-export function WoodTrioOffer({ cedar, bois, gift }: { cedar: Item; bois: Item; gift: Item }) {
+export function WoodTrioOffer({ cedar, bois, gift, enabled }: { cedar: Item; bois: Item; gift: Item; enabled:boolean }) {
   const ru = useLocale() === "ru";
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const refreshCart = useCartStore((s) => s.fetchCartItems);
-  const ready = Boolean(cedar && bois && gift);
+  const ready = Boolean(cedar && bois && gift && enabled);
   async function onAdd() {
     if (!cedar || !bois || !gift || busy) return;
     setBusy(true);
