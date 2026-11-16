@@ -41,3 +41,9 @@ REVOKE ALL ON "Promotion", "CartPromotion", "OrderPromotion" FROM anon, authenti
 ALTER TABLE "Promotion" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "CartPromotion" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "OrderPromotion" ENABLE ROW LEVEL SECURITY;
+
+-- Initial promotion stays a draft until reviewed and activated in the dashboard.
+-- Product IDs checked against the live catalog on 2026-11-16.
+INSERT INTO "Promotion" ("id","slug","titleRu","titleDe","active","priority","requiredMl","giftMl","productIds","giftProductId","updatedAt")
+VALUES (gen_random_uuid()::text,'wood-trio','Три оттенка древесины','Drei Facetten von Holz',FALSE,10,5,2,ARRAY[563,92]::INTEGER[],164,CURRENT_TIMESTAMP)
+ON CONFLICT ("slug") DO NOTHING;
