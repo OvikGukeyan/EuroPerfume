@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-type Entry={id:string;slug:string;titleRu:string;titleDe:string;active:boolean;productIds:number[];giftProductId:number;requiredMl:number;giftMl:number;heroImage:string|null;priority:number;_count?:{orders:number;carts:number}};
+type Entry={id:string;slug:string;titleRu:string;titleDe:string;active:boolean;productIds:number[];giftProductId:number;requiredMl:number;giftMl:number;heroImage:string|null;priority:number;viewCount?:number;clickCount?:number;addCount?:number;_count?:{orders:number;carts:number}};
 const empty={slug:"",titleRu:"",titleDe:"",active:false,productIds:[] as number[],giftProductId:0,requiredMl:5,giftMl:2,heroImage:"",priority:10};
 export function PromotionAdmin() {
   const [list,setList]=useState<Entry[]>([]);
@@ -28,7 +28,7 @@ export function PromotionAdmin() {
     <section className="grid gap-3">
       {list.map(p=><button type="button" key={p.id} onClick={()=>setDraft({...p,heroImage:p.heroImage||""})} className="rounded-lg border bg-white p-4 text-left">
         <strong>{p.titleRu}</strong> · {p.slug} · {p.active?"Активна":"Черновик"}
-        <p className="text-xs text-neutral-500">Заказов: {p._count?.orders||0} · В корзинах: {p._count?.carts||0}</p>
+        <p className="text-xs text-neutral-500">Просмотры: {p.viewCount||0} · Переходы: {p.clickCount||0} · В корзину: {p.addCount||0} · Заказы: {p._count?.orders||0}</p>
       </button>)}
     </section>
     <form onSubmit={save} className="grid gap-4 rounded-xl border bg-white p-5">
