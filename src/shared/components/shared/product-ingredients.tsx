@@ -1,15 +1,28 @@
 import { resolveIngredients } from "../../lib/fragrance-ingredients";
 export function ProductIngredients({productId,translations,locale}: {productId:number;translations:{language:string;activeIngredients?:string|null}[];locale:string}) {
  const ru=locale==="ru";
- const {inci,source,review}=resolveIngredients(productId,translations,locale);
- return <section className="fragrance-reading fragrance-inci" id="ingredients">
+ const {inci,review}=resolveIngredients(productId,translations,locale);
+ return <><section className="fragrance-reading fragrance-inci" id="ingredients">
   <details>
    <summary>{ru?"Состав и аллергены (INCI)":"Inhaltsstoffe & Allergene (INCI)"}</summary>
    {inci && !review ? <>
     <p>{inci}</p>
-    {source && <p>{ru?"Источник состава: ":"Quelle der Inhaltsstoffliste: "}<a href={source.url} target="_blank" rel="noopener noreferrer">{source.brand}</a> · 16.11.2026</p>}
     <p>{ru?"Состав может различаться в зависимости от партии. Сверяйте список с упаковкой конкретного флакона. При аллергии уточните состав вашей партии у нас до покупки.":"Die Zusammensetzung kann je nach Charge abweichen. Bitte beachte die Liste auf der Verpackung des jeweiligen Flakons. Bei Allergien frage uns vor dem Kauf nach den Angaben zu deiner Charge."}</p>
    </> : <p>{ru?"Уточняем полный состав по упаковке. Если у вас есть аллергия, свяжитесь с нами до покупки — проверим состав конкретного флакона.":"Die vollständige Inhaltsstoffliste wird anhand der Verpackung geprüft. Bei Allergien kontaktiere uns bitte vor dem Kauf, damit wir die Angaben des jeweiligen Flakons prüfen können."}</p>}
   </details>
- </section>;
+ </section>
+ <section className="fragrance-reading fragrance-inci" id="warnings">
+  <details>
+   <summary>{ru?"Предупреждения":"Warnhinweise"}</summary>
+   <p>{ru?"Общие меры предосторожности при использовании парфюмерии:":"Allgemeine Sicherheitshinweise für die Anwendung von Parfum:"}</p>
+   <ul className="list-disc pl-5 space-y-2 text-sm leading-7 text-neutral-600">
+    <li>{ru?"Только для наружного применения. Не принимать внутрь.":"Nur zur äußeren Anwendung. Nicht einnehmen."}</li>
+    <li>{ru?"Избегайте попадания в глаза и на слизистые оболочки. При попадании в глаза осторожно промывайте водой в течение нескольких минут. По возможности снимите контактные линзы и продолжайте промывание. При сохраняющемся раздражении обратитесь к врачу.":"Kontakt mit Augen und Schleimhäuten vermeiden. Bei Augenkontakt einige Minuten vorsichtig mit Wasser spülen. Kontaktlinsen nach Möglichkeit entfernen und weiter spülen. Bei anhaltender Reizung ärztlichen Rat einholen."}</li>
+    <li>{ru?"Не наносите на повреждённую или раздражённую кожу. При появлении раздражения прекратите использование.":"Nicht auf verletzte oder gereizte Haut auftragen. Bei Hautreizungen die Anwendung beenden."}</li>
+    <li>{ru?"Храните в недоступном для детей месте.":"Außerhalb der Reichweite von Kindern aufbewahren."}</li>
+    <li>{ru?"Спиртосодержащая парфюмерия огнеопасна. Храните вдали от нагрева, искр и открытого огня. Не используйте рядом с источниками воспламенения до полного высыхания.":"Alkoholhaltige Parfums sind entzündbar. Von Hitze, Funken und offenen Flammen fernhalten. Bis zur vollständigen Trocknung Zündquellen meiden."}</li>
+   </ul>
+   <p>{ru?"Дополнительно соблюдайте предупреждения производителя на упаковке конкретного аромата.":"Bitte zusätzlich die produktspezifischen Warnhinweise des Herstellers auf der Verpackung beachten."}</p>
+  </details>
+ </section></>;
 }
