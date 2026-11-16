@@ -8,6 +8,9 @@ CREATE TABLE IF NOT EXISTS "Promotion" (
   "startsAt" TIMESTAMP(3),
   "endsAt" TIMESTAMP(3),
   "priority" INTEGER NOT NULL DEFAULT 0,
+  "viewCount" INTEGER NOT NULL DEFAULT 0,
+  "clickCount" INTEGER NOT NULL DEFAULT 0,
+  "addCount" INTEGER NOT NULL DEFAULT 0,
   "requiredMl" INTEGER NOT NULL DEFAULT 5,
   "giftMl" INTEGER NOT NULL DEFAULT 2,
   "heroImage" TEXT,
@@ -32,3 +35,9 @@ CREATE TABLE IF NOT EXISTS "OrderPromotion" (
   "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "OrderPromotion_orderId_promotionId_key" UNIQUE ("orderId","promotionId")
 );
+
+-- Deny public PostgREST access: access only through server-side Prisma.
+REVOKE ALL ON "Promotion", "CartPromotion", "OrderPromotion" FROM anon, authenticated;
+ALTER TABLE "Promotion" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "CartPromotion" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "OrderPromotion" ENABLE ROW LEVEL SECURITY;
