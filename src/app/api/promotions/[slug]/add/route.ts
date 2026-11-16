@@ -32,6 +32,7 @@ export async function POST(req:NextRequest,{params}:{params:Promise<{slug:string
       return true;
     });
     if(!added) return NextResponse.json({error:"Unavailable product"},{status:409});
+    await prisma.promotion.update({where:{id:campaign.id},data:{addCount:{increment:1}}}).catch(()=>undefined);
     const cartResult=await updateCartTotalAmount(token);
     const response=NextResponse.json(cartResult,{headers:{"Cache-Control":"no-store"}});
     response.cookies.set("cartToken",token,{maxAge:604800,path:"/",sameSite:"lax"});
