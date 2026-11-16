@@ -6,30 +6,24 @@ const globalForPrisma = globalThis as unknown as {
   prisma?: PrismaClient;
 };
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL!,
-});
-
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    adapter,
+function createPrismaClient() {
+  // Each serverless instance must use a small pool; the database pooler is shared
+  // across routes, deployments and other applications.
+  const adapter = new PrismaPg({
+    connectionString: process.env.DATABASE_URL!,
+    max: 1,
+    min: 0,
+    idleTimeoutMillis: 1000,
+    connectionTimeoutMillis: 10000,
+    maxLifetimeSeconds: 60,
+    allowExitOnIdle: true,
   });
-
-if (process.env.NODE_ENV !== "production") {
-  globalForPrisma.prisma = prisma;
+  return new PrismaClient({ adapter });
 }
 
+// Reuse in production as well as development. Do not allocate an unused
+// adapter/pool when a client already exists in this runtime.
+export const prisma = globalForPrisma.prisma ?? createPrismaClient();
+globalForPrisma.prisma = prisma;
+
 export default prisma;
-
-console.log(
-
-  "DB HOST:",
-
-  process.env.DATABASE_URL
-
-    ? new URL(process.env.DATABASE_URL).host
-
-    : "NO_DB_URL"
-
-);
