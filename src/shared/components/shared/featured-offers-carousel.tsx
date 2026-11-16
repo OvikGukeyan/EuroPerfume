@@ -27,13 +27,14 @@ export function FeaturedOffersCarousel({featured,promotions,slides}:{
  ];
  const [active,setActive]=useState(0);
  const start=useRef<number|null>(null);
+ const swipeClick=useRef(false);
  const count=offers.length;
  const index=count?Math.min(active,count-1):0;
  useEffect(()=>{
    if(count<=1)return;
-   const timer=window.setInterval(()=>setActive(i=>(i+1)%count),6500);
-   return ()=>window.clearInterval(timer);
- },[count]);
+   const timer=window.setTimeout(()=>setActive(i=>(i+1)%count),6500);
+   return ()=>window.clearTimeout(timer);
+ },[count,active]);
  if(!count)return null;
  const go=(n:number)=>setActive((n+count)%count);
  const item=offers[index];
@@ -42,10 +43,10 @@ export function FeaturedOffersCarousel({featured,promotions,slides}:{
    if(start.current===null)return;
    const delta=(e.changedTouches[0]?.clientX??start.current)-start.current;
    start.current=null;
-   if(Math.abs(delta)>=45)go(index+(delta<0?1:-1));
+   if(Math.abs(delta)>=45){swipeClick.current=true;go(index+(delta<0?1:-1));}
  };
  return <div className="mx-auto w-full max-w-[1440px] px-4 md:px-8">
-  <div className="w-full min-w-0 overflow-hidden" aria-label={locale==="ru"?"Слайдер предложений":"Angebotskarussell"} onTouchStart={onStart} onTouchEnd={onEnd}>
+  <div className="w-full min-w-0 overflow-hidden" aria-label={locale==="ru"?"Слайдер предложений":"Angebotskarussell"} onTouchStart={onStart} onTouchEnd={onEnd} onClickCapture={e=>{if(swipeClick.current){e.preventDefault();e.stopPropagation();swipeClick.current=false;}}}>
    <div key={item.key} className="w-full min-w-0 animate-in fade-in duration-300">
     {item.kind==="week"?<FragranceDayHero offer={item.offer}/>:
      item.kind==="promo"?<PromotionHero promotion={item.offer}/>:
