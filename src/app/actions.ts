@@ -409,7 +409,7 @@ export async function createOrder(data: CheckoutFormValues) {
         ? "[AKTION WOOD_TRIO_GIFT_2026: Encre Noire 2 ml GRATIS beilegen; bei Versand Bestand manuell prüfen]"
         : "";
       // Remove client-provided campaign markup; only the server may confirm eligibility.
-      const cleanComment = (data.comment || "").split(/\\r?\\n/).filter(line => !line.includes(campaignCode)).join("\\n");
+      const cleanComment = (data.comment || "").split(/\r?\n/).filter(line => !line.includes(campaignCode)).join("\n");
       const boxLabel = boxItems.length ? "Aroma Box · 8 × 2 мл\n" + boxItems.map(item => `${item.product.brand?.name || ""} ${item.product.name} — 2 мл`).join("\n") : "";
       const deliveryCountry = deliveryCountryForCheckout(data);
       const orderedAt = new Date();
