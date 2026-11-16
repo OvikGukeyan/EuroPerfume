@@ -80,12 +80,14 @@ export const updateCartTotalAmount = async (token: string) => {
   const cartCampaigns = await getCartPromotions(cart.id);
   const promoSummaries = cartCampaigns.map(({promotion})=>({
     id:promotion.id, slug:promotion.slug, titleRu:promotion.titleRu, titleDe:promotion.titleDe,
-    giftMl:promotion.giftMl, eligible:promotionLive(promotion) && promotionQualified(promotion,cart.items),
+    giftMl:promotion.giftMl,requiredMl:promotion.requiredMl,productIds:promotion.productIds, eligible:promotionLive(promotion) && promotionQualified(promotion,cart.items),
     giftProductId:promotion.giftProductId
   }));
   const giftProducts=await prisma.product.findMany({where:{id:{in:promoSummaries.map(p=>p.giftProductId).filter((id):id is number=>id!==null)}}});
   const promotions=promoSummaries.map(p=>({
     ...p,giftName:giftProducts.find(g=>g.id===p.giftProductId)?.name||"",
+    giftImage:giftProducts.find(g=>g.id===p.giftProductId)?.imageUrl[0]||"",
+    giftPrice:(()=>{const g=giftProducts.find(g=>g.id===p.giftProductId);return g?calcCartItemTotalPrice(Number(g.price),p.giftMl,true,g.discountPrice?Number(g.discountPrice):undefined,g):0})(),
   }));
   const box = aromaBoxItems((await cookies()).get("discoveryBoxIds")?.value, cart.items);
   const safeCart = {
