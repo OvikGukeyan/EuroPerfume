@@ -21,6 +21,7 @@ import {
   Calculator,
   Folders,
   GalleryHorizontalEnd,
+  Sparkles,
   House,
   Plus,
   Settings2,
@@ -41,6 +42,7 @@ export const AppSidebar: FC<Props> = ({ className }) => {
   const locale = useLocale();
   const tools = [
     { name: "Продукты", icon: <Settings2 />, href: "/products" },
+    { name: locale === "ru" ? "Аромат дня −10%" : "Duft des Tages −10%", icon: <Sparkles />, href: "/day-offer" },
     { name: "Акции", icon: <GalleryHorizontalEnd />, href: "/promotions" },
     { name: locale === "ru" ? "Составы / INCI" : "Inhaltsstoffe / INCI", icon: <Settings2 />, href: "/ingredients" },
 
@@ -104,7 +106,6 @@ export const AppSidebar: FC<Props> = ({ className }) => {
                           <SidebarMenuButton>Other</SidebarMenuButton>
                         </SidebarMenuSubItem>
                       </Link>
-                      <Link href={"/day-offer"}><SidebarMenuSubItem><SidebarMenuButton>Товар дня −10%</SidebarMenuButton></SidebarMenuSubItem></Link>
                       <Link href={"/create-promocode"}>
                         <SidebarMenuSubItem>
                           <SidebarMenuButton>Promocode</SidebarMenuButton>
