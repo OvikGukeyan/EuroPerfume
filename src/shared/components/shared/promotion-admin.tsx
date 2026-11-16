@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { PromotionProductPicker } from "./promotion-product-picker";
 import { useLocale } from "next-intl";
 type Entry={
@@ -14,7 +14,7 @@ type Draft=Omit<Entry,"id"> & {id?:string};
 const fresh=():Draft=>({slug:"",titleRu:"",titleDe:"",active:false,productIds:[],giftProductId:0,requiredMl:5,giftMl:2,heroImage:"",priority:10,startsAt:null,endsAt:null});
 const euro=(n:number)=>new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR"}).format(n);
 const input="mt-1 w-full rounded-xl border border-stone-300 bg-white px-3 py-3 text-sm text-stone-900 focus:border-stone-700 focus:outline-none";
-const localTime=(s?:string|null)=>s?new Date(s).toISOString().slice(0,16):"";
+const localTime=(s?:string|null)=>{if(!s)return "";const d=new Date(s);const local=new Date(d.getTime()-d.getTimezoneOffset()*60000);return local.toISOString().slice(0,16);};
 const toIso=(s:string)=>s?new Date(s).toISOString():null;
 export function PromotionAdmin(){
  const locale=useLocale(),ru=locale==="ru";
@@ -61,7 +61,7 @@ export function PromotionAdmin(){
  async function persist(value:Draft,quiet=false){
   setBusy(true);setMessage("");
   try{
-   const body={...value,heroImage:value.heroImage||null,startsAt:toIso(quiet?localTime(value.startsAt):dateStart),endsAt:toIso(quiet?localTime(value.endsAt):dateEnd)};
+   const body={...value,heroImage:value.heroImage||null,startsAt:quiet?(value.startsAt||null):toIso(dateStart),endsAt:quiet?(value.endsAt||null):toIso(dateEnd)};
    const res=await fetch("/api/admin/promotions",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
    const data=await res.json().catch(()=>({}));
    if(!res.ok)throw new Error(typeof data.error==="string"?data.error:"Проверьте названия, товары и даты");
