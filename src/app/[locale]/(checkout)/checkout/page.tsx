@@ -23,6 +23,7 @@ import {
 import { useCartStore } from "@/src/shared/store/cart";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/src/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 
 export default function Checkout() {
   const locale=useLocale();
@@ -38,6 +39,7 @@ export default function Checkout() {
   } = useCart();
   const { data: session } = useSession();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
     defaultValues: {
@@ -67,6 +69,14 @@ export default function Checkout() {
     },
   });
 
+
+  useEffect(() => {
+    if (searchParams.get("campaign") === "WOOD_TRIO_GIFT_2026") {
+      const note = "[AKTION WOOD_TRIO_GIFT_2026: Encre Noire 2 ml gratis beilegen]";
+      const old = form.getValues("comment") || "";
+      if (!old.includes("WOOD_TRIO_GIFT_2026")) form.setValue("comment", [old, note].filter(Boolean).join("\\n"));
+    }
+  }, [searchParams, form]);
 
   const discount = form.watch("discount");
   const deliveryCountry = deliveryCountryForCheckout({ shippingMethod: form.watch("shippingMethod"), deliveryCountry: form.watch("deliveryCountry"), country: form.watch("country") });
