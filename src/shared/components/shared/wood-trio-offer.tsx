@@ -12,14 +12,15 @@ export function WoodTrioOffer({ cedar, bois, gift }: { cedar: Item; bois: Item; 
   const ru = useLocale() === "ru";
   const router = useRouter();
   const [busy, setBusy] = useState(false);
-  const add = useCartStore((s) => s.addCartItem);
+  const refreshCart = useCartStore((s) => s.fetchCartItems);
   const ready = Boolean(cedar && bois && gift);
   async function onAdd() {
     if (!cedar || !bois || !gift || busy) return;
     setBusy(true);
     try {
-      await add({ productId: cedar.id, volume: 5 });
-      await add({ productId: bois.id, volume: 5 });
+      const response = await fetch("/api/campaign/wood-trio", { method: "POST", headers: {"Content-Type":"application/json"} });
+      if (!response.ok) throw new Error("Campaign unavailable");
+      await refreshCart();
       // The free 2 ml gift is fulfilled manually; never charge for it as a cart line.
       router.push(`/checkout?campaign=${CAMPAIGN}`);
     } catch {
