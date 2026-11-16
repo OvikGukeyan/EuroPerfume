@@ -49,7 +49,7 @@ export const Carusel: FC<Props> = ({ slides, promotion }) => {
                 <div className="absolute inset-y-3 right-2 flex w-[42%] items-center justify-center gap-1 md:right-8 md:w-[45%] md:gap-3">
                   {promotion.image ? <img src={promotion.image} alt="" className="h-full w-full object-contain" /> :
                   promotion.products.slice(0,3).map((p,i)=><div key={p.id} className="flex h-[75%] min-w-0 flex-1 items-center justify-center overflow-hidden rounded-md bg-[#eeeae2]">
-                    {p.image && <img src={p.image} alt={p.name} className="h-full max-h-[185px] w-full object-contain mix-blend-multiply" style={{transform:i===1?"scale(1.08)":"scale(1)"}}/>}
+                    {p.image && <img src={p.image} alt={p.name} className="h-full max-h-[185px] w-full object-contain mix-blend-multiply brightness-[1.08] contrast-[1.04]" style={{maskImage:"radial-gradient(ellipse 75% 80% at center, black 62%, transparent 100%)"}}/>}
                   </div>)}
                 </div>
               </div>
