@@ -11,10 +11,8 @@ export type HeroPromotion = {
 export async function getHeroPromotions(): Promise<HeroPromotion[]> {
   const promotions=await getActivePromotions();
   if(promotions.length) {
-    // The original wood-trio promotion leads; additional active offers follow.
-    const orderedPromotions=[...promotions].sort((a,b)=>
-      (a.slug==="wood-trio"?-1:b.slug==="wood-trio"?1:0) || b.priority-a.priority
-    );
+    // Admin priority decides the order of the slides, highest first.
+    const orderedPromotions=[...promotions].sort((a,b)=>b.priority-a.priority || a.slug.localeCompare(b.slug));
     const results=await Promise.all(orderedPromotions.map(async promotion=>{
       const products=await promotionProducts(promotion);
       const ordered=[...promotion.productIds,...(promotion.giftProductId?[promotion.giftProductId]:[])];
