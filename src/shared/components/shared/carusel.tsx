@@ -53,7 +53,7 @@ export const Carusel: FC<Props> = ({ slides, promotion }) => {
                   {promotion.image ? <img src={promotion.image} alt="" className="absolute inset-0 h-full w-full object-contain" /> :
                     promotion.products.slice(0,3).map((p,i)=>(
                       <div key={p.id} className={`absolute bottom-[13%] flex h-[67%] w-[48%] items-end justify-center md:bottom-[11%] md:h-[78%] ${i===0?"right-[47%] z-[2]":i===1?"right-[26%] z-[3]":"right-[0%] z-[1]"}`}>
-                        {p.image&&<img src={p.image} alt="" className="h-full w-full object-contain drop-shadow-[0_16px_12px_rgba(70,54,42,0.17)]" />}
+                        {p.image&&<img src={p.image} alt="" className="h-full w-full object-contain mix-blend-multiply drop-shadow-[0_16px_12px_rgba(70,54,42,0.17)]" />}
                       </div>
                     ))}
                 </div>
