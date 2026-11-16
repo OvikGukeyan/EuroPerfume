@@ -8,7 +8,7 @@ import { FilterToken } from "./selected-filters-bar";
 import { AvailableFilters, useProductStore } from "../../store/product";
 import { useLocale } from "next-intl";
 
-export const SelectedFiltersContainer: FC = () => {
+export const SelectedFiltersContainer: FC<{ hideCategoryTokens?: boolean }> = ({ hideCategoryTokens = false }) => {
   const filters = useFiltersStore((s) => s);
   const [availableFilters] = useProductStore((state) => [
     state.availableFilters,
@@ -69,9 +69,9 @@ export const SelectedFiltersContainer: FC = () => {
 
   return (
     <SelectedFiltersBar
-      tokens={tokens}
+      tokens={hideCategoryTokens ? tokens.filter(t => t.type !== "category" && t.type !== "productGroup") : tokens}
       onRemove={handleRemove}
-      onClearAll={filters.resetFilters}
+      onClearAll={hideCategoryTokens ? () => filters.setCategory(filters.category) : filters.resetFilters}
       className="mb-4"
     />
   );
