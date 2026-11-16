@@ -11,6 +11,7 @@ export async function GET(req: NextRequest) {
     const query = req.nextUrl.searchParams.get("query") || "";
     const products = await prisma.product.findMany({
       where: {
+        bottleParentId: isAdmin ? undefined : null,
         OR: [
           {
             name: {

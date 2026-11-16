@@ -1,3 +1,4 @@
+import { noteLabel } from "./note-label";
 import {
   concentrations,
   genders,
@@ -44,15 +45,15 @@ export const createCharacteristicsArray = (
   } = product;
   const currentTopNotes = productNotes
     .filter((note) => note.noteType === NoteType.TOP)
-    .map((note) => note.note[labelLocale])
+    .map((note) => noteLabel(note.note,locale))
     .join(", ");
   const currentHeartNotes = productNotes
     .filter((note) => note.noteType === NoteType.HEART)
-    .map((note) => note.note[labelLocale])
+    .map((note) => noteLabel(note.note,locale))
     .join(", ");
   const currentBaseNotes = productNotes
     .filter((note) => note.noteType === NoteType.BASE)
-    .map((note) => note.note[labelLocale])
+    .map((note) => noteLabel(note.note,locale))
     .join(", ");
   const currentAroma = aromas.map((item) => item[labelLocale]).join(", ");
   const currentClassification = classification.map((item) => item[labelLocale]).join(", ");

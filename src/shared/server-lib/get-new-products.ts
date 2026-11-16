@@ -1,3 +1,4 @@
+import { fullBottleInclude, withBottleOptions } from "../lib/full-bottle";
 import "server-only";
 import { prisma } from "@/prisma/prisma-client";
 import { SelectedProductDTO } from "./get-popular-products";
@@ -9,6 +10,7 @@ export const getNewProducts = async (): Promise<SelectedProductDTO[]> => {
         const newProducts = await prisma.product.findMany({
           where: {
             available: true,
+            bottleParentId: null,
           },
           orderBy: {
             createdAt: "desc",
@@ -21,13 +23,14 @@ export const getNewProducts = async (): Promise<SelectedProductDTO[]> => {
               },
             },
             productGroup: true,
+            fullBottles: fullBottleInclude,
             reviews: true,
             brand: true,
           },
         });
 
         const safeProducts = newProducts.map((product) => ({
-          ...product,
+          ...withBottleOptions(product),
           discountPrice: product.discountPrice && product.discountPrice?.toNumber(),
           price: product.price.toNumber(),
         }))

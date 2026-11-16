@@ -1,5 +1,7 @@
 "use client";
 import "./compact-product-card.css";
+import { BottleOption, unitPricePerLitre } from "../../lib/full-bottle";
+import { FragranceFormatPicker } from "./fragrance-format-picker";
 
 import { formatMoney } from "@/src/shared/lib/money";
 import Image from "next/image";
@@ -26,6 +28,7 @@ import { Rating } from "./rating";
 import { Link } from "@/src/i18n/navigation";
 
 interface Props {
+  bottles?: BottleOption[];
   id: number;
   productGroup: ProductGroup;
   name: string;
@@ -46,6 +49,8 @@ interface Props {
 
 export const ProductCard: React.FC<Props> = ({
   imageUrl,
+  bottles = [],
+  available = true,
   className,
   name,
   price,
@@ -60,6 +65,9 @@ export const ProductCard: React.FC<Props> = ({
   reviews,
   brand,
 }) => {
+  const [bottleId,setBottleId]=useState<number|null>(()=>!available?(bottles.find(b=>b.available)?.id ?? null):null);
+  const bottle=bottles.find(b=>b.id===bottleId);
+  const selectedAvailable=bottle?bottle.available:available;
   const [volume, setVolume] = useState<Volume>(volumes[0]);
   const [activeVariationId, setActiveVariationId] = useState<number>(
     variations[0]?.id
@@ -84,11 +92,12 @@ export const ProductCard: React.FC<Props> = ({
   const onSubmit = async (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
+    if (!selectedAvailable) return;
     try {
       await addCartItem({
-        productId: id,
-        volume: productGroup.onTap ? volume : 1,
-        variationId: activeVariation ? activeVariation.id : undefined,
+        productId: bottle?.id ?? id,
+        volume: !bottle && productGroup.onTap ? volume : 1,
+        variationId: !bottle && activeVariation ? activeVariation.id : undefined,
       });
       toast.success(name + " added to cart");
     } catch (error) {
@@ -96,9 +105,9 @@ export const ProductCard: React.FC<Props> = ({
       toast.error("Something went wrong");
     }
   };
-  const finalPrice = productGroup.onTap ? calcPrice(volume, price) : price;
+  const finalPrice = bottle ? bottle.price : productGroup.onTap ? calcPrice(volume, price) : price;
   const finalDiscountPrice =
-    discountPrice && productGroup.onTap
+    bottle ? null : discountPrice && productGroup.onTap
       ? calcPrice(volume, discountPrice)
       : discountPrice;
   const concentratioName = concentrations.find(
@@ -107,7 +116,7 @@ export const ProductCard: React.FC<Props> = ({
   const locale = useLocale();
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
 
-  const image = imageUrl || activeVariation?.imageUrl || "";
+  const image = bottle?.image || imageUrl || activeVariation?.imageUrl || "";
 
   return (
     <article className={cn("home-product compact-product catalogue-product", className)}>
@@ -126,21 +135,22 @@ export const ProductCard: React.FC<Props> = ({
       </Link>
       <div className="compact-product-meta">
         <p className="home-product-price">
-          {productGroup.onTap && volume === volumes[0] && <small className="compact-product-from">{locale === "ru" ? "от" : "ab"}</small>}
-          {discountPrice ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
+          {!bottle && productGroup.onTap && volume === volumes[0] && <small className="compact-product-from">{locale === "ru" ? "от" : "ab"}</small>}
+          {!bottle && discountPrice ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
         </p>
-        {productGroup.onTap && <span className="compact-product-size">{volume} ml</span>}
+        {productGroup.onTap && <span className="compact-product-size">{bottle?.ml ?? volume} ml</span>}
       </div>
-      {productGroup.onTap && <VolumeSelection className="compact-product-volumes" volumes={[...volumes]} volume={volume} setVolume={setVolume} />}
-      {variations.length > 1 && <ChooseVariation setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId} className="compact-product-variations" items={variations} />}
+      <FragranceFormatPicker bottles={bottles} selected={bottleId} onSelect={setBottleId} decantAvailable={available}/>
+      {!bottle && productGroup.onTap && <VolumeSelection className="compact-product-volumes" volumes={[...volumes]} volume={volume} setVolume={setVolume} />}
+      {!bottle && variations.length > 1 && <ChooseVariation setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId} className="compact-product-variations" items={variations} />}
       <div className="home-product-buy">
-        <Button onClick={onSubmit} variant="outline" className="w-full" aria-label={`${t("addToCart")} ${name}`}>
-          <ShoppingCart size={16} />{t("addToCart")}
+        <Button disabled={!selectedAvailable || loading} onClick={onSubmit} variant="outline" className="w-full" aria-label={`${t("addToCart")} ${name}`}>
+          <ShoppingCart size={16} />{selectedAvailable?t("addToCart"):(locale==="ru"?"Нет в наличии":"Ausverkauft")}
         </Button>
       </div>
       <div className="compact-product-extra">
         <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
-        {productGroup.onTap && <p className="home-product-volume">{formatMoney((finalDiscountPrice ?? finalPrice) / (volume / 1000))} €/l</p>}
+        {productGroup.onTap && <p className="home-product-volume">{formatMoney(unitPricePerLitre(finalDiscountPrice ?? finalPrice,bottle?.ml ?? volume) ?? 0)} €/l</p>}
         {reviews && count > 0 && <Link href={`/product-reviews/${id}`} className="home-product-rating"><Rating value={averageRating} reviewsCount={count} /></Link>}
       </div>
     </article>

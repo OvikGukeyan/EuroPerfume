@@ -1,3 +1,4 @@
+import { fullBottleInclude, withBottleOptions } from "../lib/full-bottle";
 import "server-only";
 import { prisma } from "@/prisma/prisma-client";
 import { Gender, NoteType, PerfumeConcentration, Prisma } from "@prisma/client";
@@ -153,18 +154,15 @@ export const findProducts = async (
       concentration: { in: concentration as PerfumeConcentration[] },
       price:
         priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
-      available: true,
+      bottleParentId: null,
+      OR: [{available:true},{fullBottles:{some:{available:true,stockPieces:{gt:0}}}}],
       categoryId: categoryId || 1,
-      productGroupId: productGroupId
-        ? productGroupId
-        : categoryId === 1 || !categoryId
-        ? { in: [1, 2, 3] }
-        : undefined,
       aromas:
         aromas.length > 0
           ? { some: { id: { in: aromas.map((aroma) => Number(aroma)) } } }
           : undefined,
       AND: [
+        ...(productGroupId ? [{OR:[{productGroupId},{fullBottles:{some:{productGroupId,available:true,stockPieces:{gt:0}}}}]}] : categoryId===1 || !categoryId ? [{productGroupId:{in:[1,2,3]}}] : []),
         ...(noteFilters.length ? noteFilters : []),
         ...(searchAND.length ? searchAND : []),
       ],
@@ -174,6 +172,7 @@ export const findProducts = async (
       where: whereClause,
       include: {
         productGroup: true,
+            fullBottles: fullBottleInclude,
         translations: true,
         variations: true,
         brand: true,
@@ -206,6 +205,7 @@ export const findProducts = async (
         where: whereClause,
         include: {
           productGroup: true,
+            fullBottles: fullBottleInclude,
           translations: true,
           variations: isAdmin
             ? true
@@ -238,7 +238,7 @@ export const findProducts = async (
       }),
     ]);
     const safeProducts = products.map((product) => ({
-      ...product,
+      ...withBottleOptions(product),
       price: product.price.toNumber(),
       discountPrice: product.discountPrice?.toNumber() || null,
     }));

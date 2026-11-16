@@ -1,4 +1,8 @@
 "use client";
+import { FragranceFormatPicker } from "./fragrance-format-picker";
+import { BottleOption, unitPricePerLitre } from "../../lib/full-bottle";
+import { TaxPriceNotice } from "./tax-price-notice";
+import { Link } from "@/src/i18n/navigation";
 import { formatMoney } from "@/src/shared/lib/money";
 import { FC, useState } from "react";
 import { Button, ChooseVariation, Dialog, Title, VolumeSelection } from "..";
@@ -23,6 +27,8 @@ import { useTranslations } from "next-intl";
 import { ShoppingCart } from "lucide-react";
 
 interface Props {
+  bottles?: BottleOption[];
+  available?: boolean;
   id: number;
   imageUrl: string;
   name: string;
@@ -34,6 +40,8 @@ interface Props {
 }
 export const ByProductDialog: FC<Props> = ({
   id,
+  bottles = [],
+  available = true,
   imageUrl,
   name,
   productGroup,
@@ -44,6 +52,9 @@ export const ByProductDialog: FC<Props> = ({
 }) => {
   const router=useRouter();
   const ru=useLocale()==="ru";
+  const [bottleId,setBottleId]=useState<number|null>(()=>!available?(bottles.find(b=>b.available)?.id ?? null):null);
+  const bottle=bottles.find(b=>b.id===bottleId);
+  const selectedAvailable=bottle?bottle.available:available;
   const [open,setOpen]=useState(false);
   const [busy,setBusy]=useState(false);
   const [volume, setVolume] = useState<Volume>(volumes[0]);
@@ -61,13 +72,13 @@ export const ByProductDialog: FC<Props> = ({
   ]);
 
   const onSubmit = async (checkout=false) => {
-    if(busy)return;
+    if(busy || !selectedAvailable)return;
     setBusy(true);
     try {
       await addCartItem({
-        productId: id,
-        volume: productGroup.onTap ? volume : 1,
-        variationId: activeVariation ? activeVariation.id : undefined,
+        productId: bottle?.id ?? id,
+        volume: !bottle && productGroup.onTap ? volume : 1,
+        variationId: !bottle && activeVariation ? activeVariation.id : undefined,
       });
       setOpen(false);
       toast.success(ru?"Добавлено в корзину":"Zum Warenkorb hinzugefügt");
@@ -77,9 +88,9 @@ export const ByProductDialog: FC<Props> = ({
       toast.error(ru?"Не удалось добавить товар":"Artikel konnte nicht hinzugefügt werden");
     } finally {setBusy(false);}
   };
-  const finalPrice = productGroup.onTap ? calcPrice(volume, price) : price;
+  const finalPrice = bottle ? bottle.price : productGroup.onTap ? calcPrice(volume, price) : price;
   const finalDiscountPrice =
-    discountPrice && productGroup.onTap
+    bottle ? null : discountPrice && productGroup.onTap
       ? calcPrice(volume, discountPrice)
       : discountPrice;
 
@@ -101,7 +112,7 @@ export const ByProductDialog: FC<Props> = ({
             </DialogDescription> */}
           </DialogHeader>
         <div className="flex items-center gap-5 my-5">
-          <Image src={imageUrl} alt={name} width={70} height={70} />
+          <Image src={bottle?.image || imageUrl} alt={name} width={70} height={70} />
           <div className="flex flex-col">
             <Title size="sm" text={brand.name} />
             <Title size="xs" text={name} />
@@ -120,7 +131,8 @@ export const ByProductDialog: FC<Props> = ({
             </p>
           </div>
         </div>
-        {productGroup.onTap && (
+        <FragranceFormatPicker bottles={bottles} selected={bottleId} onSelect={setBottleId} decantAvailable={available}/>
+        {!bottle && productGroup.onTap && (
           <VolumeSelection
             className="mb-4"
             volumes={[...volumes]}
@@ -129,7 +141,7 @@ export const ByProductDialog: FC<Props> = ({
           />
         )}
 
-        {variations.length > 1 && (
+        {!bottle && variations.length > 1 && (
           <ChooseVariation
             setActiveVariationId={setActiveVariationId}
             activeVariationId={activeVariationId}
@@ -137,10 +149,13 @@ export const ByProductDialog: FC<Props> = ({
             items={variations}
           />
         )}
+        {(bottle || productGroup.onTap) && <p className="my-3 text-xs text-neutral-600">{formatMoney(unitPricePerLitre(finalDiscountPrice ?? finalPrice,bottle?.ml ?? volume) ?? 0)} €/l</p>}
+        <TaxPriceNotice gross={finalDiscountPrice ?? finalPrice}/>
+        <p className="mb-4 text-xs text-neutral-600"><Link href="/delivery-and-payment" className="underline">{ru?"Дополнительно доставка":"Zzgl. Versand"}</Link></p>
         <DialogFooter>
           <div className="flex flex-col gap-5 w-full">
-            <Button type="button" loading={busy} disabled={loading} onClick={()=>onSubmit()} className="h-12 rounded-lg bg-neutral-900 hover:bg-neutral-800">{t("addToCart")}</Button>
-            <Button type="button" disabled={loading || busy} variant="outline" onClick={()=>onSubmit(true)} className="h-12 rounded-lg">{t("checkout")}</Button>
+            <Button type="button" loading={busy} disabled={loading || !selectedAvailable} onClick={()=>onSubmit()} className="h-12 rounded-lg bg-neutral-900 hover:bg-neutral-800">{t("addToCart")}</Button>
+            <Button type="button" disabled={loading || busy || !selectedAvailable} variant="outline" onClick={()=>onSubmit(true)} className="h-12 rounded-lg">{t("checkout")}</Button>
           </div>
         </DialogFooter>
       </DialogContent>

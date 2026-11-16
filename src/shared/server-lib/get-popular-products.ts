@@ -1,3 +1,4 @@
+import { fullBottleInclude, withBottleOptions } from "../lib/full-bottle";
 import "server-only";
 import { prisma } from "@/prisma/prisma-client";
 import { Brand, ProductGroup, ProductVariation, Review } from "@prisma/client";
@@ -23,6 +24,7 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       where: { date: startOfDay },
       include: {
         products: {
+          where: {bottleParentId:null},
           include: {
             variations: {
               where: {
@@ -30,6 +32,7 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
               },
             },
             productGroup: true,
+            fullBottles: fullBottleInclude,
             reviews: true,
             brand: true,
           },
@@ -53,7 +56,7 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
           (p): p is (typeof existingPopularProducts.products)[number] => !!p
         )
         .map((product) => ({
-          ...product,
+          ...withBottleOptions(product),
           discountPrice: product.discountPrice?.toNumber() ?? null,
           price: product.price.toNumber(),
         }));
@@ -64,6 +67,7 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       where: {
         id: { in: popularProductIds },
         available: true,
+        bottleParentId: null,
       },
       select: { id: true },
     });
@@ -80,6 +84,7 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       where: { date: startOfDay },
       include: {
         products: {
+          where: {bottleParentId:null},
           include: {
             variations: {
               where: {
@@ -87,6 +92,7 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
               },
             },
             productGroup: true,
+            fullBottles: fullBottleInclude,
             reviews: true,
             brand: true,
           },
@@ -110,7 +116,7 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       .map((id) => newPopularProducts.products.find((p) => p.id === id))
       .filter((p): p is (typeof newPopularProducts.products)[number] => !!p)
       .map((product) => ({
-        ...product,
+        ...withBottleOptions(product),
         discountPrice: product.discountPrice?.toNumber() ?? null,
         price: product.price.toNumber(),
       }));

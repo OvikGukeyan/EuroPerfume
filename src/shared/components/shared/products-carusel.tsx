@@ -37,6 +37,8 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
             >
                 <ProductSelectionItem
                   brand={item.brand}
+                  bottles={item.bottles}
+                  available={item.available}
                   productGroup={item.productGroup}
                   id={item.id}
                   name={item.name}

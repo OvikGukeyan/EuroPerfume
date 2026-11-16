@@ -13,7 +13,7 @@ export const useRecommendations = (recommendationsParams: RecommendationsParams)
   const [recommendations, setRecommendations] = useState<ProductDTO[]>([]);
   const params: GetSearchParams = {
     category: recommendationsParams?.categoryId?.toString() || undefined,
-    aromas: recommendationsParams?.aromas?.toString() || undefined,
+    aromas: recommendationsParams?.aromas?.map(aroma=>aroma.id).join(",") || undefined,
     productGroup: recommendationsParams.productGroupId.toString(),
   };
   useEffect(() => {

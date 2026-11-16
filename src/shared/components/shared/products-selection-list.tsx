@@ -40,6 +40,8 @@ export const ProductsSelectionList: FC<Props> = ({ products, className }) => {
             toggleIsFavorite={addFavoritesItem}
             reviews={product.reviews}
             brand={product.brand}
+                  bottles={product.bottles}
+                  available={product.available}
             price={product.price}
           />
         ))}

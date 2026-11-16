@@ -18,6 +18,8 @@ export default function Favorites() {
           {items.filter(i=>favoriteIds.includes(i.productId)).map((item) => (
             <ProductCard
               brand={item.brand}
+              bottles={item.bottles}
+              available={item.available}
               productGroup={item.productGroup}
               key={item.id}
               id={item.productId}

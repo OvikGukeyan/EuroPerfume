@@ -1,3 +1,4 @@
+import { fullBottleInclude, withBottleOptions } from "@/src/shared/lib/full-bottle";
 import { prisma } from "@/prisma/prisma-client";
 import { findOrCreateFavorites } from "@/src/shared/server-lib/find-or-creatre-favorites";
 
@@ -22,7 +23,7 @@ export async function GET(req: NextRequest) {
           include: {
             product: {
               select: {
-                name:true,price:true,imageUrl:true,
+                name:true,price:true,imageUrl:true,available:true,fullBottles:fullBottleInclude,
                 variations:{where:{available:true},select:{imageUrl:true}},
                 productGroup:true,brand:true,
               },
@@ -32,7 +33,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    return NextResponse.json(favorites ?? {items:[]});
+    return NextResponse.json(favorites ? {...favorites,items:favorites.items.map(i=>({...i,product:withBottleOptions(i.product)}))} : {items:[]});
   } catch (error) {
     console.log("[FAVORITES_GET] Server error", error);
     return NextResponse.json(
@@ -90,12 +91,12 @@ export async function POST(req: NextRequest) {
             createdAt: "desc",
           },
           include: {
-            product: {select:{name:true,price:true,imageUrl:true,productGroup:true,brand:true,variations:{where:{available:true},select:{imageUrl:true}}}},
+            product: {select:{name:true,price:true,imageUrl:true,available:true,fullBottles:fullBottleInclude,productGroup:true,brand:true,variations:{where:{available:true},select:{imageUrl:true}}}},
           },
         },
       },
     });
-    const resp = NextResponse.json(updatedFavorites);
+    const resp = NextResponse.json(updatedFavorites ? {...updatedFavorites,items:updatedFavorites.items.map(i=>({...i,product:withBottleOptions(i.product)}))} : {items:[]});
     resp.cookies.set("favoritesToken", token, {
       maxAge: 60 * 60 * 24 * 365,
       path:"/",httpOnly:true,sameSite:"lax",secure:process.env.NODE_ENV==="production",

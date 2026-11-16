@@ -2,21 +2,24 @@
 import {useRef,useState} from "react";
 import {useRouter} from "next/navigation";
 import {saveFullBottle} from "@/src/app/full-bottle-actions";
-import type {BottleAdminOption} from "@/src/shared/lib/full-bottle";
+import {BottleAdminOption, unitPricePerLitre} from "@/src/shared/lib/full-bottle";
+import {formatMoney} from "@/src/shared/lib/money";
 import {imageCompressor} from "@/src/shared/lib/image-compressor";
 
 function BottleFields({parentId,bottle}:{parentId:number;bottle?:BottleAdminOption}) {
   const router=useRouter(), form=useRef<HTMLFormElement>(null);
   const [busy,setBusy]=useState(false),[message,setMessage]=useState("");
+  const [preview,setPreview]=useState({ml:String(bottle?.ml??""),price:String(bottle?.price??"")});
+  const perLitre=unitPricePerLitre(Number(preview.price.replace(",",".")),Number(preview.ml));
   const field="mt-1 block min-h-10 w-full rounded-md border bg-white px-2 text-base";
-  return <form ref={form} className="space-y-3 border-t py-4" onSubmit={async e=>{
+  return <form ref={form} className="space-y-3 border-t py-4" onChange={e=>{const target=e.target as HTMLInputElement;if(target.name==="ml"||target.name==="price")setPreview(p=>({...p,[target.name]:target.value}));}} onSubmit={async e=>{
     e.preventDefault(); if(busy)return; const data=new FormData(e.currentTarget);setBusy(true);setMessage("");
     try{
       const file=data.get("photo");if(file instanceof File && file.size) data.set("photo",await imageCompressor(file,"image/webp"));
       if(bottle){data.set("version",bottle.version);data.set("expectedStock",String(bottle.stock));}
       const result=await saveFullBottle(parentId,bottle?.id??null,data);
       if(!result.ok){setMessage(result.message);return;}
-      if(!bottle)form.current?.reset();setMessage("Флакон сохранён.");router.refresh();
+      if(!bottle){form.current?.reset();setPreview({ml:"",price:""});}setMessage("Флакон сохранён.");router.refresh();
     }catch{setMessage("Не удалось сохранить. Проверьте фото и соединение.");}finally{setBusy(false);}
   }}>
     <h3 className="font-semibold">{bottle ? "Флакон · "+bottle.ml+" мл" : "Добавить новый объём"}</h3>
@@ -25,6 +28,7 @@ function BottleFields({parentId,bottle}:{parentId:number;bottle?:BottleAdminOpti
       <label>Цена за флакон, €<input className={field} name="price" type="text" inputMode="decimal" required defaultValue={bottle?.price} placeholder="120,00"/></label>
       <label>Остаток в штуках<input className={field} name="stock" type="number" min="0" max="999999" step="1" required defaultValue={bottle?.stock} placeholder="0"/></label>
     </div>
+    {perLitre!==null && preview.price && <p className="text-sm text-neutral-600">Цена за литр рассчитывается автоматически: {formatMoney(perLitre)} €/l</p>}
     <div className="flex flex-wrap items-center gap-3">{bottle?.image && <img src={bottle.image} alt="Фото флакона" width={58} height={58} className="rounded border object-contain"/>}
       <label className="text-sm">Фото флакона<input className="mt-1 block max-w-full" type="file" name="photo" required={!bottle} accept="image/jpeg,image/png,image/webp,image/heic,.heic"/></label>
     </div>
