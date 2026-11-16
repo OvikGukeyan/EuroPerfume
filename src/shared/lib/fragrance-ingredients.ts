@@ -1,9 +1,11 @@
+import additionalReferences from "./fragrance-ingredient-references.json";
 /** Published ingredient references checked 2026-11-16. INCI names are not translated.
  * References include manufacturer pages and the named retailer Breuninger.
  * These describe the published formula, not a verification of a particular stock batch.
  * A saved packaging transcription takes precedence over this fallback.
  */
 const references: Record<number, {url:string; brand:string; inci:string}> = {
+ ...additionalReferences,
  184: {brand:"Breuninger · Ex Nihilo Blue Talisman Eau de Parfum",url:"https://www.breuninger.com/de/marken/ex-nihilo/blue-talisman/1001613530/p/",inci:"Alcohol Denat., Parfum (Fragrance), Aqua (Water), Benzyl Salicylate, Ethylhexyl Salicylate, Limonene, Citronellol, Butyl Methoxydibenzoylmethane, Linalool, Tris (Tetramethylhydroxypiperidinol) Citrate, Eugenol, Citral, Isoeugenol, Geraniol"},
  585: {brand:"Dries Van Noten",url:"https://www.driesvannoten.com/en-de/products/001-099017",inci:"ALCOHOL DENAT., PARFUM (FRAGRANCE), TETRAMETHYL ACETYLOCTAHYDRONAPHTHALENES, AQUA (WATER/EAU), BUTYL METHOXYDIBENZOYLMETHANE, ACETYL CEDRENE, COUMARIN, LINALYL ACETATE, VANILLIN, PINENE, LIMONENE, BENZYL BENZOATE, BETA-CARYOPHYLLENE, METHYL 2-OCTYNOATE, TERPINOLENE, TERPINEOL, ISOEUGENOL, GERANYL ACETATE, BENZYL ALCOHOL, LINALOOL, 79% VOL"},
  369: {brand:"Amouage",url:"https://amouage.com/en-eu/products/100ml-guidance",inci:"Alcohol Denat, Parfum, Aqua, Limonene, Linalool, Benzyl Alcohol, Benzyl Benzoate, Geraniol, Citronellol, Eugenol"},
