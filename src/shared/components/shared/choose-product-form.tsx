@@ -21,7 +21,6 @@ import {
   createCharacteristicsArray,
 } from "@/src/shared/lib";
 import { Rating } from "./rating";
-import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useCartStore } from "../../store";
 import toast from "react-hot-toast";
@@ -136,9 +135,12 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
   return <div className={cn("fragrance-detail",className)}>
     <div className="fragrance-hero">
       <div className="fragrance-gallery">
-        {bottle?.image ? <Image src={bottle.image} fill sizes="(min-width:1024px) 50vw, 100vw" className="object-contain p-6 md:p-10" alt={product.name+" · "+bottle.ml+" ml"}/> :
-          media.length>1 || variationsMedia.length>1 ? <ProductCarousel slides={media.length>1 ? media : variationsMedia} setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId}/> :
-          (activeVariation?.imageUrl || product.imageUrl[0]) ? <Image fill sizes="(min-width:1024px) 50vw, 100vw" className="object-contain p-6 md:p-10" src={activeVariation?.imageUrl || product.imageUrl[0]} alt={product.name}/> : null}
+        <ProductCarousel
+          slides={bottle?.image ? [{ type: "image", url: bottle.image }] : media.length > 1 ? media : variationsMedia.length > 1 ? variationsMedia : (activeVariation?.imageUrl || product.imageUrl[0]) ? [{ type: "image", url: activeVariation?.imageUrl || product.imageUrl[0] }] : []}
+          alt={product.brand.name + " " + product.name}
+          setActiveVariationId={setActiveVariationId}
+          activeVariationId={activeVariationId}
+        />
       </div>
       <div className="fragrance-summary">
         <p className="fragrance-brand">{product.brand.name}</p>
