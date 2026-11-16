@@ -104,7 +104,7 @@ export const CheckoutSidebar: FC<Props> = ({
         />
       ) : null}
 
-      {excludeDiscounted && <p className="mb-3 text-xs text-neutral-600">{ru ? "−15% только на товары без скидки. Действует 27.11.2026 по времени Германии." : "−15% nur auf nicht reduzierte Artikel. Gültig am 27.11.2026 (deutsche Zeit)."}</p>}
+      {excludeDiscounted && <p className="mb-3 text-xs text-neutral-600">{ru ? "−15% только на товары без скидки. Действует 27.11.2026 по берлинскому времени." : "−15% nur auf nicht reduzierte Artikel. Gültig am 27.11.2026 (Berliner Zeit)."}</p>}
       {promoError && <p role="alert" className="mb-3 text-sm text-red-600">{promoError}</p>}
       <div className="flex items-start gap-2">
         <FormField

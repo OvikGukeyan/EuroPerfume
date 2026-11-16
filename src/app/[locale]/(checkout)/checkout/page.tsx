@@ -149,7 +149,7 @@ export default function Checkout() {
       setAppliedCode("");
       form.setValue("discount",0);
       const message = isBlackFridayCode(enteredCode)
-        ? (locale==="ru" ? "BLACK15 действует только 27 ноября 2026 по времени Германии." : "BLACK15 gilt nur am 27. November 2026 (deutsche Zeit).")
+        ? (locale==="ru" ? "BLACK15 действует только 27 ноября 2026 по берлинскому времени." : "BLACK15 gilt nur am 27. November 2026 (Berliner Zeit).")
         : (locale==="ru" ? "Промокод недействителен." : "Ungültiger Gutscheincode.");
       setPromoError(message);
       toast.error(message, { icon: "❌" });
