@@ -5,6 +5,7 @@ import { z } from "zod";
 export const checkoutFormSchema = z
   .object({
     quotedTotal: z.number().nonnegative().optional(),
+    campaignCode: z.enum(["WOOD_TRIO_GIFT_2026"]).optional(),
     firstName: z
       .string()
       .min(2, { message: "Der Vorname muss mindestens 2 Zeichen lang sein." })
