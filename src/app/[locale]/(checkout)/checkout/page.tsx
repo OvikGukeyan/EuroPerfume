@@ -60,6 +60,7 @@ export default function Checkout() {
       deliveryZip: "",
       contactForm: ContactForms.WA,
       comment: "",
+      campaignCode: undefined,
       postNumber: "",
       postOffice: "",
       packstationNumber: "",
@@ -72,9 +73,7 @@ export default function Checkout() {
 
   useEffect(() => {
     if (searchParams.get("campaign") === "WOOD_TRIO_GIFT_2026") {
-      const note = "[AKTION WOOD_TRIO_GIFT_2026: Encre Noire 2 ml gratis beilegen]";
-      const old = form.getValues("comment") || "";
-      if (!old.includes("WOOD_TRIO_GIFT_2026")) form.setValue("comment", [old, note].filter(Boolean).join("\n"));
+      form.setValue("campaignCode", "WOOD_TRIO_GIFT_2026");
     }
   }, [searchParams, form]);
 
