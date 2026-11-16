@@ -111,7 +111,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
       </div>
       <div className="compact-product-extra">
         <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
-        {productGroup.onTap && <p className="home-product-volume">{displayBottle?.ml ?? 2} ml ({formatUnitPrice((finalDiscountPrice ?? finalPrice) / ((displayBottle?.ml ?? 2) / 1000))} € / 1 l)</p>}
+        {productGroup.onTap && <p className="home-product-volume">({formatUnitPrice((finalDiscountPrice ?? finalPrice) / ((displayBottle?.ml ?? 2) / 1000))} € / 1 l)</p>}
         {reviews && count > 0 && <Link href={`/product-reviews/${id}`} className="home-product-rating"><Rating value={averageRating} reviewsCount={count} /></Link>}
       </div>
     </article>

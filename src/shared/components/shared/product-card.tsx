@@ -150,7 +150,7 @@ export const ProductCard: React.FC<Props> = ({
       </div>
       <div className="compact-product-extra">
         <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
-        {productGroup.onTap && <p className="home-product-volume">{bottle?.ml ?? volume} ml ({formatUnitPrice(unitPricePerLitre(finalDiscountPrice ?? finalPrice,bottle?.ml ?? volume) ?? 0)} € / 1 l)</p>}
+        {productGroup.onTap && <p className="home-product-volume">({formatUnitPrice(unitPricePerLitre(finalDiscountPrice ?? finalPrice,bottle?.ml ?? volume) ?? 0)} € / 1 l)</p>}
         {reviews && count > 0 && <Link href={`/product-reviews/${id}`} className="home-product-rating"><Rating value={averageRating} reviewsCount={count} /></Link>}
       </div>
     </article>
