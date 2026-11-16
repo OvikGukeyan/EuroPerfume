@@ -27,10 +27,10 @@ export function PromotionOffer({slug,titleRu,titleDe,requiredMl,giftMl,available
   <div className="rounded-2xl bg-[#eeeae2] px-6 py-9 md:px-14 md:py-14">
    <p className="text-[10px] tracking-[.2em] text-[#746d62]">EURO PERFUME · SPECIAL OFFER</p>
    <h1 className="mt-3 font-serif text-3xl text-[#262622] md:text-5xl">{ru?titleRu:titleDe}</h1>
-   <p className="mt-4 max-w-2xl text-sm text-[#555049] md:text-base">{ru?"Два любимых аромата — третий в подарок.":"Zwei Düfte entdecken – den dritten gratis erhalten."}</p>
+   <p className="mt-4 max-w-2xl text-sm text-[#555049] md:text-base">{ru?"Выберите ароматы из предложения и получите подарок.":"Aktionsdüfte auswählen und ein Gratisgeschenk erhalten."}</p>
    <div className="mt-8 grid grid-cols-3 gap-2 md:gap-5">
     {[...items.map(p=>({...p,isGift:false})),...(gift?[{...gift,isGift:true}]:[])].map((p,i)=><article key={i} className="min-w-0 rounded-xl bg-[#f4f1eb] p-2 md:p-4">
-     <div className="flex aspect-square items-center justify-center overflow-hidden rounded-md bg-[#f4f1eb]">{p.image&&<img src={p.image} alt={p.name} className="h-full w-full object-contain mix-blend-multiply"/>}</div>
+     <div className="flex aspect-square items-center justify-center overflow-hidden rounded-md bg-[#f4f1eb]">{p.image&&<img src={p.image} alt={p.name} className="h-full w-full object-contain mix-blend-multiply brightness-[1.08] contrast-[1.04]" style={{maskImage:"radial-gradient(ellipse 75% 80% at center, black 62%, transparent 100%)"}}/>}</div>
      <p className="mt-2 text-[9px] uppercase tracking-wider text-[#827b72]">{p.brand}</p>
      <h2 className="mt-1 break-words text-xs font-medium leading-tight md:text-lg">{p.name}</h2>
      <p className="mt-1 text-[11px] text-[#524c45]">{p.isGift?giftMl:requiredMl} ml {p.isGift?(ru?"· Подарок":"· Geschenk"):""}</p>
