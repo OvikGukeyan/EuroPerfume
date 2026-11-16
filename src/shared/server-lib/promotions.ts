@@ -9,14 +9,7 @@ export type PromoView = {
 };
 export type PromoLine = {id:number; quantity:number; variationId:number|null; productId:number};
 
-export const promotionLive = (p: PromoView, now = new Date()) =>
-  p.active && (!p.startsAt || p.startsAt <= now) && (!p.endsAt || p.endsAt > now);
-
-export function promotionQualified(p: PromoView, lines: PromoLine[]) {
-  return p.productIds.length >= 2 && p.productIds.every(id =>
-    lines.some(l => l.productId === id && l.variationId === null && l.quantity >= p.requiredMl)
-  );
-}
+export { promotionLive, promotionQualified } from "../lib/promotion-rules";
 export async function getPromotion(slug: string): Promise<PromoView | null> {
   try { return await prisma.promotion.findUnique({where:{slug}}); }
   catch (error) { console.error("[promotions] Database migration pending", error); return null; }
