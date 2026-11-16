@@ -24,7 +24,7 @@ export function FragranceDayHero({offer}:{offer:FeaturedDayFragrance}){
   // Future perfumes still use the generic live design below; never show Initio artwork for another item.
   return <section aria-label="Аромат недели · Initio Addictive Vibration" className="overflow-hidden rounded-[18px] bg-[#e5dfd9] md:rounded-[25px]">
     <Link href={offer.href} aria-label="Открыть Initio Addictive Vibration со скидкой 10%" className="block w-full md:hidden">
-      <img src="https://cdn.shopify.com/s/files/1/1010/3875/2079/files/euro-perfume-aromat-nedeli-initio-approved.png?v=1794859777" alt="EURO PERFUME — Аромат недели Addictive Vibration, скидка 10%, открыть аромат" className="block h-auto w-full" loading="eager"/>
+      <img src="/assets/day-offers/approved-initio-art.webp" alt="EURO PERFUME — Аромат недели Addictive Vibration, скидка 10%, открыть аромат" className="block h-auto w-full" loading="eager"/>
     </Link>
     <div className="hidden md:grid md:min-h-[470px] md:grid-cols-[1fr_360px] md:items-center md:gap-10 md:px-14 md:py-10">
       <div className="min-w-0">
@@ -37,7 +37,7 @@ export function FragranceDayHero({offer}:{offer:FeaturedDayFragrance}){
         <Link href={offer.href} className="mt-8 inline-flex items-center gap-2 bg-[#2b2525] px-7 py-3 text-sm text-white">Открыть аромат <ArrowUpRight size={16}/></Link>
       </div>
       <Link href={offer.href} className="block overflow-hidden rounded-xl" aria-label="Открыть аромат">
-        <img src="https://cdn.shopify.com/s/files/1/1010/3875/2079/files/euro-perfume-aromat-nedeli-initio-approved.png?v=1794859777" alt="Коллекционный баннер Initio Addictive Vibration" className="h-[470px] w-full object-cover object-center"/>
+        <img src="/assets/day-offers/approved-initio-art.webp" alt="Коллекционный баннер Initio Addictive Vibration" className="h-[470px] w-full object-cover object-center"/>
       </Link>
     </div>
   </section>;
