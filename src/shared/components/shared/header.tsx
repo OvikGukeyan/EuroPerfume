@@ -77,7 +77,7 @@ export const Header: React.FC<Props> = ({
       </div>
       <header className={cn("", className)}>
         <Separator />
-        <div className="flex items-center justify-between py-3 md:py-10 px-3 md:px-5 ">
+        <div className="flex items-center justify-between py-3 md:py-4 px-3 md:px-5 ">
           <div className="md:hidden flex items-center">
             <MenuDrawer />
             <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />

@@ -30,7 +30,8 @@ export function PromotionHero({promotion}:{promotion:HeroPromotion}) {
   }catch{toast.error(ru?"Не удалось добавить набор. Попробуйте ещё раз.":"Set konnte nicht hinzugefügt werden.");}
   finally{setBusy(false);}
  }
- return <section aria-label={ru?"Акция":"Aktion"} className="w-full rounded-[22px] bg-[#1d1d1f] p-4 text-white md:rounded-[32px] md:px-9 md:py-8">
+ return <section aria-label={ru?"Акция":"Aktion"} className="w-full rounded-[22px] bg-[#1d1d1f] p-4 text-white md:rounded-[32px] md:p-0">
+  <div className="md:hidden">
   <div className="flex items-start gap-3 md:gap-6">
    <span className="shrink-0 rounded-full bg-[#f5f5f5] px-3 py-2 text-[11px] font-semibold text-[#222] md:px-5 md:text-sm">{ru?"ПОДАРОК":"GRATIS"}</span>
    <div className="min-w-0">
@@ -61,6 +62,22 @@ export function PromotionHero({promotion}:{promotion:HeroPromotion}) {
    <button type="button" disabled={busy||promotion.preview} onClick={add} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-[13px] font-semibold text-black transition hover:bg-[#eee] disabled:opacity-50 md:w-auto md:px-9 md:text-base">
     <ShoppingCart size={17}/>{busy?(ru?"Добавляем…":"Wird hinzugefügt…"):(ru?"Добавить в корзину":"In den Warenkorb")}
    </button>
+  </div>
+  </div>
+  <div className="storefront-desktop-hero desktop-promotion hidden md:grid">
+    <div className="desktop-promotion-copy">
+      <span className="rounded-full bg-white px-3 py-1.5 text-[10px] font-semibold text-black">{ru?"ПОДАРОК":"GRATIS"}</span>
+      <h2>{ru?promotion.titleRu:promotion.titleDe}</h2>
+      <p>{ru?"Два аромата по 5 мл и третий в подарок":"Zwei Düfte à 5 ml und eine Gratisprobe"}</p>
+      <div className="desktop-promotion-total"><strong>{formatMoney(total)} €</strong>{was>total&&<del>{formatMoney(was)} €</del>}</div>
+      <button type="button" disabled={busy||promotion.preview} onClick={add} className="desktop-promotion-button disabled:opacity-50"><ShoppingCart size={16}/>{busy?(ru?"Добавляем…":"Wird hinzugefügt…"):(ru?"Добавить в корзину":"In den Warenkorb")}</button>
+    </div>
+    <div className="desktop-promotion-products">{products.map(p=><article key={p.id} className="desktop-promotion-product">
+      {p.isGift&&<span className="absolute right-2 top-2 rounded-full bg-[#ffbb22] px-2 py-1 text-[9px] font-semibold text-black">{ru?"Подарок":"Gratis"}</span>}
+      <div className="desktop-promotion-image">{p.image?<img src={p.image} alt={p.name} loading="lazy"/>:<Gift/>}</div>
+      <h3>{p.name.trim()}</h3><p className="meta">{p.brand} · {p.isGift?promotion.giftMl:promotion.requiredMl} ml</p>
+      <p className="price">{p.isGift&&<del className="mr-2 text-[#999]">{formatMoney(p.price)} €</del>}<span className={p.isGift?"text-[#b4f2d3]":""}>{formatMoney(p.isGift?0:p.price)} €</span></p>
+    </article>)}</div>
   </div>
  </section>;
 }

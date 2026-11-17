@@ -41,6 +41,9 @@ export const MenuDrawer:FC<Props>=({className})=>{
      </header>
      <div>
       {categories.map((category,index)=><MenuDrawerItem key={category.id} setOpen={setOpen} category={category} locale={locale} featured={featured} showFeatured={index===0}/>)}
+      <Link href="/sale" onClick={()=>setOpen(false)} className="flex min-h-16 items-center justify-between border-b border-[#e5e5e5] py-5 text-[21px] font-medium text-[#923a40]" aria-label={locale==="ru"?"SALE — Скидки":"SALE — Reduzierte Artikel"}>
+       <span>SALE</span><span className="text-xs font-normal tracking-normal">{locale==="ru"?"Скидки":"Reduzierte Artikel"} →</span>
+      </Link>
      </div>
      <footer className="mt-4">
       <p className="text-center text-[13px] text-[#555]">{locale==="ru"?"Мы в социальных сетях":"Folgen Sie uns"}</p>

@@ -23,7 +23,7 @@ export function BlackFridayHero() {
   }
   return <section aria-label={ru ? "Чёрная пятница — 15% по промокоду BLACK15, только 27 ноября" : "Black Friday — 15% mit BLACK15, nur am 27. November"} className="relative isolate overflow-hidden rounded-[22px] bg-[#f4a7c6] md:rounded-[32px]">
     <svg width="0" height="0" aria-hidden="true" className="absolute"><defs><filter id={cutoutId} colorInterpolationFilters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -10 -10 -10 0 29.5"/><feComposite in2="SourceAlpha" operator="in"/></filter></defs></svg>
-    <div className="relative mx-auto aspect-[1.05/1] w-full md:h-[540px] md:w-[567px]">
+    <div className="relative mx-auto aspect-[1.05/1] w-full md:hidden">
       <img src="/assets/campaigns/black-friday-square-scene.webp" width="1254" height="1254" alt="Black Friday SALE −15% · BLACK15" fetchPriority="high" className="absolute left-0 top-[5%] h-[88%] w-full object-fill"/>
       <Link href="/items" aria-label={ru ? "Выбрать ароматы в каталоге" : "Düfte im Katalog entdecken"} className="absolute inset-0 z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-black"/>
       {bottles.map(bottle => <img key={bottle.name} src={bottle.src} width="500" height="500" alt={bottle.name} style={{filter:`url(#${cutoutId})`}} className={`pointer-events-none absolute object-contain ${bottle.position}`}/>)}
@@ -31,6 +31,16 @@ export function BlackFridayHero() {
       <div className="pointer-events-none absolute inset-x-[3%] bottom-[1%] text-center text-[9px] font-medium leading-[1.35] text-[#291c24] min-[390px]:text-[10px] md:text-[13px]">
         <p>27.11.2026 · 00:00–23:59 · {ru ? "по берлинскому времени" : "Berliner Zeit"}</p>
         <p>{ru ? "Не действует на товары со скидкой" : "Gilt nicht für bereits reduzierte Artikel"}</p>
+      </div>
+    </div>
+    <div className="storefront-desktop-hero relative hidden md:block">
+      <img src="/assets/campaigns/black-friday-desktop-wide.webp" width="3072" height="1024" alt="Black Friday SALE −15%" loading="lazy" className="storefront-desktop-art"/>
+      <Link href="/items" aria-label={ru?"Выбрать ароматы":"Düfte entdecken"} className="absolute inset-y-0 left-0 z-10 w-[53%]"/>
+      <div className="desktop-bf-content">
+        <p className="desktop-bf-date">{ru?"Только 27 ноября":"Nur am 27. November"} · −15%</p>
+        <div className="desktop-bf-bottles">{bottles.map(bottle=><img key={bottle.name} src={bottle.src} alt={bottle.name} width="500" height="500" loading="lazy" style={{filter:`url(#${cutoutId})`}}/>)}</div>
+        <button type="button" onClick={copyCode} className="desktop-bf-code" aria-label={ru?"Скопировать промокод BLACK15":"Gutscheincode BLACK15 kopieren"}>BLACK15 <span>{ru?"Скопировать":"Kopieren"}</span></button>
+        <p className="desktop-bf-terms">27.11.2026 · 00:00–23:59 · {ru?"по берлинскому времени":"Berliner Zeit"}<br/>{ru?"Не действует на товары со скидкой":"Gilt nicht für bereits reduzierte Artikel"}</p>
       </div>
     </div>
   </section>;

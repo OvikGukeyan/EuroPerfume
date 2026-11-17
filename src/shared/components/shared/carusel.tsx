@@ -1,4 +1,5 @@
 "use client";
+import "./storefront-hero.css";
 import { BlackFridayHero } from "./black-friday-hero";
 import { BLACK_FRIDAY } from "@/src/shared/lib/black-friday";
 import { PromotionHero } from "./promotion-hero";
@@ -64,7 +65,7 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
     return null;
   }
   return (
-    <Carousel className="mx-auto w-full max-w-[1440px] px-4 md:px-8" opts={{loop:featuredCount+visibleSlides.length>1}} setApi={setApi} plugins={[autoplayPlugin]}>
+    <Carousel className="storefront-carousel mx-auto w-full max-w-[1440px] px-4 md:px-8" opts={{loop:featuredCount+visibleSlides.length>1}} setApi={setApi} plugins={[autoplayPlugin]}>
       <CarouselContent className="items-start">
         {showBlackFriday && <CarouselItem className="w-full" key="black-friday-2026"><BlackFridayHero/></CarouselItem>}
         {showDay && featured && <CarouselItem className="w-full" key="fragrance-week"><FragranceDayHero offer={featured}/></CarouselItem>}
@@ -76,7 +77,7 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
         {visibleSlides.map((slide, index) => (
           <CarouselItem key={index} className="w-full">
             <Link href={slide.href}>
-              <div className="relative w-full aspect-[3.6/4] md:aspect-[10/3.5]">
+              <div className="legacy-slide-frame relative w-full aspect-[3.6/4] md:aspect-[10/3.5]">
                 <picture className="w-full h-full">
                   <source media="(max-width: 767px)" srcSet={slide.images.find((img) => img.language === language)?.mobileImg} />
                   <source

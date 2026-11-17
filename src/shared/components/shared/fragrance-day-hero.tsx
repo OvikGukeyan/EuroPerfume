@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import { useLocale } from "next-intl";
 import { Link } from "@/src/i18n/navigation";
 import { useDayOfferClock } from "@/src/shared/hooks/use-day-offer";
@@ -14,26 +15,44 @@ const money=(value:number)=>new Intl.NumberFormat("de-DE",{style:"currency",curr
  * The scenery is CSS architecture, never a second background on the image.
  */
 export function FragranceDayHero({offer}:{offer:FeaturedDayFragrance}){
+ const cutoutId=useId().replace(/:/g, "");
  const ru=useLocale()==="ru";
  const now=useDayOfferClock({dayOfferStartsAt:offer.startsAt,dayOfferEndsAt:offer.endsAt});
  if(!dayOfferActive({dayOfferStartsAt:offer.startsAt,dayOfferEndsAt:offer.endsAt},now))return null;
  const endDay=new Date(new Date(offer.endsAt).getTime()-1000);
  const until=new Intl.DateTimeFormat(ru?"ru-RU":"de-DE",{day:"numeric",month:"long",timeZone:"Europe/Berlin"}).format(endDay);
+ const desktopHero = (
+    <div className="storefront-desktop-hero relative hidden md:block">
+      <img src="/assets/day-offers/initio-desktop-wide-scene.webp" width="3072" height="1024" alt="" loading="lazy" className="storefront-desktop-art"/>
+      <svg width="0" height="0" aria-hidden="true" className="absolute"><defs><filter id={cutoutId} colorInterpolationFilters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -10 -10 -10 0 29.5"/><feComposite in2="SourceAlpha" operator="in"/></filter></defs></svg>
+      <img src={offer.image} alt={offer.brand+" "+offer.name} loading="lazy" style={{filter:`url(#${cutoutId})`}} className="desktop-fragrance-bottle"/>
+      <div className="desktop-fragrance-copy">
+        <p className="eyebrow">EURO PERFUME · {ru?"АРОМАТ НЕДЕЛИ":"DUFT DER WOCHE"}</p>
+        <h2 className="font-serif">{offer.name}</h2>
+        <p className="brand">{offer.brand}</p>
+        <div className="desktop-fragrance-price"><strong>−10%</strong><span>{money(offer.salePrice)} <del>{money(offer.regularPrice)}</del> · {offer.volume} ml</span></div>
+        <Link href={offer.href} className="cta">{ru?"Открыть аромат":"Duft entdecken"} <ArrowUpRight size={15}/></Link>
+        <p className="text-[10px] text-[#756461]">{ru?"Акция до":"Angebot bis"} {until}</p>
+      </div>
+    </div>
+ );
  if(ru && offer.id===234 && offer.name.toLowerCase().includes("addictive vibration")){
   // Match the compact campaign frame while preserving every detail of the approved artwork.
   return <section aria-label="Аромат недели · Initio Addictive Vibration" className="w-full overflow-hidden rounded-[22px] bg-[#e5d7cd] md:rounded-[32px]">
-    <Link href={offer.href} aria-label="Открыть аромат Initio Addictive Vibration со скидкой 10%" className="flex aspect-[1.05/1] w-full items-center justify-center md:aspect-auto md:h-[540px]">
+    <Link href={offer.href} aria-label="Открыть аромат Initio Addictive Vibration со скидкой 10%" className="flex aspect-[1.05/1] w-full items-center justify-center md:hidden">
       <img src="/assets/day-offers/initio-weekly-luxury-4x3.webp" alt="EURO PERFUME · Аромат недели — Addictive Vibration, Initio Parfums, −10%, открыть аромат" width={600} height={450} loading="eager" className="block h-full w-full object-contain"/>
     </Link>
+    {desktopHero}
   </section>;
  }
- return <section aria-label={ru?"Аромат недели":"Duft der Woche"} className="relative isolate min-h-[350px] overflow-hidden rounded-[18px] bg-[#eae5df] text-[#292525] md:min-h-[410px] md:rounded-[25px]">
+ return <section aria-label={ru?"Аромат недели":"Duft der Woche"} className="weekly-generic-hero relative isolate min-h-[350px] overflow-hidden rounded-[18px] bg-[#eae5df] text-[#292525] md:min-h-[410px] md:rounded-[25px]">
+   <div className="md:hidden">
    {/* Restrained architectural depth: a continuous neutral scene for any bottle color. */}
    <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,#f4f0eb_0%,#e9e5df_48%,#d4cec8_100%)]"/>
    <div aria-hidden="true" className="pointer-events-none absolute right-[-15%] top-[-27%] h-[94%] w-[72%] rounded-full border-[33px] border-[#6a565b]/[.27] md:right-[-3%] md:top-[-45%] md:h-[135%] md:w-[55%] md:border-[66px]"/>
    <div aria-hidden="true" className="pointer-events-none absolute -right-12 bottom-[-52%] h-[93%] w-[65%] rounded-full bg-[#a29891]/30 blur-[55px]"/>
    <div aria-hidden="true" className="pointer-events-none absolute inset-x-0 bottom-0 h-[15%] bg-[linear-gradient(180deg,transparent,rgba(101,87,81,.09))]"/>
-   <div className="relative z-10 grid min-h-[350px] grid-cols-[57%_43%] items-center gap-0 px-5 py-7 sm:grid-cols-[55%_45%] sm:px-8 md:min-h-[410px] md:grid-cols-[52%_48%] md:px-14 md:py-11">
+   <div className="weekly-generic-grid relative z-10 grid min-h-[350px] grid-cols-[57%_43%] items-center gap-0 px-5 py-7 sm:grid-cols-[55%_45%] sm:px-8 md:min-h-[410px] md:grid-cols-[52%_48%] md:px-14 md:py-11">
     <div className="relative z-20 min-w-0 py-1">
      <p className="text-[9px] font-medium uppercase tracking-[.17em] text-[#6b5c5e] sm:text-[11px] md:text-[12px] md:tracking-[.23em]">
       EURO PERFUME <span aria-hidden="true" className="mx-1">·</span> {ru?"АРОМАТ НЕДЕЛИ":"DUFT DER WOCHE"}
@@ -60,5 +79,7 @@ export function FragranceDayHero({offer}:{offer:FeaturedDayFragrance}){
       {offer.image?<img src={offer.image} alt={offer.brand+" "+offer.name} className="max-h-[305px] h-[91%] w-[112%] max-w-none object-contain mix-blend-multiply [mask-image:radial-gradient(ellipse_79%_85%_at_center,#000_66%,transparent_100%)] drop-shadow-[0_20px_18px_rgba(49,38,41,.16)] md:max-h-[360px] md:w-full"/>:null}
     </Link>
    </div>
+   </div>
+   {desktopHero}
  </section>;
 }

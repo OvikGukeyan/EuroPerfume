@@ -1,5 +1,6 @@
 "use client";
 import NativeLink from "next/link";
+import { Link } from "@/src/i18n/navigation";
 
 import { cn } from "@/src/shared/lib/utils";
 import { Category, ProductGroup } from "@prisma/client";
@@ -27,7 +28,7 @@ export const Categories: FC<Props> = ({ items, className }) => {
 
   const locale = useLocale() as "ru" | "de";
   return (
-    <div className={cn(className, " gap-10")}>
+    <div className={cn(className, " items-center gap-5 lg:gap-10")}>
       {items.map(({ id, labelRu, labelDe, productGroups }) => (
         <HoverCard key={id} openDelay={100} closeDelay={100}>
           <HoverCardTrigger
@@ -83,6 +84,7 @@ export const Categories: FC<Props> = ({ items, className }) => {
           </HoverCardContent>
         </HoverCard>
       ))}
+      <Link href="/sale" aria-label={locale === "ru" ? "SALE — Скидки" : "SALE — Reduzierte Artikel"} className="inline-flex items-center rounded-sm bg-[#923a40] px-3 py-1 text-sm font-semibold tracking-[.12em] text-white hover:bg-[#70282e]">SALE</Link>
     </div>
   );
 };
