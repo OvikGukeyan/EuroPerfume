@@ -20,7 +20,7 @@ export const MenuDrawerItem:React.FC<Props>=({category,setOpen,locale,featured=[
   {expanded&&<div id={`menu-category-${category.id}`} className="pb-7 pt-2">
    <div className="grid grid-cols-2 gap-x-4 gap-y-5">
     <Link href={`/items/?category=${category.id}`} onClick={pickCategory} className="text-[15px] font-medium leading-snug text-[#282828] hover:underline">{locale==="ru"?"Все товары":"Alle Produkte"}</Link>
-    {category.productGroups.map(group=>group.id===30?
+    {category.productGroups.filter(group=>group.id!==30).map(group=>group.id===30?
       <NativeLink href="/discovery/index.html" prefetch={false} key={group.id} onClick={()=>setOpen(false)} className="text-[15px] leading-snug text-[#282828] hover:underline">Discovery Box</NativeLink>
       :<Link key={group.id} href={`/items/?productGroup=${group.id}`} onClick={()=>pickGroup(group)} className="text-[15px] leading-snug text-[#282828] hover:underline">{locale==="ru"?group.labelRu:group.labelDe}</Link>)}
    </div>

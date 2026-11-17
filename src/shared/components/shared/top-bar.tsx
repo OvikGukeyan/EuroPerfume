@@ -1,8 +1,9 @@
 "use client";
-import React, { FC, useEffect, useState } from "react";
-import { Categories, SortPopup, Container, SearchInput } from ".";
+import React, { FC } from "react";
+import { SortPopup, Container, SearchInput } from ".";
 import { cn } from "@/src/shared/lib/utils";
-import { useCategories } from "@/src/shared/hooks";
+import { useQueryFilters } from "@/src/shared/hooks";
+import { useFiltersStore } from "../../store/filters";
 import { useRouter } from "@/src/i18n/navigation";
 import { ProductDTO } from "../../services/dto/product.dto";
 
@@ -11,17 +12,15 @@ interface Props {
 }
 
 export const TopBar: FC<Props> = ({ className }) => {
-  const [show, setShow] = useState(true);
-  const { categories } = useCategories();
+  const filters = useFiltersStore();
+  useQueryFilters(filters);
   const router = useRouter();
 
 
   return (
     <div
       className={cn(
-        `sticky top-16 md:top-24 bg-white md:py-5 shadow-lg shadow-black/5 z-40 transition-transform duration-300
-        ${show ? "translate-y-0" : "-translate-y-full"}
-        `,
+        "sticky top-16 md:top-[160px] bg-white md:py-2 shadow-lg shadow-black/5 z-40",
         className
       )}
     >
@@ -38,7 +37,7 @@ export const TopBar: FC<Props> = ({ className }) => {
           <SortPopup />
         </div>
 
-        <Categories className="hidden md:flex " items={categories} />
+
       </Container>
     </div>
   );

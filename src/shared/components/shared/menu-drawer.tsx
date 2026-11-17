@@ -1,10 +1,12 @@
 "use client";
+import NativeLink from "next/link";
+import { selectPerfumeCatalog } from "./categories";
 import React, { FC, Suspense, useEffect, useState } from "react";
 import { cn } from "@/src/lib/utils";
 import { LanguageSwitcher, MenuDrawerItem, SocialMediaBar } from ".";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetClose } from "../ui/sheet";
 import { Button } from "..";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Heart } from "lucide-react";
 import { useCategories } from "@/src/shared/hooks";
 import { useLocale } from "next-intl";
 import { Link } from "@/src/i18n/navigation";
@@ -40,10 +42,14 @@ export const MenuDrawer:FC<Props>=({className})=>{
       </SheetClose>
      </header>
      <div>
-      {categories.map((category,index)=><MenuDrawerItem key={category.id} setOpen={setOpen} category={category} locale={locale} featured={featured} showFeatured={index===0}/>)}
+      {categories.filter(category=>category.id===1).map(category=><MenuDrawerItem key={category.id} setOpen={setOpen} category={category} locale={locale} featured={featured} showFeatured/>)}
+      <Link href="/items?category=1&gender=FEMALE" onClick={()=>{selectPerfumeCatalog("FEMALE");setOpen(false);}} className="flex min-h-16 items-center border-b border-[#e5e5e5] py-5 text-[21px] font-normal">{locale==="ru"?"Женские":"Damen"}</Link>
+      <Link href="/items?category=1&gender=MALE" onClick={()=>{selectPerfumeCatalog("MALE");setOpen(false);}} className="flex min-h-16 items-center border-b border-[#e5e5e5] py-5 text-[21px] font-normal">{locale==="ru"?"Мужские":"Herren"}</Link>
+      <NativeLink href="/discovery/index.html" prefetch={false} onClick={()=>setOpen(false)} className="flex min-h-16 items-center border-b border-[#e5e5e5] py-5 text-[21px] font-normal">Discovery Box</NativeLink>
       <Link href="/sale" onClick={()=>setOpen(false)} className="flex min-h-16 items-center justify-between border-b border-[#e5e5e5] py-5 text-[21px] font-medium text-[#923a40]" aria-label={locale==="ru"?"SALE — Скидки":"SALE — Reduzierte Artikel"}>
-       <span>SALE</span><span className="text-xs font-normal tracking-normal">{locale==="ru"?"Скидки":"Reduzierte Artikel"} →</span>
+       <span>SALE</span>
       </Link>
+      <Link href="/favorites" onClick={()=>setOpen(false)} className="flex min-h-16 items-center gap-3 border-b border-[#e5e5e5] py-5 text-[21px] font-normal"><Heart size={24} strokeWidth={1.7} aria-hidden="true"/>{locale==="ru"?"Избранное":"Favoriten"}</Link>
      </div>
      <footer className="mt-4">
       <p className="text-center text-[13px] text-[#555]">{locale==="ru"?"Мы в социальных сетях":"Folgen Sie uns"}</p>

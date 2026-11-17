@@ -1,5 +1,6 @@
 "use client";
 
+import { StorefrontNavigation } from "./categories";
 import { cn } from "@/src/shared/lib/utils";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
@@ -135,6 +136,7 @@ export const Header: React.FC<Props> = ({
             {hasCart && <CartButton />}
           </div>
         </div>
+        <StorefrontNavigation />
       </header>
     </>
   );
