@@ -2,6 +2,7 @@
 import { offerPrices } from "../../lib/day-offer";
 import { useDayOfferClock } from "../../hooks/use-day-offer";
 import { ProductIngredients } from "./product-ingredients";
+import { FragranceAccordion } from "./fragrance-accordion";
 import { formatMoney, formatUnitPrice } from "@/src/shared/lib/money";
 import { BottleOption, unitPricePerLitre } from "@/src/shared/lib/full-bottle";
 import "./fragrance-detail.css";
@@ -145,6 +146,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
           activeVariationId={activeVariationId}
         />
       </div>
+      <div className="fragrance-side">
       <div className="fragrance-summary">
         <p className="fragrance-brand">{product.brand.name}</p>
         <h1 className="fragrance-name">{product.name}</h1>
@@ -162,10 +164,17 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
           <div className="fragrance-service"><span>{ru?"Доставка по Германии и ЕС":"Versand nach Deutschland und in die EU"}</span><Link href="/return-and-exchange" className="underline">{ru?"Условия возврата":"Rückgabebedingungen"}</Link></div>
         </section>
       </div>
+      <div className="fragrance-information" aria-label={ru ? "Информация об аромате" : "Informationen zum Duft"}>
+        {description && <FragranceAccordion title={ru ? "Знакомство с ароматом" : "Den Duft entdecken"} id="description">
+          <div className="fragrance-description">{description.split(/\n\s*\n/).map((paragraph,i)=><p key={i}>{paragraph.trim()}</p>)}</div>
+        </FragranceAccordion>}
+        <FragranceAccordion title={t("characteristics")} id="characteristics">
+          <ProductCharacteristics className="fragrance-characteristics" showTitle={false} charactiristics={charactiristics}/>
+        </FragranceAccordion>
+        {(product.concentration || product.productGroup.onTap) && <ProductIngredients productId={product.id} translations={product.translations} locale={locale}/>}
+      </div>
+      </div>
+    {noteGroups.some(g=>g.notes.length>0) && <section className="fragrance-pyramid"><h2>{ru?"Как раскрывается аромат":"Die Duftpyramide"}</h2><div className="fragrance-notes">{noteGroups.filter(g=>g.notes.length>0).map(g=><div className="fragrance-note-stage" data-stage={g.type} key={g.type}><h3>{g.title}</h3><ul>{g.notes.map(note=><FragranceNoteCard key={note.id} note={note} locale={locale}/>)}</ul></div>)}</div></section>}
     </div>
-    {description && <section className="fragrance-reading"><h2>{ru?"Знакомство с ароматом":"Den Duft entdecken"}</h2><div className="fragrance-description">{description.split(/\n\s*\n/).map((paragraph,i)=><p key={i} className="mb-4">{paragraph.trim()}</p>)}</div></section>}
-    {noteGroups.some(g=>g.notes.length>0) && <section className="fragrance-reading"><h2>{ru?"Как раскрывается аромат":"Die Duftpyramide"}</h2><div className="fragrance-notes">{noteGroups.filter(g=>g.notes.length>0).map(g=><div className="fragrance-note-stage" data-stage={g.type} key={g.type}><h3>{g.title}</h3><ul>{g.notes.map(note=><FragranceNoteCard key={note.id} note={note} locale={locale}/>)}</ul></div>)}</div></section>}
-    <section className="fragrance-reading"><details><summary className="cursor-pointer py-3 text-lg">{t("characteristics")}</summary><ProductCharacteristics charactiristics={charactiristics}/></details></section>
-    {(product.concentration || product.productGroup.onTap) && <ProductIngredients productId={product.id} translations={product.translations} locale={locale}/>}
   </div>;
 };

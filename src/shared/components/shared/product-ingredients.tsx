@@ -1,19 +1,15 @@
+import { FragranceAccordion } from "./fragrance-accordion";
 import { resolveIngredients } from "../../lib/fragrance-ingredients";
 export function ProductIngredients({productId,translations,locale}: {productId:number;translations:{language:string;activeIngredients?:string|null}[];locale:string}) {
  const ru=locale==="ru";
  const {inci,review}=resolveIngredients(productId,translations,locale);
- return <><section className="fragrance-reading fragrance-inci" id="ingredients">
-  <details>
-   <summary>{ru?"Состав и аллергены (INCI)":"Inhaltsstoffe & Allergene (INCI)"}</summary>
+ return <><FragranceAccordion id="ingredients" title={ru?"Состав и аллергены (INCI)":"Inhaltsstoffe & Allergene (INCI)"}>
    {inci && !review ? <>
     <p>{inci}</p>
     <p>{ru?"Состав может различаться в зависимости от партии. Сверяйте список с упаковкой конкретного флакона. При аллергии уточните состав вашей партии у нас до покупки.":"Die Zusammensetzung kann je nach Charge abweichen. Bitte beachte die Liste auf der Verpackung des jeweiligen Flakons. Bei Allergien frage uns vor dem Kauf nach den Angaben zu deiner Charge."}</p>
    </> : <p>{ru?"Уточняем полный состав по упаковке. Если у вас есть аллергия, свяжитесь с нами до покупки — проверим состав конкретного флакона.":"Die vollständige Inhaltsstoffliste wird anhand der Verpackung geprüft. Bei Allergien kontaktiere uns bitte vor dem Kauf, damit wir die Angaben des jeweiligen Flakons prüfen können."}</p>}
-  </details>
- </section>
- <section className="fragrance-reading fragrance-inci" id="warnings">
-  <details>
-   <summary>{ru?"Предупреждения":"Warnhinweise"}</summary>
+ </FragranceAccordion>
+ <FragranceAccordion id="warnings" title={ru?"Предупреждения":"Warnhinweise"}>
    <p>{ru?"Общие меры предосторожности при использовании парфюмерии:":"Allgemeine Sicherheitshinweise für die Anwendung von Parfum:"}</p>
    <ul className="list-disc pl-5 space-y-2 text-sm leading-7 text-neutral-600">
     <li>{ru?"Только для наружного применения. Не принимать внутрь.":"Nur zur äußeren Anwendung. Nicht einnehmen."}</li>
@@ -23,6 +19,5 @@ export function ProductIngredients({productId,translations,locale}: {productId:n
     <li>{ru?"Спиртосодержащая парфюмерия огнеопасна. Храните вдали от нагрева, искр и открытого огня. Не используйте рядом с источниками воспламенения до полного высыхания.":"Alkoholhaltige Parfums sind entzündbar. Von Hitze, Funken und offenen Flammen fernhalten. Bis zur vollständigen Trocknung Zündquellen meiden."}</li>
    </ul>
    <p>{ru?"Дополнительно соблюдайте предупреждения производителя на упаковке конкретного аромата.":"Bitte zusätzlich die produktspezifischen Warnhinweise des Herstellers auf der Verpackung beachten."}</p>
-  </details>
- </section></>;
+ </FragranceAccordion></>;
 }

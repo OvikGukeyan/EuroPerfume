@@ -33,3 +33,62 @@
 .fragrance-note-photo{display:block;width:78px;max-width:100%;aspect-ratio:1;background-color:#fff;background-size:600% 600%;background-repeat:no-repeat;border-radius:50%;flex:none}
 .fragrance-note-label{font-size:12px;line-height:1.45;color:#514a45;overflow-wrap:anywhere;max-width:130px}
 @media(max-width:767px){.fragrance-notes{gap:26px}.fragrance-note-stage ul{grid-template-columns:repeat(auto-fit,minmax(76px,1fr));gap:18px 12px}.fragrance-note-stage h3{padding-bottom:12px;margin-bottom:16px}.fragrance-note-photo{width:84px}.fragrance-note-label{font-size:12px}}
+
+/* Product layout: notes fill the space below the photo, with compact information at right. */
+.fragrance-gallery{grid-area:media}
+.fragrance-side{grid-area:side;min-width:0}
+.fragrance-pyramid{grid-area:notes;min-width:0;padding-top:4px}
+.fragrance-pyramid h2{font-size:22px;line-height:1.3;font-weight:500;margin-bottom:22px}
+.fragrance-pyramid .fragrance-notes{gap:18px}
+.fragrance-pyramid .fragrance-note-stage ul{grid-template-columns:repeat(auto-fit,minmax(58px,1fr));gap:16px 8px}
+.fragrance-pyramid .fragrance-note-photo{width:64px}
+.fragrance-pyramid .fragrance-note-label{font-size:11px}
+.fragrance-information{margin-top:18px;border-top:1px solid #e9e4df}
+.fragrance-detail .fragrance-volumes{grid-template-columns:repeat(3,minmax(0,1fr))}
+.fragrance-volumes button{width:100%}
+.fragrance-hero{grid-template-areas:"media side" "notes side";grid-template-rows:auto 1fr;gap:28px 48px;align-items:start}
+.fragrance-gallery{grid-area:media}
+.fragrance-side{grid-area:side;min-width:0}
+.fragrance-summary{padding-top:12px}
+.fragrance-volumes{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.fragrance-pyramid{grid-area:notes;min-width:0;padding-top:20px;border-top:1px solid #e9e4df}
+.fragrance-pyramid>h2{font-size:20px;font-weight:500;margin-bottom:20px}
+.fragrance-pyramid .fragrance-notes{gap:18px}
+.fragrance-pyramid .fragrance-note-stage ul{grid-template-columns:repeat(auto-fit,minmax(58px,1fr));gap:16px 8px}
+.fragrance-pyramid .fragrance-note-photo{width:64px}
+.fragrance-pyramid .fragrance-note-label{font-size:11px}
+.fragrance-pyramid .fragrance-note-stage h3{font-size:10px;letter-spacing:1px;line-height:1.5}
+.fragrance-information{margin-top:20px;border-top:1px solid #e1dcd7;min-width:0}
+.fragrance-accordion{border-bottom:1px solid #e1dcd7}
+.fragrance-accordion>summary{display:flex;align-items:center;justify-content:space-between;gap:18px;min-height:60px;padding:18px 0;cursor:pointer;list-style:none;font-size:13px;font-weight:500;line-height:1.5;letter-spacing:.04em;text-transform:uppercase}
+.fragrance-accordion>summary::-webkit-details-marker{display:none}
+.fragrance-accordion>summary::marker{content:""}
+.fragrance-accordion>summary svg{flex-shrink:0;transition:transform .18s ease;color:#655c56}
+.fragrance-accordion[open]>summary svg{transform:rotate(180deg)}
+.fragrance-accordion>summary:hover{color:#795451}
+.fragrance-accordion>summary:focus-visible{outline:2px solid #795451;outline-offset:4px;border-radius:3px}
+.fragrance-accordion-content{padding:0 0 22px;min-width:0;font-size:13px;line-height:1.8;color:#514a45;overflow-wrap:anywhere}
+.fragrance-accordion-content p+p{margin-top:14px}
+.fragrance-accordion-content .fragrance-description{font-size:14px;line-height:1.85}
+.fragrance-characteristics>div{margin:0}
+.fragrance-characteristics ul{columns:1}
+.fragrance-characteristics li{padding:9px 8px;gap:12px;font-size:12px;line-height:1.6}
+.fragrance-characteristics li>span{font-weight:500;margin-right:0}
+.fragrance-characteristics li>div{min-width:0}
+@media(min-width:768px) and (max-width:1099px){.fragrance-hero{gap:24px}.fragrance-pyramid .fragrance-notes{grid-template-columns:1fr;gap:20px}}
+@media(max-width:767px){
+.fragrance-hero{grid-template-areas:"media" "summary" "notes" "info";grid-template-rows:auto;gap:24px;padding-bottom:10px}
+.fragrance-side{display:contents}
+.fragrance-summary{grid-area:summary;padding:0}
+.fragrance-information{grid-area:info;margin-top:0}
+.fragrance-pyramid{padding-top:22px}
+.fragrance-pyramid>h2{font-size:22px}
+.fragrance-pyramid .fragrance-notes{gap:24px}
+.fragrance-pyramid .fragrance-note-stage h3{font-size:11px}
+.fragrance-pyramid .fragrance-note-stage ul{grid-template-columns:repeat(auto-fit,minmax(76px,1fr));gap:18px 12px}
+.fragrance-pyramid .fragrance-note-photo{width:84px}
+.fragrance-pyramid .fragrance-note-label{font-size:12px}
+.fragrance-accordion>summary{min-height:58px;font-size:12px;padding:18px 0;letter-spacing:.025em}
+.fragrance-accordion-content{padding-bottom:20px}
+}
+@media(prefers-reduced-motion:reduce){.fragrance-accordion>summary svg{transition:none}}

@@ -5,6 +5,7 @@ import { Title } from ".";
 
 type Props = {
   className?: string;
+  showTitle?: boolean;
   charactiristics: {
     name: string;
     value: string;
@@ -13,12 +14,13 @@ type Props = {
 
 export const ProductCharacteristics: FC<Props> = ({
   className,
+  showTitle = true,
   charactiristics,
 }) => {
   const ru=useLocale()==="ru";
   return (
     <div className={cn("w-full", className)}>
-      <Title text={ru?"Характеристики":"Eigenschaften"} size="sm" className="font-bold" />
+      {showTitle && <Title text={ru?"Характеристики":"Eigenschaften"} size="sm" className="font-bold" />}
 
       <div className="my-4">
         <ul className=" md:columns-2 ">
