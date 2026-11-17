@@ -6,6 +6,7 @@ import { Api } from "@/src/shared/services/api-client";
 import { ProductDTO } from "@/src/shared/services/dto/product.dto";
 import { Search } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { useLocale } from "next-intl";
 import Image from "next/image";
 import React, { useRef, useState } from "react";
 import { useClickAway, useDebounce } from "react-use";
@@ -166,6 +167,7 @@ export const SearchInput: React.FC<Props> = ({ className, onProductClick }) => {
   const [products, setProducts] = useState<ProductDTO[]>([]);
   const ref = useRef<HTMLInputElement>(null);
   const { data: session } = useSession();
+  const ru = useLocale() === "ru";
   const router = useRouter();
 
   useClickAway(ref, () => {
@@ -234,7 +236,9 @@ export const SearchInput: React.FC<Props> = ({ className, onProductClick }) => {
           className="rounded-md border outline-none w-full bg-gray-100 pl-11"
           type="text"
           placeholder={
-            session ? `${session.user.name}, что ищете?` : "Find product..."
+            session?.user.name
+              ? (ru ? `${session.user.name}, что ищете?` : `${session.user.name}, welchen Duft suchen Sie?`)
+              : (ru ? "Найти аромат…" : "Nach Düften suchen…")
           }
           onFocus={() => setFocused(true)}
           value={searchQuery}

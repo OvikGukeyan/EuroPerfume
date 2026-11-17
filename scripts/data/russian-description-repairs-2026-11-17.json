@@ -1,0 +1,45 @@
+{
+  "descriptions": {
+    "descriptions": [
+      {
+        "id": 1558,
+        "productId": 537,
+        "name": "Attrape-Rêves ",
+        "oldDescription": "Jacques Cavallier Belletrud verleiht Attrape-Rêves eine strahlende Leuchtkraft. Der Duft verkörpert eine erfrischende Reise zur Verwirklichung eines Traums. Inspiriert von Expeditionen, die über die Grenzen der Sinne hinausgehen, beschreibt der Maître Parfumeur der Louis Vuitton dieses Parfum als eine „Komposition der Eroberung“.\r\n\r\nEine kraftvolle Komposition aus Kontrasten: Zarte, elegante Pfingstrose trifft auf die Tiefe von rohem Kakaopulver. Im Herzen entfaltet sich Patchouli, belebt durch frische, spritzige Litschi-Akkorde. Ein leuchtender, moderner Duft, der die Energie und Magie eines erfüllten Traums widerspiegelt.",
+        "description": "Jacques Cavallier Belletrud наполнил Attrape-Rêves сияющей энергией. Аромат воплощает вдохновляющее путешествие к исполнению мечты. Вдохновлённый экспедициями, выходящими за пределы чувственного восприятия, мастер-парфюмер Дома Louis Vuitton представляет его как «аромат покорения».\r\n\r\nЭто контрастная и выразительная композиция: изящный пион встречается с глубиной сырого какао-порошка. В сердце раскрывается пачули, освежённый сочными, искрящимися нотами личи. Сияющий, современный аромат, передающий энергию и магию осуществлённой мечты."
+      },
+      {
+        "id": 1658,
+        "productId": 580,
+        "name": "Tobacco Carnaval ",
+        "oldDescription": "Tobacco Carnaval von Maison Crivelli ist ein intensiver, sinnlicher Extrait de Parfum, inspiriert von der elektrisierenden Atmosphäre einer endlosen Karnevalsnacht.\r\n\r\nWarmer Tabak trifft auf die berauschende Tiefe von Rum und überraschend fruchtige, likörartige Nuancen. Der Duft wirkt dunkel und zugleich leuchtend, süßlich, warm und verführerisch – mit einer fast greifbaren, hypnotischen Ausstrahlung.\r\n\r\nEine außergewöhnliche Tabakkomposition voller Kontraste, geschaffen für alle, die opulente, charakterstarke und moderne Düfte lieben.",
+        "description": "Tobacco Carnaval от Maison Crivelli — насыщенный и чувственный парфюмерный экстракт, вдохновлённый атмосферой бесконечной карнавальной ночи.\r\n\r\nТёплый табак здесь соединяется с опьяняющей глубиной рома и неожиданными фруктово-ликёрными оттенками. Аромат звучит одновременно тёмно и ярко, сладко, тепло и соблазнительно, оставляя на коже глубокий, почти гипнотический шлейф.\r\n\r\nНеобычная и современная интерпретация табака для любителей выразительных, роскошных ароматов с характером."
+      },
+      {
+        "id": 1662,
+        "productId": 582,
+        "name": "Valiant ",
+        "oldDescription": "Boadicea the Victorious – Valiant\r\n\r\nValiant ist ein strahlender, eleganter Duft voller Kontraste – kraftvoll und zugleich weich, frisch und dennoch sinnlich.\r\n\r\nDie Komposition eröffnet mit einer lebendigen Mischung aus Ylang-Ylang, Mandarine, Petitgrain, Grapefruit und Orange. Die spritzigen Zitrusnoten verleihen dem Auftakt Energie und Leichtigkeit.\r\n\r\nIm Herzen entfaltet sich ein edles florales Bouquet aus Orangenblüte, Iris, Neroli, indischem Jasmin und Kirschblüte. Die Blüten verleihen dem Duft eine raffinierte, cremige Eleganz und schaffen einen harmonischen Übergang von der frischen Kopfnote zur warmen Basis.\r\n\r\nAmber, Patchouli, Vanille, Tonkabohne und Sandelholz bilden ein weiches, tiefes Fundament. Die Basis wirkt warm, sinnlich und umhüllend und verleiht Valiant seine besondere Ausstrahlung und langanhaltende Präsenz.\r\n\r\nValiant ist ein Duft für alle, die luxuriöse florale Kompositionen mit warmer Tiefe, feiner Süße und zeitloser Eleganz lieben.",
+        "description": "Boadicea the Victorious – Valiant\r\n\r\nValiant — сияющий и элегантный аромат, построенный на красивых контрастах: он одновременно яркий и мягкий, свежий и чувственный.\r\n\r\nКомпозиция открывается живым сочетанием иланг-иланга, мандарина, петитгрейна, грейпфрута и апельсина. Цитрусовые акценты придают старту энергию, лёгкость и солнечное звучание.\r\n\r\nВ сердце раскрывается благородный цветочный букет из флердоранжа, ириса, нероли, индийского жасмина и цветущей вишни. Цветочные ноты делают аромат утончённым, сливочным и элегантным, сохраняя при этом ощущение свежести.\r\n\r\nВ базе амбра, пачули, ваниль, бобы тонка и сандал создают тёплый, мягкий и обволакивающий шлейф. Именно эта база придаёт Valiant глубину, чувственность и стойкое роскошное звучание.\r\n\r\nValiant подойдёт тем, кто любит изысканные цветочные ароматы с тёплой глубиной, деликатной сладостью и ощущением вневременной элегантности.\r\n\r\nХарактер аромата: цветочный · цитрусовый · сливочный · тёплый · элегантный"
+      }
+    ],
+    "fields": [
+      {
+        "id": 230,
+        "productId": 51,
+        "field": "manufacturingCountry",
+        "before": "Italien",
+        "after": "Италия"
+      }
+    ]
+  },
+  "fields": [
+    {
+      "id": 230,
+      "productId": 51,
+      "field": "manufacturingCountry",
+      "oldValue": "Italien",
+      "value": "Италия"
+    }
+  ]
+}

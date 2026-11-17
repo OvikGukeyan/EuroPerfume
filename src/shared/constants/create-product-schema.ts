@@ -10,10 +10,16 @@ export const CreateProductSchema = z
 
     descriptionRu: z
       .string()
-      .min(10, { message: "Description should be at least 10 characters" }),
+      .min(10, { message: "Описание должно содержать не менее 10 символов" })
+      .refine(value => /[А-Яа-яЁё]/.test(value), {
+        message: "В поле русского описания нужен текст на русском языке",
+      }),
     descriptionDe: z
       .string()
-      .min(10, { message: "Description should be at least 10 characters" }),
+      .min(10, { message: "Описание должно содержать не менее 10 символов" })
+      .refine(value => !/[А-Яа-яЁё]/.test(value), {
+        message: "В поле немецкого описания не должно быть русского текста",
+      }),
 
     brandCountryRu: z.string(),
     brandCountryDe: z.string(),

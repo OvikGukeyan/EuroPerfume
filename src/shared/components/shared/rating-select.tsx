@@ -1,5 +1,6 @@
 'use client';
 import React, { FC } from 'react';
+import { useLocale } from 'next-intl';
 import { cn } from '@/src/lib/utils';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Rating } from './rating';
@@ -9,11 +10,12 @@ type Props = {
 };
 
 export const RatingSelect: FC<Props> = ({ className }) => {
+  const ru = useLocale() === "ru";
   return (
     <div className={cn('', className)}>
         <Select required name="rating">
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Stars" />
+              <SelectValue placeholder={ru ? "Оценка" : "Bewertung"} />
             </SelectTrigger>
             <SelectContent>
               {[...Array(5)].map((_, index) => (
