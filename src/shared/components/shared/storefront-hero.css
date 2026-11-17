@@ -49,3 +49,5 @@
 @media(hover:hover){.storefront-slide-arrow:hover{color:white}.storefront-slide-arrow:hover svg{transform:scale(1.12);stroke-width:2.3}}
 @media(min-width:768px){.storefront-slide-arrow{width:48px;height:60px}.storefront-slide-arrow svg{width:30px;height:30px}}
 @media(prefers-reduced-motion:reduce){.storefront-slide-arrow,.storefront-slide-arrow svg{transition:none}.storefront-slide-arrow:hover svg{transform:none}}
+
+@media(max-width:767px){.storefront-slide-arrow{display:none}}
