@@ -24,6 +24,7 @@ model User {
   verificationCode VerificationCode?
   Review           Review[]
   addresses        CustomerAddress[]
+  accountConsent   AccountConsent?
 }
 
 model Category {
@@ -712,4 +713,24 @@ model CustomerAddress {
   createdAt DateTime @default(now())
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@index([userId])
+}
+
+model AccountConsent {
+  userId Int @id
+  locale String
+  termsVersion String
+  privacyVersion String
+  termsText String
+  privacyNotice String
+  marketingText String
+  acceptedAt DateTime @default(now())
+  marketingRequestedAt DateTime?
+  marketingConfirmedAt DateTime?
+  marketingWithdrawnAt DateTime?
+  confirmationTokenHash String? @unique
+  confirmationExpiresAt DateTime?
+  confirmationSentAt DateTime?
+  confirmationEmailId String?
+  unsubscribeTokenHash String? @unique
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

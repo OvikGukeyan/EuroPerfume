@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
             },
         });
 
-        if(!verificationCode) {
+        if(!verificationCode || verificationCode.expiresAt < new Date()) {
             return NextResponse.json({ message: 'Code not found' }, { status: 400 });
         }
 
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
             }
         })
 
-        return NextResponse.redirect(new URL('/?verified', req.url));
+        return NextResponse.redirect(new URL(`/${req.nextUrl.searchParams.get('locale')==='ru'?'ru':'de'}/?verified`, req.url));
     } catch (error) {
         console.error(error);
         console.log('Server Error [VERIFY_GET]', error);

@@ -2,6 +2,7 @@ import {prisma} from '@/prisma/prisma-client';
 import {getUserSession} from '@/src/shared/server-lib/get-user-session';
 import {compare,hash} from 'bcrypt';
 import {z} from 'zod';
+import {sendNewsletterConfirmation} from '@/src/shared/server-lib/registration-consent';
 import {euCountriesAlpha3} from '@/src/shared/lib/calc-total-amount-with-delivery';
 export const runtime='nodejs';
 export const dynamic='force-dynamic';
@@ -14,7 +15,12 @@ export async function POST(request:Request) {
  const userId=Number(session.id);
  let body;try{body=await request.json();}catch{return Response.json({error:'Invalid input'},{status:400});}
  try {
- if(body.action==='profile') {
+ if(body.action==='unsubscribe') {
+ await prisma.accountConsent.updateMany({where:{userId},data:{marketingWithdrawnAt:new Date(),confirmationTokenHash:null,confirmationExpiresAt:null}});
+ } else if(body.action==='resendNewsletter') {
+ const sent=await sendNewsletterConfirmation(userId);
+ if(!sent)return Response.json({error:'NEWSLETTER_WAIT'},{status:429});
+ } else if(body.action==='profile') {
  const {fullName}=z.object({fullName:z.string().trim().min(2).max(120)}).parse(body);
  await prisma.user.update({where:{id:userId},data:{fullName}});
  } else if(body.action==='password') {

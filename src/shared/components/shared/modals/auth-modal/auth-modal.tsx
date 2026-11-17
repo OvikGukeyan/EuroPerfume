@@ -2,6 +2,7 @@
 import { Button } from "@/src/shared/components/ui";
 import { Dialog, DialogContent } from "@/src/shared/components/ui/dialog";
 import React, { FC } from "react";
+import {useLocale} from "next-intl";
 import { LoginForm } from "./forms/login-form";
 import { RegisterForm } from "./forms/register-form";
 import { GetEmail } from "./forms/get-email";
@@ -12,6 +13,7 @@ interface Props {
   className?: string;
 }
 export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
+  const ru=useLocale()==="ru";
   const [type, setType] = React.useState<"login" | "register" | "get-email">(
     "login"
   );
@@ -26,7 +28,7 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
   };
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="w-full md:w-[450px] bg-white p-5 md:p-10 h-full md:h-auto overflow-scroll ">
+      <DialogContent className="w-full md:w-[450px] bg-white p-5 md:p-10 h-full md:h-auto max-h-[92dvh] overflow-y-auto ">
         {type === "get-email" ? (
           <GetEmail
             onClose={() => {
@@ -72,9 +74,9 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
           type="button"
           className="h-12"
         >
-          {type === "login" ? "Sign Up" : "Sign In"}
+          {type === "login" ? (ru?"Создать аккаунт":"Konto erstellen") : (ru?"Войти":"Anmelden")}
         </Button>
-        <Button onClick={onClickForgot} variant="link">Forgot your Password?</Button>
+        <Button onClick={onClickForgot} variant="link">{ru?"Забыли пароль?":"Passwort vergessen?"}</Button>
       </DialogContent>
     </Dialog>
   );

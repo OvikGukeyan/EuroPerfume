@@ -4,7 +4,7 @@ export type AccountOrder = {
  total:number;subtotal:number|null;shipping:number|null;discount:number|null;invoice:boolean;
  address:string;items:{id:number;name:string;image:string;amount:string;total:number|null}[];
 };
-export type AccountData = {fullName:string;email:string;provider:boolean;addresses:AccountAddress[];orders:AccountOrder[]};
+export type AccountData = {fullName:string;email:string;provider:boolean;newsletter?:{requested:boolean;confirmed:boolean;withdrawn:boolean};addresses:AccountAddress[];orders:AccountOrder[]};
 export function deliveryStage(order:Pick<AccountOrder,'status'|'tracking'|'shipmentStatus'>) {
  if(order.status==='CENCELLED') return -1;
  if(order.shipmentStatus==='DELIVERED') return 3;

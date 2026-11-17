@@ -1,4 +1,7 @@
 "use server";
+import {randomBytes} from "node:crypto";
+import {registrationSchema} from "@/src/shared/lib/registration-consent";
+import {legalConsentData,sendNewsletterConfirmation} from "@/src/shared/server-lib/registration-consent";
 import { BLACK_FRIDAY, blackFridayActive, isBlackFridayCode } from "../shared/lib/black-friday";
 import { offerPrices } from "../shared/lib/day-offer";
 import { promotionLive, promotionQualified } from "../shared/server-lib/promotions";
@@ -579,8 +582,9 @@ export async function updateUserInfo(body: Prisma.UserUpdateInput) {
   await prisma.user.update({where:{id:Number(currentUser.id)},data:{fullName}});
 }
 
-export async function registerUser(body: Prisma.UserCreateInput) {
+export async function registerUser(input: import("@/src/shared/lib/registration-consent").RegistrationInput) {
   try {
+    const body = registrationSchema(input.locale).parse(input);
     const findUser = await prisma.user.findFirst({
       where: {
         email: body.email,
@@ -601,28 +605,26 @@ export async function registerUser(body: Prisma.UserCreateInput) {
         email: body.email,
         fullName: body.fullName,
         password: hashedPassword,
+        accountConsent:{create:legalConsentData(body.locale,body.marketingOptIn)},
       },
     });
 
-    const code = Math.floor(
-      Math.random() * (9999 - 1000 + 1) + 1000,
-    ).toString();
+    const code = randomBytes(32).toString("hex");
 
     await prisma.verificationCode.create({
       data: {
         code,
         userId: createdUser.id,
-        expiresAt: new Date(Date.now() + 5 * 60 * 1000),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000),
       },
     });
 
-    await sendEmail(
-      createdUser.email,
-      "Verify your email",
-      UserVerificationTemplate({
-        code,
-      }),
-    );
+    const emailResults = await Promise.allSettled([
+      sendEmail(createdUser.email,body.locale==="ru"?"Подтвердите email EURO PERFUME":"E-Mail bei EURO PERFUME bestätigen",UserVerificationTemplate({code,locale:body.locale})),
+      body.marketingOptIn ? sendNewsletterConfirmation(createdUser.id) : Promise.resolve(false)
+    ]);
+    return {accountEmailSent:emailResults[0].status==="fulfilled",marketingEmailSent:emailResults[1].status==="fulfilled"&&emailResults[1].value===true};
+
   } catch (error) {
     console.error("Error [REGISTER_USER]", error);
     throw error;
