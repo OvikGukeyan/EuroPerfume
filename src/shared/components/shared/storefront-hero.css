@@ -39,3 +39,13 @@
 @media(min-width:768px){.weekly-generic-hero{height:var(--storefront-hero-height);min-height:0}.weekly-generic-grid{height:100%;min-height:0;padding-top:15px;padding-bottom:15px}.weekly-generic-grid>a{min-height:0}.weekly-generic-grid>a img{max-height:calc(var(--storefront-hero-height) - 40px)}.weekly-generic-grid h2{font-size:clamp(28px,4.8vh,43px)}}
 
 @media(min-width:768px){.weekly-generic-hero{min-height:0}}
+
+/* Edge controls are centred on the artwork, independently of the pagination. */
+.storefront-slide-arrow{position:absolute;top:50%;z-index:5;display:flex;align-items:center;justify-content:center;width:44px;height:52px;padding:8px;border:0;border-radius:4px;background:transparent;color:rgba(255,255,255,.65);transform:translateY(-50%);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:color .2s ease}
+.storefront-slide-arrow-prev{left:0}.storefront-slide-arrow-next{right:0}
+.storefront-slide-arrow svg{width:26px;height:26px;stroke-width:1.8;filter:drop-shadow(0 1px 3px rgba(0,0,0,.45));transition:transform .2s ease,stroke-width .2s ease}
+.storefront-slide-arrow:focus-visible{outline:2px solid white;outline-offset:-5px;color:white}
+.storefront-slide-arrow:active{color:white}
+@media(hover:hover){.storefront-slide-arrow:hover{color:white}.storefront-slide-arrow:hover svg{transform:scale(1.12);stroke-width:2.3}}
+@media(min-width:768px){.storefront-slide-arrow{width:48px;height:60px}.storefront-slide-arrow svg{width:30px;height:30px}}
+@media(prefers-reduced-motion:reduce){.storefront-slide-arrow,.storefront-slide-arrow svg{transition:none}.storefront-slide-arrow:hover svg{transform:none}}

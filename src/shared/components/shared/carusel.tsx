@@ -17,6 +17,7 @@ import {
   type CarouselApi,
 } from "../ui/carousel";
 import Image from "next/image";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Autoplay from "embla-carousel-autoplay";
 import { Languages, Slide, SlideImage } from "@prisma/client";
 import { useLocale } from "next-intl";
@@ -65,6 +66,7 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
   }
   return (
     <Carousel className="storefront-carousel mx-auto w-full max-w-[1440px] px-4 md:px-8" opts={{loop:featuredCount+visibleSlides.length>1}} setApi={setApi} plugins={[autoplayPlugin]}>
+      <div className="relative">
       <CarouselContent className="items-start">
         {showBlackFriday && <CarouselItem className="w-full" key="black-friday-2026"><BlackFridayHero/></CarouselItem>}
         {showDay && featured && <CarouselItem className="w-full" key="fragrance-week"><FragranceDayHero offer={featured}/></CarouselItem>}
@@ -96,6 +98,15 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
           </CarouselItem>
         ))}
       </CarouselContent>
+      {slideCount > 1 && <>
+        <button type="button" className="storefront-slide-arrow storefront-slide-arrow-prev" onClick={() => api?.scrollPrev()} aria-label={locale === "ru" ? "Предыдущий слайд" : "Vorherige Folie"}>
+          <ChevronLeft aria-hidden="true" />
+        </button>
+        <button type="button" className="storefront-slide-arrow storefront-slide-arrow-next" onClick={() => api?.scrollNext()} aria-label={locale === "ru" ? "Следующий слайд" : "Nächste Folie"}>
+          <ChevronRight aria-hidden="true" />
+        </button>
+      </>}
+      </div>
       {slideCount > 1 && (
         <nav aria-label={locale === "ru" ? "Выбор слайда" : "Folienauswahl"} className="mt-3 flex items-center justify-center gap-1">
           {Array.from({ length: slideCount }, (_, index) => (
