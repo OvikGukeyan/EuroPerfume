@@ -149,7 +149,6 @@ export const ProductCard: React.FC<Props> = ({
       <FragranceFormatPicker bottles={bottles} selected={bottleId} onSelect={setBottleId} decantAvailable={available}/>
       {!bottle && productGroup.onTap && <VolumeSelection className="compact-product-volumes" volumes={[...volumes]} volume={volume} setVolume={setVolume} />}
       {!bottle && variations.length > 1 && <ChooseVariation setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId} className="compact-product-variations" items={variations} />}
-      {priced.dayOffer && <p className="mt-1 text-[10px] text-neutral-500">{locale === "ru" ? "Низшая цена за 30 дней: " : "Niedrigster Preis der letzten 30 Tage: "}{formatMoney(finalPrice)} €</p>}
       <div className="home-product-buy">
         <Button disabled={!selectedAvailable || loading} onClick={onSubmit} variant="outline" className="w-full" aria-label={`${t("addToCart")} ${name}`}>
           <ShoppingCart size={16} />{selectedAvailable?t("addToCart"):(locale==="ru"?"Нет в наличии":"Ausverkauft")}

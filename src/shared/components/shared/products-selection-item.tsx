@@ -116,7 +116,6 @@ export const ProductSelectionItem: React.FC<Props> = ({
         <ByProductDialog dayOffer={dayOffer} preferredBottleId={displayBottle?.id} bottles={bottles} available={available} id={id} variations={variations} price={price} discountPrice={discountPrice} brand={brand} imageUrl={imageUrl} name={name} productGroup={productGroup} />
       </div>
       <div className="compact-product-extra">
-        {priced.dayOffer && <p className="compact-product-price-history">{locale === "ru" ? "Низшая цена за 30 дней: " : "Niedrigster Preis der letzten 30 Tage: "}{formatMoney(finalPrice)} €</p>}
         <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
         {productGroup.onTap && <p className="home-product-volume">({formatUnitPrice((finalDiscountPrice ?? finalPrice) / ((displayBottle?.ml ?? 2) / 1000))} € / 1 l)</p>}
         {reviews && count > 0 && <Link href={`/product-reviews/${id}`} className="home-product-rating"><Rating value={averageRating} reviewsCount={count} /></Link>}
