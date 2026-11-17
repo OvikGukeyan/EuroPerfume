@@ -69,12 +69,13 @@ export const Header: React.FC<Props> = ({
         <div className="flex min-w-0 items-center gap-2 h-10 md:px-5">
           <Truck className="shrink-0" />
           <h3 className={cn("text-sm md:text-base", isGerman && "whitespace-nowrap text-[clamp(11px,3.3vw,14px)]")}>
-            {t("freeDeliveryInfo", {
-              amount: SHOP_SETTINGS.FREE_DELIVERY_AMOUNT,
-            })}
+            {isGerman ? <>
+              <span className="md:hidden">{t("freeDeliveryInfo", { amount: SHOP_SETTINGS.FREE_DELIVERY_AMOUNT })}</span>
+              <span className="hidden md:inline">{t("freeDeliveryInfoDesktop", { amount: SHOP_SETTINGS.FREE_DELIVERY_AMOUNT })}</span>
+            </> : t("freeDeliveryInfo", { amount: SHOP_SETTINGS.FREE_DELIVERY_AMOUNT })}
           </h3>
         </div>
-        <LanguageSwitcher className="hidden md:block" />
+        <LanguageSwitcher transparent className="hidden md:inline-flex" />
       </div>
       <header className={cn("", className)}>
         <Separator />

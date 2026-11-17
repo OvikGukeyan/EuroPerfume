@@ -5,7 +5,8 @@
     "discountedProducts": "Rabatte"
   },
   "Header": {
-    "freeDeliveryInfo": "Kostenloser Versand ab {amount} € nach 🇩🇪"
+    "freeDeliveryInfo": "Kostenloser Versand ab {amount} € nach 🇩🇪",
+    "freeDeliveryInfoDesktop": "Kostenloser Versand innerhalb Deutschlands ab einem Bestellwert von {amount} €"
   },
   "Filters": {
     "apply": "Anwenden",
