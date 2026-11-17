@@ -15,8 +15,6 @@ import {
   CarouselContent,
   CarouselItem,
   type CarouselApi,
-  CarouselNext,
-  CarouselPrevious,
 } from "../ui/carousel";
 import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
@@ -44,6 +42,7 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
   const showDay=Boolean(featured);
   const showBlackFriday = blackFriday && now < Date.parse(BLACK_FRIDAY.endsAt);
   const featuredCount=promotions.length+(showDay?1:0)+(showBlackFriday?1:0);
+  const slideCount = featuredCount + visibleSlides.length;
   useEffect(()=>{
     if(!api) return;
     const viewport = api.rootNode();
@@ -97,15 +96,15 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
           </CarouselItem>
         ))}
       </CarouselContent>
-      {featuredCount>1 && (
-        <nav aria-label={locale==="ru"?"Предложения и аромат недели":"Angebote und Duft der Woche"} className="mt-3 flex flex-wrap items-center justify-center gap-3">
-          <span className="text-xs font-medium text-neutral-600">{locale==="ru"?"Наши предложения":"Unsere Angebote"}</span>
-          {Array.from({length:featuredCount},(_,index)=><button key={index} type="button" onClick={()=>api?.scrollTo(index)} aria-label={`${locale==="ru"?"Слайд":"Folie"} ${index+1} ${locale==="ru"?"из":"von"} ${featuredCount}`} aria-current={selected===index?"true":undefined} className={`h-3 rounded-full transition-all ${selected===index?"w-8 bg-neutral-900":"w-3 bg-neutral-300 hover:bg-neutral-500"}`}/>)}
-          <button type="button" className="rounded-full border border-neutral-300 px-3 py-1 text-xs text-neutral-800 hover:bg-neutral-100" onClick={()=>api?.scrollTo((selected+1)%featuredCount)}>{locale==="ru"?"Следующее предложение →":"Weiteres Angebot →"}</button>
+      {slideCount > 1 && (
+        <nav aria-label={locale === "ru" ? "Выбор слайда" : "Folienauswahl"} className="mt-3 flex items-center justify-center gap-1">
+          {Array.from({ length: slideCount }, (_, index) => (
+            <button key={index} type="button" onClick={() => api?.scrollTo(index)} aria-label={`${locale === "ru" ? "Слайд" : "Folie"} ${index + 1} ${locale === "ru" ? "из" : "von"} ${slideCount}`} aria-current={selected === index ? "true" : undefined} className="flex h-11 min-w-8 items-center justify-center rounded-full px-1.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-neutral-700">
+              <span aria-hidden="true" className={`block h-3 rounded-full transition-all duration-300 motion-reduce:transition-none ${selected === index ? "w-8 bg-neutral-900" : "w-3 bg-neutral-300 hover:bg-neutral-500"}`} />
+            </button>
+          ))}
         </nav>
       )}
-      <CarouselPrevious className="left-5 hidden md:flex" />
-      <CarouselNext className="right-5 hidden md:flex" />
     </Carousel>
   );
 };
