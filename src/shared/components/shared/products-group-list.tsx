@@ -2,7 +2,7 @@
 import { offerPrices } from "../../lib/day-offer";
 import { useDayOfferClock } from "../../hooks/use-day-offer";
 import { HomePriceProvider, HomePriceNote } from "./home-price-note";
-import { FiltersDrawer, ProductSelectionItem, ProductCardSkeleton, SelectedFiltersContainer } from ".";
+import { FiltersDrawer, SortPopup, ProductSelectionItem, ProductCardSkeleton, SelectedFiltersContainer } from ".";
 import { bottleGroup } from "../../lib/full-bottle";
 import { cn } from "@/src/shared/lib/utils";
 import { useFavorites, useProducts } from "@/src/shared/hooks";
@@ -56,7 +56,10 @@ export const ProductsGroupList: React.FC<Props> = ({ className, sale = false }) 
           </div>
         )}
         <div className={cn("col-span-2 min-w-0 xl:col-span-1 xl:col-start-2", title ? "xl:row-start-2" : "xl:row-start-1")}>
-          <SelectedFiltersContainer hideCategoryTokens={isBottleGroup} />
+          <div className="md:mb-3 md:flex md:items-start md:gap-4">
+            <div className="min-w-0 md:flex-1"><SelectedFiltersContainer hideCategoryTokens={isBottleGroup} className="md:mb-0 md:border-0 md:bg-transparent md:p-0" /></div>
+            <SortPopup className="hidden shrink-0 md:block [&_[role=combobox]]:h-10 [&_[role=combobox]]:bg-white [&_b]:font-normal" />
+          </div>
           {sale && !loading && visibleProducts.length === 0 && <p className="py-8 text-sm text-neutral-600">{locale === "ru" ? "По выбранным фильтрам товаров со скидкой нет." : "Keine reduzierten Artikel für diese Filter gefunden."}</p>}
           <HomePriceNote />
 

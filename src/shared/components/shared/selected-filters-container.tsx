@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "../../lib/utils";
 import { FC } from "react";
 import { SelectedFiltersBar } from ".";
 import { buildFilterTokens } from "../../lib/build-filter-tokens";
@@ -8,7 +9,7 @@ import { FilterToken } from "./selected-filters-bar";
 import { AvailableFilters, useProductStore } from "../../store/product";
 import { useLocale } from "next-intl";
 
-export const SelectedFiltersContainer: FC<{ hideCategoryTokens?: boolean }> = ({ hideCategoryTokens = false }) => {
+export const SelectedFiltersContainer: FC<{ hideCategoryTokens?: boolean; className?: string }> = ({ hideCategoryTokens = false, className }) => {
   const filters = useFiltersStore((s) => s);
   const [availableFilters] = useProductStore((state) => [
     state.availableFilters,
@@ -72,7 +73,7 @@ export const SelectedFiltersContainer: FC<{ hideCategoryTokens?: boolean }> = ({
       tokens={hideCategoryTokens ? tokens.filter(t => t.type !== "category" && t.type !== "productGroup") : tokens}
       onRemove={handleRemove}
       onClearAll={hideCategoryTokens ? () => filters.setCategory(filters.category) : filters.resetFilters}
-      className="mb-4"
+      className={cn("mb-4", className)}
     />
   );
 };

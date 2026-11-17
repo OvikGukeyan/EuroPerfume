@@ -20,7 +20,7 @@ export const TopBar: FC<Props> = ({ className }) => {
   return (
     <div
       className={cn(
-        "sticky top-16 bg-white shadow-lg shadow-black/5 z-40 md:static md:z-auto md:bg-transparent md:py-2 md:shadow-none",
+        "sticky top-16 bg-white shadow-lg shadow-black/5 z-40 md:hidden",
         className
       )}
     >
