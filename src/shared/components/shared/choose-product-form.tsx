@@ -121,10 +121,11 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
 
   const handleRatingClick = () => document.getElementById("reviews")?.scrollIntoView({behavior:"smooth",block:"start"});
 
-  const description =
-    product.translations.find(
-      (t) => t.language.toLocaleLowerCase() === locale.toLocaleLowerCase()
-    )?.description || "";
+  const translation = product.translations.find(
+    (t) => t.language.toLowerCase() === locale.toLowerCase()
+  );
+  const description = translation?.description || "";
+  const setContents = product.productGroupId === 8 ? translation?.compositionFeatures : null;
 
   const ru=locale==="ru";
   const noteGroups=[
@@ -153,6 +154,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
         <p className="fragrance-perfumer">{concentrationName}{product.perfumer ? (ru?" · Парфюмер: ":" · Komponiert von ")+product.perfumer:""}</p>
         <button type="button" className="fragrance-reviews" onClick={handleRatingClick} aria-label={ru?"Перейти к отзывам":"Bewertungen ansehen"}><Rating value={averageRating} reviewsCount={count}/></button>
         {scentNotes.length>0 && <div className="fragrance-scent-summary"><strong>{ru?"В аромате":"Duftnoten"}</strong>{scentNotes.join(" · ")}</div>}
+        {setContents && <div className="fragrance-scent-summary"><strong>{ru ? "В наборе" : "Im Set"}</strong>{setContents}</div>}
         <section className="fragrance-purchase" aria-label={ru?"Выбрать формат и купить":"Format auswählen und kaufen"}>
           <FragranceFormatPicker bottles={bottles} selected={bottleId} onSelect={setBottleId} decantAvailable={product.available}/>
           {!bottle && product.variations.length>0 && <ChooseVariation setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId} items={product.variations}/>}
