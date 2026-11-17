@@ -168,7 +168,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
       </div>
       <div className="fragrance-information" aria-label={ru ? "Информация об аромате" : "Informationen zum Duft"}>
         {description && <FragranceAccordion title={ru ? "Знакомство с ароматом" : "Den Duft entdecken"} id="description">
-          <div className="fragrance-description">{description.split(/\n\s*\n/).map((paragraph,i)=><p key={i}>{paragraph.trim()}</p>)}</div>
+          <div className="fragrance-description">{description.split(/\n\s*\n/).map((paragraph,i)=><p key={i} className="whitespace-pre-line">{paragraph.trim()}</p>)}</div>
         </FragranceAccordion>}
         <FragranceAccordion title={t("characteristics")} id="characteristics">
           <ProductCharacteristics className="fragrance-characteristics" showTitle={false} charactiristics={charactiristics}/>
