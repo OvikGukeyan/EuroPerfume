@@ -1,32 +1,13 @@
-import { prisma } from '@/prisma/prisma-client';
-import { Container, ProfileForm } from '@/src/shared/components';
-import { getUserSession } from '@/src/shared/server-lib/get-user-session';
-
-import { redirect } from 'next/navigation';
-
-
-export default async function ProfilePage() {
-  const session = await getUserSession();
-
-  if (!session) {
-    redirect('/not-auth')
-  };
-
-  const user = await prisma.user.findFirst({
-    where: {
-      id: Number(session.id),
-    }
-  })
-
-  if (!user) {
-    redirect('/not-auth')
-  }
-
-  return (
-    <Container className='flex justify-center lg:justify-start my-10'>
-      <ProfileForm data={user} />
-    </Container>
-  )
+import {getUserSession} from '@/src/shared/server-lib/get-user-session';
+import {loadCustomerAccount} from '@/src/shared/server-lib/customer-account';
+import {CustomerAccount} from '@/src/shared/components/shared/customer-account';
+import {redirect} from 'next/navigation';
+export const dynamic='force-dynamic';
+export default async function ProfilePage({params}:{params:Promise<{locale:string}>}) {
+ const {locale}=await params;
+ const session=await getUserSession();
+ if(!session) redirect(`/${locale}/not-auth`);
+ const account=await loadCustomerAccount(Number(session.id));
+ if(!account) redirect(`/${locale}/not-auth`);
+ return <CustomerAccount initial={account}/>;
 }
-
-

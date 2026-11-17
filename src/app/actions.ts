@@ -359,6 +359,7 @@ export async function createOrder(data: CheckoutFormValues) {
       throw new Error("Cart token not found!");
     }
 
+    const accountSession = await getUserSession();
     const boxCookie=(await cookieStore).get("discoveryBoxIds")?.value;
     // Preview can build before a separate staging migration is applied.
     const promotionTablesReady = await prisma.promotion.findFirst({select:{id:true}}).then(()=>true).catch(()=>false);
@@ -439,6 +440,7 @@ export async function createOrder(data: CheckoutFormValues) {
 
       const order = await tx.order.create({
         data: {
+          userId: accountSession ? Number(accountSession.id) : null,
           fullName: fullName,
           deliveryFullNmae: deliveryFullNmae,
           email: data.email,
@@ -568,34 +570,13 @@ export async function createOrder(data: CheckoutFormValues) {
 }
 
 export async function updateUserInfo(body: Prisma.UserUpdateInput) {
-  try {
-    const currentUser = await getUserSession();
-
-    if (!currentUser) {
-      throw new Error("User not found");
-    }
-
-    const findUser = await prisma.user.findFirst({
-      where: {
-        id: Number(currentUser.id),
-      },
-    });
-    await prisma.user.update({
-      where: {
-        id: Number(currentUser.id),
-      },
-      data: {
-        fullName: body.fullName,
-        email: body.email,
-        password: body.password
-          ? hashSync(body.password as string, 10)
-          : findUser?.password,
-      },
-    });
-  } catch (error) {
-    console.error("Error [UPDATE_USER]", error);
-    throw error;
-  }
+  const currentUser = await getUserSession();
+  if (!currentUser) throw new Error("Unauthorized");
+  // Password changes require the current password through /api/account.
+  if (body.password) throw new Error("Use the secure password change form");
+  const fullName = typeof body.fullName === "string" ? body.fullName.trim() : "";
+  if (fullName.length < 2 || fullName.length > 120) throw new Error("Invalid name");
+  await prisma.user.update({where:{id:Number(currentUser.id)},data:{fullName}});
 }
 
 export async function registerUser(body: Prisma.UserCreateInput) {

@@ -23,6 +23,7 @@ model User {
   orders           Order[]
   verificationCode VerificationCode?
   Review           Review[]
+  addresses        CustomerAddress[]
 }
 
 model Category {
@@ -696,4 +697,19 @@ model OrderPromotion {
   promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Restrict)
   createdAt   DateTime @default(now())
   @@unique([orderId,promotionId])
+}
+
+model CustomerAddress {
+  id String @id @default(uuid())
+  userId Int
+  fullName String
+  street String
+  houseNumber String
+  city String
+  postalCode String
+  country String
+  phone String @default("")
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
 }

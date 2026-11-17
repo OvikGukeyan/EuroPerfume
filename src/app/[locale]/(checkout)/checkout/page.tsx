@@ -28,6 +28,7 @@ import { useRouter } from "@/src/i18n/navigation";
 
 export default function Checkout() {
   const locale=useLocale();
+  const [savedAddresses,setSavedAddresses]=useState<import("@/src/shared/lib/customer-account").AccountAddress[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [promoError, setPromoError] = useState<string | null>(null);
   const {
@@ -85,8 +86,12 @@ export default function Checkout() {
 
   useEffect(() => {
     async function fetchUserInfo() {
-      const data = await Api.auth.getMe();
-      const [firstName, lastName] = data.fullName.split(" ");
+      const response=await fetch("/api/account",{cache:"no-store"});
+      if(!response.ok)return;
+      const data=await response.json();
+      setSavedAddresses(data.addresses||[]);
+      const [firstName, ...rest] = data.fullName.split(" ");
+      const lastName=rest.join(" ");
 
       form.setValue("firstName", firstName);
       form.setValue("lastName", lastName);
@@ -94,7 +99,7 @@ export default function Checkout() {
     }
 
     if (session) {
-      fetchUserInfo();
+      fetchUserInfo().catch(()=>{});
     }
   }, [session]);
 
@@ -192,6 +197,7 @@ export default function Checkout() {
                 onClickCountButton={onClickCountButton}
               />
 
+              {savedAddresses.length>0&&<label className="block rounded-lg border border-gray-200 bg-white p-5 mb-5 text-sm">{locale==="ru"?"Сохранённый адрес":"Gespeicherte Adresse"}<select defaultValue="" className="mt-3 w-full min-h-12 border rounded-md p-3 bg-white" onChange={e=>{const a=savedAddresses.find(a=>a.id===e.target.value);if(!a)return;const [firstName,...last]=a.fullName.split(" ");form.setValue("firstName",firstName);form.setValue("lastName",last.join(" "));form.setValue("address",a.street);form.setValue("houseNumber",a.houseNumber);form.setValue("city",a.city);form.setValue("zip",a.postalCode);form.setValue("country",a.country);form.setValue("phone",a.phone);form.setValue("shippingMethod",ShippingMethods.BILLING_ADDRESS);}}><option value="">{locale==="ru"?"Выбрать адрес":"Adresse auswählen"}</option>{savedAddresses.map(a=><option key={a.id} value={a.id}>{a.fullName} · {a.street} {a.houseNumber} · {a.city}</option>)}</select></label>}
               <CheckoutPersonalForm totalAmount={totalAmount} />
 
               <CheckoutDeliveryForm totalAmount={totalAmount} />

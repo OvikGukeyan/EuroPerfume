@@ -41,6 +41,8 @@ export const AppSidebar: FC<Props> = ({ className }) => {
   const pathName = usePathname();
   const locale = useLocale();
   const tools = [
+    { name: locale === "ru" ? "Предпросмотр кабинета клиента" : "Vorschau Kundenkonto", icon: <House />, href: "/account-preview" },
+    { name: locale === "ru" ? "Мой кабинет" : "Mein Konto", icon: <House />, href: "/profile" },
     { name: "Продукты", icon: <Settings2 />, href: "/products" },
     { name: locale === "ru" ? "Аромат недели −10%" : "Duft der Woche −10%", icon: <Sparkles />, href: "/day-offer" },
     { name: "Акции", icon: <GalleryHorizontalEnd />, href: "/promotions" },
