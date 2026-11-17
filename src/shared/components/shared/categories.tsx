@@ -9,7 +9,7 @@ import { useCategories } from "../../hooks";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card";
 import { useFiltersStore } from "../../store/filters";
 
-export function selectPerfumeCatalog(gender?: "FEMALE" | "MALE", productGroup: number | null = null) {
+export function selectPerfumeCatalog(gender?: "FEMALE" | "MALE" | "UNISEX", productGroup: number | null = null) {
   const filters = useFiltersStore.getState();
   filters.setCategory(1);
   filters.setProductGroup(productGroup);
@@ -34,6 +34,7 @@ export const Categories: FC<Props> = ({ items, className }) => {
     </HoverCard>
     <Link href="/items?category=1&gender=FEMALE" onClick={() => selectPerfumeCatalog("FEMALE")} className={itemClass}>{ru ? "Женские" : "Damen"}</Link>
     <Link href="/items?category=1&gender=MALE" onClick={() => selectPerfumeCatalog("MALE")} className={itemClass}>{ru ? "Мужские" : "Herren"}</Link>
+    <Link href="/items?category=1&gender=UNISEX" onClick={() => selectPerfumeCatalog("UNISEX")} className={itemClass}>{ru ? "Унисекс" : "Unisex Düfte"}</Link>
     <NativeLink prefetch={false} href="/discovery/index.html" className={itemClass}>Discovery Box</NativeLink>
     <Link href="/sale" aria-label={ru ? "SALE — Скидки" : "SALE — Reduzierte Artikel"} className="inline-flex items-center rounded-sm bg-[#923a40] px-3 py-1 text-sm font-semibold tracking-[.12em] text-white hover:bg-[#70282e]">SALE</Link>
   </nav>;
