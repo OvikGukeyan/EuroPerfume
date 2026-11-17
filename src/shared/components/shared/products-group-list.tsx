@@ -57,7 +57,7 @@ export const ProductsGroupList: React.FC<Props> = ({ className }) => {
           <div
             id="products-section"
             className={cn(
-              "grid grid-cols-2 gap-3   lg:grid-cols-4 md:gap-x-[20px] md:gap-y-[60px] scroll-mt-96",
+              "catalogue-products-grid grid grid-cols-2 gap-3 lg:grid-cols-4 md:gap-x-[20px] md:gap-y-[60px] scroll-mt-96",
               className
             )}
           >
