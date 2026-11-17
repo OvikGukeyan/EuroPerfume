@@ -60,3 +60,13 @@
 .compact-product .home-product-buy>button:hover{background:#304a3d;border-color:#304a3d}
 .compact-product .home-product-heart[aria-pressed=true]{color:#824b50}
 @media(max-width:767px){.compact-product .home-product-description{min-height:66px}.compact-product .compact-format-badge{font-size:9px}}
+
+/* Share content rows across neighbouring cards without fixed empty title space. */
+.home-products-grid > .home-product.compact-selection{display:grid;grid-template-rows:subgrid;grid-row:span 5;row-gap:0;align-self:stretch}
+.compact-selection .home-product-description{min-height:0;padding-top:8px;padding-bottom:0;align-self:start}
+.compact-selection .compact-product-meta{align-self:end;margin:6px 0 8px;flex-wrap:nowrap}
+.compact-selection .home-product-price{column-gap:5px;font-size:clamp(17px,2.8vw,21px)}
+.compact-selection .home-product-buy{align-self:start}
+.compact-selection .compact-product-extra{align-self:start;padding-bottom:8px}
+.compact-selection .compact-product-price-history{font-size:10px;line-height:1.4;color:#777;margin:0 0 3px;overflow-wrap:anywhere}
+@supports not (grid-template-rows:subgrid){.home-products-grid > .home-product.compact-selection{display:flex}.compact-selection .home-product-description{min-height:52px}}

@@ -90,7 +90,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
   const finalDiscountPrice = priced.discounted ? priced.effective : undefined;
 
   return (
-    <article className={cn("home-product compact-product", className)}>
+    <article className={cn("home-product compact-product compact-selection", className)}>
       <div className="home-product-photo">
         <Link href={productHref} className="absolute inset-0 p-5 md:p-8" aria-label={`${brand.name} ${name}`}>
           <Image src={displayBottle?.image || imageUrl || variations?.[0]?.imageUrl || ""} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" className="object-contain p-4 md:p-7" />
@@ -112,11 +112,11 @@ export const ProductSelectionItem: React.FC<Props> = ({
         </p>
         {productGroup.onTap && <span className="compact-product-size">{displayBottle?.ml ?? 2} ml</span>}
       </div>
-      {priced.dayOffer && <p className="mt-1 text-[10px] text-neutral-500">{locale === "ru" ? "Низшая цена за 30 дней: " : "Niedrigster Preis der letzten 30 Tage: "}{formatMoney(finalPrice)} €</p>}
       <div className="home-product-buy">
         <ByProductDialog dayOffer={dayOffer} preferredBottleId={displayBottle?.id} bottles={bottles} available={available} id={id} variations={variations} price={price} discountPrice={discountPrice} brand={brand} imageUrl={imageUrl} name={name} productGroup={productGroup} />
       </div>
       <div className="compact-product-extra">
+        {priced.dayOffer && <p className="compact-product-price-history">{locale === "ru" ? "Низшая цена за 30 дней: " : "Niedrigster Preis der letzten 30 Tage: "}{formatMoney(finalPrice)} €</p>}
         <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
         {productGroup.onTap && <p className="home-product-volume">({formatUnitPrice((finalDiscountPrice ?? finalPrice) / ((displayBottle?.ml ?? 2) / 1000))} € / 1 l)</p>}
         {reviews && count > 0 && <Link href={`/product-reviews/${id}`} className="home-product-rating"><Rating value={averageRating} reviewsCount={count} /></Link>}
