@@ -1,4 +1,80 @@
-export function noteLabel(note:{labelRu:string;labelDe:string},locale:"ru"|"de") {
-  if(locale==="ru") return note.labelRu.trim();
-  return note.labelRu.trim()==="Лесной орех" && note.labelDe.trim()==="Walnuss" ? "Haselnuss" : note.labelDe.trim();
+// Keep localized display names consistent across the pyramid and characteristics.
+const germanLabels: Record<string, string> = {
+  "Apricot": "Aprikose",
+  "Absinthe": "Absinth",
+  "Absolute Vanilla": "Vanille-Absolue",
+  "Quince": "Quitte",
+  "Ambrett": "Ambrette",
+  "Amiris": "Amyris",
+  "Afrikanische Orange": "Afrikanische Orangenblüte",
+  "Gedion": "Hedione",
+  "Damask Rose": "Damaszener Rose",
+  "Drok": "Ginster",
+  "Kapuzinerkresse": "Geißblatt",
+  "Kuvshinka": "Seerose",
+  "Ladanik": "Zistrose",
+  "Eisiger Zitrone": "Eisige Zitrone",
+  "Walnuss": "Haselnuss",
+  "Bitterorange Blatt": "Bitterorangenblatt",
+  "Blatt von Rüben(?)": "Rhabarberblatt",
+  "Blatt Schwarze Johannisbeere": "Blatt der Schwarzen Johannisbeere",
+  "Madagaskar Vanille": "Madagaskar-Vanille",
+  "Madagaskar Pfeffer": "Madagaskar-Pfeffer",
+  "Maienrose": "Mairose",
+  "Mastikovoye Derevo": "Mastixbaum",
+  "Fenugreek": "Bockshornklee",
+  "Sichuan Pfeffer": "Sichuanpfeffer",
+  "Turkish Delight": "Lokum",
+  "Rosa Wasser": "Rosenwasser",
+  "Rosiges Holz": "Rosenholz",
+  "Rosa Blütenblätter": "Rosenblätter",
+  "Graue Amber": "Graue Ambra",
+  "Süßer Erbse": "Duftwicke",
+  "Süßer Mandel": "Süße Mandel",
+  "Elemi Harz": "Elemiharz",
+  "Szechuan Pfeffer": "Szechuanpfeffer",
+  "Tiara": "Tiaré",
+  "Schilfrohr-Sirup": "Rohrzucker",
+  "Tunesischer Orangenblüte": "Tunesische Orangenblüte",
+  "Fleurdoranz": "Orangenblüten-Akkord",
+  "Frezia": "Freesie",
+  "Fruchtwasser": "Fruchtiger Wasserakkord",
+  "Tsibetine": "Zibetin",
+  "Civetta": "Zibet",
+  "Zyklamen": "Alpenveilchen",
+  "Citron": "Zitronatzitrone",
+  "Ulun-Tee": "Oolong-Tee",
+  "Schwarze Holunder": "Schwarzer Holunder",
+  "Elem": "Elemi",
+  "Elemis": "Elemiharz-Akkord",
+  "holzige Noten": "Holzige Noten",
+  "Eichenmoos.": "Eichenmoos",
+  "Immortelle absolute": "Immortelle-Absolue",
+  "Pampelmuse": "Grapefruit",
+  "Petigrain": "Petitgrain",
+  "weiße Dahlie": "Weiße Dahlie",
+  "weiße Iris": "Weiße Iris",
+  "orientalische Duftnoten": "Orientalische Duftnoten",
+  "weißer Amber": "Weißer Amber",
+  "Blauer Hyazinth": "Blaue Hyazinthe",
+  "Mohito": "Mojito",
+  "Rangoon Creeper": "Rangun-Schlinger",
+  "tropisch-grün": "Tropisches Grün",
+  "Note von Erdbeerblättern": "Erdbeerblatt",
+  "Candied Lemon": "Kandierte Zitrone",
+  "Peanut Butter": "Erdnussbutter",
+  "Wisteria": "Blauregen",
+  "Rose Oil": "Rosenöl",
+  "Iris Butter": "Irisbutter",
+  "ATLAS-ZEDER": "Atlaszeder"
+};
+
+export function noteLabel(note: { id?: number; labelRu: string; labelDe: string }, locale: "ru" | "de") {
+  if (locale === "ru") {
+    const label = note.labelRu.trim();
+    return label === "Candied Lemon" ? "Засахаренный лимон" : label;
+  }
+  const label = note.labelDe.trim();
+  if (note.labelRu.trim() === "Удовая древесина" && label === "Holz") return "Oudholz";
+  return germanLabels[label] ?? label;
 }

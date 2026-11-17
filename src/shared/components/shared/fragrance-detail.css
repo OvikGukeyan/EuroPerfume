@@ -23,3 +23,13 @@
 /* One bounded media frame for single photos, carousels and video on every entry route. */
 .fragrance-gallery{height:clamp(400px,42vw,560px);min-height:0;min-width:0}
 @media(max-width:767px){.fragrance-gallery{height:clamp(280px,85vw,390px);min-height:0}}
+
+/* Photographic scent notes: complete pyramids with consistent, localized captions. */
+.fragrance-notes{gap:28px;align-items:start}
+.fragrance-note-stage[data-stage]{background:transparent;border:0;border-radius:0;padding:0;min-width:0}
+.fragrance-note-stage h3{font-size:12px;font-weight:500;letter-spacing:1.4px;color:#705753;padding:0 0 14px;border-bottom:1px solid #e9e4df;margin-bottom:18px}
+.fragrance-note-stage ul{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:20px 10px;align-items:start}
+.fragrance-note-stage li.fragrance-note-card{display:flex;flex-direction:column;align-items:center;gap:9px;padding:0;background:transparent;border:0;border-radius:0;min-width:0;text-align:center}
+.fragrance-note-photo{display:block;width:78px;max-width:100%;aspect-ratio:1;background-color:#fff;background-size:600% 600%;background-repeat:no-repeat;border-radius:50%;flex:none}
+.fragrance-note-label{font-size:12px;line-height:1.45;color:#514a45;overflow-wrap:anywhere;max-width:130px}
+@media(max-width:767px){.fragrance-notes{gap:26px}.fragrance-note-stage ul{grid-template-columns:repeat(auto-fit,minmax(76px,1fr));gap:18px 12px}.fragrance-note-stage h3{padding-bottom:12px;margin-bottom:16px}.fragrance-note-photo{width:84px}.fragrance-note-label{font-size:12px}}

@@ -6,6 +6,7 @@ import { formatMoney, formatUnitPrice } from "@/src/shared/lib/money";
 import { BottleOption, unitPricePerLitre } from "@/src/shared/lib/full-bottle";
 import "./fragrance-detail.css";
 import { noteLabel } from "../../lib/note-label";
+import { FragranceNoteCard } from "./fragrance-note-card";
 import { FragranceFormatPicker } from "./fragrance-format-picker";
 import { Link } from "@/src/i18n/navigation";
 import { concentrations } from "@/../../prisma/constants";
@@ -129,8 +130,8 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
     {type:"TOP",title:ru?"Верхние ноты":"Kopfnoten"},
     {type:"HEART",title:ru?"Ноты сердца":"Herznoten"},
     {type:"BASE",title:ru?"Базовые ноты":"Basisnoten"},
-  ].map(g=>({...g,notes:product.productNotes.filter(n=>n.noteType===g.type).map(n=>noteLabel(n.note,locale))}));
-  const scentNotes=noteGroups.flatMap(g=>g.notes).slice(0,5);
+  ].map(g=>({...g,notes:product.productNotes.filter(n=>n.noteType===g.type).map(n=>n.note)}));
+  const scentNotes=noteGroups.flatMap(g=>g.notes).map(note=>noteLabel(note,locale)).slice(0,5);
   const concentrationName=concentrations.find(c=>c.value===product.concentration)?.name;
   const selectedMl=bottle?.ml ?? (product.productGroup.onTap ? volume : Number(product.volume));
   const unitPrice=unitPricePerLitre(finalDiscountPrice ?? finalPrice,selectedMl);
@@ -163,7 +164,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
       </div>
     </div>
     {description && <section className="fragrance-reading"><h2>{ru?"Знакомство с ароматом":"Den Duft entdecken"}</h2><div className="fragrance-description">{description.split(/\n\s*\n/).map((paragraph,i)=><p key={i} className="mb-4">{paragraph.trim()}</p>)}</div></section>}
-    {noteGroups.some(g=>g.notes.length>0) && <section className="fragrance-reading"><h2>{ru?"Как раскрывается аромат":"Die Duftpyramide"}</h2><div className="fragrance-notes">{noteGroups.filter(g=>g.notes.length>0).map(g=><div className="fragrance-note-stage" data-stage={g.type} key={g.type}><h3>{g.title}</h3><ul>{g.notes.map((note,i)=><li key={i}>{note}</li>)}</ul></div>)}</div></section>}
+    {noteGroups.some(g=>g.notes.length>0) && <section className="fragrance-reading"><h2>{ru?"Как раскрывается аромат":"Die Duftpyramide"}</h2><div className="fragrance-notes">{noteGroups.filter(g=>g.notes.length>0).map(g=><div className="fragrance-note-stage" data-stage={g.type} key={g.type}><h3>{g.title}</h3><ul>{g.notes.map(note=><FragranceNoteCard key={note.id} note={note} locale={locale}/>)}</ul></div>)}</div></section>}
     <section className="fragrance-reading"><details><summary className="cursor-pointer py-3 text-lg">{t("characteristics")}</summary><ProductCharacteristics charactiristics={charactiristics}/></details></section>
     {(product.concentration || product.productGroup.onTap) && <ProductIngredients productId={product.id} translations={product.translations} locale={locale}/>}
   </div>;

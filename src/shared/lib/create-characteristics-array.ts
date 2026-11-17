@@ -74,15 +74,15 @@ export const createCharacteristicsArray = (
 
   const characteristics = [
     { name: (locale === "ru" ? "Бренд" : "Marke"), value: brand.name },
-    { name: (locale === "ru" ? "Аромат" : "Aroma"), value: currentAroma },
-    { name: (locale === "ru" ? "Классификация" : "Klassifikation"), value: currentClassification },
-    { name: (locale === "ru" ? "Верхняя нота" : "Topnote"), value: currentTopNotes },
+    { name: (locale === "ru" ? "Аромат" : "Duftfamilie"), value: currentAroma },
+    { name: (locale === "ru" ? "Классификация" : "Duftkategorie"), value: currentClassification },
+    { name: (locale === "ru" ? "Верхняя нота" : "Kopfnote"), value: currentTopNotes },
     { name: (locale === "ru" ? "Средняя нота" : "Herznote"), value: currentHeartNotes },
     { name: (locale === "ru" ? "Базовая нота" : "Basisnote"), value: currentBaseNotes },
     { name: (locale === "ru" ? "Концентрация" : "Konzentration"), value: currentConcentration || undefined },
     { name: (locale === "ru" ? "Пол" : "Geschlecht"), value: currentGender || undefined },
-    { name: (locale === "ru" ? "Год выпуска" : "Jahr"), value: releaseYear?.toString() || undefined },
-    { name: (locale === "ru" ? "Парфюмер" : "Parfumer"), value: perfumer || undefined },
+    { name: (locale === "ru" ? "Год выпуска" : "Erscheinungsjahr"), value: releaseYear?.toString() || undefined },
+    { name: (locale === "ru" ? "Парфюмер" : "Parfümeur"), value: perfumer || undefined },
     { name: (locale === "ru" ? "Страна бренда" : "Land der Marke"), value: translation?.brandCountry },
     { name: (locale === "ru" ? "Страна производства" : "Land der Herstellung"), value: translation?.manufacturingCountry },
     { name: (locale === "ru" ? "Возраст" : "Alter"), value: age?.toString() || undefined },
@@ -93,22 +93,22 @@ export const createCharacteristicsArray = (
     { name: (locale === "ru" ? "Текстура" : "Textur"), value: currentTexture || undefined },
     { name: (locale === "ru" ? "Формула" : "Formel"), value: currentFormula || undefined },
     {
-      name: (locale === "ru" ? "Состав" : "Zusammenstellung"),
+      name: (locale === "ru" ? "Состав" : "Zusammensetzung"),
       value: translation?.compositionFeatures || undefined,
     },
     
     { name: (locale === "ru" ? "Эффект" : "Effekt"), value: currentEffect || undefined },
     { name: (locale === "ru" ? "Продолжительность эффекта" : "Dauer des Effekts"), value: effectDuration?.toString() || undefined },
-    { name: (locale === "ru" ? "Гипоаллергенность" : "Hypoallergeneit"), value: isHypoallergenic },
+    { name: (locale === "ru" ? "Гипоаллергенность" : "Hypoallergen"), value: isHypoallergenic },
     { name: (locale === "ru" ? "Сертификаты" : "Zertifikate"), value: translation?.certificates || undefined },
     { name: (locale === "ru" ? "Этика" : "Ethik"), value: translation?.ethics || undefined },
     {
       name: (locale === "ru" ? "Метод применения" : "Anwendungsmethode"),
       value: currentApplicationMethod || undefined,
     },
-    { name: (locale === "ru" ? "Упаковка" : "Packung"), value: currentPackagingFormat || undefined },
+    { name: (locale === "ru" ? "Упаковка" : "Verpackung"), value: currentPackagingFormat || undefined },
     { name: (locale === "ru" ? "Объем" : "Volumen"), value: volume?.toString() || undefined },
-    { name: (locale === "ru" ? "Тип кожи" : "Köhltyp"), value: currentSkinType || undefined },
+    { name: (locale === "ru" ? "Тип кожи" : "Hauttyp"), value: currentSkinType || undefined },
     { name: (locale === "ru" ? "Материал" : "Material"), value: translation?.material || undefined },
   
   ];
