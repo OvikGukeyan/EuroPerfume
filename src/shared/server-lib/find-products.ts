@@ -1,5 +1,6 @@
 import { fullBottleInclude, withBottleOptions } from "../lib/full-bottle";
 import "server-only";
+import { offerPrices } from "../lib/day-offer";
 import { prisma } from "@/prisma/prisma-client";
 import { Gender, NoteType, PerfumeConcentration, Prisma } from "@prisma/client";
 import { ProductDTO, SafeProduct } from "../services/dto/product.dto";
@@ -9,6 +10,7 @@ import { tr } from "date-fns/locale";
 import { getUserSession } from "./get-user-session";
 
 export interface GetSearchParams {
+  sale?: string;
   query?: string;
   sortBy?: string;
   brands?: string;
@@ -136,6 +138,16 @@ export const findProducts = async (
             ],
           }))
         : [];
+    const sale = params.sale === "1";
+    const now = new Date();
+    const discounted: Prisma.ProductWhereInput = { OR: [
+      { discountPrice: { gt: 0, lt: prisma.product.fields.price } },
+      { dayOfferStartsAt: { lte: now }, dayOfferEndsAt: { gt: now } },
+    ] };
+    const saleCondition: Prisma.ProductWhereInput = { OR: [
+      { AND: [{ available: true }, discounted] },
+      { fullBottles: { some: { available: true, stockPieces: { gt: 0 }, AND: [discounted] } } },
+    ] };
     const whereClause = {
       brandId: { in: brands },
       gender: genders.length > 0 ? { in: genders as Gender[] } : undefined,
@@ -153,7 +165,7 @@ export const findProducts = async (
           : undefined,
       concentration: { in: concentration as PerfumeConcentration[] },
       price:
-        priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
+        !sale && priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
       bottleParentId: null,
       OR: [{available:true},{fullBottles:{some:{available:true,stockPieces:{gt:0}}}}],
       categoryId: categoryId || 1,
@@ -162,7 +174,8 @@ export const findProducts = async (
           ? { some: { id: { in: aromas.map((aroma) => Number(aroma)) } } }
           : undefined,
       AND: [
-        ...(productGroupId ? [{OR:[{productGroupId},{fullBottles:{some:{productGroupId,available:true,stockPieces:{gt:0}}}}]}] : categoryId===1 || !categoryId ? [{productGroupId:{in:[1,2,3]}}] : []),
+        ...(sale ? [saleCondition] : []),
+        ...(productGroupId ? [{OR:[{productGroupId},{fullBottles:{some:{productGroupId,available:true,stockPieces:{gt:0}}}}]}] : !sale && (categoryId===1 || !categoryId) ? [{productGroupId:{in:[1,2,3]}}] : []),
         ...(noteFilters.length ? noteFilters : []),
         ...(searchAND.length ? searchAND : []),
       ],
@@ -193,6 +206,21 @@ export const findProducts = async (
         formula: true,
       },
     });
+
+    if (sale) {
+      const rows = allFilteredProducts.map(product => {
+        const publicProduct = withBottleOptions(product);
+        const ownSale = product.available && offerPrices(product, 2, Boolean(product.productGroup.onTap), now.getTime()).discounted;
+        const bottles = publicProduct.bottles.filter(bottle => bottle.available && offerPrices({ ...bottle, price: bottle.regularPrice ?? bottle.price }, 1, false, now.getTime()).discounted);
+        const bottle = bottles[0];
+        const effectivePrice = ownSale ? offerPrices(product, product.productGroup.onTap ? 2 : 1, Boolean(product.productGroup.onTap), now.getTime()).effective : bottle ? offerPrices({ ...bottle, price: bottle.regularPrice ?? bottle.price }, 1, false, now.getTime()).effective : Infinity;
+        return { ...publicProduct, price: product.price.toNumber(), discountPrice: product.discountPrice?.toNumber() ?? null, reviews: [], bottles, saleBottleOnly: !ownSale, effectivePrice };
+      }).filter(product => !product.saleBottleOnly || product.bottles.length > 0);
+      const availableFilters = getAvailableFilters(rows.map(product => ({ ...product, price: product.effectivePrice })) as unknown as ProductDTO[]);
+      const filtered = rows.filter(product => (params.priceFrom == null || product.effectivePrice >= Number(params.priceFrom)) && (params.priceTo == null || product.effectivePrice <= Number(params.priceTo)));
+      filtered.sort((a, b) => orderBy.price ? (a.effectivePrice - b.effectivePrice) * (orderBy.price === "desc" ? -1 : 1) || a.id - b.id : a.name.trim().localeCompare(b.name.trim(), "de") * (orderBy.name === "desc" ? -1 : 1) || a.id - b.id);
+      return { products: filtered.slice((page - 1) * 24, page * 24).map(({ effectivePrice, ...product }) => product), totalPages: Math.ceil(filtered.length / 24), availableFilters };
+    }
 
     const availableFilters = getAvailableFilters(
       allFilteredProducts as unknown as ProductDTO[]

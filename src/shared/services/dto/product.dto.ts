@@ -22,6 +22,7 @@ import {
 import { AvailableFilters } from "../../store/product";
 export type SafeProduct = Omit<Product, "price" | "discountPrice"> & {
   bottles?: BottleOption[];
+  saleBottleOnly?: boolean;
   price: number;
   discountPrice: number | null;
 };

@@ -1,3 +1,4 @@
+import { usePathname } from "@/src/i18n/navigation";
 import { useEffect, useRef } from "react";
 import { useProductStore } from "../store/product";
 import { GetSearchParams } from "../server-lib/find-products";
@@ -24,6 +25,8 @@ function shallowEqual(
 }
 export const useProducts = () => {
   const searchParams = useSearchParams();
+  const sale = usePathname() === "/sale";
+  const queryKey = JSON.stringify({ ...Object.fromEntries(searchParams.entries()), ...(sale ? { sale: "1" } : {}) });
   const productsState = useProductStore((state) => state);
   const paramsRef = useRef<Record<string, string> | null>(undefined);
 
@@ -32,14 +35,25 @@ export const useProducts = () => {
       paramsRef.current &&
       shallowEqual(
         paramsRef.current,
-        Object.fromEntries(searchParams.entries())
+        JSON.parse(queryKey)
       )
     ) {
       return;
     }
-    paramsRef.current = Object.fromEntries(searchParams.entries());
-    productsState.fetchAllProducts(searchParams as GetSearchParams);
-  }, [searchParams, productsState]);
+    paramsRef.current = JSON.parse(queryKey);
+    productsState.fetchAllProducts(JSON.parse(queryKey) as GetSearchParams);
+  }, [queryKey, productsState]);
+
+  useEffect(() => {
+    if (!sale) return;
+    const refresh = () => {
+      if (document.visibilityState === "visible") void useProductStore.getState().fetchAllProducts(JSON.parse(queryKey), true);
+    };
+    const timer = window.setInterval(refresh, 60000);
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => { window.clearInterval(timer); window.removeEventListener("focus", refresh); document.removeEventListener("visibilitychange", refresh); };
+  }, [sale, queryKey]);
 
   return productsState;
 };

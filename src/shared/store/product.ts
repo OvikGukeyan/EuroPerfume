@@ -23,10 +23,12 @@ interface ProductState {
   loading: boolean;
   error: boolean;
 
-  fetchAllProducts: (params?: GetSearchParams) => Promise<void>;
+  fetchAllProducts: (params?: GetSearchParams, background?: boolean) => Promise<void>;
   deleteProduct: (id: number) => Promise<void>;
   switchAvailability: (id: number, available: boolean) => Promise<void>;
 }
+
+let productsRequestId = 0;
 
 export const useProductStore = create<ProductState>((set, get) => ({
   items: [],
@@ -35,10 +37,12 @@ export const useProductStore = create<ProductState>((set, get) => ({
   loading: true,
   error: false,
 
-  fetchAllProducts: async (params?: GetSearchParams) => {
+  fetchAllProducts: async (params?: GetSearchParams, background = false) => {
+    const requestId = ++productsRequestId;
     try {
-      set({ loading: true });
+      if (!background) set({ loading: true });
       const { products, totalPages, availableFilters } = await Api.products.getAll(params);
+      if (requestId !== productsRequestId) return;
       set({
         items: products,
         pages: totalPages,
@@ -47,7 +51,7 @@ export const useProductStore = create<ProductState>((set, get) => ({
     } catch (error) {
       console.error(error);
     } finally {
-      set({ loading: false });
+      if (requestId === productsRequestId) set({ loading: false });
     }
   },
 

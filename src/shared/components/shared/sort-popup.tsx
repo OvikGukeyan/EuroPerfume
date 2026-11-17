@@ -15,7 +15,7 @@ export const SortPopup: FC<Props> = ({ className }) => {
     state.setOrderBy,
     state.orderBy,
   ]);
-  const [currentValue, setCurrentValue] = React.useState("nameAsc");
+  const currentValue = orderBy.price ? (orderBy.price === "desc" ? "priceDesc" : "priceAsc") : orderBy.name === "desc" ? "nameDesc" : "nameAsc";
   const sortItems = [
     {
       name: {
@@ -33,14 +33,14 @@ export const SortPopup: FC<Props> = ({ className }) => {
     },
     {
       name: {
-        de: "Price: low to high",
+        de: "Preis: aufsteigend",
         ru: "Цена: низкая - высокая",
       },
       value: "priceAsc",
     },
     {
       name: {
-        de: "Price: high to low",
+        de: "Preis: absteigend",
         ru: "Цена: высокая - низкая",
       },
       value: "priceDesc",
@@ -51,11 +51,10 @@ export const SortPopup: FC<Props> = ({ className }) => {
   const onChange = (value: string) => {
 
     setOrderBy(value)
-    setCurrentValue(value)
   };
   return (
     <div className={cn("", className)}>
-      <Select onValueChange={(value) => onChange(value)}>
+      <Select value={currentValue} onValueChange={(value) => onChange(value)}>
         <SelectTrigger className="inline-flex items-center gap-1 bg-gray-50 px-3 h-[48px] rounded-md cursor-pointer">
           <ArrowUpDown size={16} />
           <b className="text-primary">
