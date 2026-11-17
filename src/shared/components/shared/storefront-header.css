@@ -1,0 +1,25 @@
+/* Desktop header shares one row; mobile header and menu retain their layout. */
+@media(min-width:768px){
+ .storefront-header-row{gap:clamp(8px,1.2vw,20px)}
+ .storefront-header-logo{width:160px;flex-shrink:0;margin:0}
+ .storefront-header-search{min-width:160px;max-width:340px;margin:0}
+ .storefront-header-navigation{flex-shrink:0}
+ .storefront-header-navigation>nav{gap:clamp(12px,1.7vw,26px)}
+ .storefront-header-navigation>nav>a,.storefront-header-navigation>nav>[data-state]{font-size:14px}
+ .storefront-header-search{flex:1 1 220px;min-width:130px;max-width:340px;margin:0 0 0 auto}
+ .storefront-header-actions{flex-shrink:0;gap:4px}
+ .storefront-header-profile button{padding-left:8px;padding-right:8px}
+}
+@media(min-width:768px) and (max-width:1199px){
+ .storefront-header-row{gap:8px;padding-left:16px;padding-right:16px}
+ .storefront-header-logo{width:108px}
+ .storefront-header-navigation>nav{gap:12px}
+ .storefront-header-navigation>nav>a,.storefront-header-navigation>nav>[data-state]{font-size:12px}
+ .storefront-header-navigation>nav>a:last-child{padding-left:8px;padding-right:8px}
+ .storefront-header-search{min-width:96px;flex-basis:150px}
+ .storefront-header-profile button{width:36px;padding:0}
+ .storefront-header-profile button span{display:none}
+ .storefront-header-actions{gap:0}
+ .storefront-header-actions>button{padding-left:8px;padding-right:8px}
+ .storefront-header-actions>button>b,.storefront-header-actions>button>span{display:none}
+}

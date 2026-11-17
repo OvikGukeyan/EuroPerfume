@@ -1,4 +1,5 @@
 "use client";
+import "./storefront-header.css";
 
 import { StorefrontNavigation } from "./categories";
 import { cn } from "@/src/shared/lib/utils";
@@ -80,14 +81,14 @@ export const Header: React.FC<Props> = ({
       </div>
       <header className={cn("", className)}>
         <Separator />
-        <div className="flex items-center justify-between py-3 md:py-4 px-3 md:px-5 ">
+        <div className="storefront-header-row flex items-center justify-between py-3 md:py-4 px-3 md:px-5">
           <div className="md:hidden flex items-center">
             <MenuDrawer />
             <ProfileButton onClickSignIn={() => setOpenAuthModal(true)} />
           </div>
           <div
             className={cn(
-              "relative flex justify-center items-center w-36 md:w-44 h-10 ",
+              "storefront-header-logo relative flex justify-center items-center w-36 md:w-44 h-10 ",
               hasSearch && "mx-auto"
             )}
           >
@@ -104,23 +105,23 @@ export const Header: React.FC<Props> = ({
             </Link>
           </div>
 
+          <StorefrontNavigation />
           {hasSearch && (
-            <div className="mx-10 flex-1 hidden md:flex">
+            <div className="storefront-header-search mx-10 flex-1 hidden md:flex">
               <SearchInput
                 onProductClick={(product: ProductDTO) => router.push(`/product/${product.id}`)}
               />
             </div>
           )}
-          <div></div>
 
-          <div className="flex  items-center gap-0 md:gap-3">
+          <div className="storefront-header-actions flex items-center gap-0 md:gap-3">
             <AuthModal
               className="hidden "
               open={openAuthModal}
               onClose={() => setOpenAuthModal(false)}
             />
             <ProfileButton
-              className="hidden md:block"
+              className="storefront-header-profile hidden md:block"
               onClickSignIn={() => setOpenAuthModal(true)}
             />
 
@@ -136,7 +137,6 @@ export const Header: React.FC<Props> = ({
             {hasCart && <CartButton />}
           </div>
         </div>
-        <StorefrontNavigation />
       </header>
     </>
   );
