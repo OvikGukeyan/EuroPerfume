@@ -16,7 +16,7 @@ export const RegisterForm:FC<Props>=({onClose})=>{
  async function onSubmit(data:RegistrationInput){try{
  const result=await registerUser({...data,locale});
  await signIn('credentials',{email:data.email,password:data.password,redirect:false});
- toast.success(ru?'Аккаунт создан. Подтвердите email по ссылке в письме.':'Konto erstellt. Bitte bestätige deine E-Mail-Adresse über den Link in der E-Mail.');
+ toast.success(result.accountEmailSent?(ru?'Аккаунт создан. Подтвердите email по ссылке в письме.':'Konto erstellt. Bitte bestätige deine E-Mail-Adresse über den Link in der E-Mail.'):(ru?'Аккаунт создан. Письмо подтверждения не удалось отправить — обратитесь в поддержку.':'Konto erstellt. Die Bestätigungs-E-Mail konnte nicht versendet werden. Bitte kontaktiere unseren Kundenservice.'));
  if(data.marketingOptIn){if(result.marketingEmailSent)toast(ru?'Для рекламы нужно отдельное подтверждение: мы отправили второе письмо.':'Für den Newsletter ist eine separate Bestätigung nötig. Wir haben dir eine zweite E-Mail gesendet.');else toast(ru?'Подписка пока не активна. Письмо можно запросить повторно в личном кабинете.':'Der Newsletter ist noch nicht aktiv. Die Bestätigungs-E-Mail kannst du im Kundenkonto erneut anfordern.');}
  onClose();
  }catch{toast.error(ru?'Не удалось зарегистрироваться. Проверьте данные. Возможно, этот email уже зарегистрирован.':'Registrierung fehlgeschlagen. Bitte prüfe deine Angaben. Diese E-Mail-Adresse ist möglicherweise bereits registriert.');}}

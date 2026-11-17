@@ -1,5 +1,6 @@
 'use client';
 import React, { FC } from "react";
+import {useLocale} from "next-intl";
 import { FormProvider, useForm } from "react-hook-form";
 import { formLoginSchema, TFormLoginValues } from "./schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -15,6 +16,7 @@ interface Props {
 }
 export const LoginForm: FC<Props> = ({ className, onClose }) => {
 
+  const ru=useLocale()==="ru";
   const form = useForm<TFormLoginValues>({
     resolver: zodResolver(formLoginSchema),
     defaultValues: {
@@ -34,12 +36,12 @@ export const LoginForm: FC<Props> = ({ className, onClose }) => {
         throw Error();
       }
 
-      toast.success("Successfully logged in", { icon: "✅" });
+      toast.success(ru?"Вы вошли в аккаунт":"Erfolgreich angemeldet", { icon: "✅" });
 
       onClose?.();
     } catch (error) {
       console.error("Error [LOGIN]", error);
-      toast.error("Something went wrong", { icon: "❌" });
+      toast.error(ru?"Проверьте email и пароль.":"Bitte E-Mail und Passwort prüfen.", { icon: "❌" });
     }
   };
   return (
@@ -50,8 +52,8 @@ export const LoginForm: FC<Props> = ({ className, onClose }) => {
       >
         <div className="flex justify-between items-center">
           <div className="mr-2">
-            <Title text="Sign in" size="md" className="font-bold" />
-            <p className="text-gray-400">Enter your email to sign in</p>
+            <Title text={ru?"Войти":"Anmelden"} size="md" className="font-bold" />
+            <p className="text-gray-400">{ru?"Введите email и пароль.":"Bitte E-Mail-Adresse und Passwort eingeben."}</p>
           </div>
           <Image
             src="/assets/images/phone-icon.png"
@@ -63,7 +65,7 @@ export const LoginForm: FC<Props> = ({ className, onClose }) => {
         <FormInput name="email" label="E-mail" required />
         <FormInput
           name="password"
-          label="Password"
+          label={ru?"Пароль":"Passwort"}
           type="password"
           required
         />
@@ -73,7 +75,7 @@ export const LoginForm: FC<Props> = ({ className, onClose }) => {
           className="h-12 text-base"
           type="submit"
         >
-          Sign in
+          {ru?"Войти":"Anmelden"}
         </Button>
       </form>
     </FormProvider>
