@@ -3,16 +3,14 @@ import NativeLink from "next/link";
 import React from "react";
 import { ChevronDown } from "lucide-react";
 import { Category, ProductGroup } from "@prisma/client";
-import { useFiltersStore } from "@/src/shared/store/filters";
 import { Link } from "@/src/i18n/navigation";
 type Featured={id:number;name:string;brand:string;image:string;price:number};
 type Props={category:Category & {productGroups:ProductGroup[]};setOpen:(v:boolean)=>void;locale:"ru"|"de";className?:string;featured?:Featured[];showFeatured?:boolean};
 export const MenuDrawerItem:React.FC<Props>=({category,setOpen,locale,featured=[],showFeatured=false,className})=>{
  const [expanded,setExpanded]=React.useState(false);
- const [setCategory,setProductGroup]=useFiltersStore(state=>[state.setCategory,state.setProductGroup]);
  const title=locale==="ru"?category.labelRu:category.labelDe;
- const pickCategory=()=>{setCategory(category.id);setProductGroup(null);setOpen(false);};
- const pickGroup=(group:ProductGroup)=>{setCategory(group.categoryId);setProductGroup(group.id);setOpen(false);};
+ const pickCategory=()=>setOpen(false);
+ const pickGroup=(group:ProductGroup)=>setOpen(false);
  return <section className={`border-b border-[#e9e8e6] ${className||""}`}>
   <button type="button" onClick={()=>setExpanded(v=>!v)} aria-expanded={expanded} aria-controls={`menu-category-${category.id}`} className="flex min-h-[68px] w-full items-center justify-between gap-4 py-4 text-left text-[22px] font-normal tracking-[-.025em] text-[#222] transition-colors hover:text-[#746455] sm:text-[25px]">
    <span>{title}</span><ChevronDown size={21} strokeWidth={1.8} className={`shrink-0 transition-transform duration-200 ${expanded?"rotate-180":""}`}/>

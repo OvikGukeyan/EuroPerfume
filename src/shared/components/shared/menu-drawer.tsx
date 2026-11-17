@@ -1,6 +1,5 @@
 "use client";
 import NativeLink from "next/link";
-import { selectPerfumeCatalog } from "./categories";
 import React, { FC, Suspense, useEffect, useState } from "react";
 import { cn } from "@/src/lib/utils";
 import { LanguageSwitcher, MenuDrawerItem, SocialMediaBar } from ".";
@@ -43,9 +42,9 @@ export const MenuDrawer:FC<Props>=({className})=>{
      </header>
      <div>
       {categories.filter(category=>category.id===1).map(category=><MenuDrawerItem key={category.id} setOpen={setOpen} category={category} locale={locale} featured={featured} showFeatured/>)}
-      <Link href="/items?category=1&gender=FEMALE" onClick={()=>{selectPerfumeCatalog("FEMALE");setOpen(false);}} className="flex min-h-16 items-center border-b border-[#e5e5e5] py-5 text-[21px] font-normal">{locale==="ru"?"Женские":"Damen"}</Link>
-      <Link href="/items?category=1&gender=MALE" onClick={()=>{selectPerfumeCatalog("MALE");setOpen(false);}} className="flex min-h-16 items-center border-b border-[#e5e5e5] py-5 text-[21px] font-normal">{locale==="ru"?"Мужские":"Herren"}</Link>
-      <Link href="/items?category=1&gender=UNISEX" onClick={()=>{selectPerfumeCatalog("UNISEX");setOpen(false);}} className="flex min-h-16 items-center border-b border-[#e5e5e5] py-5 text-[21px] font-normal">{locale==="ru"?"Унисекс":"Unisex Düfte"}</Link>
+      <Link href="/items?category=1&gender=FEMALE" onClick={()=>setOpen(false)} className="flex min-h-16 items-center border-b border-[#e5e5e5] py-5 text-[21px] font-normal">{locale==="ru"?"Женские":"Damen"}</Link>
+      <Link href="/items?category=1&gender=MALE" onClick={()=>setOpen(false)} className="flex min-h-16 items-center border-b border-[#e5e5e5] py-5 text-[21px] font-normal">{locale==="ru"?"Мужские":"Herren"}</Link>
+      <Link href="/items?category=1&gender=UNISEX" onClick={()=>setOpen(false)} className="flex min-h-16 items-center border-b border-[#e5e5e5] py-5 text-[21px] font-normal">{locale==="ru"?"Унисекс":"Unisex Düfte"}</Link>
       <NativeLink href="/discovery/index.html" prefetch={false} onClick={()=>setOpen(false)} className="flex min-h-16 items-center border-b border-[#e5e5e5] py-5 text-[21px] font-normal">Discovery Box</NativeLink>
       <Link href="/sale" onClick={()=>setOpen(false)} className="flex min-h-16 items-center justify-between border-b border-[#e5e5e5] py-5 text-[21px] font-medium text-[#923a40]" aria-label={locale==="ru"?"SALE — Скидки":"SALE — Reduzierte Artikel"}>
        <span>SALE</span>

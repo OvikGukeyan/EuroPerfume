@@ -1,3 +1,4 @@
+import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import qs from "qs";
 import { Filters } from "../store/filters";
@@ -8,6 +9,9 @@ export const useQueryFilters = (filters: Filters) => {
   const previousQuery = useRef<string | null>(null);
   const router = useRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const locationKey = `${pathname}?${searchParams.toString()}`;
+  const previousLocation = useRef(locationKey);
   const isFilterPage = pathname === "/items" || pathname === "/products" || pathname === "/sale";
   useEffect(() => {
     const params = {
@@ -30,24 +34,19 @@ export const useQueryFilters = (filters: Filters) => {
     };
     const query = qs.stringify(params, { arrayFormat: "comma" });
     
-    if (isMounted.current && previousQuery.current !== query) {
-      previousQuery.current = query;
-      if (isFilterPage) {
-        // window.history.pushState(null, "", `${pathname}?${query}`);
-        router.push(`${pathname}?${query}`);
-
-      } else if (query.length > 0) {
-        router.push(`/items?${query}`);
-      }
-
+    const locationChanged = previousLocation.current !== locationKey;
+    previousLocation.current = locationKey;
+    const queryChanged = previousQuery.current !== query;
+    previousQuery.current = query;
+    if (!isMounted.current || locationChanged) {
+      isMounted.current = true;
+      return;
     }
-
-    isMounted.current = true;
-  }, [filters, pathname, router, isFilterPage]);
-
-  useEffect(() => {
-    if (!isFilterPage) {
-      previousQuery.current = null;
+    const normalized = (value: string) => { const params = new URLSearchParams(value); params.sort(); return params.toString(); };
+    if (queryChanged && normalized(query) !== normalized(searchParams.toString())) {
+      if (isFilterPage) router.push(`${pathname}${query ? `?${query}` : ""}`);
+      else if (query) router.push(`/items?${query}`);
     }
-  }, [pathname, isFilterPage]);
+  }, [filters, pathname, router, isFilterPage, locationKey, searchParams]);
+
 };

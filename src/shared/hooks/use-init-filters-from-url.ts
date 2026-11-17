@@ -1,9 +1,11 @@
+import { useSearchParams } from "next/navigation";
 import { usePathname } from "@/src/i18n/navigation";
 import { useEffect } from "react";
 import { Filters, useFiltersStore } from "../store/filters";
 
 export const useInitFiltersFromUrl = () => {
   const pathname = usePathname();
+  const params = useSearchParams();
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -50,5 +52,5 @@ export const useInitFiltersFromUrl = () => {
     };
 
     useFiltersStore.getState().setFilters(newFilters);
-  }, [pathname]);
+  }, [pathname, params]);
 };
