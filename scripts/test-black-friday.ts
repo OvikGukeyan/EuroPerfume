@@ -1,10 +1,14 @@
 import assert from "node:assert/strict";
-import { BLACK_FRIDAY, blackFridayActive, isBlackFridayCode } from "../src/shared/lib/black-friday";
+import { BLACK_FRIDAY, blackFridayBannerVisible, blackFridayActive, isBlackFridayCode } from "../src/shared/lib/black-friday";
 import { capturePricing, readPricing, reviseOrderPricing } from "../src/shared/lib/tax";
 const start=Date.parse(BLACK_FRIDAY.startsAt), end=Date.parse(BLACK_FRIDAY.endsAt);
 assert.equal(end-start,86400000);
 assert.equal(new Date(start).toISOString(),"2026-11-26T23:00:00.000Z");
 for(const [time,active] of [[start-1,false],[start,true],[end-1,true],[end,false],[end+1,false]] as const) assert.equal(blackFridayActive(time),active);
+const bannerStart = Date.parse(BLACK_FRIDAY.bannerStartsAt);
+assert.equal(new Date(bannerStart).toISOString(), "2026-11-26T17:00:00.000Z");
+for (const [time, visible] of [[bannerStart - 1, false], [bannerStart, true], [start - 1, true], [end - 1, true], [end, false]] as const) assert.equal(blackFridayBannerVisible(time), visible);
+assert.equal(blackFridayActive(bannerStart), false);
 assert.ok(isBlackFridayCode(" black15 "));
 const line=(id:number,price:number,sale:number|null=null,onTap=false,quantity=1)=>({productId:id,variationId:null,quantity,product:{name:"Test",price,discountPrice:sale,productGroup:{onTap}}});
 const at=new Date(start);

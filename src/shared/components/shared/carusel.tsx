@@ -1,7 +1,7 @@
 "use client";
 import "./storefront-hero.css";
 import { BlackFridayHero } from "./black-friday-hero";
-import { BLACK_FRIDAY } from "@/src/shared/lib/black-friday";
+import { BLACK_FRIDAY, blackFridayBannerVisible } from "@/src/shared/lib/black-friday";
 import { PromotionHero } from "./promotion-hero";
 import { FragranceDayHero } from "./fragrance-day-hero";
 import type { FeaturedDayFragrance } from "@/src/shared/server-lib/get-active-day-fragrance";
@@ -37,11 +37,11 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
   const locale = useLocale();
   const language = locale === "de" ? Languages.DE : Languages.RU;
   
-  const now = useDayOfferClock([{dayOfferStartsAt:BLACK_FRIDAY.startsAt,dayOfferEndsAt:BLACK_FRIDAY.endsAt},...slides.map(s=>({dayOfferStartsAt:s.visibleFrom,dayOfferEndsAt:s.visibleUntil})),...dayFragrances.map(f=>({dayOfferStartsAt:f.startsAt,dayOfferEndsAt:f.endsAt}))]);
+  const now = useDayOfferClock([{dayOfferStartsAt:BLACK_FRIDAY.bannerStartsAt,dayOfferEndsAt:BLACK_FRIDAY.endsAt},...slides.map(s=>({dayOfferStartsAt:s.visibleFrom,dayOfferEndsAt:s.visibleUntil})),...dayFragrances.map(f=>({dayOfferStartsAt:f.startsAt,dayOfferEndsAt:f.endsAt}))]);
   const visibleSlides = slides.filter(s=>(!s.visibleFrom || new Date(s.visibleFrom).getTime() <= now) && (!s.visibleUntil || new Date(s.visibleUntil).getTime() > now));
   const featured=dayFragrances.find(f=>dayOfferActive({dayOfferStartsAt:f.startsAt,dayOfferEndsAt:f.endsAt},now));
   const showDay=Boolean(featured);
-  const showBlackFriday = blackFriday && now < Date.parse(BLACK_FRIDAY.endsAt);
+  const showBlackFriday = blackFriday && blackFridayBannerVisible(now);
   const featuredCount=promotions.length+(showDay?1:0)+(showBlackFriday?1:0);
   const slideCount = featuredCount + visibleSlides.length;
   useEffect(()=>{
