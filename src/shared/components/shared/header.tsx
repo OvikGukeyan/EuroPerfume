@@ -16,7 +16,7 @@ import toast from "react-hot-toast";
 import { Heart, Truck } from "lucide-react";
 import { Button, Separator } from "../ui";
 import { useInitFiltersFromUrl } from "@/src/shared/hooks";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/src/i18n/navigation";
 import { useFiltersStore } from "../../store/filters";
 import { SHOP_SETTINGS } from "@/src/config/shop";
@@ -33,6 +33,7 @@ export const Header: React.FC<Props> = ({
   hasCart = true,
 }) => {
   const t = useTranslations("Header");
+  const isGerman = useLocale() === "de";
   const [openAuthModal, setOpenAuthModal] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -65,9 +66,9 @@ export const Header: React.FC<Props> = ({
   return (
     <>
       <div className="flex justify-between items-center px-3 bg-tertiary ">
-        <div className="flex items-center gap-2 h-10   md:px-5 ">
-          <Truck />
-          <h3 className="text-sm md:text-base">
+        <div className="flex min-w-0 items-center gap-2 h-10 md:px-5">
+          <Truck className="shrink-0" />
+          <h3 className={cn("text-sm md:text-base", isGerman && "whitespace-nowrap text-[clamp(11px,3.3vw,14px)]")}>
             {t("freeDeliveryInfo", {
               amount: SHOP_SETTINGS.FREE_DELIVERY_AMOUNT,
             })}
