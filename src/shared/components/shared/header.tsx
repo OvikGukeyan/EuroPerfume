@@ -16,6 +16,8 @@ import {
 import { useSearchParams } from "next/navigation";
 import toast from "react-hot-toast";
 import { Heart, Truck } from "lucide-react";
+import { useFavoritesStore } from "../../store/favorites";
+import { HeaderCountBadge } from "./header-count-badge";
 import { Button, Separator } from "../ui";
 import { useInitFiltersFromUrl } from "@/src/shared/hooks";
 import { useLocale, useTranslations } from "next-intl";
@@ -41,6 +43,9 @@ export const Header: React.FC<Props> = ({
   const router = useRouter();
   useInitFiltersFromUrl();
   const filters = useFiltersStore();
+  const favoriteCount = useFavoritesStore(state => state.favoriteIds.length);
+  const fetchFavorites = useFavoritesStore(state => state.fetchFavoritesItems);
+  useEffect(() => { void fetchFavorites(); }, [fetchFavorites]);
   useEffect(() => {
     const paid = searchParams.has("paid");
     const failed = searchParams.has("faild");
@@ -127,11 +132,15 @@ export const Header: React.FC<Props> = ({
 
             <Button
               onClick={() => router.push("/favorites")}
-              variant={"ghost"}
-              size={"icon"}
-              // loading={loading}
+              variant="ghost"
+              size="icon"
+              aria-label={isGerman ? `Favoriten: ${favoriteCount} Artikel` : `Избранное: ${favoriteCount} товаров`}
+              className="group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-md p-0 hover:bg-neutral-50"
             >
-              <Heart size={20} />
+              <span className="relative flex h-7 w-7 items-center justify-center">
+                <Heart size={23} strokeWidth={1.8} />
+                <HeaderCountBadge count={favoriteCount}/>
+              </span>
             </Button>
 
             {hasCart && <CartButton />}
