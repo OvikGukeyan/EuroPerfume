@@ -173,7 +173,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
         <FragranceAccordion title={t("characteristics")} id="characteristics">
           <ProductCharacteristics className="fragrance-characteristics" showTitle={false} charactiristics={charactiristics}/>
         </FragranceAccordion>
-        {(product.concentration || product.productGroup.onTap) && <ProductIngredients productId={product.id} translations={product.translations} locale={locale}/>}
+        {(product.categoryId===1 || product.concentration || product.productGroup.onTap || product.translations.some(t=>Boolean(t.activeIngredients?.trim()))) && <ProductIngredients productId={product.id} translations={product.translations} locale={locale}/>}
       </div>
       </div>
     {noteGroups.some(g=>g.notes.length>0) && <section className="fragrance-pyramid"><h2>{ru?"Как раскрывается аромат":"Die Duftpyramide"}</h2><div className="fragrance-notes">{noteGroups.filter(g=>g.notes.length>0).map(g=><div className="fragrance-note-stage" data-stage={g.type} key={g.type}><h3>{g.title}</h3><ul>{g.notes.map(note=><FragranceNoteCard key={note.id} note={note} locale={locale}/>)}</ul></div>)}</div></section>}
