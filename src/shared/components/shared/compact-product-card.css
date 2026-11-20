@@ -70,3 +70,38 @@
 .compact-selection .compact-product-extra{align-self:start;padding-bottom:8px}
 .compact-selection .compact-product-price-history{font-size:10px;line-height:1.4;color:#777;margin:0 0 3px;overflow-wrap:anywhere}
 @supports not (grid-template-rows:subgrid){.home-products-grid > .home-product.compact-selection,.catalogue-products-grid > .home-product.compact-selection{display:flex}.compact-selection .home-product-description{min-height:52px}}
+
+/* Recommendation carousel: keep cards level even when product names wrap. */
+.recommendations-carousel .home-product.compact-product.compact-selection{
+  display:flex;
+  flex:1 1 auto;
+  flex-direction:column;
+  align-self:stretch;
+  height:100%;
+  min-width:0;
+}
+.recommendations-carousel .compact-selection .home-product-description{
+  min-height:90px;
+  padding-bottom:4px;
+}
+.recommendations-carousel .compact-selection .compact-product-meta{
+  margin-top:0;
+}
+.recommendations-carousel .compact-selection .home-product-buy{
+  width:100%;
+}
+.recommendations-carousel .compact-selection .compact-product-extra{
+  padding-bottom:0;
+}
+@media(max-width:767px){
+  .recommendations-carousel .compact-selection .home-product-description{
+    min-height:108px;
+  }
+  .recommendations-carousel .compact-selection .compact-product-meta{
+    min-height:36px;
+    margin-bottom:9px;
+  }
+  .recommendations-carousel .compact-selection .home-product-price{
+    font-size:17px;
+  }
+}
