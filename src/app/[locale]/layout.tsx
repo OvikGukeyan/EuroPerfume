@@ -1,4 +1,4 @@
-import { Nunito } from "next/font/google";
+import { Inter } from "next/font/google";
 import "../globals.css";
 import { CookieConsentModal, Providers } from "@/src/shared/components";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
@@ -7,10 +7,11 @@ import { routing } from "@/src/i18n/routing";
 import { OptionalAnalytics } from "@/src/shared/components/shared/optional-analytics";
 import { cookies } from "next/headers";
 
-const nunito = Nunito({
-  subsets: ["cyrillic"],
-  variable: "--font-nunito",
-  weight: ["400", "500", "600", "700", "800", "900"],
+const inter = Inter({
+  subsets: ["latin", "cyrillic"],
+  variable: "--font-editorial",
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
 });
 
 // export const metadata: Metadata = {
@@ -52,7 +53,7 @@ export default async function RootLayout({
         <link data-rh="true" rel="icon" href="/logo.png" />
       </head>
 
-      <body className={nunito.className}>
+      <body className={inter.className}>
         <OptionalAnalytics />
         <NextIntlClientProvider>
           <Providers>

@@ -20,8 +20,8 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
   return (
     <div className={cn("", className)}>
       <Title
-        size="xl"
-        className="font-extrabold text-center my-10"
+        size="lg"
+        className="my-8 text-center font-normal tracking-tight md:my-10"
         text={title}
       />
       <Carousel
