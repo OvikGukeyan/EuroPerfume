@@ -15,7 +15,7 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { Button } from "../ui";
-import { ArrowLeft, ArrowRight, ShieldCheck, Truck, ShoppingBag } from "lucide-react";
+import { ArrowLeft, ArrowRight, ShieldCheck, ShoppingBag } from "lucide-react";
 import { CartDrawerItem, FreeShippingProgress, Title } from ".";
 import { useCart } from "@/src/shared/hooks";
 import { useLocale, useTranslations } from "use-intl";
@@ -168,7 +168,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                     onClick={() => setRedirecting(true)}
                     loading={loading || redirecting || itemLoading}
                     type="submit"
-                    className="h-13 min-h-13 w-full rounded-sm bg-[#20252d] text-sm font-semibold uppercase tracking-[.055em] text-white hover:bg-[#343a44]"
+                    className="h-[52px] min-h-[52px] w-full rounded-sm bg-[#20252d] text-sm font-semibold uppercase tracking-[.055em] text-white hover:bg-[#343a44]"
                     disabled={!isMinOrderAmount}
                   >
                     {t("checkout")}
