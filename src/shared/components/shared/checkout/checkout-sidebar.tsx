@@ -29,7 +29,8 @@ interface Props {
   control: Control<CheckoutFormValues>;
   onPromocodeSubmit: () => void;
   discount?: number;
-  excludeDiscounted?: boolean;
+  discountAmount?: number;
+  hasCouponExclusions?: boolean;
   promoError: string | null;
 }
 
@@ -43,7 +44,8 @@ export const CheckoutSidebar: FC<Props> = ({
   control,
   onPromocodeSubmit,
   discount,
-  excludeDiscounted,
+  discountAmount,
+  hasCouponExclusions,
   promoError,
 }) => {
   const deliveryCountry = useWatch({ control, name: "deliveryCountry" });
@@ -100,11 +102,11 @@ export const CheckoutSidebar: FC<Props> = ({
               {t("discount")}
             </div>
           }
-          value={loading ? <Skeleton className="h-6 w-16" /> : discount + " %"}
+          value={loading ? <Skeleton className="h-6 w-16" /> : `${discount} % (−${formatMoney(discountAmount||0)} €)`}
         />
       ) : null}
 
-      {excludeDiscounted && <p className="mb-3 text-xs text-neutral-600">{ru ? "−15% только на товары без скидки. Действует 27.11.2026 по берлинскому времени." : "−15% nur auf nicht reduzierte Artikel. Gültig am 27.11.2026 (Berliner Zeit)."}</p>}
+      {hasCouponExclusions && <p className="mb-3 text-xs text-neutral-600">{ru ? "Промокод не распространяется на акционные товары. Скидка применена только к товарам, участвующим в предложении." : "Der Gutscheincode gilt nicht für Aktionsartikel. Der Rabatt wurde nur auf berechtigte Artikel angewendet."}</p>}
       {promoError && <p role="alert" className="mb-3 text-sm text-red-600">{promoError}</p>}
       <div className="flex items-start gap-2">
         <FormField

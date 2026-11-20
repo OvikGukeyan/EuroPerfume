@@ -1,6 +1,7 @@
 "use client";
 
-import { BLACK_FRIDAY, blackFridayActive, isBlackFridayCode, couponDiscountCents } from "@/src/shared/lib/black-friday";
+import { BLACK_FRIDAY, blackFridayActive, isBlackFridayCode } from "@/src/shared/lib/black-friday";
+import { couponQuote, giftPromotionProductIds } from "@/src/shared/lib/coupon-eligibility";
 import { useDayOfferClock } from "@/src/shared/hooks/use-day-offer";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -73,16 +74,31 @@ export default function Checkout() {
 
 
   const [appliedCode, setAppliedCode] = useState("");
-  const enteredCode = form.watch("promocode") || "";
-  const promoNow = useDayOfferClock({ dayOfferStartsAt: BLACK_FRIDAY.startsAt, dayOfferEndsAt: BLACK_FRIDAY.endsAt });
+  const enteredCode = (form.watch("promocode") || "").trim();
+  const promoNow = useDayOfferClock({dayOfferStartsAt:BLACK_FRIDAY.startsAt,dayOfferEndsAt:BLACK_FRIDAY.endsAt});
   const blackFriday = isBlackFridayCode(appliedCode);
   const configuredDiscount = form.watch("discount") || 0;
   const discount = appliedCode === enteredCode && (!blackFriday || blackFridayActive(promoNow)) ? configuredDiscount : 0;
-  const deliveryCountry = deliveryCountryForCheckout({ shippingMethod: form.watch("shippingMethod"), deliveryCountry: form.watch("deliveryCountry"), country: form.watch("country") });
-  const totals = calcTotlalAmountWithDelivery(totalAmount, deliveryCountry, blackFriday ? 0 : discount);
-  const eligibleCents = items.filter(i => !i.discounted).reduce((sum,i)=>sum+Math.round(i.price*100),0);
-  const totalAmountWithDelivery = blackFriday ? (Math.round(totals.totalAmountWithDelivery*100) - couponDiscountCents(eligibleCents,discount))/100 : totals.totalAmountWithDelivery;
-  const deliveryPrice = totals.deliveryPrice;
+  const blockedGiftIds = giftPromotionProductIds(promotions);
+  const coupon = couponQuote(items.map(item=>({
+    productId:item.productId,grossCents:Math.round(item.price*100),
+    excluded:Boolean(item.discounted||item.dayOffer||blockedGiftIds.has(item.productId))
+  })),discount);
+  const deliveryCountry = deliveryCountryForCheckout({shippingMethod:form.watch("shippingMethod"),deliveryCountry:form.watch("deliveryCountry"),country:form.watch("country")});
+  const totals=calcTotlalAmountWithDelivery(totalAmount,deliveryCountry,0);
+  const totalAmountWithDelivery=(Math.round(totals.totalAmountWithDelivery*100)-coupon.discountCents)/100;
+  const deliveryPrice=totals.deliveryPrice;
+  useEffect(() => {
+    // A removed product or expired offer can make an applied coupon worth zero.
+    if (appliedCode && discount>0 && coupon.discountCents===0) {
+      setAppliedCode("");
+      form.setValue("discount",0);
+      setPromoError(locale==="ru"
+        ? "В корзине нет товаров, на которые распространяется этот промокод."
+        : "Im Warenkorb befinden sich keine Artikel, für die dieser Gutscheincode gilt.");
+    }
+  },[appliedCode,discount,coupon.discountCents,form,locale]);
+
 
   useEffect(() => {
     async function fetchUserInfo() {
@@ -103,11 +119,17 @@ export default function Checkout() {
     }
   }, [session]);
 
-  useEffect(() => { if (!blackFriday && items.some(i=>i.dayOffer)) { form.setValue("discount",0); form.setValue("promocode",""); } }, [items, form, blackFriday]);
+
   const onSubmit = async (data: CheckoutFormValues) => {
     try {
       setSubmitting(true);
-      const result=await createOrder({ ...data, promocode: discount ? appliedCode : "", quotedTotal: totalAmountWithDelivery });
+      const result=await createOrder({ ...data, promocode: coupon.discountCents>0 ? appliedCode : "", quotedTotal: totalAmountWithDelivery });
+      if(result?.code==="PROMOCODE_INELIGIBLE" || result?.code==="PROMOCODE_INVALID") {
+        setAppliedCode("");form.setValue("discount",0);
+        await useCartStore.getState().fetchCartItems();
+        toast.error(locale==="ru"?"В корзине нет товаров, на которые распространяется этот промокод.":"Im Warenkorb befinden sich keine Artikel, für die dieser Gutscheincode gilt.");
+        return;
+      }
       if(result?.code==="PRICES_CHANGED") {
         form.setValue("discount",0); form.setValue("promocode","");
         await useCartStore.getState().fetchCartItems();
@@ -141,24 +163,32 @@ export default function Checkout() {
   };
 
   const onPromocodeSubmit = async () => {
-    if (!isBlackFridayCode(enteredCode) && items.some(i => i.dayOffer)) { toast.error(locale==="ru"?"Товар дня не суммируется с промокодом.":"Tagesangebote sind nicht mit Gutscheinen kombinierbar."); return; }
     try {
       setSubmitting(true);
-      const promoCode = form.watch("promocode") || "";
-      const data = await Api.promocode.validatePromocode(promoCode);
-      setAppliedCode(promoCode);
+      const data=await Api.promocode.validatePromocode(enteredCode);
+      if(!data.valid || !data.discountCents) throw new Error("NO_ELIGIBLE_ITEMS");
+      setAppliedCode(data.code || enteredCode);
+      form.setValue("promocode",data.code || enteredCode);
+      form.setValue("discount",data.discount);
       setPromoError(null);
-      form.setValue("discount", data.discount);
-      form.setError("promocode", { message: "" });
-    } catch (error) {
+      form.clearErrors("promocode");
+      if(data.excludedCents>0) {
+        toast(locale==="ru"
+          ?"Промокод не распространяется на акционные товары. Скидка применена только к товарам, участвующим в предложении."
+          :"Der Gutscheincode gilt nicht für Aktionsartikel. Der Rabatt wurde nur auf berechtigte Artikel angewendet.");
+      }
+    } catch(error) {
       setAppliedCode("");
       form.setValue("discount",0);
-      const message = isBlackFridayCode(enteredCode)
-        ? (locale==="ru" ? "BLACK15 действует только 27 ноября 2026 по берлинскому времени." : "BLACK15 gilt nur am 27. November 2026 (Berliner Zeit).")
-        : (locale==="ru" ? "Промокод недействителен." : "Ungültiger Gutscheincode.");
+      const status=(error as {response?:{status?:number}})?.response?.status;
+      const noEligible=status===422 || (error instanceof Error && error.message==="NO_ELIGIBLE_ITEMS");
+      const message=noEligible
+        ? (locale==="ru"?"В корзине нет товаров, на которые распространяется этот промокод.":"Im Warenkorb befinden sich keine Artikel, für die dieser Gutscheincode gilt.")
+        : isBlackFridayCode(enteredCode)
+          ? (locale==="ru"?"BLACK15 действует только 27 ноября 2026 по берлинскому времени.":"BLACK15 gilt nur am 27. November 2026 (Berliner Zeit).")
+          : (locale==="ru"?"Промокод недействителен.":"Ungültiger Gutscheincode.");
       setPromoError(message);
-      toast.error(message, { icon: "❌" });
-      form.setError("promocode", { message: "Ungültiger Gutscheincode" });
+      toast.error(message);
     } finally {
       setSubmitting(false);
     }
@@ -212,8 +242,9 @@ export default function Checkout() {
                 totalAmountWithDelivery={totalAmountWithDelivery}
                 control={form.control}
                 onPromocodeSubmit={onPromocodeSubmit}
-                discount={discount}
-                excludeDiscounted={blackFriday && discount > 0}
+                discount={coupon.discountCents>0?discount:0}
+                discountAmount={coupon.discountCents/100}
+                hasCouponExclusions={coupon.hasExclusions && coupon.discountCents>0}
                 promoError={promoError}
               />
             </div>

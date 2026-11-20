@@ -1,4 +1,4 @@
-import { couponDiscountCents } from "./black-friday";
+import { couponQuote } from "./coupon-eligibility";
 import { offerPrices, type DayOfferWindow } from "./day-offer";
 import { z } from "zod";
 import { TAX_SETTINGS } from "@/src/config/tax";
@@ -35,20 +35,34 @@ export const pricingSchema = z.object({
 export type PricingSnapshot = z.infer<typeof pricingSchema>;
 type PriceableItem = { productId: number; variationId: number | null; quantity: number; product: DayOfferWindow & { name: string; price: { toString(): string } | number; discountPrice: { toString(): string } | number | null; brand?: { name: string }; productGroup?: { onTap: boolean | null } | null } };
 
-export function capturePricing(items: PriceableItem[], country: string, discount = 0, at = new Date(), policy = taxPolicyAt(at, country), excludeDiscounted = false): PricingSnapshot {
+export function capturePricing(
+  items: PriceableItem[], country: string, discount = 0, at = new Date(),
+  policy = taxPolicyAt(at,country), _legacyExcludeDiscounted = false,
+  giftProductIds: ReadonlySet<number> = new Set()
+): PricingSnapshot {
   if (!Number.isInteger(discount) || discount < 0 || discount > 100) throw new Error("Invalid discount");
-  const lines = items.map(item => ({
-    productId: item.productId, variationId: item.variationId,
-    ...(excludeDiscounted ? { couponExcluded: offerPrices(item.product, item.quantity, Boolean(item.product.productGroup?.onTap), at.getTime()).discounted } : {}),
-    title: `${item.product.brand?.name ? item.product.brand.name + " | " : ""}${item.product.name}`,
-    quantity: item.quantity, onTap: Boolean(item.product.productGroup?.onTap),
-    grossCents: cents(calcCartItemTotalPrice(Number(item.product.price), item.quantity, Boolean(item.product.productGroup?.onTap), Number(item.product.discountPrice) || undefined, item.product, at.getTime())),
-    ...(offerPrices(item.product, item.quantity, Boolean(item.product.productGroup?.onTap), at.getTime()).dayOffer ? { regularGrossCents: cents(offerPrices(item.product, item.quantity, Boolean(item.product.productGroup?.onTap), at.getTime()).regular), dayOfferPercent: 10 as const } : {}),
-  }));
-  const subtotalGrossCents = lines.reduce((sum, item) => sum + item.grossCents, 0);
-  const { totalAmountWithDelivery, deliveryPrice } = calcTotlalAmountWithDelivery(subtotalGrossCents / 100, country, excludeDiscounted ? 0 : discount);
-  const shippingGrossCents = cents(deliveryPrice), totalGrossCents = cents(totalAmountWithDelivery) - (excludeDiscounted ? couponDiscountCents(lines.filter(l => !l.couponExcluded).reduce((s,l) => s+l.grossCents,0), discount) : 0);
-  return { version: 1, country, capturedAt: at.toISOString(), policy, lines, subtotalGrossCents, shippingGrossCents, totalGrossCents, discountGrossCents: subtotalGrossCents + shippingGrossCents - totalGrossCents };
+  const lines = items.map(item => {
+    const onTap = Boolean(item.product.productGroup?.onTap);
+    const price = offerPrices(item.product,item.quantity,onTap,at.getTime());
+    const activeDayOffer = Boolean(item.product.dayOfferStartsAt && item.product.dayOfferEndsAt &&
+      at.getTime() >= new Date(item.product.dayOfferStartsAt).getTime() &&
+      at.getTime() < new Date(item.product.dayOfferEndsAt).getTime());
+    const couponExcluded = price.discounted || activeDayOffer || giftProductIds.has(item.productId);
+    return {
+      productId:item.productId, variationId:item.variationId,
+      title:`${item.product.brand?.name ? item.product.brand.name + " | " : ""}${item.product.name}`,
+      quantity:item.quantity, onTap, grossCents:cents(price.effective),
+      couponExcluded,
+      ...(price.dayOffer ? {regularGrossCents:cents(price.regular),dayOfferPercent:10 as const} : {})
+    };
+  });
+  const subtotalGrossCents=lines.reduce((sum,line)=>sum+line.grossCents,0);
+  // Delivery threshold uses the pre-coupon merchandise subtotal; shipping is never discounted.
+  const deliveryPrice=calcTotlalAmountWithDelivery(subtotalGrossCents/100,country,0).deliveryPrice;
+  const shippingGrossCents=cents(deliveryPrice);
+  const discountGrossCents=couponQuote(lines.map(l=>({productId:l.productId,grossCents:l.grossCents,excluded:l.couponExcluded})),discount).discountCents;
+  const totalGrossCents=subtotalGrossCents+shippingGrossCents-discountGrossCents;
+  return {version:1,country,capturedAt:at.toISOString(),policy,lines,subtotalGrossCents,shippingGrossCents,discountGrossCents,totalGrossCents};
 }
 export function readPricing(value: unknown): PricingSnapshot | null {
   const result = pricingSchema.safeParse(value);
@@ -78,7 +92,8 @@ export function deliveryCountryForCheckout(data: { shippingMethod: string; count
 /** Preserve the prices accepted in a submitted enquiry when an admin edits it. */
 export function reviseOrderPricing(items: PriceableItem[], country: string, discount: number, at: Date, previous: PricingSnapshot | null) {
   if (!previous) return capturePricing(items, country, discount, at);
-  const revised = capturePricing(items, country, discount, at, previous.policy, previous.lines.some(l => l.couponExcluded !== undefined));
+  // Preserve saved historic exclusion flags; do not re-qualify old orders with today's rules.
+  const revised = capturePricing(items,country,discount,at,previous.policy,false);
   revised.lines = revised.lines.map(line => {
     const old = previous.lines.find(l => l.productId === line.productId && l.variationId === line.variationId);
     if (!old) return line;
@@ -91,10 +106,13 @@ export function reviseOrderPricing(items: PriceableItem[], country: string, disc
       ...(old.dayOfferPercent ? {regularGrossCents} : {}) };
   });
   revised.subtotalGrossCents = revised.lines.reduce((sum,l)=>sum+l.grossCents,0);
-  const excludesSales = revised.lines.some(l => l.couponExcluded !== undefined);
-  const totals = calcTotlalAmountWithDelivery(revised.subtotalGrossCents/100,country,excludesSales ? 0 : discount);
-  revised.shippingGrossCents = cents(totals.deliveryPrice);
-  revised.totalGrossCents = cents(totals.totalAmountWithDelivery) - (excludesSales ? couponDiscountCents(revised.lines.filter(l => !l.couponExcluded).reduce((s,l)=>s+l.grossCents,0),discount) : 0);
-  revised.discountGrossCents = revised.subtotalGrossCents + revised.shippingGrossCents - revised.totalGrossCents;
+  const shipping=calcTotlalAmountWithDelivery(revised.subtotalGrossCents/100,country,0);
+  revised.shippingGrossCents=cents(shipping.deliveryPrice);
+  const excluded=previous.lines.some(l=>l.couponExcluded!==undefined);
+  revised.discountGrossCents=couponQuote(revised.lines.map(l=>({
+    productId:l.productId,grossCents:l.grossCents,
+    excluded:excluded ? Boolean(l.couponExcluded) : false
+  })),discount).discountCents;
+  revised.totalGrossCents=revised.subtotalGrossCents+revised.shippingGrossCents-revised.discountGrossCents;
   return revised;
 }
