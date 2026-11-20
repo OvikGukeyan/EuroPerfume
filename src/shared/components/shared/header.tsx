@@ -137,10 +137,10 @@ export const Header: React.FC<Props> = ({
               aria-label={isGerman ? `Favoriten: ${favoriteCount} Artikel` : `Избранное: ${favoriteCount} товаров`}
               className="group relative flex h-11 w-11 shrink-0 items-center justify-center rounded-md p-0 hover:bg-neutral-50"
             >
-              <span className="relative flex h-7 w-7 items-center justify-center">
+              <div className="relative flex h-7 w-7 items-center justify-center">
                 <Heart size={23} strokeWidth={1.8} />
                 <HeaderCountBadge count={favoriteCount}/>
-              </span>
+              </div>
             </Button>
 
             {hasCart && <CartButton />}
