@@ -26,13 +26,14 @@ export const CheckoutCart:FC<Props>=({className,items,promotions=[],totalAmount,
     onClickCountButton={type=>onClickCountButton(item.id,item.quantity,type,item.productGroup?.id||2)}
     onClickRemove={()=>removeCartItem(item.id)}
   />;
-  return <WhiteBlock className={className} title={t("stepTitle")}>
+  return <WhiteBlock className={`rounded-md border-[#e5e5e5] shadow-none ${className||""}`} title={t("stepTitle")} contentClassName="px-4 pb-5 pt-4 md:px-6 md:pb-6">
     <div className="flex flex-col">
+      <p className="mb-3 text-xs leading-5 text-[#777]">{ru?"Выбранные товары и подарки по акциям. Количество можно изменить перед отправкой заявки.":"Ausgewählte Artikel und Aktionsgeschenke. Mengen können vor der Anfrage geändert werden."}</p>
       {!loading&&<AromaBoxSummary items={items}/>}
       {!loading&&promotions.map(p=><PromotionCartGroup key={p.id} promotion={p} items={items} onRemove={removeCartItem} renderItem={renderItem}/>)}
       {loading?[...Array(4)].map((_,i)=><CheckoutItemSkeleton key={i}/>):regularItems.map(item=>renderItem(item))}
     </div>
     {!totalAmount&&!loading&&<p className="p-10 text-center text-gray-400">{t("emptyText")}</p>}
-    <FreeShippingProgress totalAmount={totalAmount}/>
+    <div className="mt-5 rounded-md border border-[#e3eae7] bg-[#f5f9f7] px-3 py-1"><FreeShippingProgress totalAmount={totalAmount}/></div>
   </WhiteBlock>;
 };
