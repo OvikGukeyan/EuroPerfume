@@ -18,10 +18,10 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
   const { favoriteIds, addFavoritesItem } = useFavorites();
 
   return (
-    <div className={cn("", className)}>
+    <div className={cn("recommendations-carousel", className)}>
       <Title
         size="lg"
-        className="my-8 text-center font-normal tracking-tight md:my-10"
+        className="mb-5 mt-4 text-center font-normal tracking-tight md:mb-7 md:mt-7"
         text={title}
       />
       <Carousel
@@ -29,11 +29,11 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
         plugins={[autoplayPlugin]}
         opts={{ align: "start" }}
       >
-        <CarouselContent className="px-2">
+        <CarouselContent className="items-stretch px-1 sm:px-2">
           {items.map((item, index) => (
             <CarouselItem
               key={index}
-              className="w-full basis-1/2 md:basis-1/3 lg:basis-1/4 py-5"
+              className="flex min-w-0 basis-1/2 items-stretch py-2 md:basis-1/3 md:py-3 lg:basis-1/4"
             >
                 <ProductSelectionItem dayOffer={item}
                   brand={item.brand}
