@@ -20,12 +20,14 @@ export const CheckoutPersonalForm: FC<Props> = ({ className, totalAmount }) => {
     <WhiteBlock
       title={t("stepTitle")}
       className={cn(
+        "rounded-md border-[#e5e5e5] shadow-none",
         className,
         !totalAmount ? "opacity-50 pointer-events-none" : ""
       )}
-      contentClassName="md:p-8"
+      contentClassName="p-5 md:p-7"
     >
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+      <p className="mb-5 text-xs leading-5 text-[#6d6d6d]">Мы свяжемся с вами после отправки заявки / Wir kontaktieren dich nach der Anfrage.</p>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
         <FormInput
           name="firstName"
           className="text-base"
