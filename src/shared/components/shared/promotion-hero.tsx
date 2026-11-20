@@ -75,7 +75,6 @@ export function PromotionHero({promotion}:{promotion:HeroPromotion}) {
    </button>
   </div>
   </div>
-  </div>
   <div className="storefront-desktop-hero desktop-promotion hidden md:grid">
     <div className="desktop-promotion-copy">
       <span className="rounded-full bg-white px-3 py-1.5 text-[10px] font-semibold text-black">{ru?"ПОДАРОК":"GRATIS"}</span>
