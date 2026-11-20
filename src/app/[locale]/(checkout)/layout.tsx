@@ -28,7 +28,7 @@ export default function CheckoutLayout({
       </Suspense>
       <Container>
         {children}
-        <Footer />
+        <Footer className="checkout-compact-footer" />
       </Container>
     </main>
   );
