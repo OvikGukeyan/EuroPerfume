@@ -81,3 +81,9 @@
 .fragrance-accordion-content{padding-bottom:20px}
 }
 @media(prefers-reduced-motion:reduce){.fragrance-accordion>summary svg{transition:none}}
+
+/* The perfumery house on every product detail links to its complete filtered catalogue. */
+.fragrance-brand-link{display:inline-block;text-decoration:none;text-underline-offset:3px;transition:color .15s ease}
+.fragrance-brand-link:hover{text-decoration:underline;color:#304a3d}
+.fragrance-brand-link:focus-visible{outline:2px solid #795451;outline-offset:4px;border-radius:2px}
+@media(prefers-reduced-motion:reduce){.fragrance-brand-link{transition:none}}
