@@ -6,7 +6,6 @@ import { FragranceAccordion } from "./fragrance-accordion";
 import { formatMoney, formatUnitPrice } from "@/src/shared/lib/money";
 import { BottleOption, unitPricePerLitre } from "@/src/shared/lib/full-bottle";
 import "./fragrance-detail.css";
-import { noteLabel } from "../../lib/note-label";
 import { FragranceNoteCard } from "./fragrance-note-card";
 import { FragranceFormatPicker } from "./fragrance-format-picker";
 import { Link } from "@/src/i18n/navigation";
@@ -133,7 +132,6 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
     {type:"HEART",title:ru?"Ноты сердца":"Herznoten"},
     {type:"BASE",title:ru?"Базовые ноты":"Basisnoten"},
   ].map(g=>({...g,notes:product.productNotes.filter(n=>n.noteType===g.type).map(n=>n.note)}));
-  const scentNotes=noteGroups.flatMap(g=>g.notes).map(note=>noteLabel(note,locale)).slice(0,5);
   const concentrationName=concentrations.find(c=>c.value===product.concentration)?.name;
   const selectedMl=bottle?.ml ?? (product.productGroup.onTap ? volume : Number(product.volume));
   const unitPrice=unitPricePerLitre(finalDiscountPrice ?? finalPrice,selectedMl);
@@ -149,11 +147,11 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
       </div>
       <div className="fragrance-side">
       <div className="fragrance-summary">
-        <p className="fragrance-brand">{product.brand.name}</p>
+        <Link href={`/items?brands=${product.brand.id}`} className="fragrance-brand fragrance-brand-link" aria-label={ru?`Все товары бренда ${product.brand.name}`:`Alle Artikel von ${product.brand.name}`}>{product.brand.name}</Link>
         <h1 className="fragrance-name">{product.name}</h1>
         <p className="fragrance-perfumer">{concentrationName}{product.perfumer ? (ru?" · Парфюмер: ":" · Komponiert von ")+product.perfumer:""}</p>
         <button type="button" className="fragrance-reviews" onClick={handleRatingClick} aria-label={ru?"Перейти к отзывам":"Bewertungen ansehen"}><Rating value={averageRating} reviewsCount={count}/></button>
-        {scentNotes.length>0 && <div className="fragrance-scent-summary"><strong>{ru?"В аромате":"Duftnoten"}</strong>{scentNotes.join(" · ")}</div>}
+        
         {setContents && <div className="fragrance-scent-summary"><strong>{ru ? "В наборе" : "Im Set"}</strong>{setContents}</div>}
         <section className="fragrance-purchase" aria-label={ru?"Выбрать формат и купить":"Format auswählen und kaufen"}>
           <FragranceFormatPicker bottles={bottles} selected={bottleId} onSelect={setBottleId} decantAvailable={product.available}/>
