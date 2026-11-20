@@ -29,15 +29,15 @@ export const CheckoutItem: React.FC<Props> = ({
   onTap
 }) => {
   return (
-    <div className={cn("flex w-full gap-3 border-b border-neutral-100 py-4 last:border-b-0", {"opacity-50 pointer-events-none":disabled},className)}>
-      <CartItemDetails.Image src={imageUrl}/>
+    <div className={cn("flex w-full items-start gap-4 border-b border-[#ededed] py-5 last:border-b-0", {"opacity-50 pointer-events-none":disabled},className)}>
+      <div className="flex h-28 w-24 shrink-0 items-center justify-center overflow-hidden rounded-md bg-[#f7f7f6] sm:h-32 sm:w-28"><CartItemDetails.Image src={imageUrl}/></div>
       <div className="min-w-0 flex-1">
         <CartItemDetails.Info name={name} brand={brand?.name} info={variation || ""}/>
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
           <CountButton onClick={onClickCountButton} value={quantity} onTap={onTap}/>
           <div className="flex items-center gap-2">
-            <CartItemDetails.Price value={price}/>
-            <button type="button" aria-label={"Remove / Удалить: "+name} onClick={onClickRemove} className="flex h-9 w-9 items-center justify-center rounded-full hover:bg-neutral-50">
+            <strong className="text-[16px] font-semibold tabular-nums"><CartItemDetails.Price value={price}/></strong>
+            <button type="button" aria-label={"Remove / Удалить: "+name} onClick={onClickRemove} className="flex h-9 w-9 items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-black">
               <X size={17} className="text-neutral-500"/>
             </button>
           </div>

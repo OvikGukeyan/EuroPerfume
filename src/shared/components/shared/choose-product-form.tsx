@@ -93,6 +93,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
         variationId: bottle ? undefined : activeVariation?.id,
       });
       toast.success(locale==="ru"?"Добавлено в корзину":"Zum Warenkorb hinzugefügt");
+      document.dispatchEvent(new CustomEvent("europerfume:open-cart"));
     } catch (error) {
       console.error(error);
       toast.error(locale==="ru"?"Не удалось добавить товар. Проверьте наличие и количество в корзине.":"Der Artikel konnte nicht hinzugefügt werden. Bitte Bestand und Menge im Warenkorb prüfen.");

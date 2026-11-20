@@ -21,11 +21,11 @@ import {
   CheckoutPersonalForm,
   CheckoutSidebar,
   Recommendations,
-  Title,
 } from "@/src/shared/components";
 import { useCartStore } from "@/src/shared/store/cart";
 import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "@/src/i18n/navigation";
+import { useRouter, Link } from "@/src/i18n/navigation";
+import { ArrowLeft, MessageCircle, ShoppingBag, Truck } from "lucide-react";
 
 export default function Checkout() {
   const locale=useLocale();
@@ -212,12 +212,27 @@ export default function Checkout() {
   const t = useTranslations("Checkout");
   const { setValue } = useForm<any>({ mode: "onChange" });
   return (
-    <div className="mx-auto max-w-6xl px-1 py-6 md:py-10">
-      <Title text={t("title")} size="md" className="font-semibold mb-6" />
+    <div className="mx-auto max-w-[1280px] px-4 py-6 md:px-8 md:py-10">
+      <header className="mb-8 border-b border-[#e8e8e8] pb-7">
+        <Link href="/items" className="mb-5 inline-flex items-center gap-2 text-xs text-[#666] underline-offset-4 hover:underline"><ArrowLeft size={14}/>{locale==="ru"?"Продолжить покупки":"Weiter einkaufen"}</Link>
+        <p className="mb-2 text-[10px] uppercase tracking-[.22em] text-[#89746b]">EURO PERFUME</p>
+        <h1 className="text-[27px] font-medium tracking-tight text-[#222] md:text-[34px]">{t("title")}</h1>
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-[#676767]">{locale==="ru"?"Проверьте товары, укажите адрес и оставьте удобный способ связи. Мы лично подтвердим заказ — онлайн-оплата не требуется.":"Prüfe deine Artikel, gib die Lieferadresse und deinen bevorzugten Kontaktweg an. Wir bestätigen deine Anfrage persönlich, ohne Online-Zahlung."}</p>
+        <div className="mt-6 grid grid-cols-3 gap-2 border-t border-[#ededed] pt-5" aria-label={locale==="ru"?"Этапы оформления заявки":"Ablauf der Bestellanfrage"}>
+          {[
+            {icon:ShoppingBag,ru:"Товары",de:"Warenkorb"},
+            {icon:Truck,ru:"Адрес и доставка",de:"Adresse & Versand"},
+            {icon:MessageCircle,ru:"Связь и подтверждение",de:"Kontakt & Bestätigung"}
+          ].map((step,i)=><div key={step.de} className="flex items-center gap-2 text-[#666]">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-[#dadada] bg-[#fafafa]"><step.icon size={15}/></span>
+            <span className="text-[10px] leading-tight sm:text-xs">{locale==="ru"?step.ru:step.de}</span>
+          </div>)}
+        </div>
+      </header>
       <FormProvider {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
-            <div className="flex min-w-0 flex-col gap-5 flex-1 mb-2">
+          <div className="grid grid-cols-1 items-start gap-7 lg:grid-cols-[minmax(0,1fr)_360px] xl:gap-10">
+            <div className="flex min-w-0 flex-col gap-6">
               <CheckoutCart
                 loading={loading}
                 items={items}
@@ -233,7 +248,7 @@ export default function Checkout() {
               <CheckoutDeliveryForm totalAmount={totalAmount} />
             </div>
 
-            <div className="w-full lg:w-[370px] mx-auto">
+            <div className="w-full lg:sticky lg:top-5">
               <CheckoutSidebar
                 itemLoading={itemLoading}
                 loading={loading || submitting}
@@ -252,7 +267,7 @@ export default function Checkout() {
         </form>
       </FormProvider>
       <Recommendations
-        className="my-12 py-6 px-2 md:px-6 border-t border-neutral-200"
+        className="my-12 border-t border-[#e9e9e9] px-1 py-6 md:px-3"
         searchParams={{ productGroupId: 2 }}
       />
     </div>
