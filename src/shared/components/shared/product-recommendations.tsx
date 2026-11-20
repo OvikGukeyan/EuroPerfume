@@ -23,7 +23,7 @@ export async function ProductRecommendations({searchParams: product, className}:
   const ownBrand=await prisma.product.findMany({where:{...where,brandId:product.brandId,id:{notIn:[product.id,...similar.map(p=>p.id)]}},include,take:4,orderBy:{id:"desc"}});
   const safe=(rows:typeof candidates)=>rows.map(p=>({...withBottleOptions(p),price:p.price.toNumber(),discountPrice:p.discountPrice?.toNumber()??null}));
   return <HomePriceProvider><div className={className}>
-    {similar.length>0 && <section className="fragrance-recommendations"><h2>{ru?"Вам также могут понравиться":"Diese Düfte könnten dir auch gefallen"}</h2><HomePriceNote/><ProductsSelectionList products={safe(similar)}/></section>}
-    {ownBrand.length>0 && <section className="fragrance-recommendations"><h2>{ru?"Больше от ":"Mehr von "}{product.brand.name}</h2><HomePriceNote/><ProductsSelectionList products={safe(ownBrand)}/></section>}
+    {similar.length>0 && <section className="fragrance-recommendations"><h2 className="text-2xl font-normal tracking-tight md:text-[30px]">{ru?"Вам также могут понравиться":"Diese Düfte könnten dir auch gefallen"}</h2><HomePriceNote/><ProductsSelectionList products={safe(similar)}/></section>}
+    {ownBrand.length>0 && <section className="fragrance-recommendations"><h2 className="text-2xl font-normal tracking-tight md:text-[30px]">{ru?"Больше от ":"Mehr von "}{product.brand.name}</h2><HomePriceNote/><ProductsSelectionList products={safe(ownBrand)}/></section>}
   </div></HomePriceProvider>;
 }
