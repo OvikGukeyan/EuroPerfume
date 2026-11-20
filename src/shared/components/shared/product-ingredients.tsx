@@ -1,12 +1,14 @@
+import React from "react";
 import { FragranceAccordion } from "./fragrance-accordion";
 import { resolveIngredients } from "../../lib/fragrance-ingredients";
 export function ProductIngredients({productId,translations,locale}: {productId:number;translations:{language:string;activeIngredients?:string|null}[];locale:string}) {
  const ru=locale==="ru";
  const {inci,review}=resolveIngredients(productId,translations,locale);
  return <><FragranceAccordion id="ingredients" title={ru?"Состав и аллергены (INCI)":"Inhaltsstoffe & Allergene (INCI)"}>
-   {inci && !review ? <>
-    <p>{inci}</p>
-    <p>{ru?"Состав может различаться в зависимости от партии. Сверяйте список с упаковкой конкретного флакона. При аллергии уточните состав вашей партии у нас до покупки.":"Die Zusammensetzung kann je nach Charge abweichen. Bitte beachte die Liste auf der Verpackung des jeweiligen Flakons. Bei Allergien frage uns vor dem Kauf nach den Angaben zu deiner Charge."}</p>
+   {inci ? <>
+    {review && <p role="status" className="mb-3 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm font-medium text-amber-950">{ru?"Внимание: сохранённый список INCI требует сверки с упаковкой продаваемой партии. В нём обнаружено вещество, требующее проверки актуальности и допустимости состава. До покупки при аллергии запросите состав конкретного флакона.":"Achtung: Diese gespeicherte INCI-Liste muss mit der Verpackung der verkauften Charge abgeglichen werden. Sie enthält einen Stoff, dessen Aktualität und Zulässigkeit geprüft werden müssen. Bei Allergien bitte vor dem Kauf die Inhaltsstoffe der konkreten Charge anfragen."}</p>}
+    <p className="whitespace-pre-wrap break-words">{inci}</p>
+    <p className="mt-3">{ru?"Состав может различаться в зависимости от партии. Сверяйте список с упаковкой конкретного флакона. При аллергии уточните состав вашей партии у нас до покупки.":"Die Zusammensetzung kann je nach Charge abweichen. Bitte beachte die Liste auf der Verpackung des jeweiligen Flakons. Bei Allergien frage uns vor dem Kauf nach den Angaben zu deiner Charge."}</p>
    </> : <p>{ru?"Уточняем полный состав по упаковке. Если у вас есть аллергия, свяжитесь с нами до покупки — проверим состав конкретного флакона.":"Die vollständige Inhaltsstoffliste wird anhand der Verpackung geprüft. Bei Allergien kontaktiere uns bitte vor dem Kauf, damit wir die Angaben des jeweiligen Flakons prüfen können."}</p>}
  </FragranceAccordion>
  <FragranceAccordion id="warnings" title={ru?"Предупреждения":"Warnhinweise"}>
