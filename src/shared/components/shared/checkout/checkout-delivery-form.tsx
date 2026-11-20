@@ -26,11 +26,12 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
   return (
     <WhiteBlock
       className={cn(
+        "rounded-md border-[#e5e5e5] shadow-none",
         className,
         !totalAmount ? "opacity-50 pointer-events-none" : ""
       )}
       title={t("delivery.stepTitle")}
-      contentClassName=" md:p-8"
+      contentClassName="p-5 md:p-7"
     >
       <div className="flex flex-col gap-5">
         <Title text={t("delivery.deliveryAddress")} size="xs" />
@@ -41,9 +42,9 @@ export const CheckoutDeliveryForm: FC<Props> = ({ className, totalAmount }) => {
           defaultValue={ShippingMethods.BILLING_ADDRESS}
           className="w-full"
         >
-          <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 h-auto md:h-16 px-2 md:px-4">
+          <TabsList className="grid h-auto w-full grid-cols-2 gap-1 rounded-md bg-[#f3f3f3] p-1 md:grid-cols-4 md:gap-2">
            {Object.values(ShippingMethods).map((method) => (
-            <TabsTrigger key={method} value={method} className="h-full">
+            <TabsTrigger key={method} value={method} className="min-h-12 whitespace-normal rounded-sm px-2 py-2 text-xs leading-5 md:text-sm">
               {t(`delivery.${method}`)}
             </TabsTrigger>
            ))}
