@@ -29,11 +29,11 @@ export const ProductsCarusel: FC<Props> = ({ className, items, title }) => {
         plugins={[autoplayPlugin]}
         opts={{ align: "start" }}
       >
-        <CarouselContent className="items-stretch px-1 sm:px-2">
+        <CarouselContent className="items-start px-1 sm:px-2">
           {items.map((item, index) => (
             <CarouselItem
               key={index}
-              className="flex min-w-0 basis-1/2 items-stretch py-2 md:basis-1/3 md:py-3 lg:basis-1/4"
+              className="flex min-w-0 basis-1/2 items-start py-2 md:basis-1/3 md:py-3 lg:basis-1/4"
             >
                 <ProductSelectionItem dayOffer={item}
                   brand={item.brand}
