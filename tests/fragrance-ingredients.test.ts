@@ -13,14 +13,15 @@ test('legacy ingredient lists are flagged without silently rewriting the formula
  assert.equal(needsIngredientReview('Alcohol Denat., Parfum, Limonene'),false);
 });
 
-test('La Cautiva saved INCI remains visible with explicit review warning on both storefront locales',()=>{
+test('La Cautiva saved INCI remains visible with consistent batch notice on both storefront locales',()=>{
  const saved='Alcohol Denat., Parfum, Butylphenyl Methylpropional, Limonene';
  for(const locale of ['ru','de']){
   const html=renderToStaticMarkup(ProductIngredients({
    productId:581,translations:[{language:'RU',activeIngredients:saved},{language:'DE',activeIngredients:saved}],locale
   }));
   assert.ok(html.includes('Butylphenyl Methylpropional'),'existing list must not disappear');
-  assert.ok(html.includes('role="status"'),'flagged list has a visible warning');
+  assert.ok(html.includes(locale==='ru'?'Состав может различаться в зависимости от партии.':'Die Zusammensetzung kann je nach Charge abweichen.'),'standard batch note is shown');
+  assert.equal(html.includes('role="status"'),false,'additional storefront warning should not be duplicated');
   assert.ok(html.includes(locale==='de'?'Inhaltsstoffe':'Состав'));
  }
 });
