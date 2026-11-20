@@ -8,7 +8,7 @@ import {
 } from "..";
 import { cn } from "@/src/shared/lib/utils";
 import { contactForms } from "@/../../prisma/constants";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { AddressInput } from "../address-input";
 interface Props {
   totalAmount: number;
@@ -16,6 +16,7 @@ interface Props {
 }
 export const CheckoutPersonalForm: FC<Props> = ({ className, totalAmount }) => {
   const t = useTranslations("Checkout.personal");
+  const ru = useLocale()==="ru";
   return (
     <WhiteBlock
       title={t("stepTitle")}
@@ -26,7 +27,7 @@ export const CheckoutPersonalForm: FC<Props> = ({ className, totalAmount }) => {
       )}
       contentClassName="p-5 md:p-7"
     >
-      <p className="mb-5 text-xs leading-5 text-[#6d6d6d]">Мы свяжемся с вами после отправки заявки / Wir kontaktieren dich nach der Anfrage.</p>
+      <p className="mb-5 text-xs leading-5 text-[#6d6d6d]">{ru?"Мы свяжемся с вами после отправки заявки удобным для вас способом.":"Wir kontaktieren dich nach deiner Anfrage auf dem gewählten Weg."}</p>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
         <FormInput
           name="firstName"
