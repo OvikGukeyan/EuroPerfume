@@ -16,7 +16,8 @@ export function PromotionHero({promotion}:{promotion:HeroPromotion}) {
  const purchased=products.filter(p=>!p.isGift);
  const gift=products.find(p=>p.isGift);
  const total=purchased.reduce((s,p)=>s+p.price,0);
- const was=total+(gift?.price||0);
+ const savings=Math.round(Math.max(0,gift?.price||0)*100)/100;
+ const was=Math.round((total+savings)*100)/100;
  async function add(e:React.MouseEvent) {
   e.preventDefault();
   if(busy || promotion.preview) return;
@@ -54,15 +55,25 @@ export function PromotionHero({promotion}:{promotion:HeroPromotion}) {
     </div>
    </Link>)}
   </div>
-  <div className="mt-4 flex flex-col items-stretch justify-between gap-3 md:mt-7 md:flex-row md:items-center">
-   <div className="flex items-center justify-between gap-3 md:flex-col md:items-start">
-    <span className="text-[11px] text-[#bdbdc1]">{ru?"Стоимость набора":"Setpreis"}</span>
-    <strong className="text-xl tabular-nums md:text-2xl">{formatMoney(total)} €</strong>
-    {was>total&&<del className="text-[11px] text-[#aaa]">{formatMoney(was)} €</del>}
+  <div className="mt-4 border-t border-white/15 pt-3">
+   <div className="flex items-end justify-between gap-3">
+    <div className="min-w-0">
+     <p className="text-[11px] leading-4 text-[#bcbcc0]">{ru?"Цена набора":"Setpreis"}</p>
+     <strong className="mt-1 block text-[25px] font-semibold leading-none tabular-nums tracking-tight">{formatMoney(total)} €</strong>
+    </div>
+    {savings>0&&<div className="min-w-0 text-right">
+     <p className="text-[10px] leading-4 text-[#bcbcc0]">{ru?"Если покупать отдельно":"Einzelkauf zusammen"}</p>
+     <del className="text-[13px] tabular-nums text-[#aaa9ad]">{formatMoney(was)} €</del>
+    </div>}
    </div>
-   <button type="button" disabled={busy||promotion.preview} onClick={add} className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-[13px] font-semibold text-black transition hover:bg-[#eee] disabled:opacity-50 md:w-auto md:px-9 md:text-base">
+   {savings>0&&<div className="mt-3 flex items-center justify-between gap-2 rounded-lg bg-[#e7f2eb] px-3 py-2.5 text-[#266b4c]">
+    <span className="text-[12px] font-medium">{ru?"Вы экономите":"Du sparst"}</span>
+    <strong className="text-[17px] font-semibold tabular-nums">−{formatMoney(savings)} €</strong>
+   </div>}
+   <button type="button" disabled={busy||promotion.preview} onClick={add} className="mt-3 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-[13px] font-semibold text-black transition hover:bg-[#eee] disabled:opacity-50">
     <ShoppingCart size={17}/>{busy?(ru?"Добавляем…":"Wird hinzugefügt…"):(ru?"Добавить в корзину":"In den Warenkorb")}
    </button>
+  </div>
   </div>
   </div>
   <div className="storefront-desktop-hero desktop-promotion hidden md:grid">
@@ -70,7 +81,20 @@ export function PromotionHero({promotion}:{promotion:HeroPromotion}) {
       <span className="rounded-full bg-white px-3 py-1.5 text-[10px] font-semibold text-black">{ru?"ПОДАРОК":"GRATIS"}</span>
       <h2>{ru?promotion.titleRu:promotion.titleDe}</h2>
       <p>{ru?"Два аромата по 5 мл и третий в подарок":"Zwei Düfte à 5 ml und eine Gratisprobe"}</p>
-      <div className="desktop-promotion-total"><strong>{formatMoney(total)} €</strong>{was>total&&<del>{formatMoney(was)} €</del>}</div>
+      <div className="desktop-promotion-total">
+       <div className="flex flex-col gap-0.5">
+        <span className="text-[10px] text-[#c0bfc3]">{ru?"Цена набора":"Setpreis"}</span>
+        <strong>{formatMoney(total)} €</strong>
+       </div>
+       {savings>0&&<div className="ml-auto flex min-w-0 flex-col gap-0.5 text-right">
+        <span className="text-[10px] text-[#c0bfc3]">{ru?"По отдельности":"Einzeln zusammen"}</span>
+        <del>{formatMoney(was)} €</del>
+       </div>}
+      </div>
+      {savings>0&&<div className="desktop-promotion-savings flex w-full items-center justify-between gap-2 rounded-md bg-[#e7f2eb] px-3 py-2 text-[#266b4c]">
+       <span className="text-[11px] font-medium">{ru?"Вы экономите":"Du sparst"}</span>
+       <strong className="text-[15px] font-semibold tabular-nums">−{formatMoney(savings)} €</strong>
+      </div>}
       <button type="button" disabled={busy||promotion.preview} onClick={add} className="desktop-promotion-button disabled:opacity-50"><ShoppingCart size={16}/>{busy?(ru?"Добавляем…":"Wird hinzugefügt…"):(ru?"Добавить в корзину":"In den Warenkorb")}</button>
     </div>
     <div className="desktop-promotion-products">{products.map(p=><Link key={p.id} href={`/product/${p.id}`} onClick={()=>{if(!promotion.preview) void trackPromotion(promotion.slug,"click")}} aria-label={`${ru?"Подробнее об аромате":"Duftdetails ansehen"}: ${p.brand} ${p.name.trim()}`} className="desktop-promotion-product group transition-colors hover:border-[#a5a4a7] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
