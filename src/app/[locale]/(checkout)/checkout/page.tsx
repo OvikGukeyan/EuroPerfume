@@ -267,7 +267,7 @@ export default function Checkout() {
         </form>
       </FormProvider>
       <Recommendations
-        className="my-12 border-t border-[#e9e9e9] px-1 py-6 md:px-3"
+        className="mb-3 mt-9 border-t border-[#e9e9e9] px-1 pb-1 pt-4 md:mb-6 md:mt-12 md:px-3 md:pt-6"
         searchParams={{ productGroupId: 2 }}
       />
     </div>
