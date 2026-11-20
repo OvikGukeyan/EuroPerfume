@@ -12,8 +12,8 @@ export function PromotionOffer({slug,titleRu,titleDe,requiredMl,giftMl,available
  const ru=useLocale()==="ru",router=useRouter(),refresh=useCartStore(s=>s.fetchCartItems);
  const [busy,setBusy]=useState(false);
  const price=items.reduce((sum,item)=>sum+(item.price||0),0);
- const giftValue=gift?.price&&gift.price>0?gift.price:0;
- const regular=price+giftValue;
+ const giftValue=gift?.price&&gift.price>0?Math.round(gift.price*100)/100:0;
+ const regular=Math.round((price+giftValue)*100)/100;
  const money=(value:number)=>new Intl.NumberFormat(ru?"ru-RU":"de-DE",{style:"currency",currency:"EUR"}).format(value);
  async function add() {
   setBusy(true);
@@ -48,15 +48,15 @@ export function PromotionOffer({slug,titleRu,titleDe,requiredMl,giftMl,available
     </div>
     <div className="mt-7 rounded-[18px] bg-[#fffaf4] px-4 py-5 md:mt-9 md:px-7 md:py-6">
       <div className="flex items-center justify-between gap-3 text-[13px] text-[#74695e] md:text-[17px]">
-        <span>{ru?"Обычная стоимость":"Regulärer Gesamtwert"}</span>
+        <span>{ru?"Если покупать отдельно":"Einzelkauf zusammen"}</span>
         <span className="tabular-nums line-through">{regular>price?money(regular):money(price)}</span>
       </div>
       <div className="mt-2 flex items-center justify-between gap-3">
         <span className="text-[16px] font-semibold md:text-[21px]">{ru?"Цена по акции":"Aktionspreis"}</span>
         <strong className="text-[28px] tabular-nums tracking-tight md:text-[40px]">{money(price)}</strong>
       </div>
-      {giftValue>0&&<div className="mt-3 flex items-center justify-between gap-3 border-t border-[#e7dcd0] pt-3 text-[13px] font-semibold text-[#37613e] md:text-[17px]">
-        <span>{ru?"Ваша выгода":"Dein Vorteil"}</span><span className="tabular-nums">{money(giftValue)}</span>
+      {giftValue>0&&<div className="mt-3 flex items-center justify-between gap-3 rounded-lg bg-[#e7f2eb] px-4 py-3 text-[13px] font-semibold text-[#266b4c] md:text-[17px]">
+        <span>{ru?"Вы экономите на подарке":"Du sparst durch das Gratisgeschenk"}</span><span className="tabular-nums">−{money(giftValue)}</span>
       </div>}
       <p className="mt-3 text-[11px] leading-relaxed text-[#736a60] md:text-[13px]">{ru?"Подарок включён бесплатно. Доставка рассчитывается отдельно.":"Die Gratisprobe ist enthalten. Versand wird separat berechnet."}</p>
     </div>
