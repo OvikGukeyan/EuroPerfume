@@ -96,9 +96,17 @@ html {
   }
 }
 
-* {
-  font-family: var(--font-nunito), sans-serif;
+/* Restrained editorial typography throughout the storefront and checkout. */
+:root { --font-storefront: var(--font-editorial), Arial, sans-serif; }
+html, body, button, input, textarea, select {
+  font-family: var(--font-storefront);
 }
+* {
+  font-family: inherit;
+}
+body { font-weight: 400; letter-spacing: -.012em; }
+h1, h2, h3, h4, h5, h6 { letter-spacing: -.025em; }
+
 
 .scrollbar::-webkit-scrollbar {
   width: 4px;
