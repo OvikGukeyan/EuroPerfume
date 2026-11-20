@@ -428,11 +428,14 @@ export async function createOrder(data: CheckoutFormValues) {
       const boxLabel = boxItems.length ? "Aroma Box · 8 × 2 мл\n" + boxItems.map(item => `${item.product.brand?.name || ""} ${item.product.name} — 2 мл`).join("\n") : "";
       const deliveryCountry = deliveryCountryForCheckout(data);
       const orderedAt = new Date();
-      const activeDayOffer = userCart.items.some(i => offerPrices(i.product,i.quantity,Boolean(i.product.productGroup?.onTap),orderedAt.getTime()).dayOffer);
-      const blackFriday = isBlackFridayCode(data.promocode);
-      const promo = data.promocode && !blackFriday ? await tx.promoCode.findFirst({where:{code:data.promocode,isActive:true,OR:[{expiresAt:null},{expiresAt:{gt:orderedAt}}]}}) : null;
-      const orderDiscount = blackFriday ? (blackFridayActive(orderedAt.getTime()) ? BLACK_FRIDAY.discount : 0) : activeDayOffer ? 0 : promo?.discount ?? 0;
-      const pricing = capturePricing(userCart.items.map(item => boxItemIds.has(item.id) ? { ...item, product: { ...item.product, name: "Aroma Box · " + item.product.name } } : item), deliveryCountry, orderDiscount, orderedAt, undefined, blackFriday);
+      const submittedCode = data.promocode?.trim() || "";
+      const blackFriday = isBlackFridayCode(submittedCode);
+      const promo = submittedCode && !blackFriday ? await tx.promoCode.findFirst({where:{code:submittedCode,isActive:true,OR:[{expiresAt:null},{expiresAt:{gt:orderedAt}}]}}) : null;
+      const orderDiscount = blackFriday ? (blackFridayActive(orderedAt.getTime()) ? BLACK_FRIDAY.discount : 0) : promo?.discount ?? 0;
+      if (submittedCode && !orderDiscount) throw new Error("PROMOCODE_INVALID");
+      const promotionProductIds = new Set(validPromotions.flatMap(link => link.promotion.productIds));
+      const pricing = capturePricing(userCart.items.map(item => boxItemIds.has(item.id) ? { ...item, product: { ...item.product, name: "Aroma Box · " + item.product.name } } : item), deliveryCountry, orderDiscount, orderedAt, undefined, false, promotionProductIds);
+      if (submittedCode && pricing.discountGrossCents === 0) throw new Error("PROMOCODE_INELIGIBLE");
       const totalAmountWithDelivery = pricing.totalGrossCents / 100;
       if (data.quotedTotal !== undefined && Math.round(data.quotedTotal*100) !== pricing.totalGrossCents) throw new Error("PRICES_CHANGED");
       const fullName = data.firstName + " " + data.lastName;
@@ -473,8 +476,8 @@ export async function createOrder(data: CheckoutFormValues) {
           createdAt: orderedAt,
           pricingSnapshot: pricing,
           contactForm: data.contactForm,
-          promocode: pricing.discountGrossCents > 0 ? (blackFriday ? BLACK_FRIDAY.code : data.promocode) : undefined,
-          discount: orderDiscount,
+          promocode: pricing.discountGrossCents > 0 ? (blackFriday ? BLACK_FRIDAY.code : submittedCode) : undefined,
+          discount: pricing.discountGrossCents > 0 ? orderDiscount : 0,
           status: OrderStatus.NEW,
           items: {
             create: userCart.items.map((item) => ({
@@ -494,7 +497,7 @@ export async function createOrder(data: CheckoutFormValues) {
         },
       });
 
-      if (promo?.disposable && orderDiscount) await tx.promoCode.delete({where:{id:promo.id}});
+      if (promo?.disposable && pricing.discountGrossCents > 0) await tx.promoCode.update({where:{id:promo.id},data:{isActive:false}});
       await tx.cart.update({
         where: {
           id: userCart.id,
@@ -564,6 +567,8 @@ export async function createOrder(data: CheckoutFormValues) {
     notificationResults.forEach((result, index) => { if (result.status === "rejected") console.error("[order notification]", index, "delivery failed"); });
     (await cookieStore).delete("discoveryBoxIds");
   } catch (error) {
+    if(error instanceof Error && error.message==="PROMOCODE_INELIGIBLE") return {code:"PROMOCODE_INELIGIBLE"} as const;
+    if(error instanceof Error && error.message==="PROMOCODE_INVALID") return {code:"PROMOCODE_INVALID"} as const;
     if(error instanceof Error && error.message==="CAMPAIGN_INVALID") return {code:"CAMPAIGN_INVALID"} as const;
     if(error instanceof Error && error.message==="PRICES_CHANGED") return {code:"PRICES_CHANGED"} as const;
     if(error instanceof Error && error.message.includes("Not enough full bottles in stock")) return {code:"BOTTLE_STOCK"} as const;

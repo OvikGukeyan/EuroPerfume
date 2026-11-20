@@ -1,6 +1,9 @@
 export interface PromocodeDto {
+    valid: boolean;
     code: string;
     discount: number;
-    excludeDiscounted?: boolean;
+    discountCents: number;
+    eligibleCents: number;
+    excludedCents: number;
     expiresAt?: string;
 }

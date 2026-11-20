@@ -85,7 +85,9 @@ export const updateCartTotalAmount = async (token: string) => {
   }));
   const giftProducts=await prisma.product.findMany({where:{id:{in:promoSummaries.map(p=>p.giftProductId).filter((id):id is number=>id!==null)}}});
   const promotions=promoSummaries.map(p=>({
-    ...p,giftName:giftProducts.find(g=>g.id===p.giftProductId)?.name||"",
+    ...p,
+    eligible:p.eligible && Boolean(giftProducts.find(g=>g.id===p.giftProductId && g.available && g.bottleParentId===null)),
+    giftName:giftProducts.find(g=>g.id===p.giftProductId)?.name||"",
     giftImage:giftProducts.find(g=>g.id===p.giftProductId)?.imageUrl[0]||"",
     giftPrice:(()=>{const g=giftProducts.find(g=>g.id===p.giftProductId);return g?calcCartItemTotalPrice(Number(g.price),p.giftMl,true,g.discountPrice?Number(g.discountPrice):undefined,g):0})(),
   }));
