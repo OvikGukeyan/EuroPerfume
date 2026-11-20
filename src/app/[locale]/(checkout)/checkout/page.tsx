@@ -25,7 +25,7 @@ import {
 import { useCartStore } from "@/src/shared/store/cart";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, Link } from "@/src/i18n/navigation";
-import { ArrowLeft, CheckCircle2, ClipboardCheck, MessageCircle, ShoppingBag, Truck } from "lucide-react";
+import { ArrowLeft, MessageCircle, ShoppingBag, Truck } from "lucide-react";
 
 export default function Checkout() {
   const locale=useLocale();
