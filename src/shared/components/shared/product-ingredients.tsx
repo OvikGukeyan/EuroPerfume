@@ -1,3 +1,4 @@
+import React from "react";
 import { FragranceAccordion } from "./fragrance-accordion";
 import { resolveIngredients } from "../../lib/fragrance-ingredients";
 export function ProductIngredients({productId,translations,locale}: {productId:number;translations:{language:string;activeIngredients?:string|null}[];locale:string}) {
