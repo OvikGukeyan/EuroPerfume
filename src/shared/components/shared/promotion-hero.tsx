@@ -1,6 +1,7 @@
 "use client";
 import React,{useState} from "react";
 import { useLocale } from "next-intl";
+import { Link } from "@/src/i18n/navigation";
 import { useCartStore } from "@/src/shared/store/cart";
 import { trackPromotion } from "./promotion-tracker";
 import type { HeroPromotion } from "@/src/shared/server-lib/get-hero-promotion";
@@ -40,7 +41,7 @@ export function PromotionHero({promotion}:{promotion:HeroPromotion}) {
    </div>
   </div>
   <div className="mt-5 grid grid-cols-3 items-stretch gap-2 md:mt-7 md:gap-4">
-   {products.map((p,i)=><article key={p.id} className="relative min-w-0 rounded-[14px] border border-[#46464a] bg-[#2c2c2e] p-2 text-center md:rounded-[22px] md:p-4">
+   {products.map(p=><Link key={p.id} href={`/product/${p.id}`} onClick={()=>{if(!promotion.preview) void trackPromotion(promotion.slug,"click")}} aria-label={`${ru?"Подробнее об аромате":"Duftdetails ansehen"}: ${p.brand} ${p.name.trim()}`} className="group relative block min-w-0 rounded-[14px] border border-[#46464a] bg-[#2c2c2e] p-2 text-center transition-colors hover:border-[#a5a4a7] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white md:rounded-[22px] md:p-4">
     {p.isGift&&<span className="absolute -top-2 right-0 z-10 rounded-full bg-[#ffbb22] px-2 py-1 text-[9px] font-semibold text-black md:px-4 md:text-xs">{ru?"Подарок":"Gratis"}</span>}
     <div className="mx-auto flex aspect-square w-[82%] items-center justify-center overflow-hidden rounded-xl bg-[#e9e9e9] p-2 md:w-[70%]">
      {p.image?<img src={p.image} alt={p.name} className="h-full w-full object-contain mix-blend-multiply"/>:<Gift className="text-[#656565]"/>}
@@ -51,7 +52,7 @@ export function PromotionHero({promotion}:{promotion:HeroPromotion}) {
       {p.isGift&&<del className="text-[#999]">{formatMoney(p.price)} €</del>}
       <span className={p.isGift?"text-[#b4f2d3]":""}>{p.isGift?"0,00":formatMoney(p.price)} €</span>
     </div>
-   </article>)}
+   </Link>)}
   </div>
   <div className="mt-4 flex flex-col items-stretch justify-between gap-3 md:mt-7 md:flex-row md:items-center">
    <div className="flex items-center justify-between gap-3 md:flex-col md:items-start">
@@ -72,12 +73,12 @@ export function PromotionHero({promotion}:{promotion:HeroPromotion}) {
       <div className="desktop-promotion-total"><strong>{formatMoney(total)} €</strong>{was>total&&<del>{formatMoney(was)} €</del>}</div>
       <button type="button" disabled={busy||promotion.preview} onClick={add} className="desktop-promotion-button disabled:opacity-50"><ShoppingCart size={16}/>{busy?(ru?"Добавляем…":"Wird hinzugefügt…"):(ru?"Добавить в корзину":"In den Warenkorb")}</button>
     </div>
-    <div className="desktop-promotion-products">{products.map(p=><article key={p.id} className="desktop-promotion-product">
+    <div className="desktop-promotion-products">{products.map(p=><Link key={p.id} href={`/product/${p.id}`} onClick={()=>{if(!promotion.preview) void trackPromotion(promotion.slug,"click")}} aria-label={`${ru?"Подробнее об аромате":"Duftdetails ansehen"}: ${p.brand} ${p.name.trim()}`} className="desktop-promotion-product group transition-colors hover:border-[#a5a4a7] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
       {p.isGift&&<span className="absolute right-2 top-2 rounded-full bg-[#ffbb22] px-2 py-1 text-[9px] font-semibold text-black">{ru?"Подарок":"Gratis"}</span>}
       <div className="desktop-promotion-image">{p.image?<img src={p.image} alt={p.name} loading="lazy"/>:<Gift/>}</div>
       <h3>{p.name.trim()}</h3><p className="meta">{p.brand} · {p.isGift?promotion.giftMl:promotion.requiredMl} ml</p>
       <p className="price">{p.isGift&&<del className="mr-2 text-[#999]">{formatMoney(p.price)} €</del>}<span className={p.isGift?"text-[#b4f2d3]":""}>{formatMoney(p.isGift?0:p.price)} €</span></p>
-    </article>)}</div>
+    </Link>)}</div>
   </div>
  </section>;
 }
