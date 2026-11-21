@@ -1,3 +1,4 @@
+import {pointRedemptionQuote,earnedPointsAfterRefund,refundableSpentPoints} from "../src/shared/lib/loyalty-arithmetic";
 import assert from "node:assert/strict";
 import {couponPolicyFailure,earnablePoints,welcomeExpiresAt,accountOrderEligible,loyaltyAwardAllowed} from "../src/shared/lib/europerfume-club";
 const verified=new Date("2026-11-21T10:00:00Z"),now=new Date("2026-11-25T10:00:00Z");
@@ -25,3 +26,11 @@ assert.equal(accountOrderEligible(4,verified,now),true);
 assert.equal(loyaltyAwardAllowed(verified,null,null),false,"label printed is not shipped");
 assert.equal(loyaltyAwardAllowed(verified,now,null),true,"paid + carrier confirmed awards");
 assert.equal(loyaltyAwardAllowed(verified,now,now),false,"no double granting");
+\nassert.deepEqual(pointRedemptionQuote({balancePoints:1000,eligibleAfterCouponCents:2500}),{spendPoints:500,discountCents:500});
+assert.deepEqual(pointRedemptionQuote({balancePoints:200,eligibleAfterCouponCents:2500}),{spendPoints:200,discountCents:200});
+assert.deepEqual(pointRedemptionQuote({balancePoints:200,eligibleAfterCouponCents:0}),{spendPoints:0,discountCents:0});
+assert.deepEqual(earnedPointsAfterRefund({originalEarnedPoints:250,originalEligibleCents:5000,cumulativeEligibleRefundCents:2000}),{remainingEarnedPoints:150,reversalPoints:100});
+assert.deepEqual(earnedPointsAfterRefund({originalEarnedPoints:250,originalEligibleCents:5000,cumulativeEligibleRefundCents:5000}),{remainingEarnedPoints:0,reversalPoints:250});
+assert.equal(refundableSpentPoints({originalSpentPoints:500,originalEligibleChargedCents:5000,cumulativeEligibleRefundCents:2000}),200);
+assert.equal(refundableSpentPoints({originalSpentPoints:500,originalEligibleChargedCents:5000,cumulativeEligibleRefundCents:5000}),500);
+console.log("Loyalty redemption and cumulative partial-refund arithmetic passed (pure tests only).");
