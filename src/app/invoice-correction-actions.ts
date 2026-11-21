@@ -73,7 +73,7 @@ export async function recordInvoiceRefund(raw: { correctionId: string; paidAt: s
         if(data.eligibleRefundAmount===undefined)throw new Error("Укажите сумму возврата подходящих товаров для расчёта бонусов");
         eligibleRefundCents=parseEuro(data.eligibleRefundAmount);
       }
-      if(eligibleRefundCents>rows[0].grossCents||eligibleRefundCents>remaining)throw new Error("Бонусная часть возврата превышает допустимую сумму");
+      if(eligibleRefundCents>rows[0].grossCents+(pricing.loyaltyDiscountCents??0)||eligibleRefundCents>remaining)throw new Error("Бонусная часть возврата превышает допустимую сумму");
       const entries=await tx.loyaltyEntry.findMany({where:{orderId},select:{kind:true,points:true}});
       const originalEarn=entries.filter(e=>e.kind==="EARN").reduce((n,e)=>n+e.points,0);
       const originalSpend=-entries.filter(e=>e.kind==="SPEND").reduce((n,e)=>n+e.points,0);
