@@ -12,6 +12,8 @@ export type RewardGrant={code:string;expiresAt:Date}|null;
 export async function grantLegacyNewsletterReward(tx:Prisma.TransactionClient,userId:number,now=new Date()):Promise<RewardGrant>{
  const user=await tx.user.findUnique({where:{id:userId},select:{createdAt:true,verified:true,accountConsent:{select:{marketingConfirmedAt:true,marketingWithdrawnAt:true}}}});
  if(!user||!legacyRewardEligible(user.createdAt,user.verified)||!user.accountConsent?.marketingConfirmedAt||user.accountConsent.marketingWithdrawnAt)return null;
+ // Serialize concurrent requests from different devices; one reward per account.
+ await tx.$queryRaw`SELECT "userId" FROM "LegacyNewsletterReward" WHERE "userId"=${userId} FOR UPDATE`;
  const reward=await tx.legacyNewsletterReward.findUnique({where:{userId}});
  if(!reward)return null; // No unsolicited reward creation. User must request the offer.
  if(reward.code && reward.expiresAt)return {code:reward.code,expiresAt:reward.expiresAt};
