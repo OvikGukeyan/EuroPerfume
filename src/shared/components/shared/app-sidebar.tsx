@@ -1,5 +1,7 @@
 "use client";
 import React from "react";
+import {useAdminNotifications,type AdminCategory} from "./admin-notifications-context";
+import {AdminNotificationBadge} from "./admin-notification-bell";
 import {useLocale} from "next-intl";
 import {cn} from "@/src/lib/utils";
 import {Link,usePathname} from "@/src/i18n/navigation";
@@ -12,6 +14,8 @@ type Props={className?:string};
 type Item={ru:string;de:string;href:string;icon:typeof House};
 export function AppSidebar({className}:Props){
  const ru=useLocale()==="ru",path=usePathname();
+ const {counts,openInbox}=useAdminNotifications();
+ const categoryByPath:Record<string,AdminCategory>={"/crm":"crm","/club":"club","/orders":"orders","/campaigns":"campaigns"};
  const groups:{ru:string;de:string;items:Item[]}[]=[
   {ru:"Главное",de:"Übersicht",items:[
    {ru:"Обзор магазина",de:"Shop-Übersicht",href:"/overview",icon:House}
@@ -54,12 +58,18 @@ export function AppSidebar({className}:Props){
     <SidebarGroupLabel className="text-[10px] uppercase tracking-[.13em] text-[#967c72]">{ru?group.ru:group.de}</SidebarGroupLabel>
     <SidebarGroupContent><SidebarMenu>
      {group.items.map(item=>{const Icon=item.icon;const active=path===item.href||(item.href!=="/"&&path.startsWith(item.href+"/"));
-      return <SidebarMenuItem key={item.href}>
+      return <SidebarMenuItem key={item.href} className="relative">
        <SidebarMenuButton asChild isActive={active} tooltip={ru?item.ru:item.de}>
         <Link href={item.href} className={cn("flex items-center gap-3 rounded-sm px-2 py-2 text-[13px] hover:bg-[#eee9e6]",active&&"bg-[#eee9e6] font-medium text-[#3e302c]")}>
-         <Icon size={17} strokeWidth={1.7}/><span>{ru?item.ru:item.de}</span>
+         <Icon size={17} strokeWidth={1.7}/><span className="flex-1">{ru?item.ru:item.de}</span>
         </Link>
        </SidebarMenuButton>
+       {categoryByPath[item.href]&&counts[categoryByPath[item.href]]>0&&<button type="button"
+        aria-label={ru?`Открыть новые уведомления: ${item.ru}`:`Neue Meldungen öffnen: ${item.de}`}
+        className="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full p-0.5 hover:ring-2 hover:ring-[#dbc5bf]"
+        onClick={()=>openInbox(categoryByPath[item.href])}>
+         <AdminNotificationBadge count={counts[categoryByPath[item.href]]}/>
+        </button>}
       </SidebarMenuItem>;
      })}
     </SidebarMenu></SidebarGroupContent>

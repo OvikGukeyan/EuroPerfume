@@ -1,4 +1,5 @@
-import { prisma } from "@/prisma/prisma-client";
+import { AdminNotificationsProvider } from "@/src/shared/components/shared/admin-notifications-context";
+import { AdminNotificationBell } from "@/src/shared/components/shared/admin-notification-bell";
 import { AppSidebar } from "@/src/shared/components";
 import {
   SidebarProvider,
@@ -26,12 +27,17 @@ export default async function DashboardLayout({
   }
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <main className="min-h-screen w-full">
-        <SidebarTrigger />
-        {children}
-      </main>
-    </SidebarProvider>
+    <AdminNotificationsProvider>
+      <SidebarProvider>
+        <AppSidebar />
+        <main className="min-h-screen min-w-0 w-full">
+          <div className="sticky top-0 z-50 flex min-h-14 items-center justify-between border-b border-[#eeeae7] bg-white/95 px-3 backdrop-blur-sm md:px-6">
+            <SidebarTrigger />
+            <AdminNotificationBell />
+          </div>
+          {children}
+        </main>
+      </SidebarProvider>
+    </AdminNotificationsProvider>
   );
 }

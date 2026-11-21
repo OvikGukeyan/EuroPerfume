@@ -25,6 +25,7 @@ model User {
   Review           Review[]
   addresses        CustomerAddress[]
   accountConsent   AccountConsent?
+  adminNotificationSeen AdminNotificationSeen[]
   legacyNewsletterReward LegacyNewsletterReward?
   couponRedemptions CouponRedemption[]
   loyaltyWallet LoyaltyWallet?
@@ -722,6 +723,29 @@ model CustomerAddress {
   createdAt DateTime @default(now())
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   @@index([userId])
+}
+
+model AdminNotification {
+  id BigInt @id @default(autoincrement())
+  category String
+  kind String
+  sourceKey String @unique
+  userId Int?
+  orderId Int?
+  createdAt DateTime @default(now()) @db.Timestamptz(6)
+  seen AdminNotificationSeen[]
+  @@index([category,createdAt])
+  @@index([createdAt])
+}
+
+model AdminNotificationSeen {
+  adminId Int
+  notificationId BigInt
+  seenAt DateTime @default(now()) @db.Timestamptz(6)
+  notification AdminNotification @relation(fields:[notificationId],references:[id],onDelete:Cascade)
+  admin User @relation(fields:[adminId],references:[id],onDelete:Cascade)
+  @@id([adminId,notificationId])
+  @@index([adminId])
 }
 
 model AccountConsent {
