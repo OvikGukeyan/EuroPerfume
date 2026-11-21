@@ -23,7 +23,7 @@ export async function sendWelcomeOfferIfConsented(userId:number):Promise<boolean
  if(prior)return false;
  try{await prisma.welcomeNotice.create({data:{userId}});}
  catch(e){if(e instanceof Prisma.PrismaClientKnownRequestError&&(e.code==="P2002"||e.code==="P2021"))return false;throw e;}
- const ru=user.accountConsent.locale==="ru",locale=ru?"ru":"de";
+ const ru=false,locale="de";
  const url=`${base}/${locale}/newsletter/leave?token=${encodeURIComponent(marketingOptOutToken(userId))}`;
  try{
   await sendEmail(user.email,ru?"EURO PERFUME — ваш приветственный подарок":"EURO PERFUME — dein Willkommensvorteil",
