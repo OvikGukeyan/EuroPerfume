@@ -29,7 +29,7 @@ const policySchema = z.object({ mode: z.enum(["exempt", "vat", "review"]), rateB
 const amountSchema = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 export const pricingSchema = z.object({
   version: z.literal(1), country: z.string(), capturedAt: z.string().datetime(), policy: policySchema,
-  subtotalGrossCents: amountSchema, shippingGrossCents: amountSchema, discountGrossCents: amountSchema, totalGrossCents: amountSchema,
+  subtotalGrossCents: amountSchema, shippingGrossCents: amountSchema, discountGrossCents: amountSchema, loyaltyDiscountCents: amountSchema.optional(), totalGrossCents: amountSchema,
   lines: z.array(z.object({ productId: z.number().int(), variationId: z.number().int().nullable(), title: z.string(), quantity: z.number().int().positive(), onTap: z.boolean(), grossCents: amountSchema, regularGrossCents: amountSchema.optional(), dayOfferPercent: z.literal(10).optional(), couponExcluded: z.boolean().optional() })),
 });
 export type PricingSnapshot = z.infer<typeof pricingSchema>;
@@ -68,7 +68,7 @@ export function readPricing(value: unknown): PricingSnapshot | null {
   const result = pricingSchema.safeParse(value);
   if (!result.success) return null;
   const p = result.data;
-  if (p.subtotalGrossCents + p.shippingGrossCents - p.discountGrossCents !== p.totalGrossCents || p.lines.reduce((sum, l) => sum + l.grossCents, 0) !== p.subtotalGrossCents) return null;
+  if (p.subtotalGrossCents + p.shippingGrossCents - p.discountGrossCents - (p.loyaltyDiscountCents ?? 0) !== p.totalGrossCents || p.lines.reduce((sum, l) => sum + l.grossCents, 0) !== p.subtotalGrossCents) return null;
   return p;
 }
 
