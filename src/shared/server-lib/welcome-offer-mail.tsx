@@ -11,11 +11,12 @@ export async function sendWelcomeOfferIfConsented(userId:number):Promise<boolean
  const user=await prisma.user.findUnique({where:{id:userId},select:{id:true,email:true,fullName:true,verified:true,
   accountConsent:{select:{locale:true,marketingConfirmedAt:true,marketingWithdrawnAt:true}}}});
  if(!user?.verified||!user.accountConsent?.marketingConfirmedAt||user.accountConsent.marketingWithdrawnAt)return false;
+ const promo=await prisma.promoCode.findFirst({where:{code:{equals:"WELCOME10",mode:"insensitive"}}});
+ if(!promo?.isActive||promo.discount!==10)return false;
  let policy;
- try{policy=await prisma.couponPolicy.findUnique({where:{code:"WELCOME10"}});}
+ try{policy=await prisma.couponPolicy.findUnique({where:{code:promo.code}});}
  catch(e){if(e instanceof Prisma.PrismaClientKnownRequestError&&(e.code==="P2021"||e.code==="P2022"))return false;throw e;}
- const promo=await prisma.promoCode.findUnique({where:{code:"WELCOME10"}});
- if(!promo?.isActive||!policy?.active||policy.kind!=="WELCOME")return false;
+ if(!policy?.active||policy.kind!=="WELCOME")return false;
  const expiry=welcomeExpiresAt(user.verified,policy.validDaysAfterVerification||60);
  if(new Date()>=expiry)return false;
  const prior=await prisma.order.count({where:{userId}});
