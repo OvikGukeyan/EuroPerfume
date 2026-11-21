@@ -16,12 +16,12 @@ export async function POST(req: Request) {
     const now = new Date();
     const blackFriday=isBlackFridayCode(code);
     const promo=blackFriday ? null : await prisma.promoCode.findFirst({
-      where:{code,isActive:true,OR:[{expiresAt:null},{expiresAt:{gt:now}}]}
+      where:{code:{equals:code,mode:"insensitive"},isActive:true,OR:[{expiresAt:null},{expiresAt:{gt:now}}]}
     });
     if (blackFriday && !blackFridayActive(now.getTime()))
       return NextResponse.json({valid:false,message:"BLACK15: 27.11.2026, Europe/Berlin"},{status:404});
     if(!blackFriday && !promo) return NextResponse.json({valid:false},{status:404});
-    const policy=blackFriday ? null : await findCouponPolicy(prisma,code);
+    const policy=blackFriday ? null : await findCouponPolicy(prisma,promo!.code);
     if(policy){
       const session=await getUserSession();
       const failure=await checkCouponPolicy(prisma,policy,session?Number(session.id):null,now);
@@ -50,7 +50,7 @@ export async function POST(req: Request) {
         excluded:price.discounted||dayActive||blocked.has(item.productId)};
     }),discount);
     if(quote.discountCents===0) return NextResponse.json({valid:false,reason:"NO_ELIGIBLE_ITEMS"},{status:422});
-    return NextResponse.json({valid:true,code:blackFriday?BLACK_FRIDAY.code:code,discount,
+    return NextResponse.json({valid:true,code:blackFriday?BLACK_FRIDAY.code:promo!.code,discount,
       discountCents:quote.discountCents,eligibleCents:quote.eligibleCents,excludedCents:quote.excludedCents});
   } catch(error) {
     console.error("[PROMOCODE_VALIDATE]",error);
