@@ -1,6 +1,6 @@
 import "server-only";
 import {Prisma} from "@prisma/client";
-import {couponPolicyFailure,type CouponPolicyFailure} from "@/src/shared/lib/europerfume-club";
+import {couponPolicyFailure} from "@/src/shared/lib/europerfume-club";
 import {prisma} from "@/prisma/prisma-client";
 
 type Db=typeof prisma|Prisma.TransactionClient;
