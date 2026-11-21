@@ -25,6 +25,10 @@ import {
   House,
   Plus,
   Settings2,
+  Users,
+  TicketPercent,
+  Gift,
+  Mail,
 } from "lucide-react";
 import {
   Collapsible,
@@ -43,6 +47,10 @@ export const AppSidebar: FC<Props> = ({ className }) => {
   const tools = [
     { name: locale === "ru" ? "Предпросмотр кабинета клиента" : "Vorschau Kundenkonto", icon: <House />, href: "/account-preview" },
     { name: locale === "ru" ? "Мой кабинет" : "Mein Konto", icon: <House />, href: "/profile" },
+    { name: locale === "ru" ? "Клиенты и аналитика" : "Kunden & Analysen", icon: <Users />, href: "/crm" },
+    { name: locale === "ru" ? "Промокоды" : "Gutscheincodes", icon: <TicketPercent />, href: "/create-promocode" },
+    { name: locale === "ru" ? "Бонусы" : "Bonuspunkte", icon: <Gift />, href: "/club" },
+    { name: locale === "ru" ? "Рассылки" : "Newsletter", icon: <Mail />, href: "/campaigns" },
     { name: "Продукты", icon: <Settings2 />, href: "/products" },
     { name: locale === "ru" ? "Аромат недели −10%" : "Duft der Woche −10%", icon: <Sparkles />, href: "/day-offer" },
     { name: "Акции", icon: <GalleryHorizontalEnd />, href: "/promotions" },
