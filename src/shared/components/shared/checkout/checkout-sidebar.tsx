@@ -18,8 +18,9 @@ interface Props {
  deliveryPrice:number;totalAmountWithDelivery:number;
  control:Control<CheckoutFormValues>;onPromocodeSubmit:()=>void;
  discount?:number;discountAmount?:number;hasCouponExclusions?:boolean;promoError:string|null;
+ walletBalance:number;redemptionEnabled:boolean;redeemPoints:number;applyPoints:boolean;onApplyPointsChange:(checked:boolean)=>void;
 }
-export const CheckoutSidebar:FC<Props>=({className,loading,itemLoading,totalAmount,deliveryPrice,totalAmountWithDelivery,control,onPromocodeSubmit,discount,discountAmount,hasCouponExclusions,promoError})=>{
+export const CheckoutSidebar:FC<Props>=({className,loading,itemLoading,totalAmount,deliveryPrice,totalAmountWithDelivery,control,onPromocodeSubmit,discount,discountAmount,hasCouponExclusions,promoError,walletBalance,redemptionEnabled,redeemPoints,applyPoints,onApplyPointsChange})=>{
  const deliveryCountry=useWatch({control,name:"deliveryCountry"});
  const billingCountry=useWatch({control,name:"country"});
  const shippingMethod=useWatch({control,name:"shippingMethod"});
@@ -43,6 +44,13 @@ export const CheckoutSidebar:FC<Props>=({className,loading,itemLoading,totalAmou
    {!!discount&&discount>0&&!!discountAmount&&discountAmount>0&&<div className="flex items-center justify-between gap-3 text-[13px] text-[#26694a]">
     <span className="flex items-center gap-1.5"><TicketPercent size={15}/>{t("discount")} ({discount}%)</span><strong className="tabular-nums">−{formatMoney(discountAmount)} €</strong>
    </div>}
+   {redemptionEnabled&&walletBalance>0&&<label className="flex cursor-pointer items-start gap-3 rounded-md border border-[#e8e0d8] bg-[#faf8f6] px-4 py-3 text-sm">
+    <input type="checkbox" checked={applyPoints} onChange={e=>onApplyPointsChange(e.target.checked)} className="mt-1 h-4 w-4 accent-[#725b53]"/>
+    <span><strong className="block font-medium">{ru?"Использовать бонусы EURO PERFUME CLUB":"EURO PERFUME CLUB Punkte nutzen"}</strong>
+      <span className="block text-xs text-neutral-600">{walletBalance} {ru?"баллов доступно":"Punkte verfügbar"} · {ru?"до 20% подходящих товаров":"bis zu 20% geeigneter Waren"}</span>
+    </span>
+   </label>}
+   {redeemPoints>0&&<div className="flex justify-between gap-2 text-sm text-[#26694a]"><span>{ru?"Списание баллов":"Punkte eingelöst"}</span><strong>−{formatMoney(redeemPoints/100)} €</strong></div>}
    <div className="border-t border-[#e5e5e5] pt-4">
     <div className="flex items-baseline justify-between gap-3">
      <strong className="text-[16px]">{ru?"Итого":"Gesamt"}</strong>
