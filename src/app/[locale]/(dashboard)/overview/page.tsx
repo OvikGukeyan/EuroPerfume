@@ -12,14 +12,19 @@ export default async function AdminOverview({params}:{params:Promise<{locale:str
  if(!session||session.role!==UserRole.ADMIN)redirect("/not-auth");
  const {locale}=await params;
  const ru=locale==="ru";
- const [orderCount,awaitProcessing,shipped,customers,products,promotions,orders]=await Promise.all([
+ const [orderCount,awaitProcessing,shipped,customers,products,promotions,orders,verified,subscribed,pointsOutstanding,recentOrders,recentValue]=await Promise.all([
   prisma.order.count(),
   prisma.order.count({where:{status:{in:[OrderStatus.NEW,OrderStatus.PENDING]}}}),
   prisma.order.count({where:{status:OrderStatus.SUCCEEDED}}),
   prisma.user.count(),
   prisma.product.count(),
   prisma.promotion.count({where:{active:true}}),
-  prisma.order.findMany({orderBy:{createdAt:"desc"},take:8,select:{id:true,fullName:true,totalAmount:true,status:true,createdAt:true}})
+  prisma.order.findMany({orderBy:{createdAt:"desc"},take:8,select:{id:true,fullName:true,totalAmount:true,status:true,createdAt:true}}),
+  prisma.user.count({where:{verified:{not:null}}}),
+  prisma.user.count({where:{verified:{not:null},accountConsent:{is:{marketingConfirmedAt:{not:null},marketingWithdrawnAt:null}}}}),
+  prisma.loyaltyWallet.aggregate({_sum:{balancePoints:true}}),
+  prisma.order.count({where:{createdAt:{gte:new Date(Date.now()-30*86400000)}}}),
+  prisma.order.aggregate({_sum:{totalAmount:true},where:{createdAt:{gte:new Date(Date.now()-30*86400000)},status:{not:OrderStatus.CENCELLED}}})
  ]);
  const numbers=[
   {label:ru?"Всего заказов":"Bestellungen gesamt",value:orderCount,icon:ShoppingBag},
@@ -28,6 +33,10 @@ export default async function AdminOverview({params}:{params:Promise<{locale:str
   {label:ru?"Зарегистрированы":"Kundenkonten",value:customers,icon:Users},
   {label:ru?"Товары в каталоге":"Produkte im Katalog",value:products,icon:Package},
   {label:ru?"Активные акции":"Aktive Aktionen",value:promotions,icon:Gift},
+  {label:ru?"Email подтверждены":"E-Mail bestätigt",value:verified,icon:Users},
+  {label:ru?"Разрешены рассылки":"Newsletter-Einwilligung",value:subscribed,icon:Mail},
+  {label:ru?"Баллы клиентов":"Kundenpunkte",value:pointsOutstanding._sum.balancePoints||0,icon:Gift},
+  {label:ru?"Заказов за 30 дней":"Bestellungen (30 Tage)",value:recentOrders,icon:ShoppingBag},
  ];
  const links=[
   {href:"/orders",label:ru?"Управлять заказами":"Bestellungen verwalten",icon:ShoppingBag},
@@ -48,6 +57,7 @@ export default async function AdminOverview({params}:{params:Promise<{locale:str
     <strong className="mt-1 block text-2xl font-medium tabular-nums">{value}</strong>
    </section>)}
   </div>
+  <p className="text-sm text-neutral-600">{ru?"Сумма заявок за последние 30 дней (без отменённых, не равно фактической выручке): ":"Bestellwert der letzten 30 Tage (ohne stornierte Bestellungen, kein bestätigter Umsatz): "}<strong className="tabular-nums">{Number(recentValue._sum.totalAmount||0).toFixed(2)} €</strong></p>
   <section><h2 className="mb-3 text-lg font-medium">{ru?"Быстрые действия":"Schnellzugriff"}</h2>
    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">{links.map(({href,label,icon:Icon})=><Link key={href} href={href} className="flex min-h-14 items-center justify-between gap-2 rounded-lg border border-[#e9e4e0] p-3 text-sm hover:bg-[#faf8f6]"><span className="flex items-center gap-2"><Icon className="shrink-0 text-[#93786e]" size={17}/>{label}</span><ArrowUpRight className="shrink-0 text-neutral-400" size={16}/></Link>)}</div>
   </section>
