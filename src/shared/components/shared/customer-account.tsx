@@ -1,5 +1,5 @@
-import {LegacyNewsletterOffer} from "@/src/shared/components/shared/legacy-newsletter-offer";
 'use client';
+import {LegacyNewsletterOffer} from "@/src/shared/components/shared/legacy-newsletter-offer";
 import {useEffect,useState} from 'react';
 import {useLocale} from 'next-intl';
 import {useRouter} from 'next/navigation';
