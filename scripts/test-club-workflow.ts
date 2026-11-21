@@ -30,4 +30,10 @@ assert.deepEqual(earnedPointsAfterRefund({originalEarnedPoints:earned,originalEl
 assert.equal(refundableSpentPoints({originalSpentPoints:second.spendPoints,originalEligibleChargedCents:10000,cumulativeEligibleRefundCents:5000}),225);
 assert.equal(refundableSpentPoints({originalSpentPoints:second.spendPoints,originalEligibleChargedCents:10000,cumulativeEligibleRefundCents:10000}),450);
 assert.throws(()=>earnedPointsAfterRefund({originalEarnedPoints:earned,originalEligibleCents:9000,cumulativeEligibleRefundCents:9001}),/REFUND_EXCEEDS_PURCHASE/);
+// Refund before shipment: 40 EUR refunded, later 60 EUR shipped/awarded (300 points).
+// A subsequent 20 EUR refund reverses 100, not 180, because only the 60 EUR was awarded.
+const pointsAwardedAfterFirstRefund=300;
+assert.equal(earnedPointsAfterRefund({
+ originalEarnedPoints:pointsAwardedAfterFirstRefund,originalEligibleCents:6000,cumulativeEligibleRefundCents:2000
+}).reversalPoints,100);
 console.log("Simulated registration > WELCOME10 > paid/handed-over > award > spend > partial/full refund: PASS (pure rules only).");
