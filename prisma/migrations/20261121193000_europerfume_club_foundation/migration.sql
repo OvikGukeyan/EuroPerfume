@@ -75,3 +75,12 @@ ALTER TABLE "LoyaltyWallet" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "LoyaltyEntry" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "OrderFulfillment" ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON TABLE "CouponPolicy","CouponRedemption","LoyaltyWallet","LoyaltyEntry","OrderFulfillment" FROM anon,authenticated;
+
+CREATE TABLE IF NOT EXISTS "WelcomeNotice"(
+ "userId" INTEGER PRIMARY KEY,
+ "claimAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ "sentAt" TIMESTAMP(3),
+ CONSTRAINT "WelcomeNotice_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+ALTER TABLE "WelcomeNotice" ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON TABLE "WelcomeNotice" FROM anon,authenticated;
