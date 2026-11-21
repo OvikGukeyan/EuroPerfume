@@ -87,6 +87,7 @@ REVOKE ALL ON TABLE "WelcomeNotice" FROM anon,authenticated;
 
 CREATE TABLE IF NOT EXISTS "MarketingCampaign"(
  "id" TEXT PRIMARY KEY,
+ "segment" TEXT NOT NULL DEFAULT 'ALL',
  "name" TEXT NOT NULL,
  "subjectRu" TEXT NOT NULL,
  "subjectDe" TEXT NOT NULL,
@@ -95,7 +96,8 @@ CREATE TABLE IF NOT EXISTS "MarketingCampaign"(
  "status" TEXT NOT NULL DEFAULT 'DRAFT',
  "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
  "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
- CONSTRAINT "MarketingCampaign_status_check" CHECK ("status" IN ('DRAFT','ACTIVE','PAUSED','DONE'))
+ CONSTRAINT "MarketingCampaign_status_check" CHECK ("status" IN ('DRAFT','ACTIVE','PAUSED','DONE')),
+ CONSTRAINT "MarketingCampaign_segment_check" CHECK ("segment" IN ('ALL','NO_ORDERS','WITH_ORDERS'))
 );
 CREATE TABLE IF NOT EXISTS "MarketingDelivery"(
  "id" TEXT PRIMARY KEY,
