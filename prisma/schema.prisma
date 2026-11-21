@@ -29,6 +29,7 @@ model User {
   loyaltyWallet LoyaltyWallet?
   loyaltyEntries LoyaltyEntry[]
   welcomeNotice WelcomeNotice?
+  marketingDeliveries MarketingDelivery[]
 }
 
 model Category {
@@ -810,4 +811,33 @@ model WelcomeNotice {
   claimAt DateTime @default(now())
   sentAt DateTime?
   user User @relation(fields: [userId],references: [id],onDelete: Restrict)
+}
+
+model MarketingCampaign {
+  id String @id @default(uuid())
+  name String
+  subjectRu String
+  subjectDe String
+  bodyRu String @db.Text
+  bodyDe String @db.Text
+  status String @default("DRAFT")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deliveries MarketingDelivery[]
+}
+
+model MarketingDelivery {
+  id String @id @default(uuid())
+  campaignId String
+  userId Int
+  status String @default("QUEUED")
+  providerId String?
+  lastError String?
+  sentAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  campaign MarketingCampaign @relation(fields: [campaignId],references: [id],onDelete: Restrict)
+  user User @relation(fields: [userId],references: [id],onDelete: Restrict)
+  @@unique([campaignId,userId])
+  @@index([campaignId,status])
 }
