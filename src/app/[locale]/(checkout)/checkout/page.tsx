@@ -127,7 +127,7 @@ export default function Checkout() {
       if(result?.code==="PROMOCODE_INELIGIBLE" || result?.code==="PROMOCODE_INVALID") {
         setAppliedCode("");form.setValue("discount",0);
         await useCartStore.getState().fetchCartItems();
-        toast.error(locale==="ru"?"В корзине нет товаров, на которые распространяется этот промокод.":"Im Warenkorb befinden sich keine Artikel, für die dieser Gutscheincode gilt.");
+        toast.error(result?.code==="PROMOCODE_INVALID" ? (locale==="ru"?"Промокод больше не действителен для этого аккаунта.":"Dieser Gutschein ist für dieses Konto nicht mehr gültig.") : (locale==="ru"?"В корзине нет товаров, на которые распространяется этот промокод.":"Im Warenkorb befinden sich keine Artikel, für die dieser Gutscheincode gilt."));
         return;
       }
       if(result?.code==="PRICES_CHANGED") {
@@ -180,9 +180,21 @@ export default function Checkout() {
     } catch(error) {
       setAppliedCode("");
       form.setValue("discount",0);
-      const status=(error as {response?:{status?:number}})?.response?.status;
-      const noEligible=status===422 || (error instanceof Error && error.message==="NO_ELIGIBLE_ITEMS");
-      const message=noEligible
+      const response=(error as {response?:{status?:number;data?:{reason?:string}}})?.response;
+      const reason=response?.data?.reason;
+      const restrictions:Record<string,[string,string]>={
+        ACCOUNT_REQUIRED:["Для этого промокода войдите в зарегистрированный аккаунт.","Bitte melde dich für diesen Gutschein in deinem Kundenkonto an."],
+        EMAIL_UNVERIFIED:["Подтвердите email, чтобы использовать промокод.","Bitte bestätige deine E-Mail-Adresse, um diesen Gutschein zu nutzen."],
+        USED:["Вы уже использовали этот промокод.","Du hast diesen Gutschein bereits eingelöst."],
+        FIRST_ORDER_ONLY:["WELCOME10 действует только для первого заказа аккаунта.","WELCOME10 gilt nur für deine erste Kontobestellung."],
+        LIMIT_REACHED:["Лимит использований промокода исчерпан.","Das Einlösungslimit ist erreicht."],
+        EXPIRED:["Срок действия промокода истёк.","Der Gutschein ist abgelaufen."],
+        DISABLED:["Промокод больше не действует.","Dieser Gutschein ist nicht mehr aktiv."]
+      };
+      const noEligible=reason==="NO_ELIGIBLE_ITEMS" || (error instanceof Error && error.message==="NO_ELIGIBLE_ITEMS");
+      const message=reason&&restrictions[reason]
+        ? restrictions[reason][locale==="ru"?0:1]
+        : noEligible
         ? (locale==="ru"?"В корзине нет товаров, на которые распространяется этот промокод.":"Im Warenkorb befinden sich keine Artikel, für die dieser Gutscheincode gilt.")
         : isBlackFridayCode(enteredCode)
           ? (locale==="ru"?"BLACK15 действует только 27 ноября 2026 по берлинскому времени.":"BLACK15 gilt nur am 27. November 2026 (Berliner Zeit).")
