@@ -26,18 +26,16 @@ export function MarketingConsole({ready,counts,campaigns}:{
  return <div className="grid gap-6 xl:grid-cols-[minmax(300px,390px)_minmax(0,1fr)]">
   <section className="rounded-lg border border-[#e8e3df] bg-[#faf9f7] p-5">
    <h2 className="flex items-center gap-2 text-lg font-medium"><MailPlus size={19}/>{ru?"Новая рассылка":"Neuer Newsletter"}</h2>
-   <p className="mt-2 text-xs leading-5 text-[#656565]">{ru?"Только подтверждённые подписчики EURO PERFUME на Vercel. Отправка по 5 писем за нажатие и только после активации кампании.":"Nur bestätigte Vercel-Newsletter-Abonnenten. Versand erfolgt manuell in Chargen zu 5."}</p>
-   <form className="mt-5 grid gap-3" onSubmit={e=>{e.preventDefault();void send({action:"create",...form})}}>
+   <p className="mt-2 text-xs leading-5 text-[#656565]">{ru?"Только подтверждённые подписчики EURO PERFUME на Vercel. Все письма отправляются на немецком языке. Отправка по 5 писем за нажатие и только после активации кампании.":"Nur bestätigte Vercel-Newsletter-Abonnenten. Alle E-Mails auf Deutsch. Versand erfolgt manuell in Chargen zu 5."}</p>
+   <form className="mt-5 grid gap-3" onSubmit={e=>{e.preventDefault();void send({action:"create",...form,subjectRu:form.subjectDe,bodyRu:form.bodyDe})}}>
     <label className="grid gap-1 text-xs">{ru?"Название кампании":"Kampagnenname"}{input("name")}</label>
     <label className="grid gap-1 text-xs">{ru?"Аудитория":"Zielgruppe"}<select className="h-11 rounded-md border bg-white px-3 text-sm" value={form.segment} onChange={e=>setForm(v=>({...v,segment:e.target.value}))}>
      <option value="ALL">{ru?"Все подписчики":"Alle Abonnenten"} ({counts.all})</option>
      <option value="NO_ORDERS">{ru?"Без заказов в аккаунте":"Ohne Kontobestellungen"} ({counts.noOrders})</option>
      <option value="WITH_ORDERS">{ru?"С заказами в аккаунте":"Mit Kontobestellungen"} ({counts.withOrders})</option>
     </select></label>
-    <label className="grid gap-1 text-xs">{ru?"Тема письма RU":"Betreff RU"}{input("subjectRu")}</label>
-    <label className="grid gap-1 text-xs">{ru?"Тема письма DE":"Betreff DE"}{input("subjectDe")}</label>
-    <label className="grid gap-1 text-xs">{ru?"Текст письма RU":"Nachricht RU"}{area("bodyRu")}</label>
-    <label className="grid gap-1 text-xs">{ru?"Текст письма DE":"Nachricht DE"}{area("bodyDe")}</label>
+    <label className="grid gap-1 text-xs">{ru?"Тема письма (немецкий)":"Betreff (Deutsch)"}{input("subjectDe")}</label>
+    <label className="grid gap-1 text-xs">{ru?"Текст письма (немецкий)":"Nachricht (Deutsch)"}{area("bodyDe")}</label>
     <button type="submit" disabled={busy||!ready} className="min-h-11 rounded-md bg-neutral-900 px-4 text-sm text-white disabled:opacity-50">{ru?"Сохранить черновик":"Entwurf speichern"}</button>
    </form>
   </section>
@@ -53,7 +51,7 @@ export function MarketingConsole({ready,counts,campaigns}:{
    {notice&&<p role="status" className="rounded-md bg-[#f8f5f2] p-3 text-sm">{notice}</p>}
    <div className="overflow-hidden rounded-lg border bg-white"><h2 className="border-b p-4 text-lg font-medium">{ru?"Кампании":"Kampagnen"}</h2>
     {campaigns.length?campaigns.map(c=><div key={c.id} className="border-b p-4">
-     <div className="flex flex-wrap items-start justify-between gap-2"><div><strong>{c.name}</strong><p className="mt-1 text-xs text-neutral-500">{c.subjectRu} / {c.subjectDe}</p>
+     <div className="flex flex-wrap items-start justify-between gap-2"><div><strong>{c.name}</strong><p className="mt-1 text-xs text-neutral-500">{c.subjectDe}</p>
      <p className="mt-1 text-xs text-neutral-500">{ru?"Получили":"Versendet"}: {c.sent} · {ru?"Попыток":"Versuche"}: {c.total} · {c.segment}</p></div>
       <span className="rounded bg-neutral-100 px-2 py-1 text-[11px]">{c.status}</span></div>
      <div className="mt-3 flex flex-wrap gap-2">
