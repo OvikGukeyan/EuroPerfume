@@ -123,6 +123,11 @@ Leistungsdatum: ${tax.supplyDate}`,
     doc.text("−" + (pricing.discountGrossCents / 100).toFixed(2) + " €", 470, y, { width: 75, align: "right" });
     y += 18;
   }
+  if ((pricing.loyaltyDiscountCents??0)>0) {
+    doc.text("EURO PERFUME CLUB Punkte:",320,y,{width:150});
+    doc.text("−"+((pricing.loyaltyDiscountCents??0)/100).toFixed(2)+" €",470,y,{width:75,align:"right"});
+    y+=18;
+  }
   if (tax.mode === "vat") {
     amount("Nettobetrag:", tax.netCents);
     amount("Umsatzsteuer " + String((tax.rateBasisPoints ?? 0) / 100) + "%:", tax.vatCents);
