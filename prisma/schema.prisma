@@ -25,6 +25,9 @@ model User {
   Review           Review[]
   addresses        CustomerAddress[]
   accountConsent   AccountConsent?
+  couponRedemptions CouponRedemption[]
+  loyaltyWallet LoyaltyWallet?
+  loyaltyEntries LoyaltyEntry[]
 }
 
 model Category {
@@ -390,6 +393,9 @@ model Order {
   user                User?           @relation(fields: [userId], references: [id], onDelete: Cascade)
   invoice             Invoice?
   promotions          OrderPromotion[]
+  couponRedemption CouponRedemption?
+  loyaltyEntries LoyaltyEntry[]
+  fulfillment OrderFulfillment?
 }
 
 model Shipment {
@@ -733,4 +739,67 @@ model AccountConsent {
   confirmationEmailId String?
   unsubscribeTokenHash String? @unique
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+/** New rewards infrastructure is separate from Shopify and legacy promo codes. */
+model CouponPolicy {
+  code String @id
+  // WELCOME, PER_ACCOUNT, or UNLIMITED. Existing PromoCode remains unchanged.
+  kind String @default("PER_ACCOUNT")
+  active Boolean @default(true)
+  validDaysAfterVerification Int?
+  perUserLimit Int @default(1)
+  globalLimit Int?
+  usedCount Int @default(0)
+  epoch Int @default(1)
+  startsAt DateTime?
+  endsAt DateTime?
+  redemptions CouponRedemption[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CouponRedemption {
+  id String @id @default(uuid())
+  code String
+  epoch Int
+  userId Int
+  orderId Int @unique
+  discountCents Int
+  redeemedAt DateTime @default(now())
+  policy CouponPolicy @relation(fields: [code], references: [code], onDelete: Restrict)
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  @@index([code,epoch,userId])
+}
+
+model LoyaltyWallet {
+  userId Int @id
+  balancePoints Int @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+}
+
+model LoyaltyEntry {
+  id String @id @default(uuid())
+  userId Int
+  orderId Int?
+  points Int
+  kind String
+  idempotencyKey String @unique
+  note String?
+  createdAt DateTime @default(now())
+  user User @relation(fields: [userId], references: [id], onDelete: Restrict)
+  order Order? @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  @@index([userId,createdAt])
+}
+
+model OrderFulfillment {
+  orderId Int @id
+  paymentConfirmedAt DateTime?
+  shippedConfirmedAt DateTime?
+  loyaltyAwardedAt DateTime?
+  updatedAt DateTime @updatedAt
+  order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
 }
