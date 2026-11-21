@@ -30,7 +30,10 @@ export async function POST(request:Request){
    if(loyaltyAwardAllowed(paymentConfirmedAt,shippedConfirmedAt,awardedAt)){
      const snapshot=readPricing(order.pricingSnapshot);
      if(!snapshot)throw new Error("PRICING_SNAPSHOT_REQUIRED");
-     awardedPoints=earnablePoints(snapshot.lines,snapshot.discountGrossCents);
+     const refunds=await tx.$queryRaw<{sum:bigint}[]>`SELECT COALESCE(SUM("eligibleCents"),0) AS sum FROM "LoyaltyRefund" WHERE "orderId"=${order.id}`;
+     const refundCents=Number(refunds[0]?.sum??0);
+     const eligibleGross=Math.max(0,snapshot.lines.filter(l=>!l.couponExcluded).reduce((sum,l)=>sum+l.grossCents,0)-snapshot.discountGrossCents-(snapshot.loyaltyDiscountCents??0)-refundCents);
+     awardedPoints=Math.floor(eligibleGross*5/100);
      if(awardedPoints>0){
       await tx.loyaltyEntry.create({data:{
        userId:order.userId,orderId:order.id,kind:"EARN",points:awardedPoints,
