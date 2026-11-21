@@ -92,6 +92,7 @@ export function deliveryCountryForCheckout(data: { shippingMethod: string; count
 /** Preserve the prices accepted in a submitted enquiry when an admin edits it. */
 export function reviseOrderPricing(items: PriceableItem[], country: string, discount: number, at: Date, previous: PricingSnapshot | null) {
   if (!previous) return capturePricing(items, country, discount, at);
+  if ((previous.loyaltyDiscountCents??0)>0) throw new Error("Orders with redeemed points require a formal Stornorechnung, not repricing");
   // Preserve saved historic exclusion flags; do not re-qualify old orders with today's rules.
   const revised = capturePricing(items,country,discount,at,previous.policy,false);
   revised.lines = revised.lines.map(line => {
