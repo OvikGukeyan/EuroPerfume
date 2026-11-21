@@ -1,6 +1,6 @@
 # EURO PERFUME CLUB — independent Vercel implementation (staging only)
 
-**Release gate:** This branch contains a staged schema migration. Do **not** merge to production or run migrations against production Supabase without the owner's separate approval. The preview currently shares a production database and cannot safely test writes to the new tables until an isolated test database is provisioned.
+**Release status (2026-11-21):** The owner authorized applying the additive schema. It was applied to the production Supabase project using migration `europerfume_club_foundation_safe_no_coupon_activation`; all eight new tables have RLS enabled. WELCOME10 was intentionally NOT inserted or activated. New schema exists, but the feature branch has NOT been merged into production. Earning requests require `EUROPERFUME_CLUB_AWARD_ENABLED=true` (default off). As preview shares the production database, do NOT test bonus writes against real orders; use a separate test database for end-to-end payment/refund testing.
 
 ## Source of truth and privacy
 - Shopify is fully separate. No Shopify imports, customer merge, promo sharing or balance synchronization.
@@ -43,7 +43,7 @@
 - `npm run test:club` covers first purchase, expired 60-day windows, account verification, global and per-account limits, guest-order exclusion, paid+handed-over idempotency and points calculation.
 - Existing invoice correction, Black Friday, Day Offer, INCI and coupon-policy tests run in the build.
 - Run schema migration **only in isolated staging** first, inspect row-level security and permissions, and perform registration/email/consent, account/coupon, duplicate checkout, paid+shipment, newsletter unsubscribe and refund E2E.
-- Apply staged migration on production only after explicit approval, separately from code release; activate gradually using feature flags if necessary. No historical order, Invoice, or Stornorechnung mutation in this PR.
+- Additive schema applied with explicit approval, separately from code release. Preserve historical invoices and corrections. Before production activation, test checkout redemption, partial-refund reversals and money/VAT allocation using isolated staging data; keep bonuses disabled until then. No historical order, Invoice, or Stornorechnung mutation in this PR.
 
 ## Baseline read-only production audit (21 November 2026)
 - Registered accounts: 147, email-verified: 100, not yet verified: 47.
