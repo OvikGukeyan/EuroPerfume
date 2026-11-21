@@ -1,3 +1,4 @@
+import { findCouponPolicy,checkCouponPolicy } from "@/src/shared/server-lib/coupon-policies";
 "use server";
 import {randomBytes} from "node:crypto";
 import {registrationSchema} from "@/src/shared/lib/registration-consent";
@@ -428,9 +429,20 @@ export async function createOrder(data: CheckoutFormValues) {
       const boxLabel = boxItems.length ? "Aroma Box · 8 × 2 мл\n" + boxItems.map(item => `${item.product.brand?.name || ""} ${item.product.name} — 2 мл`).join("\n") : "";
       const deliveryCountry = deliveryCountryForCheckout(data);
       const orderedAt = new Date();
-      const submittedCode = data.promocode?.trim() || "";
+      const submittedCode = data.promocode?.trim().toUpperCase() || "";
       const blackFriday = isBlackFridayCode(submittedCode);
       const promo = submittedCode && !blackFriday ? await tx.promoCode.findFirst({where:{code:submittedCode,isActive:true,OR:[{expiresAt:null},{expiresAt:{gt:orderedAt}}]}}) : null;
+      // Managed coupons serialize redemptions by locking the policy row first.
+      // Legacy coupons remain backwards-compatible until the staged migration is approved.
+      const couponPolicy = submittedCode && !blackFriday && promo
+        ? await findCouponPolicy(tx,promo.code) : null;
+      if(couponPolicy){
+        await tx.$queryRaw`SELECT "code" FROM "CouponPolicy" WHERE "code"=${couponPolicy.code} FOR UPDATE`;
+        const currentPolicy=await findCouponPolicy(tx,couponPolicy.code);
+        if(!currentPolicy)throw new Error("PROMOCODE_INVALID");
+        const failure=await checkCouponPolicy(tx,currentPolicy,accountSession?Number(accountSession.id):null,orderedAt);
+        if(failure)throw new Error("PROMOCODE_INVALID");
+      }
       const orderDiscount = blackFriday ? (blackFridayActive(orderedAt.getTime()) ? BLACK_FRIDAY.discount : 0) : promo?.discount ?? 0;
       if (submittedCode && !orderDiscount) throw new Error("PROMOCODE_INVALID");
       const promotionProductIds = new Set(validPromotions.flatMap(link => link.promotion.productIds));
@@ -497,6 +509,13 @@ export async function createOrder(data: CheckoutFormValues) {
         },
       });
 
+      if(couponPolicy && accountSession && pricing.discountGrossCents>0){
+        await tx.couponRedemption.create({data:{
+          code:couponPolicy.code,epoch:couponPolicy.epoch,
+          userId:Number(accountSession.id),orderId:order.id,discountCents:pricing.discountGrossCents
+        }});
+        await tx.couponPolicy.update({where:{code:couponPolicy.code},data:{usedCount:{increment:1}}});
+      }
       if (promo?.disposable && pricing.discountGrossCents > 0) await tx.promoCode.update({where:{id:promo.id},data:{isActive:false}});
       await tx.cart.update({
         where: {
