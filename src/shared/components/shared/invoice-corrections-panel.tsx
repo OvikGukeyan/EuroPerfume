@@ -20,7 +20,7 @@ function InvoiceCorrectionsForm({ orderId }: { orderId: number }) {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
-  const [refund, setRefund] = useState({ correctionId: '', paidAt: '', reference: '', confirmed: false });
+  const [refund, setRefund] = useState({ correctionId: '', paidAt: '', reference: '', confirmed: false, eligibleRefundAmount: '0,00' });
   useEffect(() => {
     if (!preview) { setUrl(''); return; }
     const bytes = Uint8Array.from(atob(preview.pdf), c => c.charCodeAt(0));
@@ -98,10 +98,13 @@ function InvoiceCorrectionsForm({ orderId }: { orderId: number }) {
           <p>{euro(c.grossCents)} · {new Intl.DateTimeFormat('ru', { timeZone: 'Europe/Berlin' }).format(new Date(c.issuedAt))}</p>
           {c.refund ? <p>Возврат отмечен: {c.refund.paidAt} · {c.refund.reference}</p> : <>
             <p>Возврат денег не отмечен.</p>
-            <button type="button" disabled={pending} onClick={() => setRefund({ correctionId: c.id, paidAt: '', reference: '', confirmed: false })}>Отметить выполненный банковский перевод</button>
+            <button type="button" disabled={pending} onClick={() => setRefund({ correctionId: c.id, paidAt: '', reference: '', confirmed: false, eligibleRefundAmount: '0,00' })}>Отметить выполненный банковский перевод</button>
             {refund.correctionId === c.id && <fieldset disabled={pending} className="space-y-2">
               <label className="block">Дата перевода<input type="date" className={field} value={refund.paidAt} onChange={e => setRefund({ ...refund, paidAt: e.target.value })} /></label>
               <label className="block">Номер операции / ссылка на банковский документ<input className={field} value={refund.reference} onChange={e => setRefund({ ...refund, reference: e.target.value })} /></label>
+              <label className="block">Из суммы возврата: подходящие для бонусов товары, € (без доставки, Sale и акционных товаров). Для полной отмены рассчитывается автоматически.
+                <input className={field} inputMode="decimal" placeholder="0,00" value={refund.eligibleRefundAmount} onChange={e=>setRefund({...refund,eligibleRefundAmount:e.target.value})}/>
+              </label>
               <label className="flex gap-2"><input type="checkbox" checked={refund.confirmed} onChange={e => setRefund({ ...refund, confirmed: e.target.checked })} />Я самостоятельно вернул полную сумму этого документа ({euro(c.grossCents)}) и проверил дату и номер операции.</label>
               <button type="button" disabled={!refund.confirmed} onClick={() => void run(async () => { await recordInvoiceRefund(refund); setRefund({ correctionId: '', paidAt: '', reference: '', confirmed: false }); setCtx(await loadInvoiceCorrections(orderId)); setNotice('Выполненный перевод отмечен. Деньги через сайт не переводились.'); })}>Сохранить отметку о переводе</button>
             </fieldset>}
