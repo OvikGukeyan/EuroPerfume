@@ -24,5 +24,6 @@ assert.match(source("src/shared/server-lib/coupon-policies.ts"),/legacyRewardUsa
 assert.match(source("src/app/api/account/legacy-newsletter-reward/route.ts"),/consent:z.literal\(true\)/);
 assert.match(source("src/app/api/account/legacy-newsletter-reward/route.ts"),/acceptedAt:null/);
 assert.match(source("src/shared/server-lib/legacy-newsletter-reward.ts"),/EURO PERFUME — Dein persönlicher 15 %-Gutschein/);
+assert.match(source("src/shared/server-lib/legacy-newsletter-reward.ts"),/FOR UPDATE/);
 assert.match(source("src/shared/components/shared/legacy-newsletter-offer.tsx"),/type="checkbox"/);
 console.log("Legacy offer: cutoff, verification, account ownership, 30 days, opt-in, no false AGB consent, 15% exclusions, unsubscribe independence PASS");
