@@ -431,7 +431,7 @@ export async function createOrder(data: CheckoutFormValues) {
       const orderedAt = new Date();
       const submittedCode = data.promocode?.trim().toUpperCase() || "";
       const blackFriday = isBlackFridayCode(submittedCode);
-      const promo = submittedCode && !blackFriday ? await tx.promoCode.findFirst({where:{code:submittedCode,isActive:true,OR:[{expiresAt:null},{expiresAt:{gt:orderedAt}}]}}) : null;
+      const promo = submittedCode && !blackFriday ? await tx.promoCode.findFirst({where:{code:{equals:submittedCode,mode:"insensitive"},isActive:true,OR:[{expiresAt:null},{expiresAt:{gt:orderedAt}}]}}) : null;
       // Managed coupons serialize redemptions by locking the policy row first.
       // Legacy coupons remain backwards-compatible until the staged migration is approved.
       const couponPolicy = submittedCode && !blackFriday && promo
@@ -488,7 +488,7 @@ export async function createOrder(data: CheckoutFormValues) {
           createdAt: orderedAt,
           pricingSnapshot: pricing,
           contactForm: data.contactForm,
-          promocode: pricing.discountGrossCents > 0 ? (blackFriday ? BLACK_FRIDAY.code : submittedCode) : undefined,
+          promocode: pricing.discountGrossCents > 0 ? (blackFriday ? BLACK_FRIDAY.code : promo?.code || submittedCode) : undefined,
           discount: pricing.discountGrossCents > 0 ? orderDiscount : 0,
           status: OrderStatus.NEW,
           items: {
