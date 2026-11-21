@@ -10,15 +10,16 @@ export async function loadCustomerAccount(userId:number):Promise<AccountData|nul
  let bonus:AccountData["bonus"]={balancePoints:0,enabled:false};
  let welcome:AccountData["welcome"]=null;
  try{
+  const promo=await prisma.promoCode.findFirst({where:{code:{equals:"WELCOME10",mode:"insensitive"}}});
   const [wallet,policy,redemptions,pastOrders]=await Promise.all([
    prisma.loyaltyWallet.findUnique({where:{userId},select:{balancePoints:true}}),
-   prisma.couponPolicy.findUnique({where:{code:"WELCOME10"}}),
-   prisma.couponRedemption.count({where:{userId,code:"WELCOME10"}}),
+   promo?prisma.couponPolicy.findUnique({where:{code:promo.code}}):Promise.resolve(null),
+   promo?prisma.couponRedemption.count({where:{userId,code:promo.code}}):Promise.resolve(0),
    prisma.order.count({where:{userId}})
   ]);
   bonus={balancePoints:wallet?.balancePoints||0,enabled:true};
   const until=welcomeExpiresAt(user.verified,policy?.validDaysAfterVerification||60);
-  if(policy?.active&&policy.kind==="WELCOME"&&redemptions===0&&pastOrders===0&&new Date()<until){welcome={code:"WELCOME10",expiresAt:until.toISOString()};}
+  if(promo?.isActive&&promo.discount===10&&policy?.active&&policy.kind==="WELCOME"&&redemptions===0&&pastOrders===0&&new Date()<until){welcome={code:"WELCOME10",expiresAt:until.toISOString()};}
  }catch(e){if(!(e instanceof Prisma.PrismaClientKnownRequestError&&(e.code==="P2021"||e.code==="P2022")))throw e;}
  const orders=await prisma.order.findMany({where:{userId},orderBy:{createdAt:'desc'},include:{invoice:{select:{id:true}},shipments:{select:{shipmentNo:true,carrier:true,status:true,createdAt:true},orderBy:{createdAt:'desc'}},items:{include:{product:{select:{imageUrl:true,volume:true,productGroup:{select:{onTap:true}}}}}}}});
  return {fullName:user.fullName,email:user.email,provider:Boolean(user.provider),bonus,welcome,newsletter:{requested:Boolean(user.accountConsent?.marketingRequestedAt),confirmed:Boolean(user.accountConsent?.marketingConfirmedAt&&!user.accountConsent?.marketingWithdrawnAt),withdrawn:Boolean(user.accountConsent?.marketingWithdrawnAt)},addresses:user.addresses,orders:orders.map(o=>{
