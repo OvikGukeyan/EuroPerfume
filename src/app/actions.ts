@@ -1,5 +1,5 @@
-import { findCouponPolicy,checkCouponPolicy } from "@/src/shared/server-lib/coupon-policies";
 "use server";
+import { findCouponPolicy,checkCouponPolicy } from "@/src/shared/server-lib/coupon-policies";
 import {randomBytes} from "node:crypto";
 import {registrationSchema} from "@/src/shared/lib/registration-consent";
 import {legalConsentData,sendNewsletterConfirmation} from "@/src/shared/server-lib/registration-consent";
