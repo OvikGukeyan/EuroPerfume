@@ -1,4 +1,6 @@
 "use server";
+import {pointRedemptionQuote} from "@/src/shared/lib/loyalty-arithmetic";
+import { findCouponPolicy,checkCouponPolicy } from "@/src/shared/server-lib/coupon-policies";
 import {randomBytes} from "node:crypto";
 import {registrationSchema} from "@/src/shared/lib/registration-consent";
 import {legalConsentData,sendNewsletterConfirmation} from "@/src/shared/server-lib/registration-consent";
@@ -428,14 +430,43 @@ export async function createOrder(data: CheckoutFormValues) {
       const boxLabel = boxItems.length ? "Aroma Box · 8 × 2 мл\n" + boxItems.map(item => `${item.product.brand?.name || ""} ${item.product.name} — 2 мл`).join("\n") : "";
       const deliveryCountry = deliveryCountryForCheckout(data);
       const orderedAt = new Date();
-      const submittedCode = data.promocode?.trim() || "";
+      const submittedCode = data.promocode?.trim().toUpperCase() || "";
       const blackFriday = isBlackFridayCode(submittedCode);
-      const promo = submittedCode && !blackFriday ? await tx.promoCode.findFirst({where:{code:submittedCode,isActive:true,OR:[{expiresAt:null},{expiresAt:{gt:orderedAt}}]}}) : null;
+      const promo = submittedCode && !blackFriday ? await tx.promoCode.findFirst({where:{code:{equals:submittedCode,mode:"insensitive"},isActive:true,OR:[{expiresAt:null},{expiresAt:{gt:orderedAt}}]}}) : null;
+      // Managed coupons serialize redemptions by locking the policy row first.
+      // Legacy coupons remain backwards-compatible until the staged migration is approved.
+      const couponPolicy = submittedCode && !blackFriday && promo
+        ? await findCouponPolicy(tx,promo.code) : null;
+      if(couponPolicy){
+        await tx.$queryRaw`SELECT "code" FROM "CouponPolicy" WHERE "code"=${couponPolicy.code} FOR UPDATE`;
+        const currentPolicy=await findCouponPolicy(tx,couponPolicy.code);
+        if(!currentPolicy)throw new Error("PROMOCODE_INVALID");
+        const failure=await checkCouponPolicy(tx,currentPolicy,accountSession?Number(accountSession.id):null,orderedAt);
+        if(failure)throw new Error("PROMOCODE_INVALID");
+      }
       const orderDiscount = blackFriday ? (blackFridayActive(orderedAt.getTime()) ? BLACK_FRIDAY.discount : 0) : promo?.discount ?? 0;
       if (submittedCode && !orderDiscount) throw new Error("PROMOCODE_INVALID");
       const promotionProductIds = new Set(validPromotions.flatMap(link => link.promotion.productIds));
       const pricing = capturePricing(userCart.items.map(item => boxItemIds.has(item.id) ? { ...item, product: { ...item.product, name: "Aroma Box · " + item.product.name } } : item), deliveryCountry, orderDiscount, orderedAt, undefined, false, promotionProductIds);
       if (submittedCode && pricing.discountGrossCents === 0) throw new Error("PROMOCODE_INELIGIBLE");
+      // Redeem points atomically inside the same transaction as the order.
+      // Lock wallet so two concurrent checkouts cannot spend the same points.
+      const requestedPoints=data.redeemPoints||0;
+      if(!Number.isSafeInteger(requestedPoints)||requestedPoints<0)throw new Error("LOYALTY_INVALID");
+      if(requestedPoints){
+        if(process.env.EUROPERFUME_CLUB_REDEMPTION_ENABLED!=="true")throw new Error("LOYALTY_DISABLED");
+        if(!accountSession)throw new Error("LOYALTY_INVALID");
+        const uid=Number(accountSession.id);
+        const customer=await tx.user.findUnique({where:{id:uid},select:{verified:true}});
+        if(!customer?.verified)throw new Error("LOYALTY_INVALID");
+        const walletRows=await tx.$queryRaw<{balancePoints:number}[]>`SELECT "balancePoints" FROM "LoyaltyWallet" WHERE "userId"=${uid} FOR UPDATE`;
+        const walletBalance=walletRows[0]?.balancePoints??0;
+        const eligibleCents=Math.max(0,pricing.lines.filter(l=>!l.couponExcluded).reduce((sum,l)=>sum+l.grossCents,0)-pricing.discountGrossCents);
+        const quote=pointRedemptionQuote({balancePoints:walletBalance,eligibleAfterCouponCents:eligibleCents});
+        if(requestedPoints>quote.spendPoints)throw new Error("LOYALTY_CHANGED");
+        pricing.loyaltyDiscountCents=requestedPoints;
+        pricing.totalGrossCents-=requestedPoints;
+      }
       const totalAmountWithDelivery = pricing.totalGrossCents / 100;
       if (data.quotedTotal !== undefined && Math.round(data.quotedTotal*100) !== pricing.totalGrossCents) throw new Error("PRICES_CHANGED");
       const fullName = data.firstName + " " + data.lastName;
@@ -476,7 +507,7 @@ export async function createOrder(data: CheckoutFormValues) {
           createdAt: orderedAt,
           pricingSnapshot: pricing,
           contactForm: data.contactForm,
-          promocode: pricing.discountGrossCents > 0 ? (blackFriday ? BLACK_FRIDAY.code : submittedCode) : undefined,
+          promocode: pricing.discountGrossCents > 0 ? (blackFriday ? BLACK_FRIDAY.code : promo?.code || submittedCode) : undefined,
           discount: pricing.discountGrossCents > 0 ? orderDiscount : 0,
           status: OrderStatus.NEW,
           items: {
@@ -497,6 +528,20 @@ export async function createOrder(data: CheckoutFormValues) {
         },
       });
 
+      if(requestedPoints && accountSession){
+        const uid=Number(accountSession.id);
+        const debit=await tx.loyaltyWallet.updateMany({where:{userId:uid,balancePoints:{gte:requestedPoints}},data:{balancePoints:{decrement:requestedPoints}}});
+        if(debit.count!==1)throw new Error("LOYALTY_CHANGED");
+        await tx.loyaltyEntry.create({data:{userId:uid,orderId:order.id,kind:"SPEND",points:-requestedPoints,
+          idempotencyKey:`order:${order.id}:spend:v1`,note:"Checkout loyalty redemption"}});
+      }
+      if(couponPolicy && accountSession && pricing.discountGrossCents>0){
+        await tx.couponRedemption.create({data:{
+          code:couponPolicy.code,epoch:couponPolicy.epoch,
+          userId:Number(accountSession.id),orderId:order.id,discountCents:pricing.discountGrossCents
+        }});
+        await tx.couponPolicy.update({where:{code:couponPolicy.code},data:{usedCount:{increment:1}}});
+      }
       if (promo?.disposable && pricing.discountGrossCents > 0) await tx.promoCode.update({where:{id:promo.id},data:{isActive:false}});
       await tx.cart.update({
         where: {
@@ -570,6 +615,7 @@ export async function createOrder(data: CheckoutFormValues) {
     if(error instanceof Error && error.message==="PROMOCODE_INELIGIBLE") return {code:"PROMOCODE_INELIGIBLE"} as const;
     if(error instanceof Error && error.message==="PROMOCODE_INVALID") return {code:"PROMOCODE_INVALID"} as const;
     if(error instanceof Error && error.message==="CAMPAIGN_INVALID") return {code:"CAMPAIGN_INVALID"} as const;
+    if(error instanceof Error && ["LOYALTY_CHANGED","LOYALTY_INVALID","LOYALTY_DISABLED"].includes(error.message))return {code:error.message} as const;
     if(error instanceof Error && error.message==="PRICES_CHANGED") return {code:"PRICES_CHANGED"} as const;
     if(error instanceof Error && error.message.includes("Not enough full bottles in stock")) return {code:"BOTTLE_STOCK"} as const;
     console.error("[createOrder] Server error", error);

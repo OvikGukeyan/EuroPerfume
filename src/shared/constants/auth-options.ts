@@ -38,7 +38,7 @@ export const authOptions: AuthOptions = {
 
         if (!isPasswordValid) return null;
 
-        // if (!findUser.verified) return null;
+        if (!findUser.verified) return null;
 
         return {
           id: String(findUser.id),
@@ -84,6 +84,7 @@ export const authOptions: AuthOptions = {
             data: {
               provider: account?.provider,
               providerId: account?.providerAccountId,
+              ...(account?.provider === "google" && !findUser.verified ? {verified:new Date()} : {}),
             },
           });
           return true;

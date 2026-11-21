@@ -42,6 +42,7 @@ export const OrderSuccessTemplate: React.FC<Props> = ({
       {pricing && <>
         <li>Warenwert: <strong>{(pricing.subtotalGrossCents / 100).toFixed(2)} €</strong></li>
         {pricing.discountGrossCents > 0 && <li>Rabatt: <strong>−{(pricing.discountGrossCents / 100).toFixed(2)} €</strong></li>}
+        {(pricing.loyaltyDiscountCents??0)>0&&<li>EURO PERFUME CLUB Punkte: <strong>−{((pricing.loyaltyDiscountCents??0)/100).toFixed(2)} €</strong></li>}
         <li>Versandkosten: <strong>{(pricing.shippingGrossCents / 100).toFixed(2)} €</strong></li>
       </>}
       <li>

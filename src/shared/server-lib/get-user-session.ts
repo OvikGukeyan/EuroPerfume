@@ -12,5 +12,6 @@ export async function getUserSession() {
     where: { id: Number(session.user.id) },
   });
 
-  return user ? session.user : null;
+  // Read the current database role so revoked admin access cannot survive in a stale JWT.
+  return user ? { ...session.user, role: user.role } : null;
 }
