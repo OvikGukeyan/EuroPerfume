@@ -3,7 +3,7 @@ import {UserRole,Prisma} from "@prisma/client";
 import {getUserSession} from "@/src/shared/server-lib/get-user-session";
 import {redirect} from "next/navigation";
 import {readPricing} from "@/src/shared/lib/tax";
-import {earnablePoints} from "@/src/shared/lib/europerfume-club";
+import {earnablePoints,accountOrderEligible} from "@/src/shared/lib/europerfume-club";
 import {ClubFulfillmentActions} from "@/src/shared/components/shared/club-fulfillment-actions";
 import {Wallet,Gift,PackageCheck,ShieldCheck} from "lucide-react";
 export const dynamic="force-dynamic";
@@ -25,7 +25,7 @@ export default async function ClubAdmin({params}:{params:Promise<{locale:string}
   select:{id:true,userId:true,fullName:true,status:true,createdAt:true,totalAmount:true,pricingSnapshot:true,
    user:{select:{verified:true}}}});
  const stateByOrder=new Map(states.map(s=>[s.orderId,s]));
- const eligible=pending.filter(o=>o.userId!==null&&o.user?.verified&&o.createdAt>=o.user.verified);
+ const eligible=pending.filter(o=>accountOrderEligible(o.userId,o.user?.verified||null,o.createdAt));
  return <main className="mx-auto max-w-[1250px] px-4 py-6 md:px-8">
   <p className="text-[11px] uppercase tracking-[.18em] text-[#96776e]">EURO PERFUME CLUB</p>
   <h1 className="mt-2 text-[30px] font-normal tracking-tight">{ru?"Бонусная программа":"Treueprogramm"}</h1>
