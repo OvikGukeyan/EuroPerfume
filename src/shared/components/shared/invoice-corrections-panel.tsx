@@ -106,7 +106,7 @@ function InvoiceCorrectionsForm({ orderId }: { orderId: number }) {
                 <input className={field} inputMode="decimal" placeholder="0,00" value={refund.eligibleRefundAmount} onChange={e=>setRefund({...refund,eligibleRefundAmount:e.target.value})}/>
               </label>
               <label className="flex gap-2"><input type="checkbox" checked={refund.confirmed} onChange={e => setRefund({ ...refund, confirmed: e.target.checked })} />Я самостоятельно вернул полную сумму этого документа ({euro(c.grossCents)}) и проверил дату и номер операции.</label>
-              <button type="button" disabled={!refund.confirmed} onClick={() => void run(async () => { await recordInvoiceRefund(refund); setRefund({ correctionId: '', paidAt: '', reference: '', confirmed: false }); setCtx(await loadInvoiceCorrections(orderId)); setNotice('Выполненный перевод отмечен. Деньги через сайт не переводились.'); })}>Сохранить отметку о переводе</button>
+              <button type="button" disabled={!refund.confirmed} onClick={() => void run(async () => { await recordInvoiceRefund(refund); setRefund({ correctionId: '', paidAt: '', reference: '', confirmed: false, eligibleRefundAmount: '0,00' }); setCtx(await loadInvoiceCorrections(orderId)); setNotice('Выполненный перевод отмечен. Деньги через сайт не переводились.'); })}>Сохранить отметку о переводе</button>
             </fieldset>}
           </>}
         </article>)}
