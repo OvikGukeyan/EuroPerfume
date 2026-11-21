@@ -3,6 +3,7 @@ import {Prisma,UserRole} from "@prisma/client";
 import {getUserSession} from "@/src/shared/server-lib/get-user-session";
 import {redirect} from "next/navigation";
 import {Link} from "@/src/i18n/navigation";
+import NextLink from "next/link";
 import {Users,UserCheck,MailCheck,Gift,Search,TicketPercent,Mail,ShieldCheck} from "lucide-react";
 
 export const dynamic="force-dynamic";
@@ -20,7 +21,7 @@ export default async function CustomerCrm({params,searchParams}:{params:Promise<
   ...(status==="verified"?{verified:{not:null}}:{}),
   ...(status==="unverified"?{verified:null}:{}),
   ...(status==="subscribed"?{verified:{not:null},accountConsent:{is:{marketingConfirmedAt:{not:null},marketingWithdrawnAt:null}}}:{}),
-  ...(status==="no_consent"?{OR:[{accountConsent:{is:null}},{accountConsent:{is:{marketingConfirmedAt:null}}},{accountConsent:{is:{marketingWithdrawnAt:{not:null}}}}]}:{}),
+  ...(status==="no_consent"?{AND:[{OR:[{accountConsent:{is:null}},{accountConsent:{is:{marketingConfirmedAt:null}}},{accountConsent:{is:{marketingWithdrawnAt:{not:null}}}}]}]}:{}),
   ...(status==="with_points"?{loyaltyWallet:{is:{balancePoints:{gt:0}}}}:{})
  };
  const [registered,verified,subscribers,pending,walletSummary,users,total]=await Promise.all([
@@ -54,7 +55,7 @@ export default async function CustomerCrm({params,searchParams}:{params:Promise<
    <Link href="/club" className="inline-flex min-h-10 items-center gap-2 rounded-md border px-3 text-sm"><Gift size={16}/>{ru?"Бонусные начисления":"Punkte verwalten"}</Link>
    <Link href="/create-promocode" className="inline-flex min-h-10 items-center gap-2 rounded-md border px-3 text-sm"><TicketPercent size={16}/>{ru?"Промокоды":"Gutscheine"}</Link>
    <Link href="/campaigns" className="inline-flex min-h-10 items-center gap-2 rounded-md border px-3 text-sm"><Mail size={16}/>{ru?"Рассылки":"Newsletter"}</Link>
-   <a href="/api/admin/crm-export" className="inline-flex min-h-10 items-center gap-2 rounded-md border px-3 text-sm"><ShieldCheck size={16}/>{ru?"Скачать email с согласием":"Einwilligungen exportieren"}</a>
+   <NextLink href="/api/admin/crm-export" prefetch={false} className="inline-flex min-h-10 items-center gap-2 rounded-md border px-3 text-sm"><ShieldCheck size={16}/>{ru?"Скачать email с согласием":"Einwilligungen exportieren"}</NextLink>
   </nav>
   <div className="rounded-lg border border-[#e7e3df] bg-white">
    <div className="flex flex-col gap-3 border-b p-4 md:flex-row md:items-end md:justify-between">
