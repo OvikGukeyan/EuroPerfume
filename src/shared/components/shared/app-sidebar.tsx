@@ -13,6 +13,9 @@ type Item={ru:string;de:string;href:string;icon:typeof House};
 export function AppSidebar({className}:Props){
  const ru=useLocale()==="ru",path=usePathname();
  const groups:{ru:string;de:string;items:Item[]}[]=[
+  {ru:"Главное",de:"Übersicht",items:[
+   {ru:"Обзор магазина",de:"Shop-Übersicht",href:"/overview",icon:House}
+  ]},
   {ru:"Клиенты и маркетинг",de:"Kunden & Marketing",items:[
    {ru:"Клиенты и аналитика",de:"Kunden & Analysen",href:"/crm",icon:Users},
    {ru:"Промокоды",de:"Gutscheincodes",href:"/create-promocode",icon:TicketPercent},
@@ -22,7 +25,6 @@ export function AppSidebar({className}:Props){
   {ru:"Продажи и склад",de:"Verkauf & Lager",items:[
    {ru:"Заказы",de:"Bestellungen",href:"/orders",icon:ShoppingBag},
    {ru:"Поставка",de:"Wareneingang",href:"/supply",icon:Truck},
-   {ru:"Учет продаж",de:"Verkäufe erfassen",href:"/create-sale",icon:FileText}
   ]},
   {ru:"Каталог и акции",de:"Katalog & Aktionen",items:[
    {ru:"Все товары",de:"Produkte",href:"/products",icon:Package},
