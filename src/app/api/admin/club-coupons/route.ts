@@ -24,6 +24,7 @@ export async function POST(request:Request){
  try{
   await prisma.$transaction(async tx=>{
    if(input.action==="create"){
+    if(await tx.promoCode.findFirst({where:{code:{equals:code,mode:"insensitive"}}}))throw new Error("ALREADY_EXISTS");
     await tx.promoCode.create({data:{code,discount:input.percent,disposable:false,isActive:true,expiresAt:input.endsAt?new Date(input.endsAt):null}});
     await tx.couponPolicy.create({data:{code,kind:input.kind,
      perUserLimit:input.kind==="UNLIMITED"?Math.max(1,input.perUserLimit):input.perUserLimit,
@@ -47,6 +48,6 @@ export async function POST(request:Request){
   return NextResponse.json({ok:true});
  }catch(error){
   const e=error as {code?:string;message?:string};
-  return NextResponse.json({error:e.code==="P2002"?"ALREADY_EXISTS":e.code==="P2021"?"MIGRATION_REQUIRED":e.message==="NOT_FOUND"?"NOT_FOUND":"FAILED"},{status:e.code==="P2002"?409:e.code==="P2021"?503:400});
+  return NextResponse.json({error:(e.code==="P2002"||e.message==="ALREADY_EXISTS")?"ALREADY_EXISTS":e.code==="P2021"?"MIGRATION_REQUIRED":e.message==="NOT_FOUND"?"NOT_FOUND":"FAILED"},{status:(e.code==="P2002"||e.message==="ALREADY_EXISTS")?409:e.code==="P2021"?503:400});
  }
 }
