@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "npm run test:black-friday && npm run test:day-offer && npm run test:promotions && npm run test:ingredients && npm run test:coupon-policy && npm run test:club && prisma generate && next build",
+    "build": "npm run test:black-friday && npm run test:day-offer && npm run test:promotions && npm run test:ingredients && npm run test:coupon-policy && npm run test:club && npm run test:club-emails && npm run test:club-workflow && prisma generate && next build",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
     "start": "next start",
     "lint": "next lint",
@@ -17,7 +17,9 @@
     "test:black-friday": "node --import tsx scripts/test-black-friday.ts",
     "test:ingredients": "tsx --test tests/fragrance-ingredients.test.ts",
     "test:coupon-policy": "tsx scripts/test-coupon-policy.ts",
-    "test:club": "tsx scripts/test-europerfume-club.ts"
+    "test:club": "tsx scripts/test-europerfume-club.ts",
+    "test:club-emails": "tsx scripts/test-club-emails.tsx",
+    "test:club-workflow": "tsx scripts/test-club-workflow.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

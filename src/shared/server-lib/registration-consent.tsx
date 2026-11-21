@@ -15,7 +15,7 @@ export async function sendNewsletterConfirmation(userId:number) {
  const token=randomBytes(32).toString('hex');const unsubscribeToken=randomBytes(32).toString('hex');
  const claim=await prisma.accountConsent.updateMany({where:{userId,marketingRequestedAt:{not:null},marketingConfirmedAt:null,marketingWithdrawnAt:null,OR:[{confirmationSentAt:null},{confirmationSentAt:{lt:new Date(Date.now()-60000)}}]},data:{confirmationTokenHash:tokenHash(token),confirmationExpiresAt:new Date(Date.now()+48*60*60*1000),confirmationSentAt:new Date(),unsubscribeTokenHash:tokenHash(unsubscribeToken)}});
  if(!claim.count)return false;
- const locale=consent.locale==='ru'?'ru':'de';const ru=locale==='ru';
+ const locale='de';const ru=false;
  // Fixed shop origin: never construct confirmation links from an untrusted Host header.
  const base='https://euro-perfume-inky.vercel.app';
  const confirmUrl=`${base}/${locale}/newsletter?token=${token}`;

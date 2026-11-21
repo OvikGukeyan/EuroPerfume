@@ -80,7 +80,20 @@ export async function recordInvoiceRefund(raw: { correctionId: string; paidAt: s
       const reversed=-entries.filter(e=>e.kind==="REFUND_EARN_REVERSE").reduce((n,e)=>n+e.points,0);
       const restored=entries.filter(e=>e.kind==="REFUND_SPEND_RESTORE").reduce((n,e)=>n+e.points,0);
       const cumulative=previousEligible+eligibleRefundCents;
-      const reverseTarget=earnedPointsAfterRefund({originalEarnedPoints:originalEarn,originalEligibleCents:originalEligible,cumulativeEligibleRefundCents:cumulative}).reversalPoints;
+      // Earnings may have been granted AFTER earlier refunds. Never reverse points
+      // for value that was already excluded from the original award.
+      const preAward=await tx.$queryRaw<{value:bigint}[]>`
+        SELECT COALESCE(SUM(lr."eligibleCents"),0)::bigint AS value
+        FROM "LoyaltyRefund" lr
+        JOIN "OrderFulfillment" f ON f."orderId"=lr."orderId"
+        WHERE lr."orderId"=${orderId} AND f."loyaltyAwardedAt" IS NOT NULL
+          AND lr."createdAt" <= f."loyaltyAwardedAt"`;
+      const beforeAwardRefund=Math.min(originalEligible,Number(preAward[0]?.value??0));
+      const eligibleAtAward=originalEligible-beforeAwardRefund;
+      const refundSinceAward=Math.max(0,cumulative-beforeAwardRefund);
+      const reverseTarget=originalEarn&&eligibleAtAward
+        ? earnedPointsAfterRefund({originalEarnedPoints:originalEarn,originalEligibleCents:eligibleAtAward,cumulativeEligibleRefundCents:refundSinceAward}).reversalPoints
+        : 0;
       const restoreTarget=refundableSpentPoints({originalSpentPoints:originalSpend,originalEligibleChargedCents:originalEligible,cumulativeEligibleRefundCents:cumulative});
       const reverseDelta=reverseTarget-reversed, restoreDelta=restoreTarget-restored;
       if(reverseDelta<0||restoreDelta<0)throw new Error("История бонусов требует проверки");

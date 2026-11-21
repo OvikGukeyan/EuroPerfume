@@ -14,12 +14,16 @@ export default async function ClubAdmin({params}:{params:Promise<{locale:string}
  let wallets:{userId:number;balancePoints:number}[]=[];
  let states:{orderId:number;paymentConfirmedAt:Date|null;shippedConfirmedAt:Date|null;loyaltyAwardedAt:Date|null}[]=[];
  let pointsGiven=0;
+ let allWalletPoints=0;
+ let fulfilledCount=0;
  try{
-  const [ws,ss,ag]=await Promise.all([
+  const [ws,ss,ag,allWallets,fulfilled]=await Promise.all([
    prisma.loyaltyWallet.findMany({select:{userId:true,balancePoints:true},orderBy:{balancePoints:"desc"},take:20}),
    prisma.orderFulfillment.findMany({select:{orderId:true,paymentConfirmedAt:true,shippedConfirmedAt:true,loyaltyAwardedAt:true},take:100}),
-   prisma.loyaltyEntry.aggregate({_sum:{points:true},where:{kind:"EARN"}})
-  ]);wallets=ws;states=ss;pointsGiven=ag._sum.points||0;
+   prisma.loyaltyEntry.aggregate({_sum:{points:true},where:{kind:"EARN"}}),
+   prisma.loyaltyWallet.aggregate({_sum:{balancePoints:true}}),
+   prisma.orderFulfillment.count({where:{loyaltyAwardedAt:{not:null}}})
+  ]);wallets=ws;states=ss;pointsGiven=ag._sum.points||0;allWalletPoints=allWallets._sum.balancePoints||0;fulfilledCount=fulfilled;
  }catch(e){if(e instanceof Prisma.PrismaClientKnownRequestError&&(e.code==="P2021"||e.code==="P2022"))installed=false;else throw e;}
  const awardsEnabled=process.env.EUROPERFUME_CLUB_AWARD_ENABLED==="true";
  const pending=await prisma.order.findMany({where:{userId:{not:null}},orderBy:{createdAt:"desc"},take:30,
@@ -35,22 +39,22 @@ export default async function ClubAdmin({params}:{params:Promise<{locale:string}
   {!awardsEnabled&&<p className="mt-4 rounded-md border border-[#e7d3b1] bg-[#fffbf4] p-3 text-sm text-[#775b33]">{ru?"Тестовый режим: начисление на реальные заказы заблокировано до завершения интеграционных проверок.":"Testmodus: Keine Buchung echter Kundenpunkte vor der Integrationsprüfung."}</p>}
   <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
    {[
-    {icon:Wallet,name:ru?"Баланс всех клиентов":"Offene Punkte",value:wallets.reduce((s,w)=>s+w.balancePoints,0)},
+    {icon:Wallet,name:ru?"Баланс всех клиентов":"Offene Punkte",value:allWalletPoints},
     {icon:Gift,name:ru?"Всего начислено":"Insgesamt vergeben",value:pointsGiven},
-    {icon:PackageCheck,name:ru?"Оплачено и отправлено":"Bezahlt & versendet",value:states.filter(s=>s.loyaltyAwardedAt).length},
+    {icon:PackageCheck,name:ru?"Оплачено и отправлено":"Bezahlt & versendet",value:fulfilledCount},
     {icon:ShieldCheck,name:ru?"Заказы из аккаунтов":"Konto-Bestellungen",value:eligible.length}
    ].map(({icon:Icon,name,value})=><section key={name} className="rounded-md border bg-[#faf9f7] p-4"><Icon size={20} strokeWidth={1.5} className="text-[#8c716a]"/><p className="mt-3 text-xs text-neutral-500">{name}</p><strong className="mt-1 block text-2xl font-medium tabular-nums">{value}</strong></section>)}
   </div>
   <section className="mt-7 overflow-hidden rounded-md border">
    <div className="border-b p-4"><h2 className="text-lg font-medium">{ru?"Подтверждение заказов":"Bestellungen bestätigen"}</h2><p className="mt-1 text-xs text-neutral-600">{ru?"Гостевые заказы не учитываются. Заказы без сохранённого расчёта требуют ручной проверки.":"Gastbestellungen zählen nicht. Ohne Preissnapshot erfolgt keine automatische Vergabe."}</p></div>
    <div className="overflow-x-auto"><table className="w-full min-w-[800px] text-left text-sm"><thead className="bg-neutral-50 text-xs text-neutral-600"><tr><th className="p-3">№</th><th className="p-3">{ru?"Клиент":"Kunde"}</th><th className="p-3">{ru?"Сумма":"Summe"}</th><th className="p-3">{ru?"Ожидаемые баллы":"Mögliche Punkte"}</th><th className="p-3">{ru?"Подтверждения":"Bestätigungen"}</th></tr></thead><tbody>
-   {eligible.map(o=>{const f=stateByOrder.get(o.id),p=readPricing(o.pricingSnapshot),points=p?earnablePoints(p.lines,p.discountGrossCents):null;return <tr key={o.id} className="border-t">
+   {eligible.map(o=>{const f=stateByOrder.get(o.id),p=readPricing(o.pricingSnapshot),points=p?earnablePoints(p.lines,p.discountGrossCents+(p.loyaltyDiscountCents??0)):null;return <tr key={o.id} className="border-t">
     <td className="p-3 font-medium">{o.id}</td><td className="p-3">{o.fullName}<p className="text-xs text-neutral-500">{o.createdAt.toLocaleDateString(ru?"ru-RU":"de-DE")}</p></td>
     <td className="p-3 tabular-nums">{Number(o.totalAmount).toFixed(2)} €</td>
     <td className="p-3 tabular-nums">{points===null?"—":points}</td>
     <td className="p-3">{f?.loyaltyAwardedAt?<span className="text-[#27764b]">{ru?"Баллы начислены":"Punkte gebucht"}</span>:<ClubFulfillmentActions orderId={o.id} paid={Boolean(f?.paymentConfirmedAt)} shipped={Boolean(f?.shippedConfirmedAt)} enabled={installed&&awardsEnabled&&points!==null&&o.status!=="CENCELLED"}/>}</td>
    </tr>})}</tbody></table></div>
   </section>
-  <p className="mt-4 text-xs text-neutral-600">{ru?"В этой версии запускается безопасное начисление. Списание, возврат баллов при Stornorechnung и массовый запуск будут включены после отдельной интеграционной проверки; сегодня это не изменяет счета.":"Diese Version bereitet die sichere Vergabe vor. Einlösen und Storno-Ausgleich bleiben vor dem Livegang gesperrt."}</p>
+  <p className="mt-4 text-xs text-neutral-600">{ru?"Бонусы начисляются только по подтверждённым заказам. Списание применяется в чекауте, а возврат баллов — после отметки о фактическом возврате денег. Счета сохраняются без пересчёта.":"Punkte werden nur nach bestätigter Zahlung und tatsächlicher Übergabe gutgeschrieben. Einlösung im Checkout, Korrektur nach bestätigter Rückzahlung. Historische Rechnungen bleiben unverändert."}</p>
  </main>;
 }

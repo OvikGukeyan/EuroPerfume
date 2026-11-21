@@ -63,9 +63,9 @@ export async function POST(request:Request){
     // Check subscription again immediately before delivery.
     const consent=await prisma.accountConsent.findUnique({where:{userId:user.id},select:{locale:true,marketingConfirmedAt:true,marketingWithdrawnAt:true}});
     if(!consent?.marketingConfirmedAt||consent.marketingWithdrawnAt)throw new Error("CONSENT_WITHDRAWN");
-    const ru=consent.locale==="ru",locale=ru?"ru":"de";
-    const subject=ru?campaign.subjectRu:campaign.subjectDe;
-    const body=ru?campaign.bodyRu:campaign.bodyDe;
+    const ru=false,locale="de";
+    const subject=campaign.subjectDe;
+    const body=campaign.bodyDe;
     const unsubscribeUrl=`${base}/${locale}/newsletter/leave?token=${encodeURIComponent(marketingOptOutToken(user.id))}`;
     const result=await sendEmail(user.email,subject,React.createElement("div",{style:{fontFamily:"Arial,sans-serif",maxWidth:580,margin:"auto",lineHeight:1.7,color:"#242424"}},
      React.createElement("p",{style:{letterSpacing:"3px"}},"EURO PERFUME"),

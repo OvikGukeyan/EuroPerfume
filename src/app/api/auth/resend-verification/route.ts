@@ -19,7 +19,7 @@ export async function POST(req:Request){
   const code=randomBytes(32).toString("hex");
   await prisma.verificationCode.upsert({where:{userId:user.id},create:{userId:user.id,code,expiresAt:new Date(Date.now()+24*3600000)},
    update:{code,createdAt:new Date(),expiresAt:new Date(Date.now()+24*3600000)}});
-  await sendEmail(user.email,body.locale==="ru"?"EURO PERFUME — подтвердите email":"EURO PERFUME — E-Mail bestätigen",UserVerificationTemplate({code,locale:body.locale}));
+  await sendEmail(user.email,"EURO PERFUME — E-Mail bestätigen",UserVerificationTemplate({code,locale:body.locale}));
   return ok();
  }catch(e){console.error("[RESEND_VERIFICATION]",e);return NextResponse.json({error:"UNAVAILABLE"},{status:503});}
 }
