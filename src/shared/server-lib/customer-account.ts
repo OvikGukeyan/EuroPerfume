@@ -15,7 +15,7 @@ export async function loadCustomerAccount(userId:number):Promise<AccountData|nul
    prisma.loyaltyWallet.findUnique({where:{userId},select:{balancePoints:true}}),
    promo?prisma.couponPolicy.findUnique({where:{code:promo.code}}):Promise.resolve(null),
    promo?prisma.couponRedemption.count({where:{userId,code:promo.code}}):Promise.resolve(0),
-   prisma.order.count({where:{userId}})
+   prisma.order.count({where:{userId,status:{not:"CENCELLED"}}})
   ]);
   bonus={balancePoints:wallet?.balancePoints||0,enabled:true};
   const until=welcomeExpiresAt(user.verified,policy?.validDaysAfterVerification||60);
