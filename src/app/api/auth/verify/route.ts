@@ -1,4 +1,5 @@
 import { prisma } from "@/prisma/prisma-client";
+import {sendWelcomeOfferIfConsented} from "@/src/shared/server-lib/welcome-offer-mail";
 import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = 'force-dynamic';
@@ -32,6 +33,8 @@ export async function GET(req: NextRequest) {
                 id: verificationCode.id
             }
         })
+        // Registration verification is not marketing consent: promotional mail is double-opt-in only.
+        await sendWelcomeOfferIfConsented(verificationCode.userId).catch(e=>console.error("[WELCOME_EMAIL]",e));
 
         return NextResponse.redirect(new URL(`/${req.nextUrl.searchParams.get('locale')==='ru'?'ru':'de'}/?verified`, req.url));
     } catch (error) {
