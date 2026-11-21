@@ -222,7 +222,7 @@ export async function dhlCreateOrder(
 
     await sendEmail(
       body.email,
-      "Delivery Notification",
+      "EURO PERFUME — Informationen zu deiner Sendung",
       TrackingNotificationTemplate({
         orderId: shipment.orderId,
         trackingNumber: shipmentNo,
@@ -590,7 +590,7 @@ export async function createOrder(data: CheckoutFormValues) {
     }));
     const notificationResults = await Promise.allSettled([sendEmail(
       data.email,
-      "Pay order #" + order.id,
+      "EURO PERFUME — Bestellbestätigung #" + order.id,
       OrderSuccessTemplate({
         orderId: order.id,
         orderDate: new Date().toLocaleString("de-DE", {
@@ -671,7 +671,7 @@ export async function registerUser(input: import("@/src/shared/lib/registration-
     });
 
     const emailResults = await Promise.allSettled([
-      sendEmail(createdUser.email,body.locale==="ru"?"Подтвердите email EURO PERFUME":"E-Mail bei EURO PERFUME bestätigen",UserVerificationTemplate({code,locale:body.locale})),
+      sendEmail(createdUser.email,"EURO PERFUME — Bitte E-Mail-Adresse bestätigen",UserVerificationTemplate({code,locale:body.locale})),
       body.marketingOptIn ? sendNewsletterConfirmation(createdUser.id) : Promise.resolve(false)
     ]);
     return {accountEmailSent:emailResults[0].status==="fulfilled",marketingEmailSent:emailResults[1].status==="fulfilled"&&emailResults[1].value===true};
@@ -769,7 +769,7 @@ export async function getRecoveringEmail(email: string) {
 
     await sendEmail(
       user.email,
-      "Recover password",
+      "EURO PERFUME — Passwort zurücksetzen",
       PasswordResetTemplate({
         code,
       }),
