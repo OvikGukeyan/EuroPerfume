@@ -25,6 +25,7 @@ model User {
   Review           Review[]
   addresses        CustomerAddress[]
   accountConsent   AccountConsent?
+  legacyNewsletterReward LegacyNewsletterReward?
   couponRedemptions CouponRedemption[]
   loyaltyWallet LoyaltyWallet?
   loyaltyEntries LoyaltyEntry[]
@@ -731,7 +732,7 @@ model AccountConsent {
   termsText String
   privacyNotice String
   marketingText String
-  acceptedAt DateTime @default(now())
+  acceptedAt DateTime? @default(now())
   marketingRequestedAt DateTime?
   marketingConfirmedAt DateTime?
   marketingWithdrawnAt DateTime?
@@ -744,6 +745,18 @@ model AccountConsent {
 }
 
 /** New rewards infrastructure is separate from Shopify and legacy promo codes. */
+model LegacyNewsletterReward {
+  userId Int @id
+  requestedAt DateTime @default(now())
+  code String? @unique
+  grantedAt DateTime?
+  expiresAt DateTime?
+  emailClaimedAt DateTime?
+  emailSentAt DateTime?
+  user User @relation(fields:[userId],references:[id],onDelete:Restrict)
+  @@index([grantedAt])
+}
+
 model CouponPolicy {
   code String @id
   // WELCOME, PER_ACCOUNT, or UNLIMITED. Existing PromoCode remains unchanged.
