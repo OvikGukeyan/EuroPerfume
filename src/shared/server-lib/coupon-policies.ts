@@ -1,5 +1,6 @@
 import "server-only";
 import {Prisma} from "@prisma/client";
+import {legacyRewardUsable} from "@/src/shared/lib/legacy-newsletter-offer";
 import {couponPolicyFailure} from "@/src/shared/lib/europerfume-club";
 import {prisma} from "@/prisma/prisma-client";
 
@@ -17,6 +18,10 @@ export async function checkCouponPolicy(db:Db,policy:NonNullable<Awaited<ReturnT
   db.couponRedemption.count({where:{code:policy.code,epoch:policy.epoch,userId}}),
   policy.kind==="WELCOME"?db.order.count({where:{userId,status:{not:"CENCELLED"}}}):Promise.resolve(0)
  ]);
- return couponPolicyFailure(policy,{now,userId,verifiedAt:user?.verified||null,priorUses,accountOrderCount});
+ const baseFailure=couponPolicyFailure(policy,{now,userId,verifiedAt:user?.verified||null,priorUses,accountOrderCount});
+ if(baseFailure)return baseFailure;
+ const personal=await db.legacyNewsletterReward.findUnique({where:{code:policy.code}});
+ if(personal && (userId===null || !legacyRewardUsable(userId,personal.userId,personal.grantedAt,personal.expiresAt,now)))return "ACCOUNT_REQUIRED";
+ return null;
 }
 export function normalizeCode(code:string){return code.trim().toUpperCase();}
