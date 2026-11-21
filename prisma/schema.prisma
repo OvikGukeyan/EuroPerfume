@@ -815,6 +815,7 @@ model WelcomeNotice {
 
 model MarketingCampaign {
   id String @id @default(uuid())
+  segment String @default("ALL")
   name String
   subjectRu String
   subjectDe String
