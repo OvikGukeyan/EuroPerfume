@@ -21,7 +21,7 @@ export async function loadCustomerAccount(userId:number):Promise<AccountData|nul
   const until=welcomeExpiresAt(user.verified,policy?.validDaysAfterVerification||60);
   if(promo?.isActive&&promo.discount===10&&policy?.active&&policy.kind==="WELCOME"&&redemptions===0&&pastOrders===0&&new Date()<until){welcome={code:"WELCOME10",expiresAt:until.toISOString()};}
  }catch(e){if(!(e instanceof Prisma.PrismaClientKnownRequestError&&(e.code==="P2021"||e.code==="P2022")))throw e;}
- const orders=await prisma.order.findMany({where:{userId},orderBy:{createdAt:'desc'},include:{invoice:{select:{id:true}},shipments:{select:{shipmentNo:true,carrier:true,status:true,createdAt:true},orderBy:{createdAt:'desc'}},items:{include:{product:{select:{imageUrl:true,volume:true,productGroup:{select:{onTap:true}}}}}}}});
+ const orders=await prisma.order.findMany({where:{userId,createdAt:{gte:user.verified}},orderBy:{createdAt:'desc'},include:{invoice:{select:{id:true}},shipments:{select:{shipmentNo:true,carrier:true,status:true,createdAt:true},orderBy:{createdAt:'desc'}},items:{include:{product:{select:{imageUrl:true,volume:true,productGroup:{select:{onTap:true}}}}}}}});
  return {fullName:user.fullName,email:user.email,provider:Boolean(user.provider),bonus,welcome,newsletter:{requested:Boolean(user.accountConsent?.marketingRequestedAt),confirmed:Boolean(user.accountConsent?.marketingConfirmedAt&&!user.accountConsent?.marketingWithdrawnAt),withdrawn:Boolean(user.accountConsent?.marketingWithdrawnAt)},addresses:user.addresses,orders:orders.map(o=>{
  const pricing=readPricing(o.pricingSnapshot);
  const shipment=o.shipments.find(s=>s.status!=='CANCELED');
