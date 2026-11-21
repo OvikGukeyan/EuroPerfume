@@ -21,6 +21,7 @@ export default async function ClubAdmin({params}:{params:Promise<{locale:string}
    prisma.loyaltyEntry.aggregate({_sum:{points:true},where:{kind:"EARN"}})
   ]);wallets=ws;states=ss;pointsGiven=ag._sum.points||0;
  }catch(e){if(e instanceof Prisma.PrismaClientKnownRequestError&&(e.code==="P2021"||e.code==="P2022"))installed=false;else throw e;}
+ const awardsEnabled=process.env.EUROPERFUME_CLUB_AWARD_ENABLED==="true";
  const pending=await prisma.order.findMany({where:{userId:{not:null}},orderBy:{createdAt:"desc"},take:30,
   select:{id:true,userId:true,fullName:true,status:true,createdAt:true,totalAmount:true,pricingSnapshot:true,
    user:{select:{verified:true}}}});
@@ -31,6 +32,7 @@ export default async function ClubAdmin({params}:{params:Promise<{locale:string}
   <h1 className="mt-2 text-[30px] font-normal tracking-tight">{ru?"Бонусная программа":"Treueprogramm"}</h1>
   <p className="mt-3 max-w-4xl text-sm leading-6 text-neutral-600">{ru?"Начисление 5 баллов за каждый 1 € подходящих товаров — только после подтверждения оплаты и фактической передачи посылки перевозчику. Создание Rechnung или DHL-этикетки само по себе баллов не начисляет.":"5 Punkte je 1 € berechtigter Ware, erst nach bestätigter Zahlung und Übergabe an den Versanddienst. Rechnung oder Label allein lösen keine Punkte aus."}</p>
   {!installed&&<p role="status" className="mt-5 rounded-md border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">{ru?"Тестовая схема бонусов ещё не применена. Кнопки отключены; реальные заказы не менялись.":"Bonus-Migration noch nicht ausgeführt. Aktionen sind deaktiviert."}</p>}
+  {!awardsEnabled&&<p className="mt-4 rounded-md border border-[#e7d3b1] bg-[#fffbf4] p-3 text-sm text-[#775b33]">{ru?"Тестовый режим: начисление на реальные заказы заблокировано до завершения интеграционных проверок.":"Testmodus: Keine Buchung echter Kundenpunkte vor der Integrationsprüfung."}</p>}
   <div className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4">
    {[
     {icon:Wallet,name:ru?"Баланс всех клиентов":"Offene Punkte",value:wallets.reduce((s,w)=>s+w.balancePoints,0)},
@@ -46,7 +48,7 @@ export default async function ClubAdmin({params}:{params:Promise<{locale:string}
     <td className="p-3 font-medium">{o.id}</td><td className="p-3">{o.fullName}<p className="text-xs text-neutral-500">{o.createdAt.toLocaleDateString(ru?"ru-RU":"de-DE")}</p></td>
     <td className="p-3 tabular-nums">{Number(o.totalAmount).toFixed(2)} €</td>
     <td className="p-3 tabular-nums">{points===null?"—":points}</td>
-    <td className="p-3">{f?.loyaltyAwardedAt?<span className="text-[#27764b]">{ru?"Баллы начислены":"Punkte gebucht"}</span>:<ClubFulfillmentActions orderId={o.id} paid={Boolean(f?.paymentConfirmedAt)} shipped={Boolean(f?.shippedConfirmedAt)} enabled={installed&&points!==null&&o.status!=="CENCELLED"}/>}</td>
+    <td className="p-3">{f?.loyaltyAwardedAt?<span className="text-[#27764b]">{ru?"Баллы начислены":"Punkte gebucht"}</span>:<ClubFulfillmentActions orderId={o.id} paid={Boolean(f?.paymentConfirmedAt)} shipped={Boolean(f?.shippedConfirmedAt)} enabled={installed&&awardsEnabled&&points!==null&&o.status!=="CENCELLED"}/>}</td>
    </tr>})}</tbody></table></div>
   </section>
   <p className="mt-4 text-xs text-neutral-600">{ru?"В этой версии запускается безопасное начисление. Списание, возврат баллов при Stornorechnung и массовый запуск будут включены после отдельной интеграционной проверки; сегодня это не изменяет счета.":"Diese Version bereitet die sichere Vergabe vor. Einlösen und Storno-Ausgleich bleiben vor dem Livegang gesperrt."}</p>
