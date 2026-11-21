@@ -36,7 +36,13 @@ export default async function CustomerCrm({params,searchParams}:{params:Promise<
     accountConsent:{select:{marketingConfirmedAt:true,marketingWithdrawnAt:true,marketingRequestedAt:true}}}}),
   prisma.user.count({where})
  ]);
- const items=[
+ const [offersRequested,offersGranted,offersSent,offersUsed]=await Promise.all([
+  prisma.legacyNewsletterReward.count(),
+  prisma.legacyNewsletterReward.count({where:{grantedAt:{not:null}}}),
+  prisma.legacyNewsletterReward.count({where:{emailSentAt:{not:null}}}),
+  prisma.couponRedemption.count({where:{code:{startsWith:"EP15-"}}})
+ ]);
+  const items=[
   {icon:Users,label:ru?"Зарегистрировано":"Registriert",value:registered},
   {icon:UserCheck,label:ru?"Email подтверждён":"E-Mail bestätigt",value:verified},
   {icon:MailCheck,label:ru?"Согласие на рекламу":"Newsletter-Einwilligung",value:subscribers},
@@ -51,6 +57,15 @@ export default async function CustomerCrm({params,searchParams}:{params:Promise<
   <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
    {items.map(({icon:Icon,label,value})=><section key={label} className="rounded-lg border border-[#e7e3df] bg-[#faf9f7] p-4"><Icon size={19} strokeWidth={1.5} className="text-[#90766d]"/><p className="mt-3 text-xs text-neutral-600">{label}</p><strong className="mt-1 block text-2xl font-medium tabular-nums">{value}</strong></section>)}
   </div>
+  <section className="rounded-lg border border-[#e7e3df] bg-[#faf9f7] p-4">
+   <h2 className="text-sm font-medium">{ru?"Акция для старых аккаунтов · 15%":"15 %-Aktion für Bestandskonten"}</h2>
+   <div className="mt-3 grid grid-cols-2 gap-3 md:grid-cols-4 text-xs">
+    <div><p className="text-neutral-500">{ru?"Запросили подписку":"Anmeldung angefragt"}</p><strong className="text-xl tabular-nums">{offersRequested}</strong></div>
+    <div><p className="text-neutral-500">{ru?"Получили купон":"Gutschein erhalten"}</p><strong className="text-xl tabular-nums">{offersGranted}</strong></div>
+    <div><p className="text-neutral-500">{ru?"Письмо отправлено":"Gutschein-E-Mail gesendet"}</p><strong className="text-xl tabular-nums">{offersSent}</strong></div>
+    <div><p className="text-neutral-500">{ru?"Использовали скидку":"Eingelöst"}</p><strong className="text-xl tabular-nums">{offersUsed}</strong></div>
+   </div>
+  </section>
   <nav className="flex flex-wrap gap-2">
    <Link href="/club" className="inline-flex min-h-10 items-center gap-2 rounded-md border px-3 text-sm"><Gift size={16}/>{ru?"Бонусные начисления":"Punkte verwalten"}</Link>
    <Link href="/create-promocode" className="inline-flex min-h-10 items-center gap-2 rounded-md border px-3 text-sm"><TicketPercent size={16}/>{ru?"Промокоды":"Gutscheine"}</Link>
