@@ -1,3 +1,4 @@
+import {readPricing} from "../src/shared/lib/tax";
 import {pointRedemptionQuote,earnedPointsAfterRefund,refundableSpentPoints} from "../src/shared/lib/loyalty-arithmetic";
 import assert from "node:assert/strict";
 import {couponPolicyFailure,earnablePoints,welcomeExpiresAt,accountOrderEligible,loyaltyAwardAllowed} from "../src/shared/lib/europerfume-club";
@@ -35,3 +36,17 @@ assert.deepEqual(earnedPointsAfterRefund({originalEarnedPoints:250,originalEligi
 assert.equal(refundableSpentPoints({originalSpentPoints:500,originalEligibleChargedCents:5000,cumulativeEligibleRefundCents:2000}),200);
 assert.equal(refundableSpentPoints({originalSpentPoints:500,originalEligibleChargedCents:5000,cumulativeEligibleRefundCents:5000}),500);
 console.log("Loyalty redemption and cumulative partial-refund arithmetic passed (pure tests only).");
+
+const priceWithPoints=readPricing({
+ version:1,country:"DEU",capturedAt:"2026-11-21T18:00:00.000Z",
+ policy:{mode:"exempt",rateBasisPoints:0},
+ subtotalGrossCents:5000,shippingGrossCents:500,discountGrossCents:500,
+ loyaltyDiscountCents:900,totalGrossCents:4100,
+ lines:[{productId:1,variationId:null,title:"Test item",quantity:1,onTap:false,grossCents:5000,couponExcluded:false}]
+});
+assert.equal(priceWithPoints?.loyaltyDiscountCents,900);
+assert.equal(priceWithPoints?.totalGrossCents,4100);
+assert.equal(readPricing({...priceWithPoints,totalGrossCents:5000}),null,"point savings cannot be omitted from stored gross");
+assert.deepEqual(earnedPointsAfterRefund({originalEarnedPoints:200,originalEligibleCents:5000,cumulativeEligibleRefundCents:2500}),{remainingEarnedPoints:100,reversalPoints:100});
+assert.equal(refundableSpentPoints({originalSpentPoints:900,originalEligibleChargedCents:5000,cumulativeEligibleRefundCents:2500}),450);
+console.log("Saved loyalty pricing and proportional refund ledger arithmetic passed.");
