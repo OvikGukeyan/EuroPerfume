@@ -15,7 +15,7 @@ export async function checkCouponPolicy(db:Db,policy:NonNullable<Awaited<ReturnT
  const user=userId===null?null:await db.user.findUnique({where:{id:userId},select:{verified:true}});
  const [priorUses,accountOrderCount]=userId===null?[0,0]:await Promise.all([
   db.couponRedemption.count({where:{code:policy.code,epoch:policy.epoch,userId}}),
-  policy.kind==="WELCOME"?db.order.count({where:{userId}}):Promise.resolve(0)
+  policy.kind==="WELCOME"?db.order.count({where:{userId,status:{not:"CENCELLED"}}}):Promise.resolve(0)
  ]);
  return couponPolicyFailure(policy,{now,userId,verifiedAt:user?.verified||null,priorUses,accountOrderCount});
 }
