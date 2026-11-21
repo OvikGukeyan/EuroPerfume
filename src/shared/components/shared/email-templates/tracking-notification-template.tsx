@@ -14,10 +14,10 @@ export const TrackingNotificationTemplate: React.FC<Props> = ({
   deliveryService = "DHL",
 }) => (
   <div>
-    <h1>Ihre Bestellung ist unterwegs!</h1>
+    <h1>Deine Versandinformationen</h1>
 
     <p>
-      Ihre Bestellung <strong>#EP-{orderId.toString().padStart(6, "0")}</strong> wurde erfolgreich verpackt und an den Versanddienstleister übergeben.
+      Ihre Bestellung <strong>#EP-{orderId.toString().padStart(6, "0")}</strong> wurde für den Versand vorbereitet. Das Versandetikett wurde erstellt; die tatsächliche Übergabe an DHL kann noch ausstehen.
     </p>
 
     <h2>Sendungsverfolgung:</h2>
@@ -53,7 +53,7 @@ export const TrackingNotificationTemplate: React.FC<Props> = ({
 
     <p>
       <a href="https://euro-perfume-inky.vercel.app" target="_blank" rel="noopener noreferrer">
-        www.euro-perfume.com
+        euro-perfume-inky.vercel.app
       </a>
     </p>
   </div>
