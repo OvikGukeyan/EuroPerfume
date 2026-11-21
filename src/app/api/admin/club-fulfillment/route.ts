@@ -3,7 +3,7 @@ import {NextResponse} from "next/server";
 import {prisma} from "@/prisma/prisma-client";
 import {getUserSession} from "@/src/shared/server-lib/get-user-session";
 import {readPricing} from "@/src/shared/lib/tax";
-import {earnablePoints} from "@/src/shared/lib/europerfume-club";
+import {earnablePoints,accountOrderEligible,loyaltyAwardAllowed} from "@/src/shared/lib/europerfume-club";
 import {UserRole} from "@prisma/client";
 const schema=z.object({orderId:z.number().int().positive(),action:z.enum(["payment_received","handed_to_carrier"])});
 export async function POST(request:Request){
@@ -18,7 +18,7 @@ export async function POST(request:Request){
    if(order.status==="CENCELLED")throw new Error("ORDER_CANCELLED");
    if(order.userId===null)throw new Error("GUEST_ORDER");
    const user=await tx.user.findUnique({where:{id:order.userId},select:{verified:true}});
-   if(!user?.verified || order.createdAt.getTime()<user.verified.getTime())throw new Error("ACCOUNT_NOT_VERIFIED_AT_ORDER");
+   if(!accountOrderEligible(order.userId,user?.verified||null,order.createdAt))throw new Error("ACCOUNT_NOT_VERIFIED_AT_ORDER");
    const existing=await tx.orderFulfillment.findUnique({where:{orderId:order.id}});
    const now=new Date();
    const paymentConfirmedAt=existing?.paymentConfirmedAt||(input.action==="payment_received"?now:null);
@@ -26,7 +26,7 @@ export async function POST(request:Request){
    // Shipping label CREATED is deliberately not proof of hand-over.
    let awardedAt=existing?.loyaltyAwardedAt||null;
    let awardedPoints=0;
-   if(paymentConfirmedAt&&shippedConfirmedAt&&!awardedAt){
+   if(loyaltyAwardAllowed(paymentConfirmedAt,shippedConfirmedAt,awardedAt)){
      const snapshot=readPricing(order.pricingSnapshot);
      if(!snapshot)throw new Error("PRICING_SNAPSHOT_REQUIRED");
      awardedPoints=earnablePoints(snapshot.lines,snapshot.discountGrossCents);
