@@ -21,6 +21,7 @@ const source=(path:string)=>readFileSync(new URL("../"+path,import.meta.url),"ut
 assert.match(source("src/app/actions.ts"),/EURO PERFUME — Bitte E-Mail-Adresse bestätigen/);
 assert.match(source("src/app/actions.ts"),/EURO PERFUME — Bestellbestätigung/);
 assert.match(source("src/app/actions.ts"),/EURO PERFUME — Passwort zurücksetzen/);
+assert.match(source("src/app/api/auth/resend-verification/route.ts"),/EURO PERFUME — E-Mail bestätigen/);
 assert.match(source("src/app/api/admin/marketing-campaigns/route.ts"),/const subject=campaign.subjectDe/);
 assert.match(source("src/app/api/admin/marketing-campaigns/route.ts"),/const body=campaign.bodyDe/);
 assert.match(source("src/shared/server-lib/registration-consent.tsx"),/const locale='de';const ru=false/);
