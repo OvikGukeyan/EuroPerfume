@@ -1,4 +1,4 @@
--- EURO PERFUME CLUB: staged only; do not run on the production Supabase project without approval.
+-- EURO PERFUME CLUB: additive schema only. Applied with owner approval 2026-11-21; do not activate the coupon until checkout validation is complete.
 -- Existing PromoCode, Order, User and historical invoices stay unchanged.
 CREATE TABLE IF NOT EXISTS "CouponPolicy" (
   "code" TEXT PRIMARY KEY,
@@ -60,14 +60,7 @@ CREATE TABLE IF NOT EXISTS "OrderFulfillment" (
  "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
  CONSTRAINT "OrderFulfillment_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
--- Seed only if WELCOME10 does not already exist; never overwrite existing campaign settings.
-INSERT INTO "PromoCode" ("id","code","discount","isActive","disposable","expiresAt","createdAt","updatedAt")
-SELECT gen_random_uuid()::text,'WELCOME10',10,TRUE,FALSE,NULL,NOW(),NOW()
-WHERE NOT EXISTS(SELECT 1 FROM "PromoCode" WHERE upper("code")='WELCOME10');
-INSERT INTO "CouponPolicy" ("code","kind","active","validDaysAfterVerification","perUserLimit","createdAt","updatedAt")
-SELECT "code",'WELCOME',TRUE,60,1,NOW(),NOW() FROM "PromoCode"
-WHERE upper("code")='WELCOME10' AND "discount"=10
-ON CONFLICT ("code") DO NOTHING;
+-- WELCOME10 is deliberately not seeded until checkout restrictions have passed integration testing.
 -- All new tables are accessed only from authenticated Next.js server routes, not the public Data API.
 ALTER TABLE "CouponPolicy" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "CouponRedemption" ENABLE ROW LEVEL SECURITY;
