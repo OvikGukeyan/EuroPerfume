@@ -28,6 +28,7 @@ model User {
   couponRedemptions CouponRedemption[]
   loyaltyWallet LoyaltyWallet?
   loyaltyEntries LoyaltyEntry[]
+  welcomeNotice WelcomeNotice?
 }
 
 model Category {
@@ -802,4 +803,11 @@ model OrderFulfillment {
   loyaltyAwardedAt DateTime?
   updatedAt DateTime @updatedAt
   order Order @relation(fields: [orderId], references: [id], onDelete: Restrict)
+}
+
+model WelcomeNotice {
+  userId Int @id
+  claimAt DateTime @default(now())
+  sentAt DateTime?
+  user User @relation(fields: [userId],references: [id],onDelete: Restrict)
 }
