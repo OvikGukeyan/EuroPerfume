@@ -8,6 +8,7 @@ import {UserRole} from "@prisma/client";
 const schema=z.object({orderId:z.number().int().positive(),action:z.enum(["payment_received","handed_to_carrier"])});
 export async function POST(request:Request){
  const admin=await getUserSession();if(!admin||admin.role!==UserRole.ADMIN)return NextResponse.json({error:"FORBIDDEN"},{status:403});
+ if(process.env.EUROPERFUME_CLUB_AWARD_ENABLED!=="true")return NextResponse.json({error:"BONUS_AWARD_NOT_LIVE"},{status:503});
  if(request.headers.get("origin")!==new URL(request.url).origin)return NextResponse.json({error:"ORIGIN"},{status:403});
  let input:z.infer<typeof schema>;try{input=schema.parse(await request.json());}catch{return NextResponse.json({error:"INPUT"},{status:400});}
  try{
