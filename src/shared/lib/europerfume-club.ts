@@ -29,3 +29,11 @@ export function earnablePoints(lines:readonly {grossCents:number;couponExcluded?
  const eligible=lines.filter(x=>!x.couponExcluded).reduce((s,x)=>s+x.grossCents,0);
  return Math.floor(Math.max(0,eligible-discountCents)*5/100);
 }
+
+/** Order qualifies only if it was placed while signed into an already verified account. */
+export function accountOrderEligible(userId:number|null,verifiedAt:Date|null,orderCreatedAt:Date):boolean{
+ return userId!==null && verifiedAt!==null && orderCreatedAt.getTime()>=verifiedAt.getTime();
+}
+export function loyaltyAwardAllowed(paidAt:Date|null,shippedAt:Date|null,awardedAt:Date|null):boolean{
+ return Boolean(paidAt && shippedAt && !awardedAt);
+}
