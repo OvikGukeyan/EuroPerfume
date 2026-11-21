@@ -5,7 +5,7 @@
 ## Source of truth and privacy
 - Shopify is fully separate. No Shopify imports, customer merge, promo sharing or balance synchronization.
 - Customer history is loaded by `Order.userId` **only**. Never search orders by billing email; guest `userId=NULL` orders stay guest forever.
-- Password login requires a verified email; Google OAuth sign-in verifies the account email through the identity provider.
+- Password login requires a verified email; Google OAuth sign-in verifies the account email through the identity provider. Existing unverified accounts can use the new request-verification-email control (15-minute per-account cooldown, generic response against account enumeration).
 - Admin CRM shows registered email addresses, verification, confirmed marketing consent, and counts. Only ADMIN session can access.
 - Promotional mail requires *double-opt-in* (confirmed and not withdrawn), not merely registration; new users without newsletter consent can still see WELCOME10 in their account.
 
@@ -44,3 +44,10 @@
 - Existing invoice correction, Black Friday, Day Offer, INCI and coupon-policy tests run in the build.
 - Run schema migration **only in isolated staging** first, inspect row-level security and permissions, and perform registration/email/consent, account/coupon, duplicate checkout, paid+shipment, newsletter unsubscribe and refund E2E.
 - Apply staged migration on production only after explicit approval, separately from code release; activate gradually using feature flags if necessary. No historical order, Invoice, or Stornorechnung mutation in this PR.
+
+## Baseline read-only production audit (21 November 2026)
+- Registered accounts: 147, email-verified: 100, not yet verified: 47.
+- Confirmed marketing subscribers: 0. No legal marketing audience exists at the moment.
+- Guest orders: 1,071; signed-in account orders: 1. Historical guest orders stay unlinked even when their email matches a registered account.
+- Existing WELCOME10 codes: 0. Staged migration seeds one new managed welcome offer without deleting other codes.
+- These values are an audit snapshot, not synthetic metrics. No customer PII or orders were modified by the audit.
