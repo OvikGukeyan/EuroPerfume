@@ -19,7 +19,7 @@ export async function sendWelcomeOfferIfConsented(userId:number):Promise<boolean
  if(!policy?.active||policy.kind!=="WELCOME")return false;
  const expiry=welcomeExpiresAt(user.verified,policy.validDaysAfterVerification||60);
  if(new Date()>=expiry)return false;
- const prior=await prisma.order.count({where:{userId}});
+ const prior=await prisma.order.count({where:{userId,status:{not:"CENCELLED"}}});
  if(prior)return false;
  try{await prisma.welcomeNotice.create({data:{userId}});}
  catch(e){if(e instanceof Prisma.PrismaClientKnownRequestError&&(e.code==="P2002"||e.code==="P2021"))return false;throw e;}
