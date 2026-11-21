@@ -84,3 +84,35 @@ CREATE TABLE IF NOT EXISTS "WelcomeNotice"(
 );
 ALTER TABLE "WelcomeNotice" ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON TABLE "WelcomeNotice" FROM anon,authenticated;
+
+CREATE TABLE IF NOT EXISTS "MarketingCampaign"(
+ "id" TEXT PRIMARY KEY,
+ "name" TEXT NOT NULL,
+ "subjectRu" TEXT NOT NULL,
+ "subjectDe" TEXT NOT NULL,
+ "bodyRu" TEXT NOT NULL,
+ "bodyDe" TEXT NOT NULL,
+ "status" TEXT NOT NULL DEFAULT 'DRAFT',
+ "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT "MarketingCampaign_status_check" CHECK ("status" IN ('DRAFT','ACTIVE','PAUSED','DONE'))
+);
+CREATE TABLE IF NOT EXISTS "MarketingDelivery"(
+ "id" TEXT PRIMARY KEY,
+ "campaignId" TEXT NOT NULL,
+ "userId" INTEGER NOT NULL,
+ "status" TEXT NOT NULL DEFAULT 'QUEUED',
+ "providerId" TEXT,
+ "lastError" TEXT,
+ "sentAt" TIMESTAMP(3),
+ "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ CONSTRAINT "MarketingDelivery_campaign_fkey" FOREIGN KEY ("campaignId") REFERENCES "MarketingCampaign"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+ CONSTRAINT "MarketingDelivery_user_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+ CONSTRAINT "MarketingDelivery_status_check" CHECK ("status" IN ('QUEUED','SENDING','SENT','FAILED')),
+ UNIQUE ("campaignId","userId")
+);
+CREATE INDEX IF NOT EXISTS "MarketingDelivery_campaign_status_idx" ON "MarketingDelivery"("campaignId","status");
+ALTER TABLE "MarketingCampaign" ENABLE ROW LEVEL SECURITY;
+ALTER TABLE "MarketingDelivery" ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON TABLE "MarketingCampaign","MarketingDelivery" FROM anon,authenticated;
