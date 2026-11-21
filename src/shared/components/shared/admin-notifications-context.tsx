@@ -59,7 +59,7 @@ export function AdminNotificationsProvider({children}:{children:ReactNode}){
      body:JSON.stringify({ids:visible.map(item=>item.id)})
     });
     if(response.ok)await refresh();
-   }finally{if(live.current)setLoading(false)}
+   }catch{/* Preserve unread badge until acknowledgement succeeds. */}finally{if(live.current)setLoading(false)}
   })();
  },[unread,refresh]);
  const closeInbox=useCallback(()=>{setIsOpen(false);setPresented([]);setFilter(null)},[]);
