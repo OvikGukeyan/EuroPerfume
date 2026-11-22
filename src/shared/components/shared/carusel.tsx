@@ -48,6 +48,16 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
     if(!api) return;
     const viewport = api.rootNode();
     const update=()=>{
+      // On phones the weekly hero uses the ACTUAL height of a promotion card,
+      // not viewport width. This keeps both featured slides identical on iPhones.
+      if(window.matchMedia("(max-width: 767px)").matches){
+        const campaignSlides=api.slideNodes().filter(node=>node.querySelector(".desktop-promotion"));
+        const heights=campaignSlides.map(node=>node.querySelector("section")?.getBoundingClientRect().height||0).filter(h=>h>0);
+        if(heights.length){
+          const height=Math.ceil(Math.max(...heights));
+          viewport.style.setProperty("--storefront-mobile-promo-height",`${height}px`);
+        }else viewport.style.removeProperty("--storefront-mobile-promo-height");
+      }else viewport.style.removeProperty("--storefront-mobile-promo-height");
       const index = api.selectedScrollSnap();
       setSelected(index);
       const slide = api.slideNodes()[index];
@@ -59,7 +69,7 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
     update();
     api.on("select",update);
     api.on("reInit",update);
-    return ()=>{ observer.disconnect(); api.off("select",update);api.off("reInit",update);viewport.style.removeProperty("height");viewport.style.removeProperty("transition"); };
+    return ()=>{ observer.disconnect(); api.off("select",update);api.off("reInit",update);viewport.style.removeProperty("height");viewport.style.removeProperty("transition");viewport.style.removeProperty("--storefront-mobile-promo-height"); };
   },[api]);
   if (!visibleSlides.length && !featuredCount) {
     return null;
