@@ -49,6 +49,8 @@ export const useOrdersStore = create<OrdersState>((set, get) => ({
       set({ loading: true, error: false });
       const data = await Api.orders.updateOrderStatus(itemId, status);
       set({orders: get().orders.map(item => item.id === itemId ? { ...item, status: data.status } : item)});
+      // Keep the dashboard badge synchronized without waiting for the next 30-second poll.
+      if(typeof window!=="undefined")window.dispatchEvent(new Event("europerfume:order-status-changed"));
     } catch (error) {
       set({ error: true });
       console.error(error);
