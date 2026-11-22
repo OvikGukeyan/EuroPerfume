@@ -1,6 +1,7 @@
 import 'server-only';
 import prisma from '@/prisma/prisma-client';
 import { requireInvoiceAdmin } from './invoice-corrections';
+import {settlePointsAtInvoice} from './preinvoice-loyalty';
 import { pdfHash } from './invoice-document';
 import { generateInvoicePdf } from './generate-invoice-pdf';
 import { berlinDate,validateSupplyDate,readPricing,capturePricing,cents,invoiceTax } from '../lib/tax';
@@ -16,6 +17,7 @@ export async function createProtectedInvoice(orderId:number,supplyDateValue:stri
   if(exists) return {ok:true,invoiceUrl};
   const order=await tx.order.findUnique({where:{id:orderId},include:{items:{include:{product:{include:{brand:true,productGroup:true}}}}}});
   if(!order) throw new Error('Заказ не найден');
+  if(order.status==='CENCELLED')throw new Error('Нельзя выставить счёт по отменённой заявке');
   const supplyDate=validateSupplyDate(supplyDateValue,order.createdAt);
   const pricing=readPricing(order.pricingSnapshot)??capturePricing(order.items,order.deliveryCountry,order.discount??0,order.createdAt);
   if(pricing.totalGrossCents!==cents(Number(order.totalAmount))) return {ok:false,message:'Исторические цены не совпадают с суммой заказа. Проверьте данные перед созданием счёта.'};
@@ -27,6 +29,7 @@ export async function createProtectedInvoice(orderId:number,supplyDateValue:stri
   const invoice=await tx.invoice.create({data:{orderId,pdfUrl:invoiceUrl,supplyDate,taxSnapshot,issuedAt,year,invoiceNumber}});
   const sha256=pdfHash(pdf);
   await tx.$executeRaw`INSERT INTO "InvoiceDocument" ("invoiceId",pdf,sha256) VALUES (${invoice.id},${pdf},${sha256})`;
+  await settlePointsAtInvoice(tx,order.id,order.userId,pricing);
   return {ok:true,invoiceUrl};
  },{timeout:20000});
 }
