@@ -10,9 +10,9 @@ const money=(value:number)=>new Intl.NumberFormat("de-DE",{style:"currency",curr
  * Dynamic bottle images are composited as multiply to eliminate ordinary white packshot backgrounds.
  */
 export function WeeklyLuxuryArtwork({
- name,brand,image,salePrice,regularPrice,volume,ru,until,preview=false
+ name,brand,image,productId,salePrice,regularPrice,volume,ru,until,preview=false
 }:{
- name:string;brand:string;image:string;salePrice:number;regularPrice:number;
+ name:string;brand:string;image:string;productId:number;salePrice:number;regularPrice:number;
  volume:number;ru:boolean;until?:string;preview?:boolean
 }){
  return <div className={`weekly-luxury-artwork storefront-desktop-hero relative isolate w-full overflow-hidden text-[#fff5e9] ${preview?"weekly-luxury-preview":""}`}>
@@ -35,7 +35,7 @@ export function WeeklyLuxuryArtwork({
    {until&&<p className="weekly-luxury-until">{ru?"Акция до":"Angebot bis"} {until}</p>}
   </div>
   <div className="weekly-luxury-bottle-wrap pointer-events-none absolute z-10 flex items-center justify-center" aria-hidden="true">
-   {image?<img src={image} alt="" loading={preview?"lazy":"eager"}
+   {image&&productId>0?<img key={productId} src={`/api/weekly-bottle/${productId}`} alt="" loading={preview?"lazy":"eager"}\n    onError={event=>{event.currentTarget.style.opacity="0"}}
     className="weekly-luxury-bottle h-full w-full object-contain"/>:<span className="weekly-luxury-placeholder"/>}
   </div>
  </div>;
