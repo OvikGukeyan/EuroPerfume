@@ -206,7 +206,9 @@
   width:100%;
   max-width:100%;
   min-width:0;
-  height:auto;
+  /* Match the measured promotion card when one is present.
+     Fall back to regular carousel imagery sizing when there is no promo. */
+  height:var(--storefront-mobile-promo-height,auto);
   min-height:0;
   aspect-ratio:3.6 / 4;
  }
