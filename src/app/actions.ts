@@ -533,7 +533,7 @@ export async function createOrder(data: CheckoutFormValues) {
         const debit=await tx.loyaltyWallet.updateMany({where:{userId:uid,balancePoints:{gte:requestedPoints}},data:{balancePoints:{decrement:requestedPoints}}});
         if(debit.count!==1)throw new Error("LOYALTY_CHANGED");
         await tx.loyaltyEntry.create({data:{userId:uid,orderId:order.id,kind:"RESERVE",points:-requestedPoints,
-          idempotencyKey:`order:${order.id}:spend:v1`,note:"Enquiry reservation; finalized only after agreed Invoice"}});
+          idempotencyKey:`order:${order.id}:reserve:v1`,note:"Enquiry reservation; finalized only after agreed Invoice"}});
       }
       if(couponPolicy && accountSession && pricing.discountGrossCents>0){
         await tx.couponRedemption.create({data:{
