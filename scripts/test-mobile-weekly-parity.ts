@@ -1,0 +1,18 @@
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+const css=readFileSync(new URL("../src/shared/components/shared/storefront-hero.css",import.meta.url),"utf8");
+const carusel=readFileSync(new URL("../src/shared/components/shared/carusel.tsx",import.meta.url),"utf8");
+const hero=readFileSync(new URL("../src/shared/components/shared/fragrance-day-hero.tsx",import.meta.url),"utf8");
+assert.match(carusel,/legacy-slide-frame relative w-full aspect-\[3\.6\/4\]/);
+assert.match(css,/@media\(max-width:767px\)\{\s*\.storefront-carousel \.weekly-luxury-hero/);
+assert.match(css,/\.storefront-carousel \.weekly-luxury-artwork:not\(\.weekly-luxury-preview\)\{[^}]*aspect-ratio:3\.6 \/ 4/);
+assert.match(css,/\.storefront-carousel \.weekly-luxury-artwork:not\(\.weekly-luxury-preview\)\{[^}]*height:var\(--storefront-mobile-promo-height,auto\)/);
+assert.match(css,/\.storefront-carousel \.weekly-luxury-artwork:not\(\.weekly-luxury-preview\)\{[^}]*min-height:0/);
+assert.match(css,/@media\(min-width:768px\)\{\s*\.storefront-carousel \.weekly-luxury-artwork\{/);
+assert.match(css,/height:var\(--storefront-hero-height\)/);
+assert.match(carusel,/querySelector\("\.desktop-promotion"\)/);
+assert.match(carusel,/--storefront-mobile-promo-height/);
+assert.match(carusel,/window.matchMedia\("\(max-width: 767px\)"\)/);
+assert.match(hero,/WeeklyLuxuryArtwork/);
+assert.doesNotMatch(hero,/initio-weekly-luxury-4x3\.webp/);
+console.log("Mobile weekly hero measures real promotion height; fallback ratio matches legacy slides; desktop remains unchanged: PASS");

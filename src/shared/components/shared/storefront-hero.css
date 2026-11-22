@@ -188,3 +188,75 @@
 /* The server now returns real alpha transparency, not a white JPEG rectangle.
    Use normal blending to preserve pale bottle labels, metallic trim and glass. */
 .weekly-luxury-bottle{mix-blend-mode:normal;-webkit-mask-image:none;mask-image:none}
+
+
+/* Mobile week-of-the-fragrance parity: all image slides use 3.6:4.
+   Use the carousel ITEM width, never 113vw (screen width differs from
+   the padded slide width and was causing a taller, partially clipped panel).
+   Desktop campaign height and admin preview are intentionally untouched. */
+@media(max-width:767px){
+ .storefront-carousel .weekly-luxury-hero,
+ .storefront-carousel .weekly-luxury-link{
+  display:block;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+ }
+ .storefront-carousel .weekly-luxury-artwork:not(.weekly-luxury-preview){
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  /* Match the measured promotion card when one is present.
+     Fall back to regular carousel imagery sizing when there is no promo. */
+  height:var(--storefront-mobile-promo-height,auto);
+  min-height:0;
+  aspect-ratio:3.6 / 4;
+ }
+ .storefront-carousel .weekly-luxury-artwork:not(.weekly-luxury-preview) .weekly-luxury-copy{
+  box-sizing:border-box;
+  width:62%;
+  padding:14px 0 14px clamp(13px,4vw,23px);
+ }
+ .storefront-carousel .weekly-luxury-artwork:not(.weekly-luxury-preview) .weekly-luxury-title{
+  font-size:clamp(21px,5.4vw,32px);
+  line-height:1.04;
+  margin-top:9px;
+ }
+ .storefront-carousel .weekly-luxury-artwork:not(.weekly-luxury-preview) .weekly-luxury-eyebrow{
+  font-size:clamp(7px,1.8vw,10px);
+  letter-spacing:.12em;
+ }
+ .storefront-carousel .weekly-luxury-artwork:not(.weekly-luxury-preview) .weekly-luxury-brand{
+  font-size:clamp(8px,2vw,11px);
+  margin-top:8px;
+  letter-spacing:.1em;
+ }
+ .storefront-carousel .weekly-luxury-artwork:not(.weekly-luxury-preview) .weekly-luxury-price{margin-top:13px}
+ .storefront-carousel .weekly-luxury-artwork:not(.weekly-luxury-preview) .weekly-luxury-discount{
+  font-size:clamp(31px,8.5vw,47px);
+ }
+ .storefront-carousel .weekly-luxury-artwork:not(.weekly-luxury-preview) .weekly-luxury-amount{
+  margin-top:5px;
+  gap:3px 7px;
+ }
+ .storefront-carousel .weekly-luxury-artwork:not(.weekly-luxury-preview) .weekly-luxury-amount strong{
+  font-size:clamp(14px,3.6vw,18px);
+ }
+ .storefront-carousel .weekly-luxury-artwork:not(.weekly-luxury-preview) .weekly-luxury-action{
+  margin-top:12px;
+  min-height:34px;
+  padding:8px 12px;
+  gap:7px;
+  font-size:clamp(8px,2vw,10px);
+ }
+ .storefront-carousel .weekly-luxury-artwork:not(.weekly-luxury-preview) .weekly-luxury-until{
+  margin-top:7px;
+  font-size:9px;
+ }
+ .storefront-carousel .weekly-luxury-artwork:not(.weekly-luxury-preview) .weekly-luxury-bottle-wrap{
+  right:1%;
+  top:15%;
+  bottom:15%;
+  width:40%;
+ }
+}
