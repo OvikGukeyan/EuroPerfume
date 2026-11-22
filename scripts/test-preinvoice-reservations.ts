@@ -68,7 +68,7 @@ const status=src("src/app/api/order/[id]/route.ts");
 const invoice=src("src/shared/server-lib/create-protected-invoice.ts");
 const refunds=src("src/app/invoice-correction-actions.ts");
 assert.match(actions,/kind:"RESERVE",points:-requestedPoints/);
-assert.match(actions,/idempotencyKey:`order:\$\{order.id\}:spend:v1`/,"Enquiry reservation ID must remain unique");
+assert.match(actions,/idempotencyKey:`order:\$\{order.id\}:reserve:v1`/,"Enquiry reservation ID must remain unique");
 assert.match(pre,/SELECT id FROM "Order" WHERE id=\$\{orderId\} FOR UPDATE/);
 assert.match(pre,/if\(order.invoice\)throw Error\("INVOICE_ALREADY_ISSUED"\)/);
 assert.match(pre,/PAYMENT_ALREADY_CONFIRMED/);
