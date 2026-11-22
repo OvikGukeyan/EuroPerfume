@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "npm run test:black-friday && npm run test:day-offer && npm run test:promotions && npm run test:ingredients && npm run test:coupon-policy && npm run test:club && npm run test:club-emails && npm run test:club-workflow && npm run test:legacy-newsletter && npm run test:admin-notifications && npm run test:order-notifications && npm run test:day-offer-search && npm run test:weekly-luxury-hero && npm run test:bottle-background && npm run test:mobile-weekly-parity && prisma generate && next build",
+    "build": "npm run test:black-friday && npm run test:day-offer && npm run test:promotions && npm run test:ingredients && npm run test:coupon-policy && npm run test:club && npm run test:club-emails && npm run test:club-workflow && npm run test:legacy-newsletter && npm run test:admin-notifications && npm run test:order-notifications && npm run test:day-offer-search && npm run test:weekly-luxury-hero && npm run test:bottle-background && npm run test:mobile-weekly-parity && npm run test:preinvoice-reservations && prisma generate && next build",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
     "start": "next start",
     "lint": "next lint",
@@ -26,7 +26,8 @@
     "test:day-offer-search": "tsx scripts/test-day-offer-search.ts",
     "test:weekly-luxury-hero": "tsx scripts/test-weekly-luxury-hero.ts",
     "test:bottle-background": "tsx scripts/test-bottle-background.ts",
-    "test:mobile-weekly-parity": "tsx scripts/test-mobile-weekly-parity.ts"
+    "test:mobile-weekly-parity": "tsx scripts/test-mobile-weekly-parity.ts",
+    "test:preinvoice-reservations": "tsx scripts/test-preinvoice-reservations.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
