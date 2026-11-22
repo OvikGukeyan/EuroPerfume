@@ -1,5 +1,5 @@
 "use client";
-import { useMemo, useRef, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
 import { Search, X, Check, ChevronDown } from "lucide-react";
 import { saveDayOffer, cancelDayOffer } from "@/src/app/day-offer-actions";
 
@@ -14,6 +14,8 @@ export function PerfumeSearch({products,value,onChange,otherId}:{products:Option
  const [open,setOpen]=useState(false);
  const [activeIndex,setActiveIndex]=useState(0);
  const inputRef=useRef<HTMLInputElement>(null);
+ const inputId=useId();
+ const resultsId=useId();
  const selected=products.find(p=>p.id===value);
  const filtered=useMemo(()=>{
   const tokens=normalizeSearch(query).split(/\s+/).filter(Boolean);
@@ -28,15 +30,15 @@ export function PerfumeSearch({products,value,onChange,otherId}:{products:Option
   if(e.key==="Enter"&&open&&available[activeIndex]){e.preventDefault();choose(available[activeIndex].id);}
  }
  return <div className="relative">
-  <label htmlFor="day-offer-search" className="mb-2 block text-sm font-semibold">Найти аромат по бренду или названию</label>
+  <label htmlFor={inputId} className="mb-2 block text-sm font-semibold">Найти аромат по бренду или названию</label>
   <input type="hidden" name="productId" value={value||""}/>
   <div className="flex min-h-12 items-center gap-2 rounded-xl border border-stone-300 bg-white px-3 focus-within:border-[#8f7a6c] focus-within:ring-2 focus-within:ring-[#e6ded8]">
    <Search size={18} className="shrink-0 text-[#85766c]"/>
-   <input ref={inputRef} id="day-offer-search" type="search" autoComplete="off"
+   <input ref={inputRef} id={inputId} type="search" autoComplete="off"
     value={query} onChange={e=>{setQuery(e.target.value);setOpen(true);setActiveIndex(0)}}
     onFocus={()=>setOpen(true)} onKeyDown={onKeyDown}
     placeholder={selected&&!open?`${selected.brand} · ${selected.name}`:"Например: Initio Addictive"}
-    aria-label="Поиск аромата" aria-expanded={open} aria-controls="day-offer-search-results"
+    aria-label="Поиск аромата" aria-expanded={open} aria-controls={resultsId}
     className="min-w-0 flex-1 bg-transparent py-3 text-sm outline-none placeholder:text-stone-500"/>
    {query&&<button type="button" aria-label="Очистить поиск" onClick={()=>{setQuery("");inputRef.current?.focus()}}><X size={16}/></button>}
    <button type="button" aria-label={open?"Скрыть варианты":"Показать варианты"} onClick={()=>setOpen(v=>!v)}><ChevronDown size={17} className="text-stone-500"/></button>
@@ -45,11 +47,11 @@ export function PerfumeSearch({products,value,onChange,otherId}:{products:Option
    <Check size={15} className="text-[#5a6c55]"/><span className="min-w-0 flex-1 truncate"><strong>{selected.brand}</strong> · {selected.name}</span>
    <button type="button" aria-label="Снять выбор" onClick={()=>{onChange(0);setQuery("");setOpen(true);inputRef.current?.focus()}} className="text-stone-600 underline">Сменить</button>
   </div>}
-  {open&&<div id="day-offer-search-results" role="listbox" aria-label="Найденные ароматы"
-   className="absolute inset-x-0 top-[54px] z-30 max-h-72 overflow-y-auto rounded-xl border border-[#ddd3cb] bg-white p-1 shadow-xl">
+  {open&&<div id={resultsId} role="listbox" aria-label="Найденные ароматы"
+   className="absolute inset-x-0 top-[calc(100%-3px)] z-30 max-h-72 overflow-y-auto rounded-xl border border-[#ddd3cb] bg-white p-1 shadow-xl">
    <div className="border-b px-3 py-2 text-[11px] text-stone-500">{filtered.length===40?"Показаны первые 40 результатов — уточните запрос":`Найдено: ${filtered.length}`}</div>
    {filtered.length===0&&<p className="p-4 text-sm text-stone-600">Ничего не найдено. Попробуй бренд или часть названия.</p>}
-   {filtered.map((p,i)=>{
+   {filtered.map(p=>{
     const disabled=!p.allowed||p.id===otherId;
     return <button key={p.id} type="button" role="option" aria-selected={p.id===value} disabled={disabled}
      onClick={()=>choose(p.id)} onMouseEnter={()=>setActiveIndex(Math.max(0,available.findIndex(x=>x.id===p.id)))}
