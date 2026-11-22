@@ -70,9 +70,11 @@ export async function updatePreinvoiceOrder(tx:DB,order:OrderRow,items:Priceable
  if(previousPoints){
   if(order.userId===null)throw Error("LOYALTY_ACCOUNT_REQUIRED");
   if(await reservedFromLedger(tx,order.id,order.userId)!==previousPoints)throw Error("LOYALTY_LEDGER_MISMATCH");
-  await creditReservation(tx,order.id,order.userId,previousPoints-newPoints);
  }
+ // Same row-lock order as checkout: coupon policy before customer wallet,
+ // avoiding a policy/wallet deadlock if another request is submitting an order.
  await reconcileCoupon(tx,order.id,pricing.discountGrossCents);
+ if(previousPoints && order.userId!==null)await creditReservation(tx,order.id,order.userId,previousPoints-newPoints);
  const couponStillApplies=pricing.discountGrossCents>0;
  await tx.order.update({where:{id:order.id},data:{
   totalAmount:pricing.totalGrossCents/100,pricingSnapshot:pricing,
@@ -95,9 +97,9 @@ export async function cancelUnpaidEnquiry(tx:DB,orderId:number){
  const reserved=pricing?.loyaltyDiscountCents??0;
  if(reserved){
   if(order.userId===null||await reservedFromLedger(tx,order.id,order.userId)!==reserved)throw Error("LOYALTY_LEDGER_MISMATCH");
-  await creditReservation(tx,order.id,order.userId,reserved,true);
  }
  await reconcileCoupon(tx,order.id,0);
+ if(reserved&&order.userId!==null)await creditReservation(tx,order.id,order.userId,reserved,true);
  await tx.order.update({where:{id:order.id},data:{status:"CENCELLED"}});
  return {status:"CENCELLED",alreadyCancelled:false,returnedPoints:reserved};
 }
