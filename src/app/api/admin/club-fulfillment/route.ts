@@ -20,6 +20,9 @@ export async function POST(request:Request){
    if(order.userId===null)throw new Error("GUEST_ORDER");
    const user=await tx.user.findUnique({where:{id:order.userId},select:{verified:true}});
    if(!accountOrderEligible(order.userId,user?.verified||null,order.createdAt))throw new Error("ACCOUNT_NOT_VERIFIED_AT_ORDER");
+   // A submitted enquiry is not a finalized sale: grant only against an issued Invoice.
+   const invoice=await tx.invoice.findUnique({where:{orderId:order.id},select:{id:true}});
+   if(!invoice)throw new Error("INVOICE_REQUIRED_BEFORE_LOYALTY_AWARD");
    const existing=await tx.orderFulfillment.findUnique({where:{orderId:order.id}});
    const now=new Date();
    const paymentConfirmedAt=existing?.paymentConfirmedAt||(input.action==="payment_received"?now:null);

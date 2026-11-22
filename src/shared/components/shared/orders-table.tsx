@@ -12,7 +12,7 @@ import {
 } from "../ui/table";
 import { OrderStatus } from "@prisma/client";
 import { Select } from "../ui";
-import { Search, Trash2 } from "lucide-react";
+import { Search } from "lucide-react";
 import {
   SelectContent,
   SelectItem,
@@ -22,7 +22,6 @@ import {
 import { useOrders } from "@/src/shared/hooks";
 import { useRouter } from "@/src/i18n/navigation";
 import { OrderStatuses } from "@/prisma/constants";
-import { AlertDialogButton } from "./alert-dialog-button";
 import { convertDate } from "../../lib";
 
 type Props = {
@@ -88,8 +87,10 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                 <TableCell>{order.contactForm}</TableCell>
                 <TableCell>
                   <Select
+                    value={order.status}
                     onValueChange={(value) => {
-                      changeOrderStatus(order.id, value as OrderStatus);
+                      if(value===OrderStatus.CENCELLED&&!window.confirm("Отменить заявку? Если нет Rechnung и подтверждённой оплаты, зарезервированные баллы и WELCOME10 вернутся покупателю. Действие нельзя отменить."))return;
+                      void changeOrderStatus(order.id, value as OrderStatus);
                     }}
                   >
                     <SelectTrigger onClick={(e) => e.stopPropagation()}>
@@ -116,16 +117,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                   </Select>
                 </TableCell>
 
-                <TableCell>
-                  <AlertDialogButton
-                    onClickContinue={() => removeOrder(order.id)}
-                    text={
-                      "This action cannot be undone. This will permanently delete the order."
-                    }
-                  >
-                    <Trash2 />
-                  </AlertDialogButton>
-                </TableCell>
+
               </TableRow>
             ))}
         </TableBody>

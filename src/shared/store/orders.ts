@@ -2,6 +2,8 @@ import { Api } from "../services/api-client";
 import { create } from "zustand";
 import { OrderDTO } from "../services/dto/orders.dto";
 import { OrderStatus } from '@prisma/client';
+import axios from "axios";
+import toast from "react-hot-toast";
 
 export interface OrdersState {
   loading: boolean;
@@ -53,6 +55,8 @@ export const useOrdersStore = create<OrdersState>((set, get) => ({
       if(typeof window!=="undefined")window.dispatchEvent(new Event("europerfume:order-status-changed"));
     } catch (error) {
       set({ error: true });
+      const message=axios.isAxiosError(error)?String(error.response?.data?.message||"Не удалось изменить статус заказа"):"Не удалось изменить статус заказа";
+      toast.error(message);
       console.error(error);
     } finally {
       set({ loading: false });

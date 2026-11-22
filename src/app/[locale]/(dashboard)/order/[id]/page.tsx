@@ -52,6 +52,7 @@ export default async function Order({
     ? [
         ["Товары", snapshot.subtotalGrossCents],
         ...(snapshot.discountGrossCents > 0 ? [["Скидка", -snapshot.discountGrossCents]] as const : []),
+        ...((snapshot.loyaltyDiscountCents??0)>0 ? [[order?.invoice?"Списано баллов":"Резерв баллов до Rechnung",-(snapshot.loyaltyDiscountCents??0)]] as const : []),
         ["Доставка", snapshot.shippingGrossCents],
       ] as const
     : [];

@@ -50,7 +50,7 @@ export const CheckoutSidebar:FC<Props>=({className,loading,itemLoading,totalAmou
       <span className="block text-xs text-neutral-600">{walletBalance} {ru?"баллов доступно":"Punkte verfügbar"} · {ru?"до 20% подходящих товаров":"bis zu 20% geeigneter Waren"}</span>
     </span>
    </label>}
-   {redeemPoints>0&&<div className="flex justify-between gap-2 text-sm text-[#26694a]"><span>{ru?"Списание баллов":"Punkte eingelöst"}</span><strong>−{formatMoney(redeemPoints/100)} €</strong></div>}
+   {redeemPoints>0&&<div className="flex justify-between gap-2 text-sm text-[#26694a]"><span>{ru?"Резерв баллов до выставления счёта":"Punkte bis zur Rechnung reserviert"}</span><strong>−{formatMoney(redeemPoints/100)} €</strong></div>}
    <div className="border-t border-[#e5e5e5] pt-4">
     <div className="flex items-baseline justify-between gap-3">
      <strong className="text-[16px]">{ru?"Итого":"Gesamt"}</strong>

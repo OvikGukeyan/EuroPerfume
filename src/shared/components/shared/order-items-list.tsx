@@ -7,6 +7,7 @@ import { CheckoutItem, SearchInput } from ".";
 import { OrderDTO } from "../../services/dto/orders.dto";
 import { Minus, Plus } from "lucide-react";
 import { Button } from "../ui";
+import {useRouter} from "next/navigation";
 import { useOrderItems } from "../../hooks";
 import { calcCartItemTotalPrice } from "../../lib";
 
@@ -20,9 +21,11 @@ export const OrderItemsList: FC<Props> = ({ className }) => {
   const onCountClick = async (itemId: number, type: "plus" | "minus") => {
     const delta = type === "plus" ? 1 : -1;
 
-    const res = await updateItemQuantity(itemId, delta);
+    await updateItemQuantity(itemId, delta);
+    router.refresh();
   };
   const [isSearchOpen, setIsSearchOpen] = React.useState(false);
+  const router=useRouter();
   return (
     <div className={cn("", className)}>
       <div>
@@ -46,7 +49,7 @@ export const OrderItemsList: FC<Props> = ({ className }) => {
             }
             variation={item.variation?.name}
             onClickCountButton={(type) => onCountClick(item.id, type)}
-            onClickRemove={() => removeOrderItem(item.id)}
+            onClickRemove={() => {void removeOrderItem(item.id).then(()=>router.refresh())}}
           />
         ))}
       </div>
@@ -56,9 +59,7 @@ export const OrderItemsList: FC<Props> = ({ className }) => {
         </Button>
         <div className={`${isSearchOpen ? "block" : "hidden"} w-full`}>
           <SearchInput
-            onProductClick={(product) =>
-              addOrderItem(order?.id || 0, product, undefined, 1)
-            }
+            onProductClick={(product) => {void addOrderItem(order?.id || 0, product, undefined, 1).then(()=>router.refresh())}}
           />
         </div>
       </div>

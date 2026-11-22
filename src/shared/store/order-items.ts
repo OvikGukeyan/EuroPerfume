@@ -3,6 +3,7 @@ import { Api } from "../services/api-client";
 import { OrderDTO } from "../services/dto/orders.dto";
 import { create } from "zustand";
 import { ProductDTO } from "../services/dto/product.dto";
+import toast from "react-hot-toast";
 
 
 
@@ -40,75 +41,41 @@ export const useOrderItemsStore = create<OrderItemsState>((set) => ({
   },
 
   removeOrderItem: async (id: number) => {
-    try {
-      set({ itemLoading: true, error: false });
-
-      await Api.orderItem.removeOrderItem(id);
-
-      set((state) => {
-        if (!state.order) return state;
-
-        return {
-          order: {
-            ...state.order,
-            items: state.order.items.filter((item) => item.id !== id),
-          },
-        };
-      });
-    } catch (error) {
-      console.error(error);
-      set({ error: true });
-    } finally {
-      set({ itemLoading: false });
-    }
+    try{
+      set({itemLoading:true,error:false});
+      const result=await Api.orderItem.removeOrderItem(id);
+      const fresh=await Api.orderItem.fetchOrder(result.orderId);
+      set({order:fresh,totalAmount:Number(fresh.totalAmount)});
+    }catch(e){
+      set({error:true});
+      toast.error("Не удалось изменить заявку. Проверьте статус заказа.");
+      console.error(e);
+    }finally{set({itemLoading:false});}
   },
 
   updateItemQuantity: async (id: number, delta: number) => {
-    try {
-      set({ itemLoading: true, error: false });
-
-      const res = await Api.orderItem.updateOrderItem(delta, id);
-
-      set((state) => {
-        if (!state.order) return state;
-
-        return {
-          order: {
-            ...state.order,
-            totalAmount: res.totalAmount,
-            items: state.order.items
-              .map((item) =>
-                item.id === id
-                  ? { ...item, quantity: item.quantity + delta }
-                  : item
-              )
-              .filter((item) => item.quantity > 0),
-          },
-        };
-      });
-    } catch (error) {
-      console.error(error);
-      set({ error: true });
-    } finally {
-      set({ itemLoading: false });
-    }
+    try{
+      set({itemLoading:true,error:false});
+      const result=await Api.orderItem.updateOrderItem(delta,id);
+      const fresh=await Api.orderItem.fetchOrder(result.orderId);
+      set({order:fresh,totalAmount:Number(fresh.totalAmount)});
+    }catch(e){
+      set({error:true});
+      toast.error("Не удалось пересчитать заявку.");
+      console.error(e);
+    }finally{set({itemLoading:false});}
   },
 
-  addOrderItem: async (orderId: number, product: ProductDTO,  variationId: number | undefined, quantity=1) => {
-    try {
-      set({ loading: true, error: false });
-      const data = await Api.orderItem.addOrderItem({
-        orderId,
-        productId: product.id,
-        variationId,
-        quantity
-      });
-      set({ order: data });
-    } catch (error) {
-      console.error(error);
-      set({ error: true });
-    } finally {
-      set({ loading: false });
-    }
+  addOrderItem: async (orderId: number, product: ProductDTO,variationId: number | undefined,quantity=1) => {
+    try{
+      set({itemLoading:true,error:false});
+      await Api.orderItem.addOrderItem({orderId,productId:product.id,variationId,quantity});
+      const fresh=await Api.orderItem.fetchOrder(orderId);
+      set({order:fresh,totalAmount:Number(fresh.totalAmount)});
+    }catch(e){
+      set({error:true});
+      toast.error("Не удалось добавить товар в заявку.");
+      console.error(e);
+    }finally{set({itemLoading:false});}
   }
 }));
