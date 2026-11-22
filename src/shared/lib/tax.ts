@@ -1,4 +1,5 @@
 import { couponQuote } from "./coupon-eligibility";
+import { pointRedemptionQuote } from "./loyalty-arithmetic";
 import { offerPrices, type DayOfferWindow } from "./day-offer";
 import { z } from "zod";
 import { TAX_SETTINGS } from "@/src/config/tax";
@@ -92,7 +93,8 @@ export function deliveryCountryForCheckout(data: { shippingMethod: string; count
 /** Preserve the prices accepted in a submitted enquiry when an admin edits it. */
 export function reviseOrderPricing(items: PriceableItem[], country: string, discount: number, at: Date, previous: PricingSnapshot | null) {
   if (!previous) return capturePricing(items, country, discount, at);
-  if ((previous.loyaltyDiscountCents??0)>0) throw new Error("Orders with redeemed points require a formal Stornorechnung, not repricing");
+  // Points are reserved at enquiry time. Before Invoice, edits may only RELEASE
+  // excess points; increasing the reservation without buyer approval is forbidden.
   // Preserve saved historic exclusion flags; do not re-qualify old orders with today's rules.
   const revised = capturePricing(items,country,discount,at,previous.policy,false);
   revised.lines = revised.lines.map(line => {
@@ -114,6 +116,12 @@ export function reviseOrderPricing(items: PriceableItem[], country: string, disc
     productId:l.productId,grossCents:l.grossCents,
     excluded:excluded ? Boolean(l.couponExcluded) : false
   })),discount).discountCents;
-  revised.totalGrossCents=revised.subtotalGrossCents+revised.shippingGrossCents-revised.discountGrossCents;
+  const oldReserved=previous.loyaltyDiscountCents??0;
+  if(oldReserved>0){
+    const eligibleAfterCoupon=Math.max(0,revised.lines.filter(l=>!l.couponExcluded).reduce((sum,l)=>sum+l.grossCents,0)-revised.discountGrossCents);
+    const {spendPoints}=pointRedemptionQuote({balancePoints:oldReserved,eligibleAfterCouponCents:eligibleAfterCoupon});
+    revised.loyaltyDiscountCents=spendPoints;
+  }
+  revised.totalGrossCents=revised.subtotalGrossCents+revised.shippingGrossCents-revised.discountGrossCents-(revised.loyaltyDiscountCents??0);
   return revised;
 }
