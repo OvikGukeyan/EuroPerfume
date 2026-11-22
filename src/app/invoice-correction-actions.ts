@@ -76,7 +76,11 @@ export async function recordInvoiceRefund(raw: { correctionId: string; paidAt: s
       if(eligibleRefundCents>rows[0].grossCents+(pricing.loyaltyDiscountCents??0)||eligibleRefundCents>remaining)throw new Error("Бонусная часть возврата превышает допустимую сумму");
       const entries=await tx.loyaltyEntry.findMany({where:{orderId},select:{kind:true,points:true}});
       const originalEarn=entries.filter(e=>e.kind==="EARN").reduce((n,e)=>n+e.points,0);
-      const originalSpend=-entries.filter(e=>e.kind==="SPEND").reduce((n,e)=>n+e.points,0);
+      // The customer may have received some reserved points back BEFORE invoice.
+      // Only the settled net spend is eligible for cash-refund restoration.
+      const originalSpend=Math.max(0,
+       -entries.filter(e=>e.kind==="SPEND").reduce((n,e)=>n+e.points,0)
+       -entries.filter(e=>e.kind==="RESERVATION_RELEASE").reduce((n,e)=>n+e.points,0));
       const reversed=-entries.filter(e=>e.kind==="REFUND_EARN_REVERSE").reduce((n,e)=>n+e.points,0);
       const restored=entries.filter(e=>e.kind==="REFUND_SPEND_RESTORE").reduce((n,e)=>n+e.points,0);
       const cumulative=previousEligible+eligibleRefundCents;
