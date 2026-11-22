@@ -51,3 +51,136 @@
 @media(prefers-reduced-motion:reduce){.storefront-slide-arrow,.storefront-slide-arrow svg{transition:none}.storefront-slide-arrow:hover svg{transform:none}}
 
 @media(max-width:767px){.storefront-slide-arrow{display:none}}
+
+
+/* EURO PERFUME — permanent weekly luxury campaign artwork.
+   Same dimensions as other storefront hero campaigns on desktop;
+   no product-specific baked illustration, names or prices. */
+.weekly-luxury-hero{background:#382a24}
+.weekly-luxury-artwork{
+ position:relative;isolation:isolate;display:block;
+ height:clamp(390px,113vw,520px);min-height:0;
+ background:#3e2d26;overflow:hidden;
+}
+.weekly-luxury-scene{object-position:58% center}
+.weekly-luxury-vignette{
+ background:
+  linear-gradient(90deg,rgba(29,21,18,.90) 0%,rgba(34,24,19,.78) 32%,rgba(40,27,20,.46) 53%,rgba(28,19,17,.02) 82%),
+  linear-gradient(0deg,rgba(24,17,15,.36) 0%,transparent 26%,transparent 75%,rgba(22,16,14,.14) 100%);
+}
+.weekly-luxury-copy{
+ position:relative;z-index:3;display:flex;flex-direction:column;
+ justify-content:center;align-items:flex-start;
+ width:60%;height:100%;gap:0;
+ padding:25px 0 25px clamp(20px,4.5vw,56px);
+ text-shadow:0 1px 6px rgba(20,13,11,.2);
+}
+.weekly-luxury-eyebrow{
+ font-size:clamp(8px,1.8vw,12px);font-weight:500;
+ letter-spacing:.2em;line-height:1.6;color:#e3c7ac;
+}
+.weekly-luxury-title{
+ margin-top:clamp(12px,3vw,23px);
+ max-width:100%;font-size:clamp(25px,6vw,38px);
+ font-weight:400;letter-spacing:-.038em;
+ line-height:1.03;overflow-wrap:anywhere;
+ color:#fff4e9;
+}
+.weekly-luxury-brand{
+ margin-top:12px;font-size:clamp(9px,2.1vw,12px);
+ font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:#f2e5d8;
+ overflow-wrap:anywhere;
+}
+.weekly-luxury-price{margin-top:clamp(17px,4vw,30px)}
+.weekly-luxury-discount{
+ font-size:clamp(38px,10vw,60px);
+ line-height:.95;letter-spacing:-.04em;
+ font-weight:400;color:#dcb38a;
+}
+.weekly-luxury-amount{
+ display:flex;align-items:baseline;flex-wrap:wrap;
+ gap:5px 10px;margin-top:10px;font-size:12px;
+ color:#e9d8c7;
+}
+.weekly-luxury-amount strong{font-size:clamp(16px,3.8vw,22px);font-weight:600;white-space:nowrap;color:#fff9f3}
+.weekly-luxury-amount del{font-size:clamp(10px,2.5vw,13px);opacity:.7;white-space:nowrap}
+.weekly-luxury-amount span{font-size:clamp(10px,2.4vw,12px);white-space:nowrap}
+.weekly-luxury-action{
+ display:inline-flex;align-items:center;justify-content:center;gap:13px;
+ min-height:41px;margin-top:clamp(15px,4vw,26px);padding:10px 18px;
+ border:1px solid #ddbc98;border-radius:999px;
+ background:rgba(36,25,21,.25);font-size:clamp(9px,2.4vw,12px);
+ font-weight:500;letter-spacing:.055em;color:#fff0dc;
+ transition:background .2s ease,transform .2s ease;
+ white-space:nowrap;
+}
+.weekly-luxury-link:hover .weekly-luxury-action{background:rgba(92,65,45,.72);transform:translateY(-1px)}
+.weekly-luxury-link:focus-visible{outline:3px solid #e9c79c;outline-offset:-3px}
+.weekly-luxury-until{margin-top:12px;font-size:clamp(9px,2vw,11px);color:#d6c4b5}
+.weekly-luxury-bottle-wrap{
+ top:13%;bottom:12%;right:2%;width:43%;
+ filter:drop-shadow(0 19px 18px rgba(14,10,9,.34));
+}
+.weekly-luxury-bottle{
+ /* White packshot pixels blend into the photography instead of forming a white rectangle.
+    Feathering hides the rectangular edge of nontransparent source images. */
+ mix-blend-mode:multiply;
+ -webkit-mask-image:radial-gradient(ellipse 73% 78% at 50% 50%,#000 62%,transparent 100%);
+ mask-image:radial-gradient(ellipse 73% 78% at 50% 50%,#000 62%,transparent 100%);
+ object-position:center center;
+}
+.weekly-luxury-placeholder{height:75%;width:48%;border-radius:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18)}
+@media(min-width:768px){
+ .storefront-carousel .weekly-luxury-artwork{
+  height:var(--storefront-hero-height);min-height:0;aspect-ratio:auto;
+ }
+ .weekly-luxury-artwork{
+  height:var(--storefront-hero-height,380px);
+  min-height:0;
+ }
+ .weekly-luxury-copy{
+  width:56%;padding:19px 0 19px clamp(30px,4vw,60px);
+ }
+ .weekly-luxury-eyebrow{font-size:10px;letter-spacing:.22em}
+ .weekly-luxury-title{font-size:clamp(30px,3.5vw,47px);margin-top:12px;max-width:560px}
+ .weekly-luxury-brand{font-size:12px;margin-top:12px}
+ .weekly-luxury-price{margin-top:20px}
+ .weekly-luxury-discount{font-size:clamp(39px,4.2vw,57px)}
+ .weekly-luxury-amount{margin-top:5px;gap:12px}
+ .weekly-luxury-amount strong{font-size:20px}
+ .weekly-luxury-amount del,.weekly-luxury-amount span{font-size:13px}
+ .weekly-luxury-action{margin-top:15px;min-height:39px;font-size:11px;padding:9px 21px}
+ .weekly-luxury-until{margin-top:7px;font-size:10px}
+ .weekly-luxury-bottle-wrap{top:9%;bottom:8%;right:11%;width:31%}
+ .weekly-luxury-vignette{
+  background:linear-gradient(90deg,rgba(31,22,17,.9),rgba(44,29,22,.66) 40%,rgba(39,27,20,.16) 67%,transparent 100%);
+ }
+}
+@media(max-width:389px){
+ .weekly-luxury-copy{width:64%;padding-left:17px}
+ .weekly-luxury-title{font-size:clamp(23px,5.5vw,29px)}
+ .weekly-luxury-brand{font-size:9px}
+ .weekly-luxury-bottle-wrap{right:-5%;width:45%;top:16%}
+ .weekly-luxury-action{padding:8px 12px;gap:5px}
+}
+@media(min-width:768px) and (max-height:650px){
+ .weekly-luxury-title{font-size:clamp(27px,3.5vw,39px)}
+ .weekly-luxury-discount{font-size:39px}
+ .weekly-luxury-price{margin-top:12px}
+ .weekly-luxury-action{margin-top:10px}
+}
+/* Admin preview uses the identical dynamic artwork with contained typography. */
+.weekly-luxury-preview{height:clamp(290px,32vw,360px);min-height:290px}
+.weekly-luxury-preview .weekly-luxury-copy{width:58%;padding:18px 0 18px 23px}
+.weekly-luxury-preview .weekly-luxury-eyebrow{font-size:8px;letter-spacing:.13em}
+.weekly-luxury-preview .weekly-luxury-title{font-size:clamp(21px,2.2vw,28px);margin-top:12px}
+.weekly-luxury-preview .weekly-luxury-brand{font-size:10px;margin-top:9px;letter-spacing:.1em}
+.weekly-luxury-preview .weekly-luxury-price{margin-top:13px}
+.weekly-luxury-preview .weekly-luxury-discount{font-size:40px}
+.weekly-luxury-preview .weekly-luxury-amount{gap:5px;margin-top:6px}
+.weekly-luxury-preview .weekly-luxury-amount strong{font-size:15px}
+.weekly-luxury-preview .weekly-luxury-amount del,.weekly-luxury-preview .weekly-luxury-amount span{font-size:10px}
+.weekly-luxury-preview .weekly-luxury-action{margin-top:12px;min-height:33px;font-size:9px;padding:8px 12px;gap:6px}
+.weekly-luxury-preview .weekly-luxury-bottle-wrap{top:13%;bottom:13%;right:5%;width:36%}
+.weekly-luxury-preview .weekly-luxury-until{display:none}
+@media(prefers-reduced-motion:reduce){.weekly-luxury-action{transition:none}.weekly-luxury-link:hover .weekly-luxury-action{transform:none}}
