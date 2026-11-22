@@ -44,19 +44,23 @@ export function AdminNotificationsProvider({children}:{children:ReactNode}){
   const id=window.setInterval(()=>{if(document.visibilityState==="visible")void refresh()},30000);
   const visible=()=>{if(document.visibilityState==="visible")void refresh()};
   document.addEventListener("visibilitychange",visible);
-  return ()=>{live.current=false;window.clearInterval(id);document.removeEventListener("visibilitychange",visible)};
+  window.addEventListener("europerfume:order-status-changed",visible);
+  return ()=>{live.current=false;window.clearInterval(id);document.removeEventListener("visibilitychange",visible);window.removeEventListener("europerfume:order-status-changed",visible)};
  },[refresh]);
  const openInbox=useCallback((category?:AdminCategory)=>{
   const selected=category??null;
   const visible=unread.filter(event=>!selected||event.category===selected);
   setPresented(visible);setFilter(selected);setIsOpen(true);
-  if(!visible.length)return;
+  // Opening the inbox must not mark NEW orders as handled.
+  // Only moving an order to processing/other state clears that counter.
+  const acknowledgeIds=visible.filter(item=>item.kind!=="new_order").map(item=>item.id);
+  if(!acknowledgeIds.length)return;
   setLoading(true);
   void (async()=>{
    try{
     const response=await fetch("/api/admin/notifications",{
      method:"POST",headers:{"Content-Type":"application/json"},
-     body:JSON.stringify({ids:visible.map(item=>item.id)})
+     body:JSON.stringify({ids:acknowledgeIds})
     });
     if(response.ok)await refresh();
    }catch{/* Preserve unread badge until acknowledgement succeeds. */}finally{if(live.current)setLoading(false)}
