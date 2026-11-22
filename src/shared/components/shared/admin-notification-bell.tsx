@@ -62,7 +62,7 @@ export function AdminNotificationBell(){
        </button>)}
     </div>
     <div className="flex items-center justify-between gap-2 border-t px-4 py-3 text-xs text-neutral-500">
-     <span>{loading?(ru?"Отмечаю как просмотренные…":"Als gelesen markieren…"):(ru?"Просмотренные уведомления убираются из счётчика":"Gelesene Meldungen verschwinden vom Zähler")}</span>
+     <span>{loading?(ru?"Отмечаю сообщения как просмотренные…":"Nachrichten als gelesen markieren…"):(presented.some(item=>item.kind==="new_order")?(ru?"Новый заказ исчезнет из счётчика после статуса «В обработке»":"Neue Bestellungen verschwinden bei Status „In Bearbeitung“"):(ru?"Просмотренные сообщения исчезают из счётчика":"Gelesene Nachrichten verschwinden vom Zähler"))}</span>
      {total>presented.length&&<span className="tabular-nums">{total} {ru?"всего новых":"insgesamt neu"}</span>}
     </div>
    </section>
