@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { UserRole } from "@prisma/client";
 import { getUserSession } from "@/src/shared/server-lib/get-user-session";
-import { capturePricing, readPricing, reviseOrderPricing } from "@/src/shared/lib/tax";
+import { updatePreinvoiceOrder,lockEditableOrder } from "@/src/shared/server-lib/preinvoice-loyalty";
 import { prisma } from "@/prisma/prisma-client";
 import {
   calcCartItemTotalPrice,
@@ -50,13 +50,11 @@ export async function PATCH(
       });
       if (!item) throw new Error("ITEM_NOT_FOUND");
 
-      // (опционально) запрет редактирования если уже отправлен
-      const order = await tx.order.findUnique({ where: { id: item.orderId } });
-      if (!order) throw new Error("ORDER_NOT_FOUND");
-      if (await tx.invoice.findUnique({ where: { orderId: order.id } })) throw new Error("Нельзя менять заказ после выставления счёта");
-      // if (order.trackingCode) throw new Error("ORDER_ALREADY_SHIPPED");
+      const order = await lockEditableOrder(tx,item.orderId);
+      const lockedItem=await tx.orderItem.findUnique({where:{id:orderItemId}});
+      if(!lockedItem)throw Error("ITEM_NOT_FOUND");
 
-      const newQty = item.quantity + parsed.data.delta;
+      const newQty = lockedItem.quantity + parsed.data.delta;
 
       if (newQty <= 0) {
         // можно либо запретить, либо автоматически удалить позицию
@@ -86,13 +84,9 @@ export async function PATCH(
           Number(it.product.discountPrice) || undefined
         );
 
-      const pricing = reviseOrderPricing(updated.items, updated.deliveryCountry, updated.discount ?? 0, updated.createdAt, readPricing(updated.pricingSnapshot));
+      const pricing = await updatePreinvoiceOrder(tx,order,updated.items);
       const totalAmountWithDelivery = pricing.totalGrossCents / 100;
 
-      await tx.order.update({
-        where: { id: updated.id },
-        data: { totalAmount: Number(totalAmountWithDelivery), pricingSnapshot: pricing },
-      });
 
       return {
         orderId: updated.id,
@@ -134,25 +128,18 @@ export async function DELETE(
       });
       if (!item) throw new Error("ITEM_NOT_FOUND");
 
-      const order = await tx.order.findUnique({
-        where: { id: item.orderId },
-        include: {
-          items: {
-            include: { product: { include: { productGroup: true, brand: true } } },
-          },
-        },
-      });
-      if (!order) throw new Error("ORDER_NOT_FOUND");
-      if (await tx.invoice.findUnique({ where: { orderId: order.id } })) throw new Error("Нельзя менять заказ после выставления счёта");
 
-      // (опционально) запрет, если заказ уже отправлен
-      // if (order.trackingCode) throw new Error("ORDER_ALREADY_SHIPPED");
+      const order=await lockEditableOrder(tx,item.orderId);
+      const locked=await tx.orderItem.findUnique({where:{id:orderItemId}});
+      if(!locked)throw Error("ITEM_NOT_FOUND");
 
       // удаляем позицию
       await tx.orderItem.delete({ where: { id: orderItemId } });
 
       // пересчёт totals
-      const remainingItems = order.items.filter((i) => i.id !== orderItemId);
+      const remainingItems=await tx.orderItem.findMany({
+        where:{orderId:order.id},include:{product:{include:{productGroup:true,brand:true}}}
+      });
 
       let subtotal = 0;
       for (const it of remainingItems) {
@@ -164,16 +151,9 @@ export async function DELETE(
         );
       }
 
-      const pricing = reviseOrderPricing(remainingItems, order.deliveryCountry, order.discount ?? 0, order.createdAt, readPricing(order.pricingSnapshot));
+      const pricing = await updatePreinvoiceOrder(tx,order,remainingItems);
       const totalAmount = pricing.totalGrossCents / 100;
 
-      await tx.order.update({
-        where: { id: order.id },
-        data: {
-          totalAmount,
-          pricingSnapshot: pricing,
-        },
-      });
 
       return {
         orderId: order.id,
@@ -208,15 +188,7 @@ export async function POST(req: NextRequest) {
   try {
     const result = await prisma.$transaction(async (tx) => {
       // 1) заказ
-      const order = await tx.order.findUnique({
-        where: { id: orderId },
-      });
-      if (!order) throw new Error("ORDER_NOT_FOUND");
-      if (await tx.invoice.findUnique({ where: { orderId: order.id } })) throw new Error("Нельзя менять заказ после выставления счёта");
-
-      // запрет редактирования после отправки/закрытия (по желанию)
-      // if (order.trackingCode) throw new Error("ORDER_ALREADY_SHIPPED");
-      // if (order.status === "SUCCEEDED" || order.status === "CENCELLED") throw new Error("ORDER_LOCKED");
+      const order=await lockEditableOrder(tx,orderId);
 
       // 2) продукт (и вариация, если есть)
       const product = await tx.product.findUnique({
@@ -279,15 +251,10 @@ export async function POST(req: NextRequest) {
           Number(it.product.discountPrice) || undefined
         );
 
-      const pricing = reviseOrderPricing(updated.items, order.deliveryCountry, order.discount ?? 0, order.createdAt, readPricing(order.pricingSnapshot));
+      const pricing = await updatePreinvoiceOrder(tx,order,updated.items);
       const totalAmount = pricing.totalGrossCents / 100;
 
-      await tx.order.update({
-        where: { id: orderId },
-        data: { totalAmount, pricingSnapshot: pricing },
-      });
-
-      return updated
+      return {...updated,totalAmount,pricingSnapshot:pricing}
     });
 
     return NextResponse.json({ ok: true, ...result });
