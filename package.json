@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "npm run test:black-friday && npm run test:day-offer && npm run test:promotions && npm run test:ingredients && npm run test:coupon-policy && npm run test:club && npm run test:club-emails && npm run test:club-workflow && npm run test:legacy-newsletter && npm run test:admin-notifications && prisma generate && next build",
+    "build": "npm run test:black-friday && npm run test:day-offer && npm run test:promotions && npm run test:ingredients && npm run test:coupon-policy && npm run test:club && npm run test:club-emails && npm run test:club-workflow && npm run test:legacy-newsletter && npm run test:admin-notifications && npm run test:order-notifications && prisma generate && next build",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
     "start": "next start",
     "lint": "next lint",
@@ -21,7 +21,8 @@
     "test:club-emails": "tsx scripts/test-club-emails.tsx",
     "test:club-workflow": "tsx scripts/test-club-workflow.ts",
     "test:legacy-newsletter": "tsx scripts/test-legacy-newsletter.ts",
-    "test:admin-notifications": "tsx scripts/test-admin-notifications.ts"
+    "test:admin-notifications": "tsx scripts/test-admin-notifications.ts",
+    "test:order-notifications": "tsx scripts/test-order-notification-lifecycle.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

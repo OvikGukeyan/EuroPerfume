@@ -1,6 +1,6 @@
 import {prisma} from "@/prisma/prisma-client";
 import {getUserSession} from "@/src/shared/server-lib/get-user-session";
-import {UserRole} from "@prisma/client";
+import {OrderStatus,UserRole} from "@prisma/client";
 import {z} from "zod";
 
 export const dynamic="force-dynamic";
@@ -18,10 +18,16 @@ export async function GET(){
  const adminId=await authenticatedAdmin();
  if(!adminId)return Response.json({error:"FORBIDDEN"},{status:403,headers:noStore});
  try{
-  const [unread,groups]=await Promise.all([
-   prisma.adminNotification.findMany({where:{seen:{none:{adminId}}},orderBy:[{createdAt:"desc"},{id:"desc"}],take:100,
+  // New orders are ACTION ITEMS, not read-on-open messages:
+  // their badge persists until the order is moved out of NEW (e.g. PENDING).
+  // Count all NEW orders, including ones placed before notifications were installed.
+  const [unread,groups,newOrders,newOrderCount]=await Promise.all([
+   prisma.adminNotification.findMany({where:{kind:{not:"new_order"},seen:{none:{adminId}}},orderBy:[{createdAt:"desc"},{id:"desc"}],take:100,
     select:{id:true,kind:true,category:true,createdAt:true,userId:true,orderId:true}}),
-   prisma.adminNotification.groupBy({by:["category"],where:{seen:{none:{adminId}}},_count:{_all:true}})
+   prisma.adminNotification.groupBy({by:["category"],where:{kind:{not:"new_order"},seen:{none:{adminId}}},_count:{_all:true}}),
+   prisma.order.findMany({where:{status:OrderStatus.NEW},orderBy:[{createdAt:"desc"},{id:"desc"}],take:100,
+    select:{id:true,userId:true,email:true,createdAt:true}}),
+   prisma.order.count({where:{status:OrderStatus.NEW}})
   ]);
   const userIds=[...new Set(unread.map(item=>item.userId).filter((id):id is number=>id!==null))];
   const users=userIds.length?await prisma.user.findMany({where:{id:{in:userIds}},
@@ -31,11 +37,17 @@ export async function GET(){
   for(const group of groups){
    if(group.category in counts)counts[group.category as keyof typeof counts]=group._count._all;
   }
+  counts.orders+=newOrderCount;
+  const messages=[
+   ...unread.map(row=>({id:row.id.toString(),kind:row.kind,category:row.category,
+    email:row.userId?byId.get(row.userId)||null:null,
+    orderId:row.orderId,userId:row.userId,createdAt:row.createdAt.toISOString()})),
+   ...newOrders.map(order=>({id:`new-order:${order.id}`,kind:"new_order",category:"orders",
+    email:order.email,orderId:order.id,userId:order.userId,createdAt:order.createdAt.toISOString()}))
+  ].sort((a,b)=>b.createdAt.localeCompare(a.createdAt)).slice(0,100);
   return Response.json({
    total:Object.values(counts).reduce((a,b)=>a+b,0),counts,
-   unread:unread.map(row=>({id:row.id.toString(),kind:row.kind,category:row.category,
-    email:row.userId?byId.get(row.userId)||null:null,
-    orderId:row.orderId,userId:row.userId,createdAt:row.createdAt.toISOString()}))
+   unread:messages
   },{headers:noStore});
  }catch(e){
   console.error("[ADMIN_NOTIFICATIONS_GET]",e);
