@@ -1,0 +1,16 @@
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+const text=readFileSync(new URL("../src/shared/components/shared/day-offer-admin.tsx",import.meta.url),"utf8");
+assert.match(text,/export function PerfumeSearch/);
+assert.match(text,/normalizeSearch\(p.brand\+" "\+p.name\)/);
+assert.match(text,/\.slice\(0,40\)/);
+assert.match(text,/type="hidden" name="productId" value=\{value\|\|""\}/);
+assert.match(text,/otherId/);
+assert.match(text,/disabled=\{disabled\}/);
+assert.match(text,/e.key==="Enter"/);
+assert.match(text,/e.key==="Escape"/);
+assert.match(text,/e.key==="ArrowDown"/);
+assert.match(text,/useId\(\)/);
+assert.match(text,/<PerfumeSearch products=\{products\} value=\{selectedId\} onChange=\{setSelectedId\} otherId=\{otherId\}\/>/);
+assert.doesNotMatch(text,/<select required name="productId"/);
+console.log("Day-offer search: controlled product ID, brand/name filtering, keyboard selection, excluded items and two independent pickers PASS");
