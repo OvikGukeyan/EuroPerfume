@@ -96,3 +96,35 @@ export async function cancelUnpaidEnquiry(tx:DB,orderId:number){
  await tx.order.update({where:{id:order.id},data:{status:"CENCELLED"}});
  return {status:"CENCELLED",alreadyCancelled:false,returnedPoints:reserved};
 }
+
+/** Settle reservation and final SPEND together with immutable Invoice issuance. 
+ * The +finalized/-spent pair has zero net wallet effect: points were already held.
+ * Always call with the order locked, inside the same transaction as Invoice creation.
+ */
+export async function settlePointsAtInvoice(tx:DB,orderId:number,userId:number|null,pricing:PricingSnapshot){
+ const finalPoints=pricing.loyaltyDiscountCents??0;
+ const entries=await tx.loyaltyEntry.findMany({where:{orderId},select:{kind:true,points:true,userId:true}});
+ const holds=-entries.filter(e=>e.kind==="RESERVE").reduce((sum,e)=>sum+e.points,0);
+ if(!holds){
+  // Historical orders with immediate SPEND were settled at checkout.
+  if(finalPoints>0){
+   if(!userId || await reservedFromLedger(tx,orderId,userId)!==finalPoints)throw Error("LOYALTY_LEDGER_MISMATCH");
+  }
+  return;
+ }
+ if(userId===null||entries.some(e=>e.userId!==userId))throw Error("LOYALTY_ACCOUNT_REQUIRED");
+ const releases=entries.filter(e=>e.kind==="RESERVATION_RELEASE").reduce((sum,e)=>sum+e.points,0);
+ if(holds-releases!==finalPoints)throw Error("LOYALTY_RESERVATION_MISMATCH");
+ if(finalPoints>0){
+  await tx.loyaltyEntry.create({data:{
+   userId,orderId,kind:"RESERVATION_FINALIZED",points:finalPoints,
+   idempotencyKey:`order:${orderId}:reservation-finalized:v1`,
+   note:"Reserved points released into final invoice SPEND"
+  }});
+  await tx.loyaltyEntry.create({data:{
+   userId,orderId,kind:"SPEND",points:-finalPoints,
+   idempotencyKey:`order:${orderId}:invoice-spend:v1`,
+   note:"Final spend on agreed Invoice"
+  }});
+ }
+}
