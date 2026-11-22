@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "next dev",
-    "build": "npm run test:black-friday && npm run test:day-offer && npm run test:promotions && npm run test:ingredients && npm run test:coupon-policy && npm run test:club && npm run test:club-emails && npm run test:club-workflow && npm run test:legacy-newsletter && npm run test:admin-notifications && npm run test:order-notifications && npm run test:day-offer-search && prisma generate && next build",
+    "build": "npm run test:black-friday && npm run test:day-offer && npm run test:promotions && npm run test:ingredients && npm run test:coupon-policy && npm run test:club && npm run test:club-emails && npm run test:club-workflow && npm run test:legacy-newsletter && npm run test:admin-notifications && npm run test:order-notifications && npm run test:day-offer-search && npm run test:weekly-luxury-hero && prisma generate && next build",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
     "start": "next start",
     "lint": "next lint",
@@ -23,7 +23,8 @@
     "test:legacy-newsletter": "tsx scripts/test-legacy-newsletter.ts",
     "test:admin-notifications": "tsx scripts/test-admin-notifications.ts",
     "test:order-notifications": "tsx scripts/test-order-notification-lifecycle.ts",
-    "test:day-offer-search": "tsx scripts/test-day-offer-search.ts"
+    "test:day-offer-search": "tsx scripts/test-day-offer-search.ts",
+    "test:weekly-luxury-hero": "tsx scripts/test-weekly-luxury-hero.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
