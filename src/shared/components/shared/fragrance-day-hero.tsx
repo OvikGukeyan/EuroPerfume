@@ -16,7 +16,7 @@ export function FragranceDayHero({offer}:{offer:FeaturedDayFragrance}){
  return <section aria-label={ru?"Аромат недели":"Duft der Woche"} className="weekly-luxury-hero w-full overflow-hidden rounded-[22px] md:rounded-[32px]">
   <Link href={offer.href} className="weekly-luxury-link block w-full" aria-label={`${offer.brand} ${offer.name} — ${ru?"скидка":"Rabatt"} 10%`}>
    <WeeklyLuxuryArtwork
-    name={offer.name} brand={offer.brand} image={offer.image}
+    name={offer.name} brand={offer.brand} image={offer.image} productId={offer.id}
     salePrice={offer.salePrice} regularPrice={offer.regularPrice} volume={offer.volume}
     ru={ru} until={until}/>
   </Link>

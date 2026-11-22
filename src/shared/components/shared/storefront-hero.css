@@ -184,3 +184,7 @@
 .weekly-luxury-preview .weekly-luxury-bottle-wrap{top:13%;bottom:13%;right:5%;width:36%}
 .weekly-luxury-preview .weekly-luxury-until{display:none}
 @media(prefers-reduced-motion:reduce){.weekly-luxury-action{transition:none}.weekly-luxury-link:hover .weekly-luxury-action{transform:none}}
+
+/* The server now returns real alpha transparency, not a white JPEG rectangle.
+   Use normal blending to preserve pale bottle labels, metallic trim and glass. */
+.weekly-luxury-bottle{mix-blend-mode:normal;-webkit-mask-image:none;mask-image:none}
