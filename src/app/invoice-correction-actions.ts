@@ -78,9 +78,10 @@ export async function recordInvoiceRefund(raw: { correctionId: string; paidAt: s
       const originalEarn=entries.filter(e=>e.kind==="EARN").reduce((n,e)=>n+e.points,0);
       // The customer may have received some reserved points back BEFORE invoice.
       // Only the settled net spend is eligible for cash-refund restoration.
-      const originalSpend=Math.max(0,
-       -entries.filter(e=>e.kind==="SPEND").reduce((n,e)=>n+e.points,0)
-       -entries.filter(e=>e.kind==="RESERVATION_RELEASE").reduce((n,e)=>n+e.points,0));
+      const settled=-entries.filter(e=>e.kind==="SPEND").reduce((n,e)=>n+e.points,0);
+      const usesNewReservation=entries.some(e=>e.kind==="RESERVE");
+      const originalSpend=usesNewReservation?settled:Math.max(0,
+       settled-entries.filter(e=>e.kind==="RESERVATION_RELEASE").reduce((n,e)=>n+e.points,0));
       const reversed=-entries.filter(e=>e.kind==="REFUND_EARN_REVERSE").reduce((n,e)=>n+e.points,0);
       const restored=entries.filter(e=>e.kind==="REFUND_SPEND_RESTORE").reduce((n,e)=>n+e.points,0);
       const cumulative=previousEligible+eligibleRefundCents;
