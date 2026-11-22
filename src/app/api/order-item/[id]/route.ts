@@ -257,7 +257,7 @@ export async function POST(req: NextRequest) {
       const pricing = await updatePreinvoiceOrder(tx,order,updated.items);
       const totalAmount = pricing.totalGrossCents / 100;
 
-      return {...updated,totalAmount,pricingSnapshot:pricing}
+      return {orderId:updated.id,subtotal,totalAmount,itemsCount:updated.items.length}
     });
 
     return NextResponse.json({ ok: true, ...result });
