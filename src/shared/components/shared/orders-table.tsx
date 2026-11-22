@@ -87,8 +87,10 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                 <TableCell>{order.contactForm}</TableCell>
                 <TableCell>
                   <Select
+                    value={order.status}
                     onValueChange={(value) => {
-                      changeOrderStatus(order.id, value as OrderStatus);
+                      if(value===OrderStatus.CENCELLED&&!window.confirm("Отменить заявку? Если нет Rechnung и подтверждённой оплаты, зарезервированные баллы и WELCOME10 вернутся покупателю. Действие нельзя отменить."))return;
+                      void changeOrderStatus(order.id, value as OrderStatus);
                     }}
                   >
                     <SelectTrigger onClick={(e) => e.stopPropagation()}>
