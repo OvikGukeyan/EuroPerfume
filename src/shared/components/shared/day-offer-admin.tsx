@@ -1,6 +1,7 @@
 "use client";
 import { useId, useMemo, useRef, useState } from "react";
 import { Search, X, Check, ChevronDown } from "lucide-react";
+import {WeeklyLuxuryArtwork} from "@/src/shared/components/shared/weekly-luxury-artwork";
 import { saveDayOffer, cancelDayOffer } from "@/src/app/day-offer-actions";
 
 type Option={id:number;name:string;brand:string;image:string;regular:number;sale:number;allowed:boolean};
@@ -98,22 +99,11 @@ function WeekEditor({slot,products,entry,otherId,week}:{
     </button>
    </form>
   </div>
-  <aside className="relative isolate flex min-h-[360px] flex-col overflow-hidden rounded-[20px] bg-[linear-gradient(115deg,#f4f0eb_0%,#e9e5df_55%,#d4cec8_100%)] p-5 md:p-6" aria-label="Предпросмотр">
-   <div aria-hidden="true" className="pointer-events-none absolute -right-20 -top-24 h-[290px] w-[290px] rounded-full border-[32px] border-[#6a565b]/20" />
-   <div className="relative z-10">
-    <p className="text-[10px] font-medium uppercase tracking-[.17em] text-[#6b5c5e]">EURO PERFUME · АРОМАТ НЕДЕЛИ</p>
-    <div aria-hidden="true" className="mt-4 h-px w-10 bg-[#89767c]/65"/>
-    <h3 className="mt-4 break-words font-serif text-[30px] font-normal leading-[1.08] tracking-[-.03em]">{selected?.name||"Выбери аромат"}</h3>
-    <p className="mt-2 text-[11px] uppercase tracking-[.12em] text-[#74656a]">{selected?.brand||"EURO PERFUME"}</p>
-   </div>
-   <div className="relative z-10 my-4 flex min-h-40 flex-1 items-center justify-center">
-    {selected?.image&&<img src={selected.image} alt={selected.name} className="max-h-52 w-full object-contain mix-blend-multiply [mask-image:radial-gradient(ellipse_79%_85%_at_center,#000_66%,transparent_100%)]"/>}
-   </div>
-   {selected&&<div className="relative z-10">
-    <p className="font-serif text-[37px] leading-none text-[#522f3e]">−10%</p>
-    <div className="mt-2 flex flex-wrap items-baseline gap-2"><strong className="text-[19px]">{euro(selected.sale)}</strong><del className="text-[12px] text-stone-500">{euro(selected.regular)}</del><span className="text-xs text-stone-500">5 ml</span></div>
-   </div>}
-   <p className="relative z-10 mt-3 text-[11px] text-[#75695e]">Нишевая парфюмерия · Отливанты. Фото и цена автоматически изменятся при выборе другого аромата.</p>
+  <aside className="min-w-0 overflow-hidden rounded-[20px] border border-[#e2d7cd] bg-[#382a24]" aria-label="Предпросмотр слайда">
+    <WeeklyLuxuryArtwork
+     preview ru name={selected?.name||"Выбери аромат"}
+     brand={selected?.brand||"EURO PERFUME"} image={selected?.image||""}
+     salePrice={selected?.sale||0} regularPrice={selected?.regular||0} volume={5}/>
   </aside>
  </section>;
 }
