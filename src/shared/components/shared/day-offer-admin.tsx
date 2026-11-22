@@ -102,7 +102,7 @@ function WeekEditor({slot,products,entry,otherId,week}:{
   <aside className="min-w-0 overflow-hidden rounded-[20px] border border-[#e2d7cd] bg-[#382a24]" aria-label="Предпросмотр слайда">
     <WeeklyLuxuryArtwork
      preview ru name={selected?.name||"Выбери аромат"}
-     brand={selected?.brand||"EURO PERFUME"} image={selected?.image||""}
+     brand={selected?.brand||"EURO PERFUME"} image={selected?.image||""} productId={selected?.id||0}
      salePrice={selected?.sale||0} regularPrice={selected?.regular||0} volume={5}/>
   </aside>
  </section>;
