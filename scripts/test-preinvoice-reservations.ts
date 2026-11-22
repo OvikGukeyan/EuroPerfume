@@ -41,6 +41,26 @@ const expanded=reviseOrderPricing([item(1,60),item(2,50)],"DEU",10,time,edited);
 assert.equal(expanded.loyaltyDiscountCents,1080);
 assert.equal(expanded.totalGrossCents,8820);
 
+// Reducing quantity instead of deleting the line has the same reservation rules.
+const qtyBefore=capturePricing([item(1,60,2)],"DEU",10,time);
+qtyBefore.loyaltyDiscountCents=2160;
+qtyBefore.totalGrossCents-=2160;
+const qtyAfter=reviseOrderPricing([item(1,60,1)],"DEU",10,time,qtyBefore);
+assert.equal(qtyAfter.shippingGrossCents,495);
+assert.equal(qtyAfter.loyaltyDiscountCents,1080);
+assert.equal(qtyBefore.loyaltyDiscountCents-qtyAfter.loyaltyDiscountCents,1080);
+assert.equal(qtyAfter.totalGrossCents,4815);
+
+// Promotion-ineligible sale lines cannot retain WELCOME10 or reserved points.
+const mixed=capturePricing([item(1,60),{...item(2,50),product:{...item(2,50).product,discountPrice:40}}],"DEU",10,time);
+assert.equal(mixed.discountGrossCents,600);
+mixed.loyaltyDiscountCents=1080;
+mixed.totalGrossCents-=1080;
+const saleOnly=reviseOrderPricing([{...item(2,50),product:{...item(2,50).product,discountPrice:40}}],"DEU",10,time,mixed);
+assert.equal(saleOnly.discountGrossCents,0);
+assert.equal(saleOnly.loyaltyDiscountCents,0);
+assert.equal(saleOnly.totalGrossCents,4495);
+
 // Same checks without points: normal edits preserve original accepted prices.
 const ordinary=capturePricing([item(1,60),item(2,50)],"DEU",0,time);
 const ordinaryEdited=reviseOrderPricing([item(1,60)],"DEU",0,time,ordinary);
