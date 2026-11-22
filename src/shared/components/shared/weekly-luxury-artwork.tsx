@@ -35,7 +35,8 @@ export function WeeklyLuxuryArtwork({
    {until&&<p className="weekly-luxury-until">{ru?"Акция до":"Angebot bis"} {until}</p>}
   </div>
   <div className="weekly-luxury-bottle-wrap pointer-events-none absolute z-10 flex items-center justify-center" aria-hidden="true">
-   {image&&productId>0?<img key={productId} src={`/api/weekly-bottle/${productId}`} alt="" loading={preview?"lazy":"eager"}\n    onError={event=>{event.currentTarget.style.opacity="0"}}
+   {image&&productId>0?<img key={productId} src={`/api/weekly-bottle/${productId}`} alt="" loading={preview?"lazy":"eager"}
+    onError={event=>{event.currentTarget.style.opacity="0"}}
     className="weekly-luxury-bottle h-full w-full object-contain"/>:<span className="weekly-luxury-placeholder"/>}
   </div>
  </div>;
