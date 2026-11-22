@@ -31,6 +31,7 @@ export async function PATCH(
 ) {
   const user = await getUserSession();
   if (!user || user.role !== UserRole.ADMIN) return NextResponse.json({ ok: false, message: "Forbidden" }, { status: 403 });
+  if (req.headers.get("origin")!==new URL(req.url).origin)return NextResponse.json({ok:false,message:"ORIGIN"},{status:403});
   const { id } = await ctx.params;
   const orderItemId = Number(id);
 
@@ -106,11 +107,12 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  _req: NextRequest,
+  req: NextRequest,
   ctx: { params: Promise<{ id: string }> }
 ) {
   const user = await getUserSession();
   if (!user || user.role !== UserRole.ADMIN) return NextResponse.json({ ok: false, message: "Forbidden" }, { status: 403 });
+  if (req.headers.get("origin")!==new URL(req.url).origin)return NextResponse.json({ok:false,message:"ORIGIN"},{status:403});
   const { id } = await ctx.params;
   const orderItemId = Number(id);
 
@@ -175,6 +177,7 @@ export async function DELETE(
 export async function POST(req: NextRequest) {
   const user = await getUserSession();
   if (!user || user.role !== UserRole.ADMIN) return NextResponse.json({ ok: false, message: "Forbidden" }, { status: 403 });
+  if (req.headers.get("origin")!==new URL(req.url).origin)return NextResponse.json({ok:false,message:"ORIGIN"},{status:403});
   const parsed = PostBodySchema.safeParse(await req.json().catch(() => null));
   if (!parsed.success) {
     return NextResponse.json(
