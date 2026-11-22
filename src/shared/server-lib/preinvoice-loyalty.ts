@@ -49,8 +49,13 @@ async function reconcileCoupon(tx:DB,orderId:number,discountCents:number){
   return;
  }
  await tx.couponRedemption.delete({where:{id:redemption.id}});
- const updated=await tx.couponPolicy.updateMany({where:{code:redemption.code,usedCount:{gt:0}},data:{usedCount:{decrement:1}}});
- if(updated.count!==1)throw Error("COUPON_COUNTER_MISMATCH");
+ // A coupon can be restarted with a new epoch while an old enquiry remains open.
+ // Its old redemption must not decrement the NEW epoch's use counter.
+ const policy=await tx.couponPolicy.findUnique({where:{code:redemption.code},select:{epoch:true}});
+ if(policy?.epoch===redemption.epoch){
+  const updated=await tx.couponPolicy.updateMany({where:{code:redemption.code,epoch:redemption.epoch,usedCount:{gt:0}},data:{usedCount:{decrement:1}}});
+  if(updated.count!==1)throw Error("COUPON_COUNTER_MISMATCH");
+ }
 }
 
 /** Repricing must happen within the item-mutation transaction, after locking Order. */
