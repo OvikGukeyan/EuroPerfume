@@ -41,6 +41,8 @@ export async function DELETE(req:NextRequest,{params}:{params:Promise<{id:string
 }
 
 export async function GET(req: NextRequest,  { params }: { params: Promise<{ id: string }> }) {
+    const session=await getUserSession();
+    if(session?.role!=="ADMIN")return NextResponse.json({message:"Forbidden"},{status:403});
     try {
         const id = Number((await params).id);
         if (isNaN(id)) {
