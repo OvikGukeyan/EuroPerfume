@@ -23,7 +23,7 @@ export async function lockEditableOrder(tx:DB,orderId:number){
 async function reservedFromLedger(tx:DB,orderId:number,userId:number):Promise<number>{
  const entries=await tx.loyaltyEntry.findMany({where:{orderId},select:{kind:true,points:true,userId:true}});
  if(entries.some(e=>e.userId!==userId))throw Error("LOYALTY_LEDGER_MISMATCH");
- const debit=-entries.filter(e=>e.kind==="SPEND").reduce((a,e)=>a+e.points,0);
+ const debit=-entries.filter(e=>(e.kind==="RESERVE"||e.kind==="SPEND")).reduce((a,e)=>a+e.points,0);
  const releases=entries.filter(e=>e.kind==="RESERVATION_RELEASE"||e.kind==="RESERVATION_CANCELLED").reduce((a,e)=>a+e.points,0);
  if(debit<0||releases<0||releases>debit)throw Error("LOYALTY_LEDGER_MISMATCH");
  return debit-releases;
