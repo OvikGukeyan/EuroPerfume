@@ -14,7 +14,7 @@ export async function POST(request:Request){
  const confirmation=await prisma.$transaction(async tx=>{
   const consent=await tx.accountConsent.findFirst({where:{confirmationTokenHash:hash,confirmationExpiresAt:{gt:new Date()},marketingRequestedAt:{not:null},marketingConfirmedAt:null,marketingWithdrawnAt:null},select:{userId:true}});
   if(!consent)return null;
-  const changed=await tx.accountConsent.updateMany({where:{userId:consent.userId,confirmationTokenHash:hash,confirmationExpiresAt:{gt:new Date()},marketingConfirmedAt:null,marketingWithdrawnAt:null},data:{marketingConfirmedAt:new Date(),confirmationTokenHash:null,confirmationExpiresAt:null}});
+  const changed=await tx.accountConsent.updateMany({where:{userId:consent.userId,confirmationTokenHash:hash,confirmationExpiresAt:{gt:new Date()},marketingConfirmedAt:null,marketingWithdrawnAt:null},data:{marketingConfirmedAt:new Date(),confirmationExpiresAt:null}});
   if(!changed.count)return null;
   const reward=await grantLegacyNewsletterReward(tx,consent.userId);
   return {userId:consent.userId,reward:Boolean(reward)};
@@ -23,11 +23,18 @@ export async function POST(request:Request){
   result='confirmed';
   if(confirmation.reward)await emailLegacyNewsletterReward(confirmation.userId).catch(e=>console.error("[LEGACY_REWARD_EMAIL]",e));
   else await sendWelcomeOfferIfConsented(confirmation.userId).catch(e=>console.error("[WELCOME_EMAIL]",e));
+ }else{
+  // Distinguish used links from expired links without consuming another token.
+  const prior=await prisma.accountConsent.findUnique({where:{confirmationTokenHash:hash},
+   select:{marketingConfirmedAt:true,confirmationExpiresAt:true}});
+  result=prior?.marketingConfirmedAt?'already':prior?.confirmationExpiresAt&&prior.confirmationExpiresAt<=new Date()?'expired':'invalid';
  }
  }else if(action==='unsubscribe'){
  const updated=await prisma.accountConsent.updateMany({where:{unsubscribeTokenHash:tokenHash(token)},data:{marketingWithdrawnAt:new Date(),confirmationTokenHash:null,confirmationExpiresAt:null}});
  if(updated.count)result='unsubscribed';
  }
  }
- return Response.redirect(new URL(`/${locale}/newsletter?result=${result}`,request.url),303);
+ const destination=new URL(`/${locale}/newsletter?result=${result}`,request.url);
+ if(result==='expired'&&/^[a-f0-9]{64}$/.test(token))destination.searchParams.set('token',token);
+ return Response.redirect(destination,303);
 }

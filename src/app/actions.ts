@@ -3,7 +3,7 @@ import {pointRedemptionQuote} from "@/src/shared/lib/loyalty-arithmetic";
 import { findCouponPolicy,checkCouponPolicy } from "@/src/shared/server-lib/coupon-policies";
 import {randomBytes} from "node:crypto";
 import {registrationSchema} from "@/src/shared/lib/registration-consent";
-import {legalConsentData,sendNewsletterConfirmation} from "@/src/shared/server-lib/registration-consent";
+import {legalConsentData} from "@/src/shared/server-lib/registration-consent";
 import { BLACK_FRIDAY, blackFridayActive, isBlackFridayCode } from "../shared/lib/black-friday";
 import { offerPrices } from "../shared/lib/day-offer";
 import { promotionLive, promotionQualified } from "../shared/server-lib/promotions";
@@ -660,7 +660,8 @@ export async function registerUser(input: import("@/src/shared/lib/registration-
       },
     });
 
-    const code = randomBytes(32).toString("hex");
+    // Versioned token: legacy two-email registrations must not silently opt in.
+    const code = "v2_" + randomBytes(32).toString("hex");
 
     await prisma.verificationCode.create({
       data: {
@@ -670,11 +671,12 @@ export async function registerUser(input: import("@/src/shared/lib/registration-
       },
     });
 
-    const emailResults = await Promise.allSettled([
-      sendEmail(createdUser.email,"EURO PERFUME — Bitte E-Mail-Adresse bestätigen",UserVerificationTemplate({code,locale:body.locale})),
-      body.marketingOptIn ? sendNewsletterConfirmation(createdUser.id) : Promise.resolve(false)
+    // One verification message for account and optional newsletter opt-in.
+    // The opt-in is confirmed ONLY when the recipient follows this account link.
+    const emailResult = await Promise.allSettled([
+      sendEmail(createdUser.email,body.locale==="ru"?"EURO PERFUME — Подтвердите email":"EURO PERFUME — E-Mail-Adresse bestätigen",UserVerificationTemplate({code,locale:body.locale,marketingOptIn:body.marketingOptIn}))
     ]);
-    return {accountEmailSent:emailResults[0].status==="fulfilled",marketingEmailSent:emailResults[1].status==="fulfilled"&&emailResults[1].value===true};
+    return {accountEmailSent:emailResult[0].status==="fulfilled",marketingEmailSent:false};
 
   } catch (error) {
     console.error("Error [REGISTER_USER]", error);
