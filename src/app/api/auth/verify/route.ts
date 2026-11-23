@@ -13,7 +13,7 @@ export async function GET(req:NextRequest){
   if(includeCode)url.searchParams.set("code",code);
   return NextResponse.redirect(url,{headers:{"Cache-Control":"no-store","Referrer-Policy":"no-referrer"}});
  };
- if(!/^[a-f0-9]{64}$/.test(code))return result("invalid");
+ if(!/^(?:v2_)?[a-f0-9]{64}$/.test(code))return result("invalid");
  try{
   const record=await prisma.verificationCode.findFirst({where:{code},include:{user:{select:{verified:true}}}});
   if(!record)return result("invalid");
@@ -30,7 +30,7 @@ export async function GET(req:NextRequest){
    // Only registrations in the new ONE-EMAIL workflow qualify here:
    // historical registrations had separate newsletter confirmationSentAt.
    // A voluntary opt-in was stored at signup; the link verifies ownership.
-   await tx.accountConsent.updateMany({
+   if(existing.code.startsWith("v2_"))await tx.accountConsent.updateMany({
     where:{userId:existing.userId,marketingRequestedAt:{not:null},marketingConfirmedAt:null,
      marketingWithdrawnAt:null,confirmationSentAt:null},
     data:{marketingConfirmedAt:verifiedAt}
