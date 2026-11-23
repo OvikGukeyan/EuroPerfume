@@ -3,7 +3,7 @@ export const metadata={title:"EURO PERFUME · E-Mail-Verifizierung",robots:{inde
 export const dynamic="force-dynamic";
 export default async function VerifyPage({params,searchParams}:{params:Promise<{locale:string}>,searchParams:Promise<{state?:string;code?:string}>}){
  const {locale}=await params;const {state,code}=await searchParams;
- const ru=locale==="ru",expired=state==="expired",resendable=expired&&/^[a-f0-9]{64}$/.test(code||"");
+ const ru=locale==="ru",expired=state==="expired",resendable=expired&&/^(?:v2_)?[a-f0-9]{64}$/.test(code||"");
  const message=state==="verified"
   ?ru?"Ваш email подтверждён. Аккаунт активен.":"Deine E-Mail-Adresse ist bestätigt. Dein Konto ist jetzt aktiv."
   :state==="already"
