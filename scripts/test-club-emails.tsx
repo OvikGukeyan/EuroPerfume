@@ -11,7 +11,13 @@ function checkGerman(label:string,html:string,phrases:string[]){
  for(const phrase of phrases)assert.ok(html.includes(phrase),`${label} missing ${phrase}`);
  assert.doesNotMatch(html,/[А-Яа-яЁёІіЇїЄє]/,`${label} contains Cyrillic`);
 }
-checkGerman("verification",renderToStaticMarkup(createElement(UserVerificationTemplate,{code:"TESTCODE",locale:"ru"})),["Bitte bestätige","E-Mail-Adresse"]);
+checkGerman("verification",renderToStaticMarkup(createElement(UserVerificationTemplate,{code:"TESTCODE",locale:"de"})),["Bitte bestätige","E-Mail-Adresse"]);
+checkGerman("verified newsletter opt-in",renderToStaticMarkup(createElement(UserVerificationTemplate,{code:"TESTCODE",locale:"de",marketingOptIn:true})),["E-Mail und Newsletter bestätigen","gesonderte Einwilligung"]);
+const russian=renderToStaticMarkup(createElement(UserVerificationTemplate,{code:"TESTCODE",locale:"ru",marketingOptIn:true}));
+assert.match(russian,/Подтвердите адрес электронной почты/);
+assert.match(russian,/Подтвердить email и подписку/);
+assert.match(russian,/добровольно выбрали/);
+assert.doesNotMatch(renderToStaticMarkup(createElement(UserVerificationTemplate,{code:"TESTCODE",locale:"de",marketingOptIn:false})),/Mit dem Klick bestätigst du sowohl/);
 checkGerman("password",renderToStaticMarkup(createElement(PasswordResetTemplate,{code:"TESTCODE"})),["Passwort zurücksetzen","Neues Passwort"]);
 checkGerman("payment",renderToStaticMarkup(createElement(PayOrderTemplate,{orderId:99,totalAmount:40,paymentUrl:"https://example.invalid/pay"})),["Zahlung zu Bestellung","40"]);
 checkGerman("tracking",renderToStaticMarkup(createElement(TrackingNotificationTemplate,{orderId:99,trackingNumber:"12345"})),["Versandinformationen","Sendungsverfolgung"]);
