@@ -12,14 +12,19 @@ export async function POST(req:Request){
  const ok=()=>NextResponse.json({ok:true});
  const email=body.email.trim().toLowerCase();
  try{
-  const user=await prisma.user.findUnique({where:{email},select:{id:true,verified:true,email:true}});
+  const user=await prisma.user.findUnique({where:{email},select:{id:true,verified:true,email:true,accountConsent:{select:{marketingRequestedAt:true,marketingWithdrawnAt:true,marketingConfirmedAt:true,confirmationSentAt:true}}}});
   if(!user||user.verified)return ok();
   const old=await prisma.verificationCode.findUnique({where:{userId:user.id}});
   if(old&&Date.now()-old.createdAt.getTime()<15*60*1000)return ok();
   const code=randomBytes(32).toString("hex");
   await prisma.verificationCode.upsert({where:{userId:user.id},create:{userId:user.id,code,expiresAt:new Date(Date.now()+24*3600000)},
    update:{code,createdAt:new Date(),expiresAt:new Date(Date.now()+24*3600000)}});
-  await sendEmail(user.email,"EURO PERFUME — E-Mail bestätigen",UserVerificationTemplate({code,locale:body.locale}));
+  // Same combined email semantics on resend for new registrations.
+  // Existing pre-migration opt-ins keep their separate confirmation flow.
+  const marketingOptIn=Boolean(user.accountConsent?.marketingRequestedAt&&!user.accountConsent.marketingWithdrawnAt
+   &&!user.accountConsent.marketingConfirmedAt&&!user.accountConsent.confirmationSentAt);
+  await sendEmail(user.email,body.locale==="ru"?"EURO PERFUME — Подтвердите email":"EURO PERFUME — E-Mail bestätigen",
+   UserVerificationTemplate({code,locale:body.locale,marketingOptIn}));
   return ok();
  }catch(e){console.error("[RESEND_VERIFICATION]",e);return NextResponse.json({error:"UNAVAILABLE"},{status:503});}
 }
