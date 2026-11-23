@@ -660,7 +660,8 @@ export async function registerUser(input: import("@/src/shared/lib/registration-
       },
     });
 
-    const code = randomBytes(32).toString("hex");
+    // Versioned token: legacy two-email registrations must not silently opt in.
+    const code = "v2_" + randomBytes(32).toString("hex");
 
     await prisma.verificationCode.create({
       data: {
