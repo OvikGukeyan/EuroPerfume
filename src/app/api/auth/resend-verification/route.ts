@@ -16,13 +16,13 @@ export async function POST(req:Request){
   if(!user||user.verified)return ok();
   const old=await prisma.verificationCode.findUnique({where:{userId:user.id}});
   if(old&&Date.now()-old.createdAt.getTime()<15*60*1000)return ok();
-  const code=randomBytes(32).toString("hex");
+  const code=(old?.code.startsWith("v2_")?"v2_":"")+randomBytes(32).toString("hex");
   await prisma.verificationCode.upsert({where:{userId:user.id},create:{userId:user.id,code,expiresAt:new Date(Date.now()+24*3600000)},
    update:{code,createdAt:new Date(),expiresAt:new Date(Date.now()+24*3600000)}});
   // Same combined email semantics on resend for new registrations.
   // Existing pre-migration opt-ins keep their separate confirmation flow.
   const marketingOptIn=Boolean(user.accountConsent?.marketingRequestedAt&&!user.accountConsent.marketingWithdrawnAt
-   &&!user.accountConsent.marketingConfirmedAt&&!user.accountConsent.confirmationSentAt);
+   &&!user.accountConsent.marketingConfirmedAt&&!user.accountConsent.confirmationSentAt&&code.startsWith("v2_"));
   await sendEmail(user.email,body.locale==="ru"?"EURO PERFUME — Подтвердите email":"EURO PERFUME — E-Mail bestätigen",
    UserVerificationTemplate({code,locale:body.locale,marketingOptIn}));
   return ok();
