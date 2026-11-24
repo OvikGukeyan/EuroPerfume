@@ -34,3 +34,19 @@ test('version names are preserved, only explicit imported size suffix is removed
  assert.equal(fragranceName('Guidance 46 · Originalflakon 100 ml'),'Guidance 46');
  assert.equal(fragranceName('Layton Exclusif'),'Layton Exclusif');
 });
+
+test('tile volume and litre price follow the priced bottle, including promotions',()=>{
+ const small=publicBottle(row(1,50,154.85));
+ const large={...publicBottle(row(2,100,200)),discountPrice:130};
+ const product={price:5,available:true,productGroup:{onTap:true},bottles:[small,large]};
+ const decant=cataloguePrice(product);
+ assert.equal(decant.volumeMl,2);
+ assert.equal(decant.pricePerLitre,5500);
+ const bottle=cataloguePrice(product,true);
+ assert.equal(bottle.bottle?.id,2);
+ assert.equal(bottle.volumeMl,100);
+ assert.equal(bottle.pricePerLitre,1300);
+ const standalone=cataloguePrice({...product,productGroup:{onTap:false},bottles:[small]});
+ assert.equal(standalone.volumeMl,50);
+ assert.equal(standalone.pricePerLitre,3097);
+});

@@ -7,6 +7,9 @@ export function cataloguePrice(product: PriceSource & { available:boolean; produ
   const cheapest=useBottles ? [...bottles].sort((a,b)=>
     offerPrices({...a,price:a.regularPrice ?? a.price},1,false,now).effective-
     offerPrices({...b,price:b.regularPrice ?? b.price},1,false,now).effective || a.id-b.id)[0] : undefined;
-  return { bottle:cheapest, ...offerPrices(cheapest ? {...cheapest,price:cheapest.regularPrice ?? cheapest.price} : product,
-    cheapest ? 1 : product.productGroup.onTap ? 2 : 1, !cheapest && Boolean(product.productGroup.onTap),now) };
+  const prices=offerPrices(cheapest ? {...cheapest,price:cheapest.regularPrice ?? cheapest.price} : product,
+    cheapest ? 1 : product.productGroup.onTap ? 2 : 1, !cheapest && Boolean(product.productGroup.onTap),now);
+  const volumeMl=cheapest?.ml ?? (product.productGroup.onTap ? 2 : undefined);
+  return { bottle:cheapest, ...prices, volumeMl,
+    pricePerLitre: volumeMl && volumeMl>0 ? prices.effective / volumeMl * 1000 : undefined };
 }

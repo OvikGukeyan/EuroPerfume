@@ -110,14 +110,14 @@ export const ProductSelectionItem: React.FC<Props> = ({
           <small className="compact-product-from">{!displayBottle && productGroup.onTap ? (locale === "ru" ? "Отливант от" : "Abfüllung ab") : bottles.length ? (locale === "ru" ? "Флакон от" : "Originalflakon ab") : ""}</small>
           {priced.discounted ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
         </p>
-        {productGroup.onTap && <span className="compact-product-size">{displayBottle?.ml ?? 2} ml</span>}
+        {priced.volumeMl && <span className="compact-product-size">{priced.volumeMl} {locale === "ru" ? "мл" : "ml"}</span>}
       </div>
       <div className="home-product-buy">
         <Link href={productHref} className="compact-product-open">{locale === "ru" ? "Выбрать формат" : "Format wählen"}</Link>
       </div>
       <div className="compact-product-extra">
         <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>
-        {productGroup.onTap && <p className="home-product-volume">({formatUnitPrice((finalDiscountPrice ?? finalPrice) / ((displayBottle?.ml ?? 2) / 1000))} € / 1 l)</p>}
+        {priced.pricePerLitre !== undefined && <p className="home-product-volume">({formatUnitPrice(priced.pricePerLitre)} € / 1 {locale === "ru" ? "л" : "l"})</p>}
         {reviews && count > 0 && <Link href={`/product-reviews/${id}`} className="home-product-rating"><Rating value={averageRating} reviewsCount={count} /></Link>}
       </div>
     </article>
