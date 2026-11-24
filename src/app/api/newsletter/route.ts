@@ -4,10 +4,14 @@ import {grantLegacyNewsletterReward,emailLegacyNewsletterReward} from "@/src/sha
 import {sendWelcomeOfferIfConsented} from '@/src/shared/server-lib/welcome-offer-mail';
 export const runtime='nodejs';
 export async function POST(request:Request){
- if(request.headers.get('origin')!==new URL(request.url).origin)return new Response('Forbidden',{status:403});
- const form=await request.formData();const locale=form.get('locale')==='ru'?'ru':'de';
- const token=String(form.get('token')||'');const action=form.get('action');
- let result='invalid';
+ const origin=request.headers.get('origin');
+ const allowed=new Set(['https://euro-perfume-inky.vercel.app','https://europerfume.eu','https://www.europerfume.eu']);
+ const site=request.headers.get('sec-fetch-site');
+ if(site==='cross-site'||(origin!==null&&origin!=='null'&&origin!==new URL(request.url).origin&&!allowed.has(origin)))return new Response('Forbidden',{status:403});
+ let locale='de',token='',result='invalid';
+ try {
+ const form=await request.formData();locale=form.get('locale')==='ru'?'ru':'de';
+ token=String(form.get('token')||'');const action=form.get('action');
  if(/^[a-f0-9]{64}$/.test(token)){
  if(action==='confirm'){
  const hash=tokenHash(token);
@@ -18,7 +22,7 @@ export async function POST(request:Request){
   if(!changed.count)return null;
   const reward=await grantLegacyNewsletterReward(tx,consent.userId);
   return {userId:consent.userId,reward:Boolean(reward)};
- });
+ },{maxWait:15000,timeout:20000});
  if(confirmation){
   result='confirmed';
   if(confirmation.reward)await emailLegacyNewsletterReward(confirmation.userId).catch(e=>console.error("[LEGACY_REWARD_EMAIL]",e));
@@ -34,7 +38,11 @@ export async function POST(request:Request){
  if(updated.count)result='unsubscribed';
  }
  }
- const destination=new URL(`/${locale}/newsletter?result=${result}`,request.url);
- if(result==='expired'&&/^[a-f0-9]{64}$/.test(token))destination.searchParams.set('token',token);
- return Response.redirect(destination,303);
+ } catch(e) {
+  console.error('[NEWSLETTER_CONFIRM]',e instanceof Error?e.name:'Unknown error');
+  result='unavailable';
+ }
+ const params=new URLSearchParams({result});
+ if(result==='expired'&&/^[a-f0-9]{64}$/.test(token))params.set('token',token);
+ return new Response(null,{status:303,headers:{Location:`/${locale}/newsletter?${params}`, 'Cache-Control':'no-store','Referrer-Policy':'no-referrer'}});
 }
