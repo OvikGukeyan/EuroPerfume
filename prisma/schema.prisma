@@ -116,6 +116,7 @@ model Product {
   fullBottles Product[] @relation("FullBottles")
   @@unique([bottleParentId, volume])
   stockMl         Int               @default(0)
+  allowBackorder  Boolean           @default(false)
   stockPieces     Int               @default(0)
 
   supplyItems SupplyItem[]

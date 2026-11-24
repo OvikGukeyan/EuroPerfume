@@ -1,4 +1,6 @@
 "use server";
+import { canOrderQuantity } from "@/src/shared/lib/orderability";
+
 import {pointRedemptionQuote} from "@/src/shared/lib/loyalty-arithmetic";
 import { findCouponPolicy,checkCouponPolicy } from "@/src/shared/server-lib/coupon-policies";
 import {randomBytes} from "node:crypto";
@@ -400,7 +402,7 @@ export async function createOrder(data: CheckoutFormValues) {
 
       const boxItems = aromaBoxItems(boxCookie, userCart.items);
       const boxItemIds = new Set(boxItems.map(item => item.id));
-      if (userCart.items.some(i=>i.product.bottleParentId!==null && (!i.product.available || i.variationId!==null || i.quantity<1 || i.quantity>i.product.stockPieces))) throw new Error("Not enough full bottles in stock");
+      if (userCart.items.some(i=>!canOrderQuantity(i.product,i.quantity,i.variationId))) throw new Error("Not enough full bottles in stock");
       if (userCart.items.some(item => !item.product.available)) {
         throw new Error("Один из товаров больше недоступен. Обновите корзину.");
       }

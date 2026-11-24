@@ -21,7 +21,7 @@ export default async function Product({
   const product = await prisma.product.findFirst({
     where: { id: productId },
     include: {
-      fullBottles: {select:{id:true,volume:true,price:true,discountPrice:true,imageUrl:true,stockPieces:true,available:true,dayOfferStartsAt:true,dayOfferEndsAt:true}},
+      fullBottles: {select:{id:true,volume:true,price:true,discountPrice:true,imageUrl:true,stockPieces:true,allowBackorder:true,available:true,dayOfferStartsAt:true,dayOfferEndsAt:true}},
       reviews: {
         include: {
           user: true,

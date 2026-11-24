@@ -23,6 +23,7 @@ function BottleFields({parentId,bottle}:{parentId:number;bottle?:BottleAdminOpti
     }catch{setMessage("Не удалось сохранить. Проверьте фото и соединение.");}finally{setBusy(false);}
   }}>
     <h3 className="font-semibold">{bottle ? "Флакон · "+bottle.ml+" мл" : "Добавить новый объём"}</h3>
+    {bottle?.allowBackorder && <p className="text-sm">Под заказ: наличие и срок подтверждаются после заявки.</p>}
     <div className="grid gap-3 sm:grid-cols-3">
       <label>Объём флакона, мл<input className={field} name="ml" type="number" min="1" max="9999" step="1" required readOnly={!!bottle} defaultValue={bottle?.ml} placeholder="50"/></label>
       <label>Цена за флакон, €<input className={field} name="price" type="text" inputMode="decimal" required defaultValue={bottle?.price} placeholder="120,00"/></label>
@@ -38,7 +39,7 @@ function BottleFields({parentId,bottle}:{parentId:number;bottle?:BottleAdminOpti
 }
 export function FullBottleEditor({parentId,bottles}:{parentId:number;bottles:BottleAdminOption[]}) {
   return <section id="full-bottles" className="mb-6 rounded-xl border bg-white px-4 pt-4 sm:px-6">
-    <h2 className="text-xl font-semibold">Полные флаконы</h2><p className="mb-4 text-sm text-neutral-600">Каждый объём продаётся по своей цене за штуку. Остаток 0 отключает покупку этого объёма.</p>
+    <h2 className="text-xl font-semibold">Полные флаконы</h2><p className="mb-4 text-sm text-neutral-600">Каждый объём продаётся по своей цене за штуку. Остаток — только ваш склад. Для флаконов «Под заказ» покупка доступна и при остатке 0.</p>
     {bottles.map(b=><BottleFields key={b.id+":"+b.version+":"+b.stock} parentId={parentId} bottle={b}/>)}
     <BottleFields parentId={parentId}/>
   </section>;

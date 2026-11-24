@@ -146,7 +146,7 @@ export const findProducts = async (
     ] };
     const saleCondition: Prisma.ProductWhereInput = { OR: [
       { AND: [{ available: true }, discounted] },
-      { fullBottles: { some: { available: true, stockPieces: { gt: 0 }, AND: [discounted] } } },
+      { fullBottles: { some: { available: true, OR: [{allowBackorder:true},{stockPieces:{gt:0}}], AND: [discounted] } } },
     ] };
     const whereClause = {
       brandId: { in: brands },
@@ -167,7 +167,7 @@ export const findProducts = async (
       price:
         !sale && priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
       bottleParentId: null,
-      OR: [{available:true},{fullBottles:{some:{available:true,stockPieces:{gt:0}}}}],
+      OR: [{available:true},{fullBottles:{some:{available:true,OR:[{allowBackorder:true},{stockPieces:{gt:0}}]}}}],
       categoryId: categoryId || 1,
       aromas:
         aromas.length > 0
@@ -175,7 +175,7 @@ export const findProducts = async (
           : undefined,
       AND: [
         ...(sale ? [saleCondition] : []),
-        ...(productGroupId ? [{OR:[{productGroupId},{fullBottles:{some:{productGroupId,available:true,stockPieces:{gt:0}}}}]}] : !sale && (categoryId===1 || !categoryId) ? [{productGroupId:{in:[1,2,3]}}] : []),
+        ...(productGroupId ? [{OR:[{productGroupId},{fullBottles:{some:{productGroupId,available:true,OR:[{allowBackorder:true},{stockPieces:{gt:0}}]}}}]}] : !sale && (categoryId===1 || !categoryId) ? [{productGroupId:{in:[1,2,3]}}] : []),
         ...(noteFilters.length ? noteFilters : []),
         ...(searchAND.length ? searchAND : []),
       ],
