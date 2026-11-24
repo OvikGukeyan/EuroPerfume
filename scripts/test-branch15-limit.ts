@@ -1,0 +1,11 @@
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+const source=readFileSync(new URL("../src/app/actions.ts",import.meta.url),"utf8");
+const checkout=source.slice(source.indexOf("const submittedCode ="),source.indexOf("const order = await tx.order.create"));
+assert.match(checkout,/promo\?\.code\.toUpperCase\(\)==="BRANCH15"/);
+assert.match(checkout,/SELECT id FROM "PromoCode" WHERE id=\$\{promo.id\} FOR UPDATE/);
+assert.match(checkout,/tx\.order\.count\(/);
+assert.match(checkout,/status:\{not:OrderStatus\.CENCELLED\}/);
+assert.match(checkout,/alreadyUsed>=100/);
+assert.doesNotMatch(checkout.slice(checkout.indexOf('if(promo?.code.toUpperCase()==="BRANCH15")'),checkout.indexOf("const currentPolicy")),/ACCOUNT_REQUIRED/);
+console.log("BRANCH15: max 100 non-cancelled orders, guest acceptance, serialized order checks PASS (static; DB untouched).");
