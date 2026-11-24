@@ -1,6 +1,7 @@
 "use client";
 import {useState} from "react";
 import {useLocale} from "next-intl";
+import {Link} from "@/src/i18n/navigation";
 import {useRouter} from "next/navigation";
 import {TicketPercent, RotateCcw, Power, PlusCircle, Info} from "lucide-react";
 
@@ -48,7 +49,7 @@ export function AdminCouponConsole({rows,ready}:{rows:Row[];ready:boolean}){
    <div className="overflow-x-auto"><table className="w-full min-w-[620px] text-left text-sm">
     <thead className="bg-[#fafafa] text-xs text-neutral-500"><tr><th className="p-3">{ru?"Код":"Code"}</th><th className="p-3">%</th><th className="p-3">{ru?"Режим":"Modus"}</th><th className="p-3">{ru?"Применено":"Nutzung"}</th><th className="p-3">{ru?"Статус":"Status"}</th><th className="p-3">{ru?"Действия":"Aktionen"}</th></tr></thead>
     <tbody>{rows.map(r=><tr key={r.code} className="border-t">
-      <td className="p-3"><strong>{r.code}</strong><p className="text-xs text-neutral-500">{r.expiresAt?new Date(r.expiresAt).toLocaleDateString(ru?"ru-RU":"de-DE"):(ru?"Без срока":"Unbefristet")}</p></td>
+      <td className="p-3"><Link className="font-semibold underline underline-offset-4" href={{pathname:"/insights",query:{promo:r.code.toUpperCase().startsWith("EP15-")?"legacy15":r.code},hash:"promo-history"}}>{r.code}</Link><p className="text-xs text-neutral-500">{r.expiresAt?new Date(r.expiresAt).toLocaleDateString(ru?"ru-RU":"de-DE"):(ru?"Без срока":"Unbefristet")}</p></td>
       <td className="p-3">{r.discount}%</td><td className="p-3 text-xs">{r.kind|| (r.disposable?(ru?"Старый одноразовый":"Alt, einmalig"):(ru?"Старый код":"Altcode"))}{r.kind==="WELCOME"&&<p>60 {ru?"дней":"Tage"}</p>}</td>
       <td className="p-3 tabular-nums">{r.kind?r.usedCount:"—"} {r.globalLimit!==null?"/ "+r.globalLimit:""}</td>
       <td className="p-3">{r.active?<span className="text-[#2b7956]">{ru?"Активен":"Aktiv"}</span>:<span className="text-[#9d5656]">{ru?"Выключен":"Inaktiv"}</span>}</td>
