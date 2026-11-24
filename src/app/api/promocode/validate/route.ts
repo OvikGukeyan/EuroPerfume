@@ -15,6 +15,8 @@ export async function POST(req: Request) {
     if (!code || code.length > 80) return NextResponse.json({ valid:false },{status:400});
     const now = new Date();
     const blackFriday=isBlackFridayCode(code);
+    if (blackFriday && !BLACK_FRIDAY.enabled)
+      return NextResponse.json({valid:false,reason:"DISABLED"},{status:404});
     const promo=blackFriday ? null : await prisma.promoCode.findFirst({
       where:{code:{equals:code,mode:"insensitive"},isActive:true,OR:[{expiresAt:null},{expiresAt:{gt:now}}]}
     });

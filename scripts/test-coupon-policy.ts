@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { capturePricing,readPricing,reviseOrderPricing,taxPolicyAt,invoiceTax } from "../src/shared/lib/tax";
 import { couponQuote,giftPromotionProductIds } from "../src/shared/lib/coupon-eligibility";
 import { promotionLive,promotionQualified } from "../src/shared/lib/promotion-rules";
-import { BLACK_FRIDAY,blackFridayActive } from "../src/shared/lib/black-friday";
+import { BLACK_FRIDAY,blackFridayWithinWindow } from "../src/shared/lib/black-friday";
 import { correctionAmounts } from "../src/shared/lib/invoice-correction";
 const at=new Date("2026-11-20T12:00:00Z");
 const item=(productId:number,unit:number,qty=5,discountPrice:number|null=null,day=false)=>({
@@ -41,7 +41,7 @@ assert.equal(mixed.discountGrossCents,160,"ordinary line remains eligible");
 assert.equal(capturePricing([sale,daily],"DEU",10,at).discountGrossCents,0);
 const bfDaily={...daily,product:{...daily.product,dayOfferStartsAt:new Date(BLACK_FRIDAY.startsAt),dayOfferEndsAt:new Date(BLACK_FRIDAY.endsAt)}};
 assert.equal(capturePricing([sale,bfDaily],"DEU",15,new Date(BLACK_FRIDAY.startsAt)).discountGrossCents,0,"BLACK15 follows same exclusions");
-const bf=new Date(BLACK_FRIDAY.startsAt);assert.equal(blackFridayActive(bf.getTime()),true);
+const bf=new Date(BLACK_FRIDAY.startsAt);assert.equal(blackFridayWithinWindow(bf.getTime(),"coupon"),true);
 const eligibleBF=capturePricing([sale,extra],"DEU",15,bf);
 assert.equal(eligibleBF.discountGrossCents,240,"BLACK15 only ordinary items");
 const before=taxPolicyAt(new Date("2026-12-31T22:59:00Z"),"DEU");
