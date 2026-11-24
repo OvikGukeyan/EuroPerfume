@@ -4,6 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "test:supplier-import": "tsx --test tests/supplier-import.test.ts",
+    "prebuild": "npm run test:supplier-import",
     "dev": "next dev",
     "build": "npm run test:black-friday && npm run test:day-offer && npm run test:promotions && npm run test:ingredients && npm run test:coupon-policy && npm run test:branch15-limit && npm run test:club && npm run test:club-emails && npm run test:registration-single-email && npm run test:club-workflow && npm run test:legacy-newsletter && npm run test:admin-notifications && npm run test:order-notifications && npm run test:day-offer-search && npm run test:weekly-luxury-hero && npm run test:bottle-background && npm run test:mobile-weekly-parity && npm run test:preinvoice-reservations && prisma generate && next build",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
