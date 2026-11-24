@@ -3,10 +3,10 @@ import { axiosInstance } from "./instance";
 import { ProductDTO, ProductsWithPagination } from "./dto/product.dto";
 import { GetSearchParams } from '../server-lib/find-products';
 
-export const search = async (query?: string, limit: number = 15): Promise<ProductDTO[]> => {
+export const search = async (query?: string, limit: number = 15, adminVariants=false): Promise<ProductDTO[]> => {
   const { data } = await axiosInstance.get<ProductDTO[]>(
     ApiRouts.SEARCH_PRODUCTS,
-    { params: { query, limit } }
+    { params: { query, limit, ...(adminVariants ? {adminVariants:"1"} : {}) } }
   );
 
   return data;

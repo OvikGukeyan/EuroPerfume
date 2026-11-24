@@ -1,5 +1,5 @@
 import { prisma } from "@/prisma/prisma-client";
-import { publicBottle } from "@/src/shared/lib/full-bottle";
+import { publicBottle, fragranceName } from "@/src/shared/lib/full-bottle";
 import { notFound, redirect } from "next/navigation";
 import React from "react";
 import {
@@ -61,10 +61,13 @@ export default async function Product({
 
   if(product.bottleParentId) redirect("/"+(await params).locale+"/product/"+product.bottleParentId+"?bottle="+product.id);
   const {fullBottles,...base}=product;
-  const bottles=fullBottles.map(publicBottle).sort((a,b)=>a.ml-b.ml);
+  const bottles=[...(product.productGroupId===31 ? [product] : []), ...fullBottles].map(publicBottle).sort((a,b)=>a.ml-b.ml);
+  const relatedReviews=await prisma.review.findMany({where:{productId:{in:[product.id,...fullBottles.map(b=>b.id)]}},include:{user:true,reply:true}});
   const requested=Number((await searchParams).bottle);
   const safeProduct = {
     ...base,
+    name: fragranceName(base.name),
+    reviews:relatedReviews,
     price: product.price.toNumber(),
     discountPrice: product.discountPrice?.toNumber() || null,
   };
@@ -74,7 +77,7 @@ export default async function Product({
       <BreadcrumbComponent
         className="mx-4 mb-4 md:mx-0"
         productBrand={product.brand}
-        productName={product.name}
+        productName={safeProduct.name}
         productCategory={product.category}
         productGroup={product.productGroup}
       />

@@ -30,10 +30,10 @@ export default function Products() {
         const convertedQuery = ruToDeLayoutQWERTZ(searchQuery);
         const convertedQuery2 = russianToGermanLayout(searchQuery);
 
-        const response = await Api.products.search(convertedQuery, 50);
+        const response = await Api.products.search(convertedQuery, 50, true);
         const responseAlt =
           response.length === 0 && convertedQuery !== convertedQuery2
-            ? await Api.products.search(convertedQuery2)
+            ? await Api.products.search(convertedQuery2, 50, true)
             : [];
 
         const combined = [...response, ...responseAlt].reduce<ProductDTO[]>(

@@ -29,6 +29,8 @@ test("unit prices use each selected format and its actual selling price",()=>{
   for(const ml of [0,-1,NaN,Infinity]) assert.equal(unitPricePerLitre(350,ml),null);
 });
 test("public variants preserve item identity, discount and stock without leaking Decimal rows",()=>{
-  const result=withBottleOptions({id:369,fullBottles:[{id:586,volume:"100",price:350,discountPrice:300,imageUrl:["bottle.webp"],stockPieces:2,available:true}]});
-  assert.deepEqual(result,{id:369,bottles:[{id:586,ml:100,price:300,image:"bottle.webp",available:true}]});
+  const result=withBottleOptions({id:369,name:"Guidance",productGroupId:1,volume:null,price:5,imageUrl:[],stockPieces:0,available:true,fullBottles:[{id:586,volume:"100",price:350,discountPrice:300,imageUrl:["bottle.webp"],stockPieces:2,available:true}]});
+  assert.equal(result.id,369);
+  assert.equal(result.name,"Guidance");
+  assert.deepEqual(result.bottles.map(b=>({id:b.id,ml:b.ml,price:b.price,regularPrice:b.regularPrice,discountPrice:b.discountPrice,image:b.image,stock:b.stock,available:b.available})),[{id:586,ml:100,price:300,regularPrice:350,discountPrice:300,image:"bottle.webp",stock:2,available:true}]);
 });

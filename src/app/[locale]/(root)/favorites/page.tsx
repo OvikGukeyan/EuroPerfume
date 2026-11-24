@@ -1,7 +1,8 @@
 "use client";
 import { HomePriceProvider, HomePriceNote } from "@/src/shared/components/shared/home-price-note";
 import { Link } from "@/src/i18n/navigation";
-import { Button, Container, ProductCard, Title } from "@/src/shared/components";
+import { Button, Container, Title } from "@/src/shared/components";
+import { ProductSelectionItem } from "@/src/shared/components/shared/products-selection-item";
 import { useFavorites } from "@/src/shared/hooks";
 import { useLocale } from "next-intl";
 import { ArrowLeft } from "lucide-react";
@@ -16,7 +17,7 @@ export default function Favorites() {
       {favoritesLoading ? <p role="status" className="py-10 text-center">{ru?"Загружаем избранное…":"Favoriten werden geladen…"}</p> : items.some(i=>favoriteIds.includes(i.productId)) ? (
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 p-4 md:gap-8">
           {items.filter(i=>favoriteIds.includes(i.productId)).map((item) => (
-            <ProductCard dayOffer={item} discountPrice={item.discountPrice}
+            <ProductSelectionItem dayOffer={item} discountPrice={item.discountPrice}
               brand={item.brand}
               bottles={item.bottles}
               available={item.available}
