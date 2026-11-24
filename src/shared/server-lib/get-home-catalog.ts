@@ -19,8 +19,8 @@ export async function getHomeCatalog(cursor?: number, options: { sale?: boolean 
   ] };
   const eligible: Prisma.ProductWhereInput = options.sale ? { OR: [
     { AND: [{ available: true }, salePrice] },
-    { fullBottles: { some: { available: true, stockPieces: { gt: 0 }, AND: [salePrice] } } },
-  ] } : { OR: [{ available: true }, { fullBottles: { some: { available: true, stockPieces: { gt: 0 } } } }] };
+    { fullBottles: { some: { available: true, OR: [{allowBackorder:true},{stockPieces:{gt:0}}], AND: [salePrice] } } },
+  ] } : { OR: [{ available: true }, { fullBottles: { some: { available: true, OR: [{allowBackorder:true},{stockPieces:{gt:0}}] } } }] };
   const rows = await prisma.product.findMany({
     where: { bottleParentId: null, AND: [eligible], ...(cursor ? { id: { lt: cursor } } : {}) },
     orderBy: { id: "desc" },

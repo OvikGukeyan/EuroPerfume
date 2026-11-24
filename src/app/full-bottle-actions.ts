@@ -41,7 +41,7 @@ export async function saveFullBottle(parentId: number, id: number|null, form: Fo
       const group=await tx.productGroup.upsert({where:{labelDe:bottleGroup.labelDe},create:{...bottleGroup,categoryId:parent.categoryId,onTap:false},update:{}});
       if (group.onTap || group.categoryId!==parent.categoryId) throw new BottleError("Проверьте группу полных флаконов.");
       const data={name:parent.name.trim()+" · Originalflakon "+ml+" ml",volume:String(ml),price,discountPrice:null,
-        stockPieces:stock,available:stock>0,imageUrl:[url],brandId:parent.brandId,gender:parent.gender,concentration:parent.concentration,
+        stockPieces:stock,available:old?.allowBackorder === true || stock>0,imageUrl:[url],brandId:parent.brandId,gender:parent.gender,concentration:parent.concentration,
         categoryId:parent.categoryId,productGroupId:group.id};
       if (!old) {
         await tx.product.create({data:{...data,bottleParentId:parent.id}});

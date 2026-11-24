@@ -31,3 +31,7 @@ Run `npx tsx scripts/create-supplier-pilot-plan.ts <private-content.json> <new-p
 The initial private dossier covers Naxos 100 ml, Layton 75/125 ml and a separate luxury Allure Homme Édition Blanche 100 ml. Official source notes differ from existing decant content for Naxos/Layton: preserve the differences for editorial and batch review. Chanel publishes accords without a top/heart/base split; do not invent one. Official website INCI is a reference, not proof of the supplier batch. Image source pages do not establish reuse rights. Existing Guidance and Valaya bottle records must not be duplicated or automatically repriced.
 
 Read-only environment review found shared Preview/Production connection configuration and no isolated Supabase branch. Although the earlier Preview build succeeded, that does not establish safe end-to-end operation. Keep the review route disabled until the environment is isolated; no order, invoice, notification or catalog-write tests against those shared services.
+
+## Updated ordering decision
+
+The owner clarified that supplier bottles use the normal cart and checkout at zero owned stock. The email-only proposal above is superseded by [supplier-ordering.md](supplier-ordering.md).

@@ -5,6 +5,7 @@ import { CartDTO, CartPromotionSummary } from "../services/dto/cart.dto";
 import { calcCartItemTotalPrice } from "./calc-cart-item-total-price";
 
 export type CartStateItem = {
+  allowBackorder?: boolean;
   dayOffer?: boolean;
   discounted?: boolean;
   offerBoundary?: string | null;
@@ -29,6 +30,7 @@ interface ReturnProps {
 }
 export const getCartDetails = (data: CartDTO): ReturnProps => {
   const items = data.items.map((item) => ({
+    allowBackorder: item.product.allowBackorder === true,
     dayOffer: dayOfferActive(item.product),
     discounted: offerPrices(item.product, item.quantity, Boolean(item.product.productGroup?.onTap)).discounted,
     offerBoundary: item.product.dayOfferEndsAt ? String(item.product.dayOfferEndsAt) : null,

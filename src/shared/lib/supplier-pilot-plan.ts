@@ -48,7 +48,8 @@ export function planPilot(input: unknown, catalog: CatalogIdentity[]) {
     return { ...candidate, action, recommendedGross2027: recommendedPrice(candidate.cost),
       supplierAvailability: "unconfirmed" as const, ownStockPieces: 0,
       deliveryText: { ru: "Срок подтверждается после заявки", de: "Lieferzeit wird nach Ihrer Anfrage bestätigt" },
-      cta: { ru: "Отправить заявку", de: "Verfügbarkeit anfragen" },
+      cta: { ru: "В корзину", de: "In den Warenkorb" },
+      orderingMode: "cart_backorder" as const,
       paymentBeforeConfirmation: false, blockers,
     };
   });

@@ -1,3 +1,4 @@
+import { canOrderQuantity } from "@/src/shared/lib/orderability";
 import { aromaBoxItems } from "@/src/shared/lib/aroma-box";
 import { roundMoney } from "@/src/shared/lib/money";
 import { ProductGroup } from "@prisma/client";
@@ -43,11 +44,11 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({message:"Invalid quantity or product"},{status:400});
     const ok=await prisma.$transaction(async tx=>{
       await tx.$queryRaw`SELECT id FROM public."Cart" WHERE id=${userCart.id} FOR UPDATE`;
-      const product=await tx.product.findUnique({where:{id:data.productId},select:{available:true,bottleParentId:true,stockPieces:true}});
+      const product=await tx.product.findUnique({where:{id:data.productId},select:{available:true,bottleParentId:true,stockPieces:true,allowBackorder:true}});
       if(!product?.available || (product.bottleParentId!==null && data.variationId!=null)) return false;
       const existing=await tx.cartItem.findFirst({where:{cartId:userCart.id,productId:data.productId,variationId:data.variationId??null}});
       const quantity=(existing?.quantity??0)+data.volume;
-      if(product.bottleParentId!==null && quantity>product.stockPieces) return false;
+      if(!canOrderQuantity(product,quantity,data.variationId)) return false;
       if(existing) await tx.cartItem.update({where:{id:existing.id},data:{quantity}});
       else await tx.cartItem.create({data:{cartId:userCart.id,productId:data.productId,quantity,variationId:data.variationId}});
       return true;

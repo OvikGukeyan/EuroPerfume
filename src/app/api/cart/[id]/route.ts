@@ -1,3 +1,4 @@
+import { canOrderQuantity } from "@/src/shared/lib/orderability";
 import { prisma } from "@/prisma/prisma-client";
 import { updateCartTotalAmount } from "@/src/shared/server-lib/update-cart-total-amount";
 
@@ -20,7 +21,7 @@ export async function PATCH(req: NextRequest,  { params }: { params: Promise<{ i
         const ok=await prisma.$transaction(async tx=>{
             await tx.$queryRaw`SELECT id FROM public."Cart" WHERE token=${token} FOR UPDATE`;
             const item=await tx.cartItem.findFirst({where:{id,cart:{token}},include:{product:true}});
-            if(!item || !item.product.available || (item.product.bottleParentId!==null && data.quantity>item.product.stockPieces)) return false;
+            if(!item || !canOrderQuantity(item.product,data.quantity,item.variationId)) return false;
             await tx.cartItem.update({where:{id},data:{quantity:data.quantity}});
             return true;
         });
