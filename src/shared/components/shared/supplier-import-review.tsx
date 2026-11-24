@@ -65,12 +65,12 @@ export default function SupplierImportReview({ locale }: { locale: string }) {
         <button type="button" onClick={download} className="rounded bg-teal-900 px-4 py-3 text-white">{t("Скачать проверку", "Prüfung herunterladen")}</button>
       </div>
       <p role="status">{t("Найдено", "Gefunden")}: {filtered.length} / {offers.length}. {t("В пилот", "Pilot")}: {Object.values(decisions).filter(d => d.disposition === "pilot").length}.</p>
-      <p className="rounded border border-amber-200 bg-amber-50 p-4">{t("Цена 2027: (закупка + €5) × 1,30 × 1,19. В 2026 при Kleinunternehmer НДС не выделяется. Остаток поставщика не является вашим складом.", "Preis 2027: (Einkauf + 5 €) × 1,30 × 1,19. 2026 bei Kleinunternehmerbefreiung kein Umsatzsteuerausweis. Lieferantenbestand ist kein Eigenbestand.")}</p>
+      <p className="rounded border border-amber-200 bg-amber-50 p-4">{t("Конечная цена с 2026: (закупка + €5) × 1,30 × 1,19. В 2026 при Kleinunternehmer НДС не выделяется. Остаток поставщика не является вашим складом.", "Endpreis ab 2026: (Einkauf + 5 €) × 1,30 × 1,19. 2026 bei Kleinunternehmerbefreiung kein Umsatzsteuerausweis. Lieferantenbestand ist kein Eigenbestand.")}</p>
       <div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="border-b">
         {[t("Предложение", "Angebot"), t("Цена и остаток", "Preis und Bestand"), t("Проверка", "Prüfung"), t("Решение и заметки", "Entscheidung und Notizen")].map(x => <th key={x} className="p-3">{x}</th>)}
       </tr></thead><tbody>{filtered.slice(activePage * 25, activePage * 25 + 25).map(row => <tr key={row.key} className="border-b align-top">
         <td className="min-w-56 max-w-sm p-3"><strong>{row.name}</strong><p className="mt-2">{row.supplier} · {row.sku}</p><p className="mt-2 break-all">EAN: {row.eans.join(", ") || "—"}</p><p>{row.volume} · {row.concentration || "—"}</p></td>
-        <td className="min-w-44 p-3"><p>{t("Закупка", "Einkauf")}: €{row.cost}</p><p className="mt-2 font-semibold">2027: €{row.calculatedPrice}</p><p className="mt-2">{t("У поставщика", "Beim Lieferanten")}: {row.supplierStock ?? "—"}</p><p>{row.stockAsOf || t("Дата неизвестна", "Datum unbekannt")}</p></td>
+        <td className="min-w-44 p-3"><p>{t("Закупка", "Einkauf")}: €{row.cost}</p><p className="mt-2 font-semibold">€{row.calculatedPrice}</p><p className="mt-2">{t("У поставщика", "Beim Lieferanten")}: {row.supplierStock ?? "—"}</p><p>{row.stockAsOf || t("Дата неизвестна", "Datum unbekannt")}</p></td>
         <td className="min-w-60 p-3"><ul className="list-disc space-y-1 pl-4">{row.blockers.map(b => <li key={b}>{labels[b]}</li>)}</ul>
           <p className="mt-3">{t("Кандидаты по названию, не подтверждены", "Namenskandidaten, nicht bestätigt")}: {row.candidateProductIds?.join(", ") || "—"}</p>
           {row.issues?.map((issue, i) => <p key={i} className="mt-1 break-words text-amber-900">{issue}</p>)}
