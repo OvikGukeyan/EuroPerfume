@@ -40,7 +40,8 @@ export function CustomerAccount({initial,demo=false}:{initial:AccountData;demo?:
    <div className="mt-2 flex items-center justify-between gap-3"><strong className="text-2xl font-medium">{account.welcome.code}</strong><TicketPercent size={20} strokeWidth={1.5}/></div>
    <p className="mt-2 text-xs text-[#665954]">{t('10% на первый заказ, не суммируется с Sale и акциями. Действует до ','10% auf die erste Bestellung, nicht auf Aktionen/Sale. Gültig bis ')}{date(account.welcome.expiresAt)}</p>
   </section>}
-  {account.newsletterOffer&&<LegacyNewsletterOffer offer={account.newsletterOffer} confirmed={Boolean(account.newsletter?.confirmed)} demo={demo}/>}\n  <div className="account-menu">{menus.map(([s,Icon])=><button type="button" key={s} onClick={()=>open(s)}><Icon size={25} strokeWidth={1.4}/><span>{labels[s]}</span><ChevronRight size={20}/></button>)}<Link href="/favorites"><Heart size={25} strokeWidth={1.4}/><span>{t('Избранное','Favoriten')}</span><ChevronRight size={20}/></Link></div></>}
+  {account.newsletterOffer&&<LegacyNewsletterOffer offer={account.newsletterOffer} confirmed={Boolean(account.newsletter?.confirmed)} demo={demo}/>}
+  <div className="account-menu">{menus.map(([s,Icon])=><button type="button" key={s} onClick={()=>open(s)}><Icon size={25} strokeWidth={1.4}/><span>{labels[s]}</span><ChevronRight size={20}/></button>)}<Link href="/favorites"><Heart size={25} strokeWidth={1.4}/><span>{t('Избранное','Favoriten')}</span><ChevronRight size={20}/></Link></div></>}
  {section==='club'&&<div className="mx-3 space-y-4 py-5 md:mx-0">
   <div className="rounded-lg border border-[#e7ded9] bg-[#faf7f4] p-5">
    <p className="text-xs uppercase tracking-[.13em] text-[#816d64]">EURO PERFUME CLUB</p>
