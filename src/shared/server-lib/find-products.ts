@@ -175,7 +175,7 @@ export const findProducts = async (
           : undefined,
       AND: [
         ...(sale ? [saleCondition] : []),
-        ...(productGroupId ? [{OR:[{productGroupId},{fullBottles:{some:{productGroupId,available:true,OR:[{allowBackorder:true},{stockPieces:{gt:0}}]}}}]}] : !sale && (categoryId===1 || !categoryId) ? [{productGroupId:{in:[1,2,3]}}] : []),
+        ...(productGroupId ? [{OR:[{productGroupId},{fullBottles:{some:{productGroupId,available:true,OR:[{allowBackorder:true},{stockPieces:{gt:0}}]}}}]}] : !sale && (categoryId===1 || !categoryId) ? [{productGroupId:{in:[1,2,3,31]}}] : []),
         ...(noteFilters.length ? noteFilters : []),
         ...(searchAND.length ? searchAND : []),
       ],
@@ -277,3 +277,4 @@ export const findProducts = async (
     return { products: [], totalPages: 0, availableFilters: null };
   }
 };
+
