@@ -1,4 +1,6 @@
+"use client";
 import { cn } from '@/src/shared/lib/utils';
+import { useLocale } from 'next-intl';
 import React, { FC } from 'react';
 import { CountIconButton } from '.';
 
@@ -17,6 +19,7 @@ export const CountButton: FC<CountButtonProps> = ({
   value = 1,
   size = 'sm',
 }) => {
+  const ru = useLocale() === 'ru';
   return (
     <div className={cn('inline-flex flex-row items-center justify-between gap-2 ', className)}>
       <CountIconButton
@@ -26,7 +29,7 @@ export const CountButton: FC<CountButtonProps> = ({
         type="minus"
       />
 
-      <b className={size === 'sm' ? 'text-sm' : 'text-md'}>{value}{onTap ? 'ml' : 'pcs' }</b>
+      <b className={size === 'sm' ? 'text-sm' : 'text-md'}>{value} {onTap ? (ru ? 'мл' : 'ml') : (ru ? 'шт.' : 'Stk.')}</b>
 
       <CountIconButton onClick={() => onClick?.('plus')} size={size} type="plus" />
     </div>

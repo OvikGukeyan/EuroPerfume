@@ -155,7 +155,7 @@ export const Filters: FC<Props> = ({ onDone, className }) => {
           limit={3}
           onClickCheckbox={createFilterUpdater(setLocalFilters)}
           selected={localFilters.brands}
-          items={availableFilters.brands}
+          items={[...availableFilters.brands].sort((a,b) => a.text.trim().localeCompare(b.text.trim(), locale, {sensitivity:"base",numeric:true}))}
         />
       )}
 

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { FilterCheckbox, FilterCheckboxProps } from "./filter-checkbox";
 import { Skeleton } from "../ui/skeleton";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 type Item = FilterCheckboxProps;
 
@@ -24,7 +24,7 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
   items,
   defaultItems,
   limit = 5,
-  searchInputPlaceholder = "Search...",
+  searchInputPlaceholder,
   className,
   selected,
   onClickCheckbox,
@@ -32,6 +32,7 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
   name,
 }) => {
   const t = useTranslations("Filters");
+  const locale = useLocale();
   const [showAll, setShowAll] = useState(false);
   const [searchValue, setSearchValue] = useState("");
 
@@ -68,7 +69,7 @@ export const CheckboxFiltersGroup: React.FC<Props> = ({
           <input
             value={searchValue}
             onChange={(e) => onChangeSearchInput(e)}
-            placeholder={searchInputPlaceholder}
+            placeholder={searchInputPlaceholder ?? (locale === "ru" ? "Поиск…" : "Suchen…")}
             className="bg-gray-50 border-none pl-2 focus:outline-none"
           />
         </div>
