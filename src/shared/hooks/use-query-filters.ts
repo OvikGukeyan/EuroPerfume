@@ -15,6 +15,8 @@ export const useQueryFilters = (filters: Filters) => {
   const isFilterPage = pathname === "/items" || pathname === "/products" || pathname === "/sale";
   useEffect(() => {
     const params = {
+      // Search is URL-owned; changing filters must not erase the requested fragrance.
+      search: searchParams.get("search") || undefined,
       ...filters.prices,
       orderBy:
         Object.keys(filters.orderBy).length > 0
@@ -50,3 +52,4 @@ export const useQueryFilters = (filters: Filters) => {
   }, [filters, pathname, router, isFilterPage, locationKey, searchParams]);
 
 };
+
