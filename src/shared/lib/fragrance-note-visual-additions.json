@@ -1,0 +1,455 @@
+{
+  "aliases": [
+    {
+      "ru": "Абсолю розы",
+      "de": "Absolute Rose",
+      "source": "Роза"
+    },
+    {
+      "ru": "Дерево гуаяк",
+      "de": "Guajakholz",
+      "source": "Гваяк"
+    },
+    {
+      "ru": "Зеленая листва",
+      "de": "Grüne Blätter",
+      "source": "Зеленые ноты"
+    },
+    {
+      "ru": "Лаосский уд",
+      "de": "Laossud",
+      "source": "Уд"
+    },
+    {
+      "ru": "Парагвайский петитгрей",
+      "de": "Paraguayischer Petitgrain",
+      "source": "Петигрейн"
+    },
+    {
+      "ru": "Цветы лимона",
+      "de": "Zitronenblüten",
+      "source": "Цветок лимона"
+    },
+    {
+      "ru": "Амброкс",
+      "de": "Ambrox",
+      "source": "Амброксан"
+    },
+    {
+      "ru": "Светлые древесные ноты",
+      "de": "Helle Hölzer",
+      "source": "Светлое дерево"
+    },
+    {
+      "ru": "Петитгрейн",
+      "de": "Petitgrain",
+      "source": "Петигрейн"
+    },
+    {
+      "ru": "Амбровая древесина",
+      "de": "Amberholz",
+      "source": "Amberwood"
+    },
+    {
+      "ru": "Лавандин",
+      "de": "Lavandin",
+      "source": "Лаванда"
+    },
+    {
+      "ru": "Лимон Амальфи",
+      "de": "Amalfi-Zitrone",
+      "source": "Лимон"
+    },
+    {
+      "ru": "Гватемальский кардамон",
+      "de": "Guatemaltekischer Kardamom",
+      "source": "Кардамон"
+    },
+    {
+      "ru": "Гаитянский ветивер",
+      "de": "Haitianischer Vetiver",
+      "source": "Ветивер"
+    },
+    {
+      "ru": "Молочные ноты",
+      "de": "Milchige Noten",
+      "source": "Молоко"
+    },
+    {
+      "ru": "Индонезийские пачули",
+      "de": "Indonesisches Patchouli",
+      "source": "Пачули"
+    },
+    {
+      "ru": "Мексиканская ваниль",
+      "de": "Mexikanische Vanille",
+      "source": "Ваниль"
+    },
+    {
+      "ru": "Молочный аккорд",
+      "de": "Milchiger Akkord",
+      "source": "Молоко"
+    },
+    {
+      "ru": "Абсолю жасмина",
+      "de": "Jasmin-Absolue",
+      "source": "Жасмин"
+    },
+    {
+      "ru": "Калабрийский лимон",
+      "de": "Kalabrische Zitrone",
+      "source": "Лимон"
+    },
+    {
+      "ru": "Цветы лаванды",
+      "de": "Lavendelblüten",
+      "source": "Лаванда"
+    },
+    {
+      "ru": "Флорентийский ирис",
+      "de": "Florentiner Iris",
+      "source": "Ирис"
+    },
+    {
+      "ru": "Майсурский сандал",
+      "de": "Mysore-Sandelholz",
+      "source": "Сандал"
+    },
+    {
+      "ru": "Светлый табак",
+      "de": "Heller Tabak",
+      "source": "Табак"
+    },
+    {
+      "ru": "Лаосский бензоин",
+      "de": "Laotisches Benzoe",
+      "source": "Бензоин"
+    },
+    {
+      "ru": "Лаосский уд Буая",
+      "de": "Laotisches Buaya-Oud",
+      "source": "Уд"
+    },
+    {
+      "ru": "Марокканские нероли",
+      "de": "Marokkanisches Neroli",
+      "source": "Нероли"
+    },
+    {
+      "ru": "Уд Бурми",
+      "de": "Burmi-Oud",
+      "source": "Уд"
+    },
+    {
+      "ru": "Испанский и иранский шафран",
+      "de": "Spanischer und iranischer Safran",
+      "source": "Шафран"
+    },
+    {
+      "ru": "Индийский жасмин самбак",
+      "de": "Indischer Sambac-Jasmin",
+      "source": "Жасмин самбак"
+    },
+    {
+      "ru": "Индийский сандал",
+      "de": "Indisches Sandelholz",
+      "source": "Сандал"
+    },
+    {
+      "ru": "Цейлонский чёрный чай",
+      "de": "Ceylon-Schwarztee",
+      "source": "Черный чай"
+    },
+    {
+      "ru": "Смесь малайзийских удов",
+      "de": "Malaysische Oud-Mischung",
+      "source": "Уд"
+    },
+    {
+      "ru": "Выдержанные тайские и лаосские уды",
+      "de": "Gereifte thailändische und laotische Ouds",
+      "source": "Уд"
+    },
+    {
+      "ru": "Испанский ладанник",
+      "de": "Spanische Zistrose",
+      "source": "Ладанник"
+    },
+    {
+      "ru": "Сингапурские пачули",
+      "de": "Singapur-Patschuli",
+      "source": "Пачули"
+    },
+    {
+      "ru": "Австралийский сандал",
+      "de": "Australisches Sandelholz",
+      "source": "Сандал"
+    },
+    {
+      "ru": "Иранский гальбанум",
+      "de": "Iranisches Galbanum",
+      "source": "Гальбанум"
+    },
+    {
+      "ru": "Абсолю дамасской розы",
+      "de": "Damaszener-Rosen-Absolue",
+      "source": "Дамасская роза"
+    },
+    {
+      "ru": "Марокканский атласский кедр",
+      "de": "Marokkanische Atlaszeder",
+      "source": "Атласский кедр"
+    },
+    {
+      "ru": "Оманский ладан",
+      "de": "Omanischer Weihrauch",
+      "source": "Ладан"
+    },
+    {
+      "ru": "Турецкий ирис",
+      "de": "Türkische Iris",
+      "source": "Ирис"
+    },
+    {
+      "ru": "Цейлонский сандал",
+      "de": "Ceylon-Sandelholz",
+      "source": "Сандал"
+    },
+    {
+      "ru": "Испанский мандарин",
+      "de": "Spanische Mandarine",
+      "source": "Мандарин"
+    },
+    {
+      "ru": "Индийский кардамон",
+      "de": "Indischer Kardamom",
+      "source": "Кардамон"
+    },
+    {
+      "ru": "Бельгийский шоколад",
+      "de": "Belgische Schokolade",
+      "source": "Темный шоколад"
+    },
+    {
+      "ru": "Смесь лаосского и тайского уда",
+      "de": "Laotische und thailändische Oud-Mischung",
+      "source": "Уд"
+    },
+    {
+      "ru": "Абсолют лабданума",
+      "de": "Labdanum-Absolue",
+      "source": "Лабданум"
+    },
+    {
+      "ru": "Вьетнамский уд",
+      "de": "Vietnamesisches Oud",
+      "source": "Уд"
+    },
+    {
+      "ru": "Болгарская лаванда",
+      "de": "Bulgarischer Lavendel",
+      "source": "Лаванда"
+    },
+    {
+      "ru": "Малайзийский гурьюнский бальзам",
+      "de": "Malaysischer Gurjunbalsam",
+      "source": "Гурьюнский бальзам"
+    },
+    {
+      "ru": "Индийский циприол",
+      "de": "Indisches Cypriol",
+      "source": "Нагармота"
+    }
+  ],
+  "photos": [
+    {
+      "ru": "Тосканский корень ириса",
+      "de": "Toskanische Iriswurzel",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 0
+    },
+    {
+      "ru": "Зелёное яблоко",
+      "de": "Grüner Apfel",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 1
+    },
+    {
+      "ru": "Лемонграсс",
+      "de": "Zitronengras",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 2
+    },
+    {
+      "ru": "Лимонная цедра",
+      "de": "Zitronenzeste",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 3
+    },
+    {
+      "ru": "Листья герани",
+      "de": "Geranienblätter",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 4
+    },
+    {
+      "ru": "Мята колосистая",
+      "de": "Raschelminze",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 5
+    },
+    {
+      "ru": "Палисандр",
+      "de": "Palisander",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 6
+    },
+    {
+      "ru": "Перец тимур (тимут)",
+      "de": "Timur Pfeffer",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 7
+    },
+    {
+      "ru": "Цедра мандарина",
+      "de": "Mandarinenschale",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 8
+    },
+    {
+      "ru": "Черная вишня",
+      "de": "Schwarze Kirsche",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 9
+    },
+    {
+      "ru": "Смородина",
+      "de": "Johannisbeere",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 10
+    },
+    {
+      "ru": "Зелёный мандарин",
+      "de": "Grüne Mandarine",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 11
+    },
+    {
+      "ru": "Листья базилика",
+      "de": "Basilikumblätter",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 12
+    },
+    {
+      "ru": "Виноградное сусло",
+      "de": "Traubenmost",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 13
+    },
+    {
+      "ru": "Цветы табака",
+      "de": "Tabakblüten",
+      "file": "materials-01",
+      "grid": 4,
+      "cell": 14
+    },
+    {
+      "ru": "Двулистник Грея",
+      "de": "Diphylleia grayi",
+      "file": "materials-02",
+      "grid": 2,
+      "cell": 0
+    },
+    {
+      "ru": "Бальзам Tonkiphora",
+      "de": "Tonkiphora-Balsam",
+      "file": "materials-02",
+      "grid": 2,
+      "cell": 1
+    },
+    {
+      "ru": "Лимонный мусс",
+      "de": "Zitronenmousse",
+      "file": "materials-02",
+      "grid": 2,
+      "cell": 2
+    },
+    {
+      "ru": "Мшисто-стираксовый аккорд",
+      "de": "Moos-Styrax-Akkord",
+      "file": "materials-02",
+      "grid": 2,
+      "cell": 3
+    },
+    {
+      "ru": "Лимонный петитгрейн",
+      "de": "Zitronen-Petitgrain",
+      "file": "materials-04",
+      "cell": 3,
+      "grid": 2
+    },
+    {
+      "ru": "Бутоны гвоздики",
+      "de": "Gewürznelkenknospen",
+      "file": "materials-03",
+      "cell": 0,
+      "grid": 2
+    },
+    {
+      "ru": "Красные ягоды",
+      "de": "Rote Beeren",
+      "file": "materials-04",
+      "cell": 0,
+      "grid": 2
+    },
+    {
+      "ru": "Морковный аккорд",
+      "de": "Karottenakkord",
+      "file": "materials-04",
+      "cell": 1,
+      "grid": 2
+    },
+    {
+      "ru": "Зелёная фиалка",
+      "de": "Grünes Veilchen",
+      "file": "materials-04",
+      "cell": 2,
+      "grid": 2
+    },
+    {
+      "ru": "Масло сомалийского ладана",
+      "de": "Somalisches Weihrauchöl",
+      "file": "materials-03",
+      "cell": 1,
+      "grid": 2
+    },
+    {
+      "ru": "Цукаты",
+      "de": "Kandierte Früchte",
+      "file": "materials-03",
+      "cell": 3,
+      "grid": 2
+    },
+    {
+      "ru": "Масло можжевельника каде",
+      "de": "Cadeöl",
+      "file": "materials-03",
+      "cell": 2,
+      "grid": 2
+    }
+  ]
+}
