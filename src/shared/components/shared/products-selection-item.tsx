@@ -87,14 +87,15 @@ export const ProductSelectionItem: React.FC<Props> = ({
   const priced=cataloguePrice({price,discountPrice,...dayOffer,available,productGroup,bottles},preferBottle,offerNow);
   const displayBottle=priced.bottle;
   const productHref = `/product/${id}${displayBottle ? `?bottle=${displayBottle.id}` : ""}`;
+  const displayImage = displayBottle ? displayBottle.image : imageUrl || variations?.[0]?.imageUrl;
   const finalPrice = priced.regular;
   const finalDiscountPrice = priced.discounted ? priced.effective : undefined;
 
   return (
     <article className={cn("home-product compact-product compact-selection", className)}>
       <div className="home-product-photo">
-        <Link href={productHref} className="absolute inset-0 p-5 md:p-8" aria-label={`${brand.name} ${name}`}>
-          {imageUrl || variations?.[0]?.imageUrl ? <Image src={imageUrl || variations[0].imageUrl} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" className="object-contain p-4 md:p-7" /> : <span className="flex h-full items-center justify-center text-sm text-neutral-500">{locale==="ru" ? "Фото уточняется" : "Foto wird ergänzt"}</span>}
+        <Link href={productHref} aria-label={`${brand.name} ${name}`}>
+          {displayImage ? <Image src={displayImage} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" /> : <span className="flex h-full items-center justify-center text-sm text-neutral-500">{locale==="ru" ? "Фото уточняется" : "Foto wird ergänzt"}</span>}
         </Link>
         <button type="button" className="home-product-heart" onClick={onToggleFavorite} aria-pressed={isFavorite} aria-label={locale === "ru" ? (isFavorite ? `Удалить ${name} из избранного` : `Добавить ${name} в избранное`) : (isFavorite ? `${name} aus Favoriten entfernen` : `${name} zu Favoriten hinzufügen`)}>
           {isFavorite ? <HeartBlack /> : <Heart />}
