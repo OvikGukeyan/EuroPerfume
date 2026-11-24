@@ -7,7 +7,8 @@ import type { BottleOption } from "../../lib/full-bottle";
 import { formatMoney, formatUnitPrice } from "@/src/shared/lib/money";
 import Image from "next/image";
 import React from "react";
-import { ByProductDialog } from ".";
+import { cataloguePrice } from "../../lib/catalogue-price";
+import { fragranceName } from "../../lib/full-bottle";
 import { Heart } from "lucide-react";
 import { HeartBlack } from "@/src/shared/icons";
 import {
@@ -52,7 +53,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
   bottles = [],
   available = true,
   className,
-  name,
+  name: rawName,
   id,
   productGroup,
   variations,
@@ -65,6 +66,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
   price,
   brand,
 }) => {
+  const name = fragranceName(rawName);
   const onToggleFavorite = (e: React.MouseEvent) => {
     e.stopPropagation();
     e.preventDefault();
@@ -80,12 +82,10 @@ export const ProductSelectionItem: React.FC<Props> = ({
   const locale = useLocale();
   const labelLocale = locale === "ru" ? "labelRu" : "labelDe";
 
-  const displayBottle=preferBottle ? (bottles.find(b=>b.available) ?? bottles[0]) : !available ? bottles.find(b=>b.available) : undefined;
-  const productHref = `/product/${id}${displayBottle ? `?bottle=${displayBottle.id}` : ""}`;
   const offerNow = useDayOfferClock([dayOffer, ...bottles]);
-  const priced = displayBottle
-    ? offerPrices({ ...displayBottle, price: displayBottle.regularPrice ?? displayBottle.price, discountPrice: displayBottle.discountPrice }, 1, false, offerNow)
-    : offerPrices({ price, discountPrice, ...dayOffer }, productGroup.onTap ? 2 : 1, Boolean(productGroup.onTap), offerNow);
+  const priced=cataloguePrice({price,discountPrice,...dayOffer,available,productGroup,bottles},preferBottle,offerNow);
+  const displayBottle=priced.bottle;
+  const productHref = `/product/${id}${displayBottle ? `?bottle=${displayBottle.id}` : ""}`;
   const finalPrice = priced.regular;
   const finalDiscountPrice = priced.discounted ? priced.effective : undefined;
 
@@ -93,7 +93,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
     <article className={cn("home-product compact-product compact-selection", className)}>
       <div className="home-product-photo">
         <Link href={productHref} className="absolute inset-0 p-5 md:p-8" aria-label={`${brand.name} ${name}`}>
-          <Image src={displayBottle?.image || imageUrl || variations?.[0]?.imageUrl || ""} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" className="object-contain p-4 md:p-7" />
+          {imageUrl || variations?.[0]?.imageUrl ? <Image src={imageUrl || variations[0].imageUrl} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" className="object-contain p-4 md:p-7" /> : <span className="flex h-full items-center justify-center text-sm text-neutral-500">{locale==="ru" ? "Фото уточняется" : "Foto wird ergänzt"}</span>}
         </Link>
         <button type="button" className="home-product-heart" onClick={onToggleFavorite} aria-pressed={isFavorite} aria-label={locale === "ru" ? (isFavorite ? `Удалить ${name} из избранного` : `Добавить ${name} в избранное`) : (isFavorite ? `${name} aus Favoriten entfernen` : `${name} zu Favoriten hinzufügen`)}>
           {isFavorite ? <HeartBlack /> : <Heart />}
@@ -107,13 +107,13 @@ export const ProductSelectionItem: React.FC<Props> = ({
       </Link>
       <div className="compact-product-meta">
         <p className="home-product-price">
-          {!displayBottle && productGroup.onTap && <small className="compact-product-from">{locale === "ru" ? "от" : "ab"}</small>}
+          <small className="compact-product-from">{!displayBottle && productGroup.onTap ? (locale === "ru" ? "Отливант от" : "Abfüllung ab") : bottles.length ? (locale === "ru" ? "Флакон от" : "Originalflakon ab") : ""}</small>
           {priced.discounted ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
         </p>
         {productGroup.onTap && <span className="compact-product-size">{displayBottle?.ml ?? 2} ml</span>}
       </div>
       <div className="home-product-buy">
-        <ByProductDialog dayOffer={dayOffer} preferredBottleId={displayBottle?.id} bottles={bottles} available={available} id={id} variations={variations} price={price} discountPrice={discountPrice} brand={brand} imageUrl={imageUrl} name={name} productGroup={productGroup} />
+        <Link href={productHref} className="compact-product-open">{locale === "ru" ? "Выбрать формат" : "Format wählen"}</Link>
       </div>
       <div className="compact-product-extra">
         <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>

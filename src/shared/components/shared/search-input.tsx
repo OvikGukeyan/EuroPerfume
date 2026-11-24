@@ -14,6 +14,7 @@ import { useClickAway, useDebounce } from "react-use";
 interface Props {
   onProductClick: (product: ProductDTO) => void;
   className?: string;
+  adminVariants?: boolean;
 }
 export const russianToGermanLayout = (input: string) => {
   const layoutMap: { [key: string]: string } = {
@@ -161,7 +162,7 @@ export const ruToDeLayoutQWERTZ = (input: string) => {
     .map((char) => map[char] || char)
     .join("");
 };
-export const SearchInput: React.FC<Props> = ({ className, onProductClick }) => {
+export const SearchInput: React.FC<Props> = ({ className, onProductClick, adminVariants=false }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [focused, setFocused] = useState(false);
   const [products, setProducts] = useState<ProductDTO[]>([]);
@@ -201,10 +202,10 @@ export const SearchInput: React.FC<Props> = ({ className, onProductClick }) => {
         const convertedQuery = ruToDeLayoutQWERTZ(searchQuery);
         const convertedQuery2 = russianToGermanLayout(searchQuery);
 
-        const response = await Api.products.search(convertedQuery);
+        const response = await Api.products.search(convertedQuery, 15, adminVariants);
         const responseAlt =
           response.length === 0 && convertedQuery !== convertedQuery2
-            ? await Api.products.search(convertedQuery2)
+            ? await Api.products.search(convertedQuery2, 15, adminVariants)
             : [];
 
         const combined = [...response, ...responseAlt].reduce<ProductDTO[]>(
@@ -220,7 +221,7 @@ export const SearchInput: React.FC<Props> = ({ className, onProductClick }) => {
       }
     },
     250,
-    [searchQuery]
+    [searchQuery, adminVariants]
   );
   return (
     <>

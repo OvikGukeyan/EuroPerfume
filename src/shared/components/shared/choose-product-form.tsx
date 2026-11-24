@@ -54,7 +54,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
 
   const firstBottle=bottles.find(b=>b.available) ?? bottles[0];
   const [bottleId,setBottleId]=useState<number|null>(()=>
-    bottles.find(b=>b.id===initialBottleId)?.id ?? (!product.available ? firstBottle?.id : null) ?? null);
+    bottles.find(b=>b.id===initialBottleId)?.id ?? (!product.productGroup.onTap || !product.available ? firstBottle?.id : null) ?? null);
   const bottle=bottles.find(b=>b.id===bottleId);
   const offerNow = useDayOfferClock([product, ...bottles]);
   const priced = bottle
@@ -143,7 +143,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
     <div className="fragrance-hero">
       <div className="fragrance-gallery">
         <ProductCarousel
-          slides={bottle?.image ? [{ type: "image", url: bottle.image }] : media.length > 1 ? media : variationsMedia.length > 1 ? variationsMedia : (activeVariation?.imageUrl || product.imageUrl[0]) ? [{ type: "image", url: activeVariation?.imageUrl || product.imageUrl[0] }] : []}
+          slides={bottle ? (bottle.image ? [{ type: "image", url: bottle.image }] : []) : media.length > 1 ? media : variationsMedia.length > 1 ? variationsMedia : (activeVariation?.imageUrl || product.imageUrl[0]) ? [{ type: "image", url: activeVariation?.imageUrl || product.imageUrl[0] }] : []}
           alt={product.brand.name + " " + product.name}
           setActiveVariationId={setActiveVariationId}
           activeVariationId={activeVariationId}
@@ -158,11 +158,13 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
         
         {setContents && <div className="fragrance-scent-summary"><strong>{ru ? "В наборе" : "Im Set"}</strong>{setContents}</div>}
         <section className="fragrance-purchase" aria-label={ru?"Выбрать формат и купить":"Format auswählen und kaufen"}>
-          <FragranceFormatPicker bottles={bottles} selected={bottleId} onSelect={setBottleId} decantAvailable={product.available}/>
+          <FragranceFormatPicker bottles={bottles} selected={bottleId} onSelect={setBottleId} decantAvailable={product.available} hasDecants={Boolean(product.productGroup.onTap)}/>
           {!bottle && product.variations.length>0 && <ChooseVariation setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId} items={product.variations}/>}
           {!bottle && product.productGroup.onTap && <div><p className="fragrance-volume-label">{ru?"Выберите объём":"Größe wählen"}</p><VolumeSelection className="fragrance-volumes" volume={volume} setVolume={setVolume} volumes={[...volumes]}/></div>}
           {!bottle && product.productGroup.onTap && <p className="fragrance-disclosure">{ru?"Отливант из оригинального флакона. Не является официальным пробником производителя.":"Duftabfüllung aus einem Originalflakon. Keine offizielle Herstellerprobe."}</p>}
           {bottle && <p className="fragrance-disclosure">{ru?"Полный оригинальный флакон · ":"Originalflakon · "}{bottle.ml} ml</p>}
+          <p className="fragrance-disclosure">{ru?"Артикул: ":"Artikelnummer: "}EP-{bottle?.id ?? product.id}</p>
+          {bottle && <p className="fragrance-disclosure" role="status">{(bottle.stock ?? 0)>0 ? (ru?"В наличии":"Auf Lager") : (ru?"По запросу":"Auf Anfrage")}</p>}
           <div aria-live="polite">{priced.dayOffer && <p className="mb-2 text-sm font-medium">{ru ? "Товар дня −10%" : "Tagesangebot −10%"}</p>}<p className="fragrance-price">{formatMoney(finalDiscountPrice ?? finalPrice)} €</p>{finalDiscountPrice!=null && <del aria-label={ru ? "Низшая цена за 30 дней" : "Niedrigster Preis der letzten 30 Tage"} className="text-sm text-neutral-500">{formatMoney(finalPrice)} €</del>}{unitPrice!==null && <p className="fragrance-unit">({formatUnitPrice(unitPrice)} € / 1 l)</p>}{priced.dayOffer && <p className="mt-1 text-[10px] text-neutral-500">{ru ? "Низшая цена за 30 дней: " : "Niedrigster Preis der letzten 30 Tage: "}{formatMoney(finalPrice)} €</p>}<TaxPriceNotice gross={finalDiscountPrice ?? finalPrice}/><p className="fragrance-disclosure"><Link href="/delivery-and-payment">{ru?"Дополнительно доставка — условия и стоимость":"Zzgl. Versand — Kosten und Lieferbedingungen"}</Link></p></div>
           {inquiryHref ? <div className="space-y-3">
             <p className="fragrance-disclosure">{ru?"Наличие уточняется. Срок подтверждается после заявки.":"Verfügbarkeit auf Anfrage. Lieferzeit wird nach Ihrer Anfrage bestätigt."}</p>

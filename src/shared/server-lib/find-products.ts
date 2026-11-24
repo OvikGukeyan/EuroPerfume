@@ -1,3 +1,4 @@
+import { cataloguePrice } from "../lib/catalogue-price";
 import { fullBottleInclude, withBottleOptions } from "../lib/full-bottle";
 import "server-only";
 import { offerPrices } from "../lib/day-offer";
@@ -165,7 +166,7 @@ export const findProducts = async (
           : undefined,
       concentration: { in: concentration as PerfumeConcentration[] },
       price:
-        !sale && priceFrom && priceTo ? { gte: priceFrom, lte: priceTo } : undefined,
+        undefined,
       bottleParentId: null,
       OR: [{available:true},{fullBottles:{some:{available:true,OR:[{allowBackorder:true},{stockPieces:{gt:0}}]}}}],
       categoryId: categoryId || 1,
@@ -187,7 +188,8 @@ export const findProducts = async (
         productGroup: true,
             fullBottles: fullBottleInclude,
         translations: true,
-        variations: true,
+        variations: {where: isAdmin ? undefined : {available:true}},
+        reviews: true,
         brand: true,
         productNotes: {
           include: {
@@ -212,9 +214,8 @@ export const findProducts = async (
         const publicProduct = withBottleOptions(product);
         const ownSale = product.available && offerPrices(product, 2, Boolean(product.productGroup.onTap), now.getTime()).discounted;
         const bottles = publicProduct.bottles.filter(bottle => bottle.available && offerPrices({ ...bottle, price: bottle.regularPrice ?? bottle.price }, 1, false, now.getTime()).discounted);
-        const bottle = bottles[0];
-        const effectivePrice = ownSale ? offerPrices(product, product.productGroup.onTap ? 2 : 1, Boolean(product.productGroup.onTap), now.getTime()).effective : bottle ? offerPrices({ ...bottle, price: bottle.regularPrice ?? bottle.price }, 1, false, now.getTime()).effective : Infinity;
-        return { ...publicProduct, price: product.price.toNumber(), discountPrice: product.discountPrice?.toNumber() ?? null, reviews: [], bottles, saleBottleOnly: !ownSale, effectivePrice };
+        const effectivePrice = cataloguePrice({...publicProduct,bottles}, !ownSale || productGroupId===31, now.getTime()).effective;
+        return { ...publicProduct, price: product.price.toNumber(), discountPrice: product.discountPrice?.toNumber() ?? null, bottles, saleBottleOnly: !ownSale, effectivePrice };
       }).filter(product => !product.saleBottleOnly || product.bottles.length > 0);
       const availableFilters = getAvailableFilters(rows.map(product => ({ ...product, price: product.effectivePrice })) as unknown as ProductDTO[]);
       const filtered = rows.filter(product => (params.priceFrom == null || product.effectivePrice >= Number(params.priceFrom)) && (params.priceTo == null || product.effectivePrice <= Number(params.priceTo)));
@@ -222,56 +223,15 @@ export const findProducts = async (
       return { products: filtered.slice((page - 1) * 24, page * 24).map(({ effectivePrice, ...product }) => product), totalPages: Math.ceil(filtered.length / 24), availableFilters };
     }
 
-    const availableFilters = getAvailableFilters(
-      allFilteredProducts as unknown as ProductDTO[]
-    );
-    const [products, totalCount] = await prisma.$transaction([
-      prisma.product.findMany({
-        skip: (page - 1) * 24,
-        take: 24,
-        orderBy: orderBy,
-        where: whereClause,
-        include: {
-          productGroup: true,
-            fullBottles: fullBottleInclude,
-          translations: true,
-          variations: isAdmin
-            ? true
-            : {
-                where: {
-                  available: true,
-                },
-              },
-          brand: true,
-          productNotes: {
-            include: {
-              note: true,
-            },
-          },
-          aromas: true,
-          classification: true,
-          effect: true,
-          purpose: true,
-          skinType: true,
-          packagingFormat: true,
-          finish: true,
-          applicationMethod: true,
-          texture: true,
-          formula: true,
-          reviews: true,
-        },
-      }),
-      prisma.product.count({
-        where: whereClause,
-      }),
-    ]);
-    const safeProducts = products.map((product) => ({
-      ...withBottleOptions(product),
-      price: product.price.toNumber(),
-      discountPrice: product.discountPrice?.toNumber() || null,
-    }));
-    const totalPages = Math.ceil(totalCount / 24);
-    return { products: safeProducts, totalPages, availableFilters };
+    const rows=allFilteredProducts.map(product=>{
+      const result={...withBottleOptions(product),price:product.price.toNumber(),discountPrice:product.discountPrice?.toNumber() ?? null};
+      return {...result,effectivePrice:cataloguePrice(result,productGroupId===31,now.getTime()).effective};
+    });
+    const availableFilters=getAvailableFilters(rows.map(p=>({...p,price:p.effectivePrice})) as unknown as ProductDTO[]);
+    const filtered=rows.filter(p=>(params.priceFrom==null || p.effectivePrice>=Number(params.priceFrom)) && (params.priceTo==null || p.effectivePrice<=Number(params.priceTo)));
+    filtered.sort((a,b)=>orderBy.price ? (a.effectivePrice-b.effectivePrice)*(orderBy.price==="desc"?-1:1)||a.id-b.id : a.name.localeCompare(b.name,"de")*(orderBy.name==="desc"?-1:1)||a.id-b.id);
+    return {products:filtered.slice((page-1)*24,page*24).map(({effectivePrice,...p})=>p),totalPages:Math.ceil(filtered.length/24),availableFilters};
+
   } catch (error) {
     console.error(error);
     return { products: [], totalPages: 0, availableFilters: null };

@@ -5,6 +5,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { cn } from "@/src/lib/utils";
 import type { MediaItem } from "./choose-product-form";
 import { PlayCircle } from "lucide-react";
+import { useLocale } from "next-intl";
 
 type PropType = {
   slides: MediaItem[];
@@ -18,6 +19,7 @@ type PropType = {
 export const ProductCarousel: React.FC<PropType> = ({
   className, options, setActiveVariationId, slides, activeVariationId, alt = "",
 }) => {
+  const ru = useLocale() === "ru";
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [viewportRef, api] = useEmblaCarousel({ ...options, containScroll: "trimSnaps" });
   const onSelect = useCallback(() => {
@@ -41,7 +43,7 @@ export const ProductCarousel: React.FC<PropType> = ({
     if (index >= 0) api.scrollTo(index);
   }, [api, activeVariationId, slides]);
 
-  if (!slides.length) return null;
+  if (!slides.length) return <div role="status" className="flex h-full min-h-64 items-center justify-center p-6 text-center text-sm text-neutral-500" style={{background:"#f4f4f2"}}>{ru ? "Фото этого объёма уточняется" : "Foto dieser Größe wird ergänzt"}</div>;
   return <div className={cn("product-gallery-carousel", className)}
     style={{ display: "grid", gridTemplateRows: slides.length > 1 ? "minmax(0, 1fr) auto" : "minmax(0, 1fr)", width: "100%", height: "100%", minWidth: 0, minHeight: 0, background: "#f4f4f2" }}>
     <div ref={viewportRef} style={{ overflow: "hidden", minHeight: 0, minWidth: 0 }}>

@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
           include: {
             product: {
               select: {
-                name:true,price:true,imageUrl:true,available:true,fullBottles:fullBottleInclude,
+                id:true,volume:true,productGroupId:true,stockPieces:true,allowBackorder:true,name:true,price:true,imageUrl:true,available:true,fullBottles:fullBottleInclude,
                 variations:{where:{available:true},select:{imageUrl:true}},
                 productGroup:true,brand:true,
               },
@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
             createdAt: "desc",
           },
           include: {
-            product: {select:{name:true,price:true,imageUrl:true,available:true,fullBottles:fullBottleInclude,productGroup:true,brand:true,variations:{where:{available:true},select:{imageUrl:true}}}},
+            product: {select:{id:true,volume:true,productGroupId:true,stockPieces:true,allowBackorder:true,name:true,price:true,imageUrl:true,available:true,fullBottles:fullBottleInclude,productGroup:true,brand:true,variations:{where:{available:true},select:{imageUrl:true}}}},
           },
         },
       },

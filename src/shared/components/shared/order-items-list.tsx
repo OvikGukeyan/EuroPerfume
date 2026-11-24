@@ -59,6 +59,7 @@ export const OrderItemsList: FC<Props> = ({ className }) => {
         </Button>
         <div className={`${isSearchOpen ? "block" : "hidden"} w-full`}>
           <SearchInput
+            adminVariants
             onProductClick={(product) => {void addOrderItem(order?.id || 0, product, undefined, 1).then(()=>router.refresh())}}
           />
         </div>

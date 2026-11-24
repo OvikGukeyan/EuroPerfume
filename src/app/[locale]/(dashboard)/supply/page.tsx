@@ -29,6 +29,7 @@ export default function Supply() {
   return (
     <div>
       <SearchInput
+        adminVariants
         onProductClick={(product: ProductDTO) => {
           setSupplyItems((prev) => [...prev, product]);
         }}
