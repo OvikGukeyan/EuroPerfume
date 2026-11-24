@@ -1,4 +1,5 @@
 "use client";
+import {Link} from "@/src/i18n/navigation";
 import {useState} from "react";
 import {useLocale} from "next-intl";
 import {useRouter} from "next/navigation";
@@ -51,7 +52,7 @@ export function MarketingConsole({ready,counts,campaigns}:{
    {notice&&<p role="status" className="rounded-md bg-[#f8f5f2] p-3 text-sm">{notice}</p>}
    <div className="overflow-hidden rounded-lg border bg-white"><h2 className="border-b p-4 text-lg font-medium">{ru?"Кампании":"Kampagnen"}</h2>
     {campaigns.length?campaigns.map(c=><div key={c.id} className="border-b p-4">
-     <div className="flex flex-wrap items-start justify-between gap-2"><div><strong>{c.name}</strong><p className="mt-1 text-xs text-neutral-500">{c.subjectDe}</p>
+     <div className="flex flex-wrap items-start justify-between gap-2"><div><Link className="font-semibold underline underline-offset-4" href={"/insights/campaign/"+c.id}>{c.name}</Link><p className="mt-1 text-xs text-neutral-500">{c.subjectDe}</p>
      <p className="mt-1 text-xs text-neutral-500">{ru?"Получили":"Versendet"}: {c.sent} · {ru?"Попыток":"Versuche"}: {c.total} · {c.segment}</p></div>
       <span className="rounded bg-neutral-100 px-2 py-1 text-[11px]">{c.status}</span></div>
      <div className="mt-3 flex flex-wrap gap-2">

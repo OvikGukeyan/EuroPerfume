@@ -9,7 +9,7 @@ import {
  Sidebar,SidebarContent,SidebarFooter,SidebarGroup,SidebarGroupContent,SidebarGroupLabel,
  SidebarHeader,SidebarMenu,SidebarMenuButton,SidebarMenuItem
 } from "../ui/sidebar";
-import {House,Users,TicketPercent,Gift,Mail,ShoppingBag,Package,Truck,Layers,Plus,FlaskConical,Sparkles,FileText,Eye,Store} from "lucide-react";
+import {House,Users,TicketPercent,Gift,Mail,ShoppingBag,Package,Truck,Layers,Plus,FlaskConical,Sparkles,FileText,Eye,Store,ChartNoAxesColumn} from "lucide-react";
 type Props={className?:string};
 type Item={ru:string;de:string;href:string;icon:typeof House};
 export function AppSidebar({className}:Props){
@@ -21,7 +21,8 @@ export function AppSidebar({className}:Props){
    {ru:"Обзор магазина",de:"Shop-Übersicht",href:"/overview",icon:House}
   ]},
   {ru:"Клиенты и маркетинг",de:"Kunden & Marketing",items:[
-   {ru:"Клиенты и аналитика",de:"Kunden & Analysen",href:"/crm",icon:Users},
+   {ru:"Аналитика магазина",de:"Shop-Analysen",href:"/insights",icon:ChartNoAxesColumn},
+   {ru:"Клиенты",de:"Kunden",href:"/crm",icon:Users},
    {ru:"Промокоды",de:"Gutscheincodes",href:"/create-promocode",icon:TicketPercent},
    {ru:"Бонусы и отправки",de:"Bonuspunkte",href:"/club",icon:Gift},
    {ru:"Email-рассылки",de:"Newsletter",href:"/campaigns",icon:Mail}

@@ -39,6 +39,7 @@ export default async function AdminOverview({params}:{params:Promise<{locale:str
   {label:ru?"Заказов за 30 дней":"Bestellungen (30 Tage)",value:recentOrders,icon:ShoppingBag},
  ];
  const links=[
+  {href:"/insights",label:ru?"Аналитика магазина":"Shop-Analysen",icon:ChartNoAxesColumn},
   {href:"/orders",label:ru?"Управлять заказами":"Bestellungen verwalten",icon:ShoppingBag},
   {href:"/crm",label:ru?"Клиенты и аналитика":"Kunden und Analyse",icon:Users},
   {href:"/club",label:ru?"Бонусы и отправки":"Treuepunkte und Versand",icon:Gift},
