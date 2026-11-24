@@ -32,3 +32,10 @@ test("all declared note pictures point at real atlas cells", () => {
     backgroundPosition: "100% 100%",
   });
 });
+
+test("clove spice buds are distinct from carnation and cypriol maps to nagarmotha", () => {
+  const clove = fragranceNoteVisual({labelRu: "Бутоны гвоздики", labelDe: "Gewürznelkenknospen"});
+  assert.deepEqual(clove, {file:"materials-03", grid:2, cell:0});
+  assert.notDeepEqual(clove, fragranceNoteVisual({labelRu:"Гвоздика (цветок)",labelDe:"Nelke (Blüte)"}));
+  assert.deepEqual(fragranceNoteVisual({labelRu:"Индийский циприол",labelDe:"Indisches Cypriol"}), fragranceNoteVisual({labelRu:"Нагармота",labelDe:"Nagarmotha"}));
+});

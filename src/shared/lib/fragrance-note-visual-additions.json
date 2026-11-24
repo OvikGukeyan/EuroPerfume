@@ -51,11 +51,6 @@
       "source": "Amberwood"
     },
     {
-      "ru": "Лимонный петитгрейн",
-      "de": "Zitronen-Petitgrain",
-      "source": "Петигрейн"
-    },
-    {
       "ru": "Лавандин",
       "de": "Lavandin",
       "source": "Лаванда"
@@ -74,11 +69,6 @@
       "ru": "Гаитянский ветивер",
       "de": "Haitianischer Vetiver",
       "source": "Ветивер"
-    },
-    {
-      "ru": "Бутоны гвоздики",
-      "de": "Gewürznelkenknospen",
-      "source": "Гвоздика"
     },
     {
       "ru": "Молочные ноты",
@@ -201,11 +191,6 @@
       "source": "Гальбанум"
     },
     {
-      "ru": "Красные ягоды",
-      "de": "Rote Beeren",
-      "source": "Ягоды"
-    },
-    {
       "ru": "Абсолю дамасской розы",
       "de": "Damaszener-Rosen-Absolue",
       "source": "Дамасская роза"
@@ -251,31 +236,6 @@
       "source": "Уд"
     },
     {
-      "ru": "Морковный аккорд",
-      "de": "Karottenakkord",
-      "source": "Семена моркови"
-    },
-    {
-      "ru": "Зелёная фиалка",
-      "de": "Grünes Veilchen",
-      "source": "Фиалка (листья)"
-    },
-    {
-      "ru": "Масло сомалийского ладана",
-      "de": "Somalisches Weihrauchöl",
-      "source": "Ладан"
-    },
-    {
-      "ru": "Цукаты",
-      "de": "Kandierte Früchte",
-      "source": "Сухофрукты"
-    },
-    {
-      "ru": "Масло можжевельника каде",
-      "de": "Cadeöl",
-      "source": "Масло можжевельника"
-    },
-    {
       "ru": "Абсолют лабданума",
       "de": "Labdanum-Absolue",
       "source": "Лабданум"
@@ -294,6 +254,11 @@
       "ru": "Малайзийский гурьюнский бальзам",
       "de": "Malaysischer Gurjunbalsam",
       "source": "Гурьюнский бальзам"
+    },
+    {
+      "ru": "Индийский циприол",
+      "de": "Indisches Cypriol",
+      "source": "Нагармота"
     }
   ],
   "photos": [
@@ -403,13 +368,6 @@
       "cell": 14
     },
     {
-      "ru": "Индийский циприол",
-      "de": "Indisches Cypriol",
-      "file": "materials-01",
-      "grid": 4,
-      "cell": 15
-    },
-    {
       "ru": "Двулистник Грея",
       "de": "Diphylleia grayi",
       "file": "materials-02",
@@ -436,6 +394,62 @@
       "file": "materials-02",
       "grid": 2,
       "cell": 3
+    },
+    {
+      "ru": "Лимонный петитгрейн",
+      "de": "Zitronen-Petitgrain",
+      "file": "materials-04",
+      "cell": 3,
+      "grid": 2
+    },
+    {
+      "ru": "Бутоны гвоздики",
+      "de": "Gewürznelkenknospen",
+      "file": "materials-03",
+      "cell": 0,
+      "grid": 2
+    },
+    {
+      "ru": "Красные ягоды",
+      "de": "Rote Beeren",
+      "file": "materials-04",
+      "cell": 0,
+      "grid": 2
+    },
+    {
+      "ru": "Морковный аккорд",
+      "de": "Karottenakkord",
+      "file": "materials-04",
+      "cell": 1,
+      "grid": 2
+    },
+    {
+      "ru": "Зелёная фиалка",
+      "de": "Grünes Veilchen",
+      "file": "materials-04",
+      "cell": 2,
+      "grid": 2
+    },
+    {
+      "ru": "Масло сомалийского ладана",
+      "de": "Somalisches Weihrauchöl",
+      "file": "materials-03",
+      "cell": 1,
+      "grid": 2
+    },
+    {
+      "ru": "Цукаты",
+      "de": "Kandierte Früchte",
+      "file": "materials-03",
+      "cell": 3,
+      "grid": 2
+    },
+    {
+      "ru": "Масло можжевельника каде",
+      "de": "Cadeöl",
+      "file": "materials-03",
+      "cell": 2,
+      "grid": 2
     }
   ]
 }
