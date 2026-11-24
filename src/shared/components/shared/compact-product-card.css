@@ -1,7 +1,11 @@
 /* Presentation only. Shared by the home, catalogue, recommendations and favourites cards. */
 .home-product.compact-product{display:flex;flex-direction:column;align-self:start;min-width:0;background:#fff;gap:0;transform:none;border:0}
 .compact-product .home-product-photo{position:relative;width:100%;aspect-ratio:1/1.05;overflow:hidden;background:#f4f4f2}
-.compact-product .home-product-photo img{object-fit:contain;mix-blend-mode:multiply}
+/* Preserve the shop's neutral backdrop and identical relative safe area on every card.
+   Source assets with baked-in excess space still need normalization before import. */
+.compact-product .home-product-photo>a{position:absolute;inset:0;padding:0}
+.compact-product .home-product-photo img{object-fit:contain;object-position:center;padding:11%;mix-blend-mode:multiply}
+.compact-product .home-product-photo>a:hover img{transform:none}
 .compact-product .home-product-heart{position:absolute;top:2px;right:2px;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:0;border-radius:50%;background:transparent;color:#171717;z-index:1;touch-action:manipulation}
 .compact-product .home-product-heart svg{width:21px;height:21px}
 .compact-product .home-product-heart:hover{background:#ffffffb3}

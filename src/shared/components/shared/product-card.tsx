@@ -127,8 +127,8 @@ export const ProductCard: React.FC<Props> = ({
   return (
     <article className={cn("home-product compact-product catalogue-product", className)}>
       <div className="home-product-photo">
-        <Link href={`/product/${id}`} className="absolute inset-0" aria-label={`${brand.name} ${name}`}>
-          <Image src={image} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" className="object-contain p-4 md:p-7" />
+        <Link href={`/product/${id}`} aria-label={`${brand.name} ${name}`}>
+          {image ? <Image src={image} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" /> : <span className="flex h-full items-center justify-center text-sm text-neutral-500">{locale === "ru" ? "Фото уточняется" : "Foto wird ergänzt"}</span>}
         </Link>
         <button type="button" className="home-product-heart" onClick={onToggleFavorite} aria-pressed={isFavorite} aria-label={locale === "ru" ? (isFavorite ? `Удалить ${name} из избранного` : `Добавить ${name} в избранное`) : (isFavorite ? `${name} aus Favoriten entfernen` : `${name} zu Favoriten hinzufügen`)}>
           {isFavorite ? <HeartBlack /> : <Heart />}
