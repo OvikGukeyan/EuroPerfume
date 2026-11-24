@@ -5,6 +5,7 @@ import { ProductIngredients } from "./product-ingredients";
 import { FragranceAccordion } from "./fragrance-accordion";
 import { formatMoney, formatUnitPrice } from "@/src/shared/lib/money";
 import { BottleOption, unitPricePerLitre } from "@/src/shared/lib/full-bottle";
+import { bottleInquiry } from "@/src/shared/lib/bottle-inquiry";
 import "./fragrance-detail.css";
 import { FragranceNoteCard } from "./fragrance-note-card";
 import { FragranceFormatPicker } from "./fragrance-format-picker";
@@ -135,6 +136,8 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
   ].map(g=>({...g,notes:product.productNotes.filter(n=>n.noteType===g.type).map(n=>n.note)}));
   const concentrationName=concentrations.find(c=>c.value===product.concentration)?.name;
   const selectedMl=bottle?.ml ?? (product.productGroup.onTap ? volume : Number(product.volume));
+  const unavailableBottle = bottle ? !bottle.available : !product.productGroup.onTap && product.categoryId === 1 && !product.available;
+  const inquiryHref = unavailableBottle ? bottleInquiry({id:bottle?.id ?? product.id,name:`${product.brand.name} ${product.name}`,ml:selectedMl,locale}) : null;
   const unitPrice=unitPricePerLitre(finalDiscountPrice ?? finalPrice,selectedMl);
   return <div className={cn("fragrance-detail",className)}>
     <div className="fragrance-hero">
@@ -161,7 +164,11 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
           {!bottle && product.productGroup.onTap && <p className="fragrance-disclosure">{ru?"Отливант из оригинального флакона. Не является официальным пробником производителя.":"Duftabfüllung aus einem Originalflakon. Keine offizielle Herstellerprobe."}</p>}
           {bottle && <p className="fragrance-disclosure">{ru?"Полный оригинальный флакон · ":"Originalflakon · "}{bottle.ml} ml</p>}
           <div aria-live="polite">{priced.dayOffer && <p className="mb-2 text-sm font-medium">{ru ? "Товар дня −10%" : "Tagesangebot −10%"}</p>}<p className="fragrance-price">{formatMoney(finalDiscountPrice ?? finalPrice)} €</p>{finalDiscountPrice!=null && <del aria-label={ru ? "Низшая цена за 30 дней" : "Niedrigster Preis der letzten 30 Tage"} className="text-sm text-neutral-500">{formatMoney(finalPrice)} €</del>}{unitPrice!==null && <p className="fragrance-unit">({formatUnitPrice(unitPrice)} € / 1 l)</p>}{priced.dayOffer && <p className="mt-1 text-[10px] text-neutral-500">{ru ? "Низшая цена за 30 дней: " : "Niedrigster Preis der letzten 30 Tage: "}{formatMoney(finalPrice)} €</p>}<TaxPriceNotice gross={finalDiscountPrice ?? finalPrice}/><p className="fragrance-disclosure"><Link href="/delivery-and-payment">{ru?"Дополнительно доставка — условия и стоимость":"Zzgl. Versand — Kosten und Lieferbedingungen"}</Link></p></div>
-          <Button loading={loading} disabled={bottle ? !bottle.available : !product.available} onClick={onSubmit} className="fragrance-buy">{(bottle ? !bottle.available : !product.available) ? (ru?"Нет в наличии":"Ausverkauft") : (ru?"В корзину":"In den Warenkorb")}</Button>
+          {inquiryHref ? <div className="space-y-3">
+            <p className="fragrance-disclosure">{ru?"Наличие уточняется. Срок подтверждается после заявки.":"Verfügbarkeit auf Anfrage. Lieferzeit wird nach Ihrer Anfrage bestätigt."}</p>
+            <a href={inquiryHref} className="fragrance-buy flex items-center justify-center text-center">{ru?"Запросить наличие по email":"Verfügbarkeit per E-Mail anfragen"}</a>
+            <p className="fragrance-disclosure">{ru?"Откроется ваше почтовое приложение. Отправьте письмо, чтобы мы подтвердили возможность заказа.":"Ihr E-Mail-Programm wird geöffnet. Senden Sie die Nachricht, damit wir die Bestellmöglichkeit bestätigen können."}</p>
+          </div> : <Button loading={loading} disabled={bottle ? !bottle.available : !product.available} onClick={onSubmit} className="fragrance-buy">{(bottle ? !bottle.available : !product.available) ? (ru?"Нет в наличии":"Ausverkauft") : (ru?"В корзину":"In den Warenkorb")}</Button>}
           <div className="fragrance-service"><span>{ru?"Доставка по Германии и ЕС":"Versand nach Deutschland und in die EU"}</span><Link href="/return-and-exchange" className="underline">{ru?"Условия возврата":"Rückgabebedingungen"}</Link></div>
         </section>
       </div>

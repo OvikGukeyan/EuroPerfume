@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["pdfkit"],
   reactStrictMode: false,
   images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "www.xerjoff.com", pathname: "/cdn/shop/files/**" },
+      { protocol: "https", hostname: "parfums-de-marly.com", pathname: "/cdn/shop/files/**" },
+    ],
     domains: ["tlppllvnvzjgxgbzlwnh.supabase.co", 'thgjecpmxhqwfoknvjiu.supabase.co'],
   },
   experimental: {

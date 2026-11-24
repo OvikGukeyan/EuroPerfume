@@ -24,7 +24,7 @@ export function FragranceFormatPicker({ bottles, selected, onSelect, decantAvail
     </div>
     {selected!==null && <div className="fragrance-bottle-options">{bottles.map(b=><button type="button" key={b.id} aria-pressed={selected===b.id} onClick={()=>onSelect(b.id)}>
       <strong className="fragrance-bottle-ml">{b.ml}<small> ml</small></strong>
-      <span><strong>{ru?"Полный флакон":"Originalflakon"}</strong><small>{b.available?(ru?"В наличии":"Verfügbar"):(ru?"Нет в наличии":"Ausverkauft")}</small></span>
+      <span><strong>{ru?"Полный флакон":"Originalflakon"}</strong><small>{b.available?(ru?"В наличии":"Verfügbar"):(ru?"Наличие по запросу":"Verfügbarkeit auf Anfrage")}</small></span>
       <span className="fragrance-bottle-price"><strong>{formatMoney(offerPrices({ ...b, price:b.regularPrice ?? b.price },1,false,now).effective)} €</strong><small>({formatUnitPrice(unitPricePerLitre(offerPrices({ ...b, price:b.regularPrice ?? b.price },1,false,now).effective,b.ml) ?? 0)} € / 1 l)</small></span>
     </button>)}</div>}
   </div>;
