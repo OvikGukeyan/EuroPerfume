@@ -13,6 +13,7 @@ export const getDiscountedItems = async (): Promise<SelectedProductDTO[]> => {
         },
         available: true,
         bottleParentId: null,
+        productGroup: { onTap: true },
       },
       include: {
         variations: {

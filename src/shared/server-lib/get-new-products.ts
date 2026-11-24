@@ -11,10 +11,9 @@ export const getNewProducts = async (): Promise<SelectedProductDTO[]> => {
           where: {
             available: true,
             bottleParentId: null,
+            productGroup: { onTap: true },
           },
-          orderBy: {
-            createdAt: "desc",
-          },
+          orderBy: [{ createdAt: "desc" }, { id: "desc" }],
           take: 24,
           include: {
             variations: {

@@ -24,7 +24,7 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       where: { date: startOfDay },
       include: {
         products: {
-          where: {bottleParentId:null},
+          where: { available: true, bottleParentId: null, productGroup: { onTap: true } },
           include: {
             variations: {
               where: {
@@ -84,7 +84,7 @@ export const getPopularProducts = async (): Promise<SelectedProductDTO[]> => {
       where: { date: startOfDay },
       include: {
         products: {
-          where: {bottleParentId:null},
+          where: { available: true, bottleParentId: null, productGroup: { onTap: true } },
           include: {
             variations: {
               where: {
