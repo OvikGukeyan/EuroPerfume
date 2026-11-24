@@ -136,7 +136,6 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
   ].map(g=>({...g,notes:product.productNotes.filter(n=>n.noteType===g.type).map(n=>n.note)}));
   const concentrationName=concentrations.find(c=>c.value===product.concentration)?.name;
   const selectedMl=bottle?.ml ?? (product.productGroup.onTap ? volume : Number(product.volume));
-  const supplierOrder = bottle ? bottle.allowBackorder === true : product.allowBackorder === true;
   const unavailableBottle = bottle ? !bottle.available : !product.productGroup.onTap && product.categoryId === 1 && !product.available;
   const inquiryHref = unavailableBottle ? bottleInquiry({id:bottle?.id ?? product.id,name:`${product.brand.name} ${product.name}`,ml:selectedMl,locale}) : null;
   const unitPrice=unitPricePerLitre(finalDiscountPrice ?? finalPrice,selectedMl);
@@ -165,7 +164,6 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
           {!bottle && product.productGroup.onTap && <p className="fragrance-disclosure">{ru?"Отливант из оригинального флакона. Не является официальным пробником производителя.":"Duftabfüllung aus einem Originalflakon. Keine offizielle Herstellerprobe."}</p>}
           {bottle && <p className="fragrance-disclosure">{ru?"Полный оригинальный флакон · ":"Originalflakon · "}{bottle.ml} ml</p>}
           <div aria-live="polite">{priced.dayOffer && <p className="mb-2 text-sm font-medium">{ru ? "Товар дня −10%" : "Tagesangebot −10%"}</p>}<p className="fragrance-price">{formatMoney(finalDiscountPrice ?? finalPrice)} €</p>{finalDiscountPrice!=null && <del aria-label={ru ? "Низшая цена за 30 дней" : "Niedrigster Preis der letzten 30 Tage"} className="text-sm text-neutral-500">{formatMoney(finalPrice)} €</del>}{unitPrice!==null && <p className="fragrance-unit">({formatUnitPrice(unitPrice)} € / 1 l)</p>}{priced.dayOffer && <p className="mt-1 text-[10px] text-neutral-500">{ru ? "Низшая цена за 30 дней: " : "Niedrigster Preis der letzten 30 Tage: "}{formatMoney(finalPrice)} €</p>}<TaxPriceNotice gross={finalDiscountPrice ?? finalPrice}/><p className="fragrance-disclosure"><Link href="/delivery-and-payment">{ru?"Дополнительно доставка — условия и стоимость":"Zzgl. Versand — Kosten und Lieferbedingungen"}</Link></p></div>
-          {supplierOrder && <p className="fragrance-disclosure">{ru?"Под заказ. Наличие, окончательная цена и срок подтверждаются после оформления. Оплата после согласования.":"Auf Bestellung. Verfügbarkeit, endgültiger Preis und Lieferzeit werden nach Ihrer Bestellung bestätigt. Zahlung nach Abstimmung."}</p>}
           {inquiryHref ? <div className="space-y-3">
             <p className="fragrance-disclosure">{ru?"Наличие уточняется. Срок подтверждается после заявки.":"Verfügbarkeit auf Anfrage. Lieferzeit wird nach Ihrer Anfrage bestätigt."}</p>
             <a href={inquiryHref} className="fragrance-buy flex items-center justify-center text-center">{ru?"Запросить наличие по email":"Verfügbarkeit per E-Mail anfragen"}</a>
