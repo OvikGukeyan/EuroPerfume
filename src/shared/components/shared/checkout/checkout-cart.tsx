@@ -29,7 +29,6 @@ export const CheckoutCart:FC<Props>=({className,items,promotions=[],totalAmount,
   return <WhiteBlock className={`rounded-md border-[#e5e5e5] shadow-none ${className||""}`} title={t("stepTitle")} contentClassName="px-4 pb-5 pt-4 md:px-6 md:pb-6">
     <div className="flex flex-col">
       <p className="mb-3 text-xs leading-5 text-[#777]">{ru?"Выбранные товары и подарки по акциям. Количество можно изменить перед отправкой заявки.":"Ausgewählte Artikel und Aktionsgeschenke. Mengen können vor der Anfrage geändert werden."}</p>
-      {items.some(item=>item.allowBackorder) && <p className="mb-3 text-sm">{ru?"В заказе есть флаконы под заказ. Наличие, окончательную цену и срок мы подтвердим лично. Оплата после согласования.":"Ihre Anfrage enthält Flakons auf Bestellung. Verfügbarkeit, endgültigen Preis und Lieferzeit bestätigen wir persönlich. Zahlung nach Abstimmung."}</p>}
       {!loading&&<AromaBoxSummary items={items}/>}
       {!loading&&promotions.map(p=><PromotionCartGroup key={p.id} promotion={p} items={items} onRemove={removeCartItem} renderItem={renderItem}/>)}
       {loading?[...Array(4)].map((_,i)=><CheckoutItemSkeleton key={i}/>):regularItems.map(item=>renderItem(item))}
