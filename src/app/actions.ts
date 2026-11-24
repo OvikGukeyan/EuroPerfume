@@ -433,6 +433,18 @@ export async function createOrder(data: CheckoutFormValues) {
       const submittedCode = data.promocode?.trim().toUpperCase() || "";
       const blackFriday = isBlackFridayCode(submittedCode);
       const promo = submittedCode && !blackFriday ? await tx.promoCode.findFirst({where:{code:{equals:submittedCode,mode:"insensitive"},isActive:true,OR:[{expiresAt:null},{expiresAt:{gt:orderedAt}}]}}) : null;
+      // Printed BRANCH15 cards are usable by guests and have 100 redemptions
+      // in total, not per account. Serialize against the promocode row so that
+      // simultaneous checkouts cannot both take the last available place.
+      if(promo?.code.toUpperCase()==="BRANCH15"){
+        await tx.$queryRaw`SELECT id FROM "PromoCode" WHERE id=${promo.id} FOR UPDATE`;
+        const current=await tx.promoCode.findUnique({where:{id:promo.id}});
+        if(!current?.isActive||current.discount!==15||(current.expiresAt&&current.expiresAt<=orderedAt))throw new Error("PROMOCODE_INVALID");
+        const alreadyUsed=await tx.order.count({
+          where:{promocode:{equals:current.code,mode:"insensitive"},status:{not:OrderStatus.CENCELLED}}
+        });
+        if(alreadyUsed>=100)throw new Error("PROMOCODE_INVALID");
+      }
       // Managed coupons serialize redemptions by locking the policy row first.
       // Legacy coupons remain backwards-compatible until the staged migration is approved.
       const couponPolicy = submittedCode && !blackFriday && promo
