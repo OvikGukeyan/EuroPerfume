@@ -27,3 +27,9 @@ assert.match(source("src/shared/server-lib/legacy-newsletter-reward.ts"),/EURO P
 assert.match(source("src/shared/server-lib/legacy-newsletter-reward.ts"),/FOR UPDATE/);
 assert.match(source("src/shared/components/shared/legacy-newsletter-offer.tsx"),/type="checkbox"/);
 console.log("Legacy offer: cutoff, verification, account ownership, 30 days, opt-in, no false AGB consent, 15% exclusions, unsubscribe independence PASS");
+
+const mailer=source("src/shared/server-lib/legacy-newsletter-reward.ts");
+assert.ok(mailer.indexOf("const unsubscribe=") < mailer.indexOf("const claimed="));
+assert.ok(mailer.indexOf("const claimed=") < mailer.indexOf("const accepted="));
+assert.ok(mailer.indexOf("accepted?.id") < mailer.indexOf("data:{emailSentAt:"));
+assert.match(source("src/shared/server-lib/marketing-optout.ts"),/process\.env\.MARKETING_OPTOUT_SECRET/);

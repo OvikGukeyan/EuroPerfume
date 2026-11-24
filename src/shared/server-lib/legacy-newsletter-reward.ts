@@ -29,12 +29,11 @@ export async function grantLegacyNewsletterReward(tx:Prisma.TransactionClient,us
 export async function emailLegacyNewsletterReward(userId:number):Promise<boolean>{
  const reward=await prisma.legacyNewsletterReward.findUnique({where:{userId},include:{user:{select:{email:true,verified:true,accountConsent:{select:{marketingConfirmedAt:true,marketingWithdrawnAt:true}}}}}});
  if(!reward?.code||!reward.expiresAt||!reward.user.verified||!reward.user.accountConsent?.marketingConfirmedAt||reward.user.accountConsent.marketingWithdrawnAt||reward.emailSentAt||new Date()>=reward.expiresAt)return false;
- const claimed=await prisma.legacyNewsletterReward.updateMany({where:{userId,emailClaimedAt:null,emailSentAt:null},data:{emailClaimedAt:new Date()}});
- if(!claimed.count)return false;
- const unsubscribe=`${BASE}/de/newsletter/leave?token=${encodeURIComponent(marketingOptOutToken(userId))}`;
  try{
-  await sendEmail(reward.user.email,"EURO PERFUME — Dein persönlicher 15 %-Gutschein",
-    React.createElement("div",{lang:"de",style:{fontFamily:"Arial,sans-serif",lineHeight:1.7,maxWidth:580,margin:"auto",color:"#292524"}},
+  // Build the signed link and message before acquiring the delivery claim.
+  // Configuration/rendering failures cannot leave a voucher claimed but unsent.
+  const unsubscribe=`${BASE}/de/newsletter/leave?token=${encodeURIComponent(marketingOptOutToken(userId))}`;
+  const message=React.createElement("div",{lang:"de",style:{fontFamily:"Arial,sans-serif",lineHeight:1.7,maxWidth:580,margin:"auto",color:"#292524"}},
      React.createElement("p",null,"EURO PERFUME"),
      React.createElement("h1",null,"Dein persönlicher 15 %-Gutschein"),
      React.createElement("p",null,"Vielen Dank für deine bestätigte Newsletter-Anmeldung. Hier ist dein einmalig einlösbarer Gutschein:"),
@@ -43,7 +42,17 @@ export async function emailLegacyNewsletterReward(userId:number):Promise<boolean
      React.createElement("p",null,"Dein Gutschein bleibt bis zum Ablauf gültig, auch wenn du den Newsletter abbestellst."),
      React.createElement("p",null,React.createElement("a",{href:`${BASE}/de/profile`},"Zum Kundenkonto")),
      React.createElement("p",{style:{fontSize:12}},React.createElement("a",{href:unsubscribe},"Newsletter abbestellen")," · ",React.createElement("a",{href:`${BASE}/de/impressum`},"Impressum")," · ",React.createElement("a",{href:`${BASE}/de/data-protection`},"Datenschutz"))
-    ));
+    );
+  const now=new Date();
+  const claimed=await prisma.legacyNewsletterReward.updateMany({
+   where:{userId,code:reward.code,expiresAt:{gt:now},emailClaimedAt:null,emailSentAt:null,
+    user:{is:{verified:{not:null},accountConsent:{is:{marketingConfirmedAt:{not:null},marketingWithdrawnAt:null}}}}},
+   data:{emailClaimedAt:now},
+  });
+  if(!claimed.count)return false;
+  // Keep a claim on ambiguous provider outcomes so retries cannot send duplicates.
+  const accepted=await sendEmail(reward.user.email,"EURO PERFUME — Dein persönlicher 15 %-Gutschein",message);
+  if(!accepted?.id)throw new Error("Reward email acceptance not confirmed");
   await prisma.legacyNewsletterReward.update({where:{userId},data:{emailSentAt:new Date()}});
   return true;
  }catch(e){console.error("[LEGACY_REWARD_EMAIL]",e);return false;}
