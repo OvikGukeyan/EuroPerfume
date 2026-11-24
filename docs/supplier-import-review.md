@@ -19,3 +19,15 @@ Run `npm run test:supplier-import`. Optionally set `SUPPLIER_TEST_FILE` to a loc
 Confirm Preview has a separate test database and test auth configuration: the existing dashboard session and notifications use the project's configured database. Do not copy Production secrets. This change introduces no database migration and does not solve Preview isolation automatically.
 
 Next persistence phase needs ImportBatch (source hashes, timestamp, original rows), SupplierOffer (supplier/SKU key, stock timestamp, exact/lower-bound quantity), and a manually verified product map with volume/concentration/packaging. EAN collisions go to review. Include transaction rollback, idempotent re-import and optimistic version checks before any approved Product write. Existing full-bottle checkout depends on own stock; a separate under-order workflow is required before supplier availability can be used on the storefront.
+
+## Pilot content and delivery decision — 24 November 2026
+
+The owner selected “Срок подтверждается после заявки” / “Lieferzeit wird nach Ihrer Anfrage bestätigt”. Supplier-held bottles need a request action, not an owned-stock checkout. The request must not generate payment, an invoice or an own-stock reservation. Availability and delivery are confirmed before accepting the order. No supplier-request persistence or public UI is introduced by this draft.
+
+`supplier-pilot-plan.ts` creates only review proposals. It checks parent identity/concentration, detects existing child volumes, rejects duplicate supplier offers and duplicate bottle variants, and forces draft status and zero owned stock. A standalone fragrance that matches an existing catalog identity is held for mapping, including inactive decants. Catalog snapshots must include hidden items and be refreshed before any future write. Snapshot validity and completeness are not established by this pure helper.
+
+Run `npx tsx scripts/create-supplier-pilot-plan.ts <private-content.json> <new-private-plan.json>` locally. The input contains `candidates` and `catalog`; output creation refuses to overwrite an existing file. Never put either file in this public repository. Content stays in the separate private dossier and is not silently imported into parent cards.
+
+The initial private dossier covers Naxos 100 ml, Layton 75/125 ml and a separate luxury Allure Homme Édition Blanche 100 ml. Official source notes differ from existing decant content for Naxos/Layton: preserve the differences for editorial and batch review. Chanel publishes accords without a top/heart/base split; do not invent one. Official website INCI is a reference, not proof of the supplier batch. Image source pages do not establish reuse rights. Existing Guidance and Valaya bottle records must not be duplicated or automatically repriced.
+
+Read-only environment review found shared Preview/Production connection configuration and no isolated Supabase branch. Although the earlier Preview build succeeded, that does not establish safe end-to-end operation. Keep the review route disabled until the environment is isolated; no order, invoice, notification or catalog-write tests against those shared services.
