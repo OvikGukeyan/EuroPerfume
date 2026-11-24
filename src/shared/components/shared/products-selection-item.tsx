@@ -9,6 +9,7 @@ import Image from "next/image";
 import React from "react";
 import { cataloguePrice } from "../../lib/catalogue-price";
 import { fragranceName } from "../../lib/full-bottle";
+import { ByProductDialog } from "./by-product-dialog";
 import { Heart } from "lucide-react";
 import { HeartBlack } from "@/src/shared/icons";
 import {
@@ -113,7 +114,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
         {priced.volumeMl && <span className="compact-product-size">{priced.volumeMl} {locale === "ru" ? "мл" : "ml"}</span>}
       </div>
       <div className="home-product-buy">
-        <Link href={productHref} className="compact-product-open">{locale === "ru" ? "Выбрать формат" : "Format wählen"}</Link>
+        <ByProductDialog id={id} name={name} brand={brand} imageUrl={imageUrl} price={price} discountPrice={discountPrice} dayOffer={dayOffer} productGroup={productGroup} variations={variations} available={available} bottles={bottles} preferredBottleId={displayBottle?.id} />
       </div>
       <div className="compact-product-extra">
         <p className="home-product-concentration">{concentratioName || productGroup?.[labelLocale]}</p>

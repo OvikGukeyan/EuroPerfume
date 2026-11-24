@@ -58,7 +58,7 @@ export const ByProductDialog: FC<Props> = ({
 }) => {
   const router=useRouter();
   const ru=useLocale()==="ru";
-  const initialBottleId = preferredBottleId ?? (!available ? bottles.find(b=>b.available)?.id : undefined) ?? null;
+  const initialBottleId = bottles.find(b=>b.id===preferredBottleId)?.id ?? (!productGroup.onTap || !available ? (bottles.find(b=>b.available) ?? bottles[0])?.id : undefined) ?? null;
   const [bottleId,setBottleId]=useState<number|null>(initialBottleId);
   const bottle=bottles.find(b=>b.id===bottleId);
   const selectedAvailable=bottle?bottle.available:available;
@@ -106,21 +106,18 @@ export const ByProductDialog: FC<Props> = ({
   return (
     <Dialog open={open} onOpenChange={next=>{if(next)setBottleId(initialBottleId);setOpen(next);}}>
       <DialogTrigger asChild>
-        <Button  className="w-full bg-white border border-neutral-200 text-black flex gap-3 hover:bg-neutral-50" >
-            <ShoppingCart size={16}/>
-          {t("by")}
-        </Button>
+        <button type="button" className="compact-product-open w-full">{ru ? "Добавить в корзину" : "In den Warenkorb"}</button>
       </DialogTrigger>
       <DialogContent className="w-[calc(100%-2rem)] max-h-[90dvh] overflow-y-auto rounded-xl sm:max-w-[425px]">
         <DialogHeader className="min-h-8 pr-10 text-left">
-            <DialogTitle>{t("title")}</DialogTitle>
+            <DialogTitle>{ru ? "Выберите вариант" : "Variante auswählen"}</DialogTitle>
             {/* <DialogDescription>
               Make changes to your profile here. Click save when you&apos;re
               done.
             </DialogDescription> */}
           </DialogHeader>
         <div className="flex items-center gap-5 my-5">
-          <Image src={bottle?.image || imageUrl} alt={name} width={70} height={70} />
+          {(bottle ? bottle.image : activeVariation?.imageUrl || imageUrl) ? <Image src={bottle ? bottle.image : activeVariation?.imageUrl || imageUrl} alt={name} width={70} height={70} className="h-[70px] w-[70px] object-contain" /> : <span className="text-xs">{ru ? "Фото уточняется" : "Foto wird ergänzt"}</span>}
           <div className="flex flex-col">
             <Title size="sm" text={brand.name} />
             <Title size="xs" text={name} />
@@ -139,7 +136,8 @@ export const ByProductDialog: FC<Props> = ({
             </p>
           </div>
         </div>
-        <FragranceFormatPicker bottles={bottles} selected={bottleId} onSelect={setBottleId} decantAvailable={available}/>
+        <FragranceFormatPicker bottles={bottles} selected={bottleId} onSelect={setBottleId} decantAvailable={available} hasDecants={Boolean(productGroup.onTap)}/>
+        <p className="text-xs text-neutral-600">{ru ? "Артикул" : "Artikelnummer"}: EP-{bottle?.id ?? id}</p>
         {!bottle && productGroup.onTap && (
           <VolumeSelection
             className="mb-4"
