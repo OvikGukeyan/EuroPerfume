@@ -1,7 +1,21 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
-import {bottleFields,publicBottle,unitPricePerLitre,withBottleOptions} from "../src/shared/lib/full-bottle";
+import {bottleFields,publicBottle,unitPricePerLitre,withBottleOptions,selectedIngredientSource} from "../src/shared/lib/full-bottle";
 import {capturePricing} from "../src/shared/lib/tax";
+
+test("selected bottle uses its own bilingual formula and switching back restores decant formula",()=>{
+  const parent={id:65,translations:[{language:"RU",activeIngredients:"parent RU"},{language:"DE",activeIngredients:"parent DE"}]};
+  const bottle=publicBottle({id:900,volume:"200",price:943.64,imageUrl:[],stockPieces:0,available:true,allowBackorder:true,
+    translations:[{language:"RU",activeIngredients:"200 ml RU"},{language:"DE",activeIngredients:"200 ml DE"}]});
+  assert.deepEqual(selectedIngredientSource(parent,bottle),{productId:900,translations:bottle.ingredients});
+  assert.equal(selectedIngredientSource(parent,bottle).translations[1].activeIngredients,"200 ml DE");
+  assert.deepEqual(selectedIngredientSource(parent),{productId:65,translations:parent.translations});
+});
+
+test("a bottle with missing formula must not inherit another volume's ingredients",()=>{
+  const bottle=publicBottle({id:901,volume:"70",price:200,imageUrl:[],stockPieces:0,available:true,allowBackorder:true});
+  assert.deepEqual(selectedIngredientSource({id:65,translations:[{language:"RU",activeIngredients:"wrong volume"}]},bottle),{productId:901,translations:[]});
+});
 
 test("a bottle and a decant of the same fragrance retain separate prices and units",()=>{
   const common={name:"Example",discountPrice:null};
