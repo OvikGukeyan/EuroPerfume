@@ -1,4 +1,4 @@
 export const SHOP_SETTINGS = {
-  MIN_ORDER_EUR: 10,
+  MIN_ORDER_EUR: 20,
   FREE_DELIVERY_AMOUNT: 100,
 };

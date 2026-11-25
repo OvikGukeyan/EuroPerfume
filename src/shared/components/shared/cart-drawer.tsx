@@ -16,16 +16,19 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 import { Button } from "../ui";
+import { buttonVariants } from "../ui/button";
 import { ArrowLeft, ArrowRight, ShieldCheck, ShoppingBag } from "lucide-react";
 import { CartDrawerItem, FreeShippingProgress, Title } from ".";
 import { useCart } from "@/src/shared/hooks";
 import { useLocale, useTranslations } from "use-intl";
 import { Link } from "@/src/i18n/navigation";
+import { meetsMinimumOrder } from "@/src/shared/lib/minimum-order";
 import { SHOP_SETTINGS } from "@/src/config/shop";
 
 export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
   const {
     totalAmount,
+    minimumOrderCents,
     items,
     promotions,
     updateItemQuantity,
@@ -57,7 +60,8 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
   };
 
 
-  const isMinOrderAmount = totalAmount >= SHOP_SETTINGS.MIN_ORDER_EUR;
+  const checkoutClass = "h-[52px] min-h-[52px] w-full rounded-sm bg-[#20252d] text-sm font-semibold uppercase tracking-[.055em] text-white hover:bg-[#343a44]";
+  const isMinOrderAmount = meetsMinimumOrder(minimumOrderCents);
 
   const claimedIds=new Set(promotions.flatMap(p=>p.productIds));
   const regularItems=items.filter(item=>!claimedIds.has(item.productId));
@@ -166,18 +170,15 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                 </div>
 
                 <p className="mb-4 text-xs leading-5 text-[#666]">{ru?"Доставка и скидка рассчитываются при оформлении заказа.":"Versandkosten und Rabatt werden im nächsten Schritt berechnet."}</p>
-                <Link href="/checkout">
-                  <Button
-                    onClick={() => setRedirecting(true)}
-                    loading={loading || redirecting || itemLoading}
-                    type="submit"
-                    className="h-[52px] min-h-[52px] w-full rounded-sm bg-[#20252d] text-sm font-semibold uppercase tracking-[.055em] text-white hover:bg-[#343a44]"
-                    disabled={!isMinOrderAmount}
-                  >
-                    {t("checkout")}
-                    <ArrowRight className="w-5 ml-2" />
+                {isMinOrderAmount && !loading && !redirecting && !itemLoading ? (
+                  <Link href="/checkout" onClick={() => setRedirecting(true)} className={buttonVariants({className: checkoutClass})}>
+                    {t("checkout")} <ArrowRight className="ml-2 w-5" />
+                  </Link>
+                ) : (
+                  <Button disabled type="button" loading={loading || redirecting || itemLoading} className={checkoutClass}>
+                    {t("checkout")} <ArrowRight className="ml-2 w-5" />
                   </Button>
-                </Link>
+                )}
                 <p className="mt-3 flex items-center justify-center gap-2 text-center text-[11px] leading-5 text-[#777]"><ShieldCheck size={14}/>{ru?"Оформление заявки без онлайн-оплаты":"Bestellanfrage ohne Online-Zahlung"}</p>
               </div>
             </SheetFooter>

@@ -42,7 +42,7 @@
     "checkout": "Zur Kasse",
     "freeShipping": "Kostenloser Versand",
     "freeShippingRemaining": "Nur noch {amount} € bis zum kostenlosen Versand",
-    "minOrder": "Mindestbestellwert {amount} €"
+    "minOrder": "Mindestbestellwert: {amount} € zum regulären Warenpreis vor Rabatten und ohne Versandkosten."
   },
   "Checkout": {
     "title": "Zur Kasse",
@@ -80,7 +80,7 @@
       "submitButton": "Bestellung abschicken",
       "promocode": "Promokode",
       "discount": "Rabatt",
-      "minOrder": "Mindestbestellwert {amount} €",
+      "minOrder": "Mindestbestellwert: {amount} € zum regulären Warenpreis vor Rabatten und ohne Versandkosten.",
       "apply": "Anwenden"
     },
     "AddressInput": {
