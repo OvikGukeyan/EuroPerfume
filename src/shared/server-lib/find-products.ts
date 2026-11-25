@@ -1,3 +1,4 @@
+import { compareBrandProducts, hasDefaultBrandOrder } from "../lib/brand-listing-order";
 import { cataloguePrice } from "../lib/catalogue-price";
 import { fullBottleInclude, withBottleOptions } from "../lib/full-bottle";
 import "server-only";
@@ -87,7 +88,8 @@ export const findProducts = async (
 
     const priceFrom = Number((await params).priceFrom) || DEFAULT_MIN_PRICE;
     const priceTo = Number((await params).priceTo) || DEFAULT_MAX_PRICE;
-    const orderBy = JSON.parse((await params).orderBy || "{}");
+    const orderBy = JSON.parse((await params).orderBy || "{}") ?? {};
+    const brandDefault=hasDefaultBrandOrder(brands,orderBy);
 
     const categoryId = Number((await params).category);
     const productGroupId = Number((await params).productGroup);
@@ -219,7 +221,7 @@ export const findProducts = async (
       }).filter(product => !product.saleBottleOnly || product.bottles.length > 0);
       const availableFilters = getAvailableFilters(rows.map(product => ({ ...product, price: product.effectivePrice })) as unknown as ProductDTO[]);
       const filtered = rows.filter(product => (params.priceFrom == null || product.effectivePrice >= Number(params.priceFrom)) && (params.priceTo == null || product.effectivePrice <= Number(params.priceTo)));
-      filtered.sort((a, b) => orderBy.price ? (a.effectivePrice - b.effectivePrice) * (orderBy.price === "desc" ? -1 : 1) || a.id - b.id : a.name.trim().localeCompare(b.name.trim(), "de") * (orderBy.name === "desc" ? -1 : 1) || a.id - b.id);
+      filtered.sort((a, b) => brandDefault ? compareBrandProducts(a,b,productGroupId===31) : orderBy.price ? (a.effectivePrice - b.effectivePrice) * (orderBy.price === "desc" ? -1 : 1) || a.id - b.id : a.name.trim().localeCompare(b.name.trim(), "de") * (orderBy.name === "desc" ? -1 : 1) || a.id - b.id);
       return { products: filtered.slice((page - 1) * 24, page * 24).map(({ effectivePrice, ...product }) => product), totalPages: Math.ceil(filtered.length / 24), availableFilters };
     }
 
@@ -229,7 +231,7 @@ export const findProducts = async (
     });
     const availableFilters=getAvailableFilters(rows.map(p=>({...p,price:p.effectivePrice})) as unknown as ProductDTO[]);
     const filtered=rows.filter(p=>(params.priceFrom==null || p.effectivePrice>=Number(params.priceFrom)) && (params.priceTo==null || p.effectivePrice<=Number(params.priceTo)));
-    filtered.sort((a,b)=>orderBy.price ? (a.effectivePrice-b.effectivePrice)*(orderBy.price==="desc"?-1:1)||a.id-b.id : a.name.localeCompare(b.name,"de")*(orderBy.name==="desc"?-1:1)||a.id-b.id);
+    filtered.sort((a,b)=>brandDefault ? compareBrandProducts(a,b,productGroupId===31) : orderBy.price ? (a.effectivePrice-b.effectivePrice)*(orderBy.price==="desc"?-1:1)||a.id-b.id : a.name.localeCompare(b.name,"de")*(orderBy.name==="desc"?-1:1)||a.id-b.id);
     return {products:filtered.slice((page-1)*24,page*24).map(({effectivePrice,...p})=>p),totalPages:Math.ceil(filtered.length/24),availableFilters};
 
   } catch (error) {

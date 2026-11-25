@@ -11,12 +11,16 @@ interface Props {
   className?: string;
 }
 export const SortPopup: FC<Props> = ({ className }) => {
-  const [setOrderBy, orderBy] = useFiltersStore((state) => [
+  const [setOrderBy, orderBy, brands,productGroup] = useFiltersStore((state) => [
     state.setOrderBy,
     state.orderBy,
+    state.brands,
+    state.productGroup,
   ]);
-  const currentValue = orderBy.price ? (orderBy.price === "desc" ? "priceDesc" : "priceAsc") : orderBy.name === "desc" ? "nameDesc" : "nameAsc";
+  const hasBrand=brands.size>0;
+  const currentValue=orderBy.price?(orderBy.price==="desc"?"priceDesc":"priceAsc"):orderBy.name?(orderBy.name==="desc"?"nameDesc":"nameAsc"):hasBrand?"brandDefault":"nameAsc";
   const sortItems = [
+    ...(hasBrand?[{name:{de:productGroup===31?"Neu hinzugefügt":"Abfüllungen zuerst",ru:productGroup===31?"Последние добавленные":"Сначала отливанты"},value:"brandDefault"}]:[]),
     {
       name: {
         de: "Name: a - z",
