@@ -22,13 +22,13 @@ export function PallasPromoNewsletter({unsubscribeUrl}:{unsubscribeUrl:string}) 
         <p style={{textAlign:"center",color:"#3d5138",fontSize:14}}>Подарок: отливант 5 мл · Gratiszugabe: 5 ml Duftabfüllung</p>
         <hr style={divider}/>
         <h2 style={{fontSize:25}}>5 мл в подарок к заказу от 100 €</h2>
-        <p style={{fontSize:17,lineHeight:1.52}}>Первые 10 покупателей получат отливант Argos Pallas Athene 5 мл. Подарок автоматически появится в корзине, пока он доступен. Один подарок на покупателя.</p>
+        <p style={{fontSize:17,lineHeight:1.52}}>Первые 10 покупателей получат отливант Argos Pallas Athene 5 мл. Подарок появится в корзине при выполнении условий и закрепится при оформлении заказа, пока подарки есть. Один подарок на покупателя.</p>
         <p style={terms}>100 € за товары после скидок и баллов, без доставки.</p>
         <p style={{padding:"12px 0"}}><a style={button} href={base+"/ru"}>Перейти в магазин →</a></p>
         <hr style={divider}/>
         <div lang="de">
           <h2 style={{fontSize:25}}>5 ml gratis ab 100 € Warenwert</h2>
-          <p style={{fontSize:17,lineHeight:1.52}}>Die ersten 10 Kundinnen und Kunden erhalten eine 5-ml-Duftabfüllung von Argos Pallas Athene. Solange verfügbar, wird sie automatisch zum Warenkorb hinzugefügt. Ein Geschenk pro Person.</p>
+          <p style={{fontSize:17,lineHeight:1.52}}>Die ersten 10 Kundinnen und Kunden erhalten eine 5-ml-Duftabfüllung von Argos Pallas Athene. Sobald die Bedingungen erfüllt sind, erscheint die Zugabe im Warenkorb. Sie wird erst beim Abschluss der Bestellung reserviert, solange der Vorrat reicht. Ein Geschenk pro Person.</p>
           <p style={terms}>100 € Warenwert nach Rabatten und Punkten, ohne Versand.</p>
           <p style={{padding:"12px 0"}}><a style={button} href={base+"/de"}>Zum Shop →</a></p>
         </div>

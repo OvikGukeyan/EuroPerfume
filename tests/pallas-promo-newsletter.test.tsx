@@ -13,6 +13,7 @@ test("approved bilingual Pallas creative renders photo, both locales and individ
   for(const token of [
     "Argos Pallas Athene", "5 мл в подарок к заказу от 100 €","5 ml gratis ab 100 € Warenwert",
     "Первые 10 покупателей", "Die ersten 10", "после скидок и баллов, без доставки",
+    "закрепится при оформлении заказа", "erst beim Abschluss der Bestellung reserviert",
     "nach Rabatten und Punkten, ohne Versand",
     'href="https://euro-perfume-inky.vercel.app/ru"', 'href="https://euro-perfume-inky.vercel.app/de"',
     'href="'+unsubscribeUrl+'"',"ARGOSPALLASATHENEPERFUMEBOTTLEFRONTVIEW100ML","Newsletter abbestellen","Impressum"
