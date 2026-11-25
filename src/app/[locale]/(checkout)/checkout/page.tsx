@@ -3,7 +3,7 @@
 import {PallasGiftLine,usePallasOffer} from "@/src/shared/components/shared/pallas-gift-line";
 import {qualifyingGiftAmount} from "@/src/shared/lib/pallas-gift-rules";
 import {pointRedemptionQuote} from "@/src/shared/lib/loyalty-arithmetic";
-import { BLACK_FRIDAY, blackFridayActive, isBlackFridayCode } from "@/src/shared/lib/black-friday";
+import { BLACK_FRIDAY, blackFridayActive, blackFridayMinimumMessage, isBlackFridayCode } from "@/src/shared/lib/black-friday";
 import { couponQuote, giftPromotionProductIds } from "@/src/shared/lib/coupon-eligibility";
 import { useDayOfferClock } from "@/src/shared/hooks/use-day-offer";
 import { useForm, FormProvider } from "react-hook-form";
@@ -95,7 +95,7 @@ export default function Checkout() {
   const coupon = couponQuote(items.map(item=>({
     productId:item.productId,grossCents:Math.round(item.price*100),
     excluded:Boolean(item.discounted||item.dayOffer||blockedGiftIds.has(item.productId))
-  })),discount);
+  })),discount,appliedCode);
   const eligibleAfterCouponCents=Math.max(0,items.reduce((sum,item)=>sum+(item.discounted||item.dayOffer||blockedGiftIds.has(item.productId)?0:Math.round(item.price*100)),0)-coupon.discountCents);
   const loyaltyQuote=pointRedemptionQuote({balancePoints:walletBalance,eligibleAfterCouponCents});
   const redeemPoints=applyPoints && loyaltyAvailable ? loyaltyQuote.spendPoints:0;
@@ -110,11 +110,11 @@ export default function Checkout() {
     if (appliedCode && discount>0 && coupon.discountCents===0) {
       setAppliedCode("");
       form.setValue("discount",0);
-      setPromoError(locale==="ru"
+      setPromoError(!coupon.meetsMinimum ? blackFridayMinimumMessage(locale==="ru") : locale==="ru"
         ? "В корзине нет товаров, на которые распространяется этот промокод."
         : "Im Warenkorb befinden sich keine Artikel, für die dieser Gutscheincode gilt.");
     }
-  },[appliedCode,discount,coupon.discountCents,form,locale]);
+  },[appliedCode,discount,coupon.discountCents,coupon.meetsMinimum,form,locale]);
 
 
   useEffect(()=>{
@@ -160,6 +160,14 @@ export default function Checkout() {
       if(result?.code==="PALLAS_GIFT_CHANGED") {
         setPallasUnavailableFor(data.email.trim().toLowerCase());
         toast.error(locale==="ru"?"Подарок не удалось закрепить. Заявка не отправлена. Нажмите ещё раз, если хотите оформить заказ без подарка.":"Das Geschenk konnte nicht reserviert werden. Die Anfrage wurde nicht gesendet. Klicke erneut, wenn du ohne Geschenk bestellen möchtest.");
+        return;
+      }
+      if(result?.code==="PROMOCODE_MINIMUM_ELIGIBLE") {
+        setAppliedCode("");form.setValue("discount",0);
+        const message=blackFridayMinimumMessage(locale==="ru");
+        setPromoError(message);
+        await useCartStore.getState().fetchCartItems();
+        toast.error(message);
         return;
       }
       if(result?.code==="PROMOCODE_INELIGIBLE" || result?.code==="PROMOCODE_INVALID") {
@@ -237,7 +245,9 @@ export default function Checkout() {
         DISABLED:["Промокод больше не действует.","Dieser Gutschein ist nicht mehr aktiv."]
       };
       const noEligible=reason==="NO_ELIGIBLE_ITEMS" || (error instanceof Error && error.message==="NO_ELIGIBLE_ITEMS");
-      const message=reason&&restrictions[reason]
+      const message=reason==="MINIMUM_ELIGIBLE_SUBTOTAL"
+        ? blackFridayMinimumMessage(locale==="ru")
+        : reason&&restrictions[reason]
         ? restrictions[reason][locale==="ru"?0:1]
         : noEligible
         ? (locale==="ru"?"В корзине нет товаров, на которые распространяется этот промокод.":"Im Warenkorb befinden sich keine Artikel, für die dieser Gutscheincode gilt.")

@@ -15,6 +15,8 @@ const bottles = [
 export function BlackFridayHero() {
   const cutoutId = useId().replace(/:/g, "");
   const ru = useLocale() === "ru";
+  const minimum = BLACK_FRIDAY.minimumEligibleCents / 100;
+  const terms = ru ? `От ${minimum} € без доставки и акционных товаров` : `Ab ${minimum} € ohne Versand und Aktionsartikel`;
   const now = useDayOfferClock({ dayOfferStartsAt: BLACK_FRIDAY.startsAt, dayOfferEndsAt: BLACK_FRIDAY.endsAt });
   if (now >= Date.parse(BLACK_FRIDAY.endsAt)) return null;
   async function copyCode() {
@@ -30,7 +32,7 @@ export function BlackFridayHero() {
       <button type="button" onClick={copyCode} aria-label={ru ? "Скопировать промокод BLACK15" : "Gutscheincode BLACK15 kopieren"} title={ru ? "Нажмите, чтобы скопировать BLACK15" : "BLACK15 kopieren"} className="absolute left-[28%] top-[45.5%] z-20 h-[6%] w-[47%] rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"><span className="sr-only">BLACK15</span></button>
       <div className="pointer-events-none absolute inset-x-[3%] bottom-[1%] text-center text-[9px] font-medium leading-[1.35] text-[#291c24] min-[390px]:text-[10px] md:text-[13px]">
         <p>27.11.2026 · 00:00–23:59 · {ru ? "по берлинскому времени" : "Berliner Zeit"}</p>
-        <p>{ru ? "Не действует на товары со скидкой" : "Gilt nicht für bereits reduzierte Artikel"}</p>
+        <p>{terms}</p>
       </div>
     </div>
     <div className="storefront-desktop-hero relative hidden md:block">
@@ -40,7 +42,7 @@ export function BlackFridayHero() {
         <p className="desktop-bf-date">{ru?"Только 27 ноября":"Nur am 27. November"} · −15%</p>
         <div className="desktop-bf-bottles">{bottles.map(bottle=><img key={bottle.name} src={bottle.src} alt={bottle.name} width="500" height="500" loading="lazy" style={{filter:`url(#${cutoutId})`}}/>)}</div>
         <button type="button" onClick={copyCode} className="desktop-bf-code" aria-label={ru?"Скопировать промокод BLACK15":"Gutscheincode BLACK15 kopieren"}>BLACK15 <span>{ru?"Скопировать":"Kopieren"}</span></button>
-        <p className="desktop-bf-terms">27.11.2026 · 00:00–23:59 · {ru?"по берлинскому времени":"Berliner Zeit"}<br/>{ru?"Не действует на товары со скидкой":"Gilt nicht für bereits reduzierte Artikel"}</p>
+        <p className="desktop-bf-terms">27.11.2026 · 00:00–23:59 · {ru?"по берлинскому времени":"Berliner Zeit"}<br/>{terms}</p>
       </div>
     </div>
   </section>;

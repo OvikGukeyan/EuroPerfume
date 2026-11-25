@@ -39,7 +39,7 @@ type PriceableItem = { productId: number; variationId: number | null; quantity: 
 export function capturePricing(
   items: PriceableItem[], country: string, discount = 0, at = new Date(),
   policy = taxPolicyAt(at,country), _legacyExcludeDiscounted = false,
-  giftProductIds: ReadonlySet<number> = new Set()
+  giftProductIds: ReadonlySet<number> = new Set(), couponCode?: string
 ): PricingSnapshot {
   if (!Number.isInteger(discount) || discount < 0 || discount > 100) throw new Error("Invalid discount");
   const lines = items.map(item => {
@@ -61,7 +61,7 @@ export function capturePricing(
   // Delivery threshold uses the pre-coupon merchandise subtotal; shipping is never discounted.
   const deliveryPrice=calcTotlalAmountWithDelivery(subtotalGrossCents/100,country,0).deliveryPrice;
   const shippingGrossCents=cents(deliveryPrice);
-  const discountGrossCents=couponQuote(lines.map(l=>({productId:l.productId,grossCents:l.grossCents,excluded:l.couponExcluded})),discount).discountCents;
+  const discountGrossCents=couponQuote(lines.map(l=>({productId:l.productId,grossCents:l.grossCents,excluded:l.couponExcluded})),discount,couponCode).discountCents;
   const totalGrossCents=subtotalGrossCents+shippingGrossCents-discountGrossCents;
   return {version:1,country,capturedAt:at.toISOString(),policy,lines,subtotalGrossCents,shippingGrossCents,discountGrossCents,totalGrossCents};
 }

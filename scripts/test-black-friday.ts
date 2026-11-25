@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { BLACK_FRIDAY, blackFridayBannerVisible, blackFridayActive, isBlackFridayCode } from "../src/shared/lib/black-friday";
+import { couponQuote } from "../src/shared/lib/coupon-eligibility";
 import { capturePricing, readPricing, reviseOrderPricing } from "../src/shared/lib/tax";
 const start=Date.parse(BLACK_FRIDAY.startsAt), end=Date.parse(BLACK_FRIDAY.endsAt);
 assert.equal(end-start,86400000);
@@ -29,4 +30,23 @@ assert.equal(capturePricing([line(1,4,null,true,5)],"DEU",15,at,undefined,true).
 const revised=reviseOrderPricing(mixed,"DEU",15,at,p);
 assert.equal(revised.totalGrossCents,p.totalGrossCents);
 assert.ok(readPricing(revised));
+const bf = (items: Parameters<typeof capturePricing>[0], country="DEU", giftIds=new Set<number>()) =>
+  capturePricing(items,country,15,at,undefined,false,giftIds,BLACK_FRIDAY.code);
+assert.equal(BLACK_FRIDAY.minimumEligibleCents,8000);
+for (const [id, base, expected] of [[1,79.99,0],[2,80,1200]] as const) {
+  assert.equal(bf([line(id,base)]).discountGrossCents,expected);
+}
+const belowWithShipping=bf([line(1,79.99)],"FRA");
+assert.equal(belowWithShipping.discountGrossCents,0);
+assert.ok(belowWithShipping.totalGrossCents>8000);
+assert.equal(bf([line(1,70),line(2,40,20)]).discountGrossCents,0);
+assert.equal(bf([line(1,80),line(2,40,20)]).discountGrossCents,1200);
+assert.equal(bf([line(1,70),daily]).discountGrossCents,0);
+assert.equal(bf([line(1,80),daily]).discountGrossCents,1200);
+assert.equal(bf([line(1,70),line(2,20)],"DEU",new Set([2])).discountGrossCents,0);
+assert.equal(bf([line(1,80),line(2,20)],"DEU",new Set([2])).discountGrossCents,1200);
+assert.equal(bf([line(1,70),line(2,10)]).discountGrossCents,1200);
+assert.equal(couponQuote([{productId:1,grossCents:7000,excluded:false}],15,"BLACK15").meetsMinimum,false);
+assert.equal(couponQuote([{productId:1,grossCents:7000,excluded:false}],15,"BRANCH15").discountCents,1050);
+assert.equal(couponQuote([{productId:1,grossCents:7000,excluded:false}],10,"WELCOME10").discountCents,700);
 console.log("Black Friday: exact Berlin day, mixed baskets, existing sales, day offers, shipping, decants and saved pricing passed.");
