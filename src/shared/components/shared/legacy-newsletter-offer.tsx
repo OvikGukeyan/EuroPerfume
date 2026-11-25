@@ -15,7 +15,12 @@ export function LegacyNewsletterOffer({offer,confirmed,demo=false}:{offer:NonNul
    const response=await fetch("/api/account/legacy-newsletter-reward",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({consent:true})});
    const json=await response.json();
    if(!response.ok)throw new Error(json.error||"UNAVAILABLE");
-   setMessage(json.status==="granted"?t("Ваш купон готов — он появится ниже.","Dein Gutschein ist freigeschaltet und erscheint hier."):t("Проверьте email и подтвердите подписку. Письмо приходит на немецком.","Bitte bestätige deine Anmeldung über den Link in der E-Mail."));
+   const next=t("Проверьте «Входящие», «Промоакции» (Gmail) и «Спам». В письме EURO PERFUME на немецком откройте ссылку «Newsletter-Anmeldung bestätigen», затем подтвердите подписку на открывшейся странице.","Prüfe den Posteingang, den Tab „Werbung“ (Gmail) und den Spamordner. Öffne in der E-Mail von EURO PERFUME den Link „Newsletter-Anmeldung bestätigen“ und bestätige das Abo auf der geöffneten Seite.");
+   setMessage(json.status==="granted"
+    ?t("Ваш купон готов и появится ниже.","Dein Gutschein ist freigeschaltet und erscheint hier.")
+    :json.status==="confirmation_sent"
+    ?t("Остался один шаг: подтвердите подписку. Письмо отправлено.","Nur noch ein Schritt: Bestätige dein Newsletter-Abo. Die E-Mail wurde versendet.")+" "+next
+    :t("Подписка ещё не подтверждена. Новое письмо сейчас не отправлено.","Dein Newsletter-Abo ist noch nicht bestätigt. Es wurde gerade keine neue E-Mail versendet.")+" "+next);
    router.refresh();
   }catch(e){setMessage(t("Не удалось отправить запрос. Попробуйте позже.","Die Anmeldung konnte nicht verarbeitet werden. Bitte versuche es später."));}
   finally{setBusy(false);}

@@ -17,6 +17,7 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
   const [type, setType] = React.useState<"login" | "register" | "get-email">(
     "login"
   );
+  const [registrationComplete,setRegistrationComplete]=React.useState(false);
   const onClickForgot = () => {
     setType("get-email");
   };
@@ -24,6 +25,8 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
     setType(type === "login" ? "register" : "login");
   };
   const handleClose = () => {
+    if(registrationComplete)setType("login");
+    setRegistrationComplete(false);
     onClose();
   };
   return (
@@ -40,11 +43,12 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
             {type === "login" ? (
               <LoginForm onClose={handleClose} />
             ) : (
-              <RegisterForm onClose={handleClose} />
+              <RegisterForm onClose={handleClose} onCompleted={()=>setRegistrationComplete(true)} />
             )}
           </>
         )}
 
+        {!registrationComplete&&<>
         <hr />
 
         {/* <Button
@@ -77,6 +81,7 @@ export const AuthModal: FC<Props> = ({ className, open, onClose }) => {
           {type === "login" ? (ru?"Создать аккаунт":"Konto erstellen") : (ru?"Войти":"Anmelden")}
         </Button>
         <Button onClick={onClickForgot} variant="link">{ru?"Забыли пароль?":"Passwort vergessen?"}</Button>
+        </>}
       </DialogContent>
     </Dialog>
   );
