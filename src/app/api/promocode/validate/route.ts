@@ -48,7 +48,8 @@ export async function POST(req: Request) {
         now >= item.product.dayOfferStartsAt && now < item.product.dayOfferEndsAt);
       return {productId:item.productId,grossCents:Math.round(price.effective*100),
         excluded:price.discounted||dayActive||blocked.has(item.productId)};
-    }),discount);
+    }),discount,code);
+    if(!quote.meetsMinimum) return NextResponse.json({valid:false,reason:"MINIMUM_ELIGIBLE_SUBTOTAL",eligibleCents:quote.eligibleCents,minimumEligibleCents:BLACK_FRIDAY.minimumEligibleCents},{status:422});
     if(quote.discountCents===0) return NextResponse.json({valid:false,reason:"NO_ELIGIBLE_ITEMS"},{status:422});
     return NextResponse.json({valid:true,code:blackFriday?BLACK_FRIDAY.code:promo!.code,discount,
       discountCents:quote.discountCents,eligibleCents:quote.eligibleCents,excludedCents:quote.excludedCents});

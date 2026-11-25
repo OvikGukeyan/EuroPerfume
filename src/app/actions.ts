@@ -466,8 +466,8 @@ export async function createOrder(data: CheckoutFormValues) {
       const orderDiscount = blackFriday ? (blackFridayActive(orderedAt.getTime()) ? BLACK_FRIDAY.discount : 0) : promo?.discount ?? 0;
       if (submittedCode && !orderDiscount) throw new Error("PROMOCODE_INVALID");
       const promotionProductIds = new Set(validPromotions.flatMap(link => link.promotion.productIds));
-      const pricing = capturePricing(userCart.items.map(item => boxItemIds.has(item.id) ? { ...item, product: { ...item.product, name: "Aroma Box · " + item.product.name } } : item), deliveryCountry, orderDiscount, orderedAt, undefined, false, promotionProductIds);
-      if (submittedCode && pricing.discountGrossCents === 0) throw new Error("PROMOCODE_INELIGIBLE");
+      const pricing = capturePricing(userCart.items.map(item => boxItemIds.has(item.id) ? { ...item, product: { ...item.product, name: "Aroma Box · " + item.product.name } } : item), deliveryCountry, orderDiscount, orderedAt, undefined, false, promotionProductIds, submittedCode);
+      if (submittedCode && pricing.discountGrossCents === 0) throw new Error(blackFriday ? "PROMOCODE_MINIMUM_ELIGIBLE" : "PROMOCODE_INELIGIBLE");
       // Redeem points atomically inside the same transaction as the order.
       // Lock wallet so two concurrent checkouts cannot spend the same points.
       const requestedPoints=data.redeemPoints||0;
@@ -646,6 +646,7 @@ export async function createOrder(data: CheckoutFormValues) {
     notificationResults.forEach((result, index) => { if (result.status === "rejected") console.error("[order notification]", index, "delivery failed"); });
     (await cookieStore).delete("discoveryBoxIds");
   } catch (error) {
+    if(error instanceof Error && error.message==="PROMOCODE_MINIMUM_ELIGIBLE") return {code:"PROMOCODE_MINIMUM_ELIGIBLE"} as const;
     if(error instanceof Error && error.message==="PROMOCODE_INELIGIBLE") return {code:"PROMOCODE_INELIGIBLE"} as const;
     if(error instanceof Error && error.message==="PROMOCODE_INVALID") return {code:"PROMOCODE_INVALID"} as const;
     if(error instanceof Error && error.message==="CAMPAIGN_INVALID") return {code:"CAMPAIGN_INVALID"} as const;
