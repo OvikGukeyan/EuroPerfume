@@ -1,5 +1,5 @@
 import { prisma } from "@/prisma/prisma-client";
-import { publicBottle, fragranceName } from "@/src/shared/lib/full-bottle";
+import { publicBottle, fragranceName, catalogDraftProductIds, isCatalogDraftProduct } from "@/src/shared/lib/full-bottle";
 import { notFound, redirect } from "next/navigation";
 import React from "react";
 import {
@@ -18,10 +18,11 @@ export default async function Product({
   searchParams: Promise<{bottle?:string}>;
 }) {
   const productId = Number((await params).id);
+  if (isCatalogDraftProduct(productId)) return notFound();
   const product = await prisma.product.findFirst({
     where: { id: productId },
     include: {
-      fullBottles: {select:{id:true,volume:true,price:true,discountPrice:true,imageUrl:true,stockPieces:true,allowBackorder:true,available:true,dayOfferStartsAt:true,dayOfferEndsAt:true,translations:{select:{language:true,activeIngredients:true}}}},
+      fullBottles: {where:{id:{notIn:catalogDraftProductIds}},select:{id:true,volume:true,price:true,discountPrice:true,imageUrl:true,stockPieces:true,allowBackorder:true,available:true,dayOfferStartsAt:true,dayOfferEndsAt:true,translations:{select:{language:true,activeIngredients:true}}}},
       reviews: {
         include: {
           user: true,
