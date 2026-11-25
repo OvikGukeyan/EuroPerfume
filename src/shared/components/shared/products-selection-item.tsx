@@ -6,6 +6,7 @@ import type { BottleOption } from "../../lib/full-bottle";
 
 import { formatMoney, formatUnitPrice } from "@/src/shared/lib/money";
 import Image from "next/image";
+import { cataloguePackshotScale } from "../../lib/catalogue-packshot-scale";
 import React from "react";
 import { cataloguePrice } from "../../lib/catalogue-price";
 import { fragranceName } from "../../lib/full-bottle";
@@ -95,7 +96,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
     <article className={cn("home-product compact-product compact-selection", className)}>
       <div className="home-product-photo">
         <Link href={productHref} aria-label={`${brand.name} ${name}`}>
-          {displayImage ? <Image src={displayImage} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" /> : <span className="flex h-full items-center justify-center text-sm text-neutral-500">{locale==="ru" ? "Фото уточняется" : "Foto wird ergänzt"}</span>}
+          {displayImage ? <Image style={{ scale: cataloguePackshotScale(displayImage) }} src={displayImage} alt={`${brand.name} ${name}`} fill sizes="(max-width: 767px) 46vw, (max-width: 1400px) 23vw, 300px" /> : <span className="flex h-full items-center justify-center text-sm text-neutral-500">{locale==="ru" ? "Фото уточняется" : "Foto wird ergänzt"}</span>}
         </Link>
         <button type="button" className="home-product-heart" onClick={onToggleFavorite} aria-pressed={isFavorite} aria-label={locale === "ru" ? (isFavorite ? `Удалить ${name} из избранного` : `Добавить ${name} в избранное`) : (isFavorite ? `${name} aus Favoriten entfernen` : `${name} zu Favoriten hinzufügen`)}>
           {isFavorite ? <HeartBlack /> : <Heart />}
