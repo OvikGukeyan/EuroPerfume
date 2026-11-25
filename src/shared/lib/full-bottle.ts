@@ -1,4 +1,8 @@
 import type { DayOfferWindow } from "./day-offer";
+// Temporary explicit draft marker. Independent of stock, availability and orderability.
+export const catalogDraftProductIds = [708];
+export const isCatalogDraftProduct = (id: number) => catalogDraftProductIds.includes(id);
+
 export const bottleGroup = { labelRu: "Полные флаконы", labelDe: "Originalflakons" } as const;
 
 export type IngredientTranslation = { language: string; activeIngredients?: string | null };
@@ -27,11 +31,11 @@ export function unitPricePerLitre(price: number, ml: number): number | null {
   return Number.isFinite(price) && price >= 0 && Number.isFinite(ml) && ml > 0
     ? Math.round(price * 100000 / ml) / 100 : null;
 }
-export const fullBottleInclude = { select: { id:true, volume:true, price:true, discountPrice:true, imageUrl:true, stockPieces:true, allowBackorder:true, available:true, dayOfferStartsAt:true, dayOfferEndsAt:true } } as const;
+export const fullBottleInclude = { where: { id: { notIn: catalogDraftProductIds } }, select: { id:true, volume:true, price:true, discountPrice:true, imageUrl:true, stockPieces:true, allowBackorder:true, available:true, dayOfferStartsAt:true, dayOfferEndsAt:true } } as const;
 type PublicBottleRow = Parameters<typeof publicBottle>[0];
 export function withBottleOptions<T extends PublicBottleRow & { productGroupId:number; name:string; fullBottles: PublicBottleRow[] }>(product: T) {
   const { fullBottles, ...base } = product;
-  return { ...base, name: fragranceName(base.name), bottles: [...(base.productGroupId===31 ? [base] : []), ...fullBottles].map(publicBottle).filter(b => b.ml > 0 && Number.isFinite(b.ml)).sort((a,b) => a.ml-b.ml) };
+  return { ...base, name: fragranceName(base.name), bottles: [...(base.productGroupId===31 ? [base] : []), ...fullBottles].filter(p => !isCatalogDraftProduct(p.id)).map(publicBottle).filter(b => b.ml > 0 && Number.isFinite(b.ml)).sort((a,b) => a.ml-b.ml) };
 }
 
 export function fragranceName(name:string) { return name.replace(/\s*· Originalflakon \d+ ml$/, "").trim(); }
