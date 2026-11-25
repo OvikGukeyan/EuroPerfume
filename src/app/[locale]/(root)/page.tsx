@@ -1,4 +1,5 @@
 import { HomePriceProvider } from "@/src/shared/components/shared/home-price-note";
+import { pallasGiftState } from "@/src/shared/server-lib/pallas-gift";
 import "./home.css";
 import { HomeCatalog } from "@/src/shared/components/shared/home-catalog";
 import { getHomeCatalog } from "@/src/shared/server-lib/get-home-catalog";
@@ -21,7 +22,7 @@ import { Slide, SlideImage } from "@prisma/client";
 import { getTranslations } from "next-intl/server";
 export const dynamic = "force-dynamic";
 export default async function Home() {
-  const [slides, stories, catalog, heroPromotions, dayFragrances] = await Promise.all([getSlides(), getStories(), getHomeCatalog(), getHeroPromotions(), getWeekFragrances()]);
+  const [slides, stories, catalog, heroPromotions, dayFragrances, pallasState] = await Promise.all([getSlides(), getStories(), getHomeCatalog(), getHeroPromotions(), getWeekFragrances(), pallasGiftState(null).catch(() => "off")]);
 
   const t = await getTranslations("Home");
   const topSlides = slides.filter((s) => s.location === 1) as (Slide & {
@@ -32,7 +33,7 @@ export default async function Home() {
   })[];
   return (
     <HomePriceProvider><div className="storefront-home bg-white">
-      <Carusel blackFriday slides={topSlides} promotions={heroPromotions} dayFragrances={dayFragrances} />
+      <Carusel pallasGift={pallasState === "eligible"} blackFriday slides={topSlides} promotions={heroPromotions} dayFragrances={dayFragrances} />
       <TopBar />
       <ProductsSelection
         getFunction={getNewProducts}
@@ -57,3 +58,4 @@ export default async function Home() {
     </div></HomePriceProvider>
   );
 }
+

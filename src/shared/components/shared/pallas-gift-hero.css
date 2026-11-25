@@ -1,0 +1,16 @@
+.pallas-hero{position:relative;isolation:isolate;overflow:hidden;border-radius:24px;background:#00271c;color:#fff4d5;aspect-ratio:2.4;width:100%}
+.pallas-hero-art{position:absolute;inset:0;z-index:-1}.pallas-hero-art img{width:100%;height:100%;object-fit:cover}
+.pallas-hero-copy{position:absolute;left:4%;top:7%;width:44%;text-align:center}
+.pallas-brand{font-size:clamp(10px,1.2vw,18px);letter-spacing:.32em;color:#e8c879}
+.pallas-kicker{font-family:Georgia,serif;font-style:italic;font-size:clamp(20px,3.4vw,48px);line-height:1.1;margin:16px 0}
+.pallas-threshold{font-size:clamp(15px,2vw,28px);font-weight:500;margin:12px 0 6px}
+.pallas-hero h2{font-size:clamp(13px,1.6vw,22px);text-transform:uppercase;letter-spacing:.09em;margin:0;color:#e8c879}
+.pallas-gift{font-family:Georgia,serif;font-size:clamp(28px,4.2vw,60px);line-height:1.15;margin:8px 0}
+.pallas-limit{font-size:clamp(11px,1.1vw,16px);margin:10px 0}
+.pallas-hero-action{position:absolute;left:4%;bottom:7%;width:44%;text-align:center}
+.pallas-hero-action a{display:inline-block;padding:12px 26px;border:1px solid #d4b56c;border-radius:999px;color:#ffe7a8;background:#032b20e6;font-size:clamp(13px,1.4vw,20px)}
+.pallas-hero-action a:hover{background:#164535}.pallas-hero-action a:focus-visible{outline:3px solid white;outline-offset:4px}
+.pallas-hero-action p{font-size:clamp(9px,.85vw,12px);line-height:1.4;margin:14px auto 0;max-width:480px}
+@media(max-width:767px){.pallas-hero .pallas-kicker{display:none}.pallas-hero .pallas-brand{display:block;margin-bottom:8px}}
+@media(max-width:767px){.pallas-hero{aspect-ratio:4/5;border-radius:18px}.pallas-hero-copy{top:3%;left:5%;width:90%}.pallas-brand{font-size:10px}.pallas-kicker{font-size:clamp(22px,6vw,42px);margin:8px 0}.pallas-threshold{font-size:clamp(15px,4.2vw,26px);margin:4px 0}.pallas-hero h2{font-size:clamp(12px,3.4vw,20px);letter-spacing:.06em}.pallas-gift{font-size:clamp(27px,7.2vw,48px);margin:3px 0}.pallas-limit{font-size:clamp(10px,2.7vw,16px);margin:4px 0}.pallas-hero-action{left:5%;width:90%;bottom:3%}.pallas-hero-action a{padding:9px 22px;font-size:clamp(13px,3.5vw,20px)}.pallas-hero-action p{font-size:clamp(9px,2.4vw,13px);margin-top:7px}}
+
