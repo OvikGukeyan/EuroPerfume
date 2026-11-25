@@ -9,7 +9,7 @@ export default async function VerifyPage({params,searchParams}:{params:Promise<{
   :state==="already"
   ?ru?"Ваш email уже подтверждён. Ничего повторно делать не нужно.":"Deine E-Mail-Adresse ist bereits bestätigt. Du musst nichts weiter tun."
   :state==="resent"
-  ?ru?"Если ссылка ещё подлежит обновлению, новое письмо отправлено. Проверьте входящие и спам.":"Falls der Link erneuert werden kann, wurde eine neue E-Mail versendet. Bitte prüfe auch deinen Spamordner."
+  ?ru?"Если ссылку можно обновить, новое письмо отправлено. Проверьте «Входящие», «Промоакции» (Gmail) и «Спам» и откройте ссылку подтверждения email в новом письме EURO PERFUME.":"Falls der Link erneuert werden kann, wurde eine neue E-Mail versendet. Prüfe den Posteingang, den Tab „Werbung“ (Gmail) und den Spamordner und öffne den Bestätigungslink in der neuen E-Mail von EURO PERFUME."
   :state==="expired"
   ?ru?"Срок действия ссылки истёк. Запросите новую — создавать аккаунт заново не нужно.":"Dieser Bestätigungslink ist abgelaufen. Bitte fordere einen neuen an, ohne dich erneut zu registrieren."
   :state==="unavailable"
