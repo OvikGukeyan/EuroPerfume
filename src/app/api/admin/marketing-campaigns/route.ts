@@ -5,9 +5,16 @@ import {prisma} from "@/prisma/prisma-client";
 import {getUserSession} from "@/src/shared/server-lib/get-user-session";
 import {marketingOptOutToken} from "@/src/shared/server-lib/marketing-optout";
 import {sendEmail} from "@/src/shared/lib/send-email";
-import {UserRole} from "@prisma/client";
+import {Prisma,UserRole} from "@prisma/client";
+import {PallasPromoNewsletter} from "@/src/shared/components/shared/email-templates/pallas-promo-newsletter";
+import {
+ PALLAS_NEWSLETTER_ID, PALLAS_NEWSLETTER_NAME, PALLAS_NEWSLETTER_SUBJECT,
+ PALLAS_NEWSLETTER_APPROVED_AT, PALLAS_NEWSLETTER_MAX_RECIPIENTS
+} from "@/src/shared/lib/pallas-promo-newsletter";
+import {pallasNewsletterPromoReady} from "@/src/shared/server-lib/pallas-newsletter-promo-ready";
 
 const payload=z.discriminatedUnion("action",[
+ z.object({action:z.literal("create_pallas_draft")}).strict(),
  z.object({action:z.literal("create"),name:z.string().trim().min(3).max(100),
   segment:z.enum(["ALL","NO_ORDERS","WITH_ORDERS"]),
   subjectRu:z.string().trim().min(4).max(130),subjectDe:z.string().trim().min(4).max(130),
@@ -29,6 +36,32 @@ export async function POST(request:Request){
  let input:z.infer<typeof payload>;
  try{input=payload.parse(await request.json());}catch{return NextResponse.json({error:"INPUT"},{status:400});}
  try{
+  if(input.action==="create_pallas_draft"){
+   const existing=await prisma.marketingCampaign.findUnique({where:{id:PALLAS_NEWSLETTER_ID},select:{id:true}});
+   if(existing)return NextResponse.json({ok:true,id:existing.id});
+   const cutoff=new Date(PALLAS_NEWSLETTER_APPROVED_AT);
+   const recipients=await prisma.user.findMany({
+    where:{createdAt:{lte:cutoff},verified:{not:null,lte:cutoff},
+     accountConsent:{is:{marketingConfirmedAt:{not:null,lte:cutoff},marketingWithdrawnAt:null}}},
+    select:{id:true},orderBy:{id:"asc"},take:PALLAS_NEWSLETTER_MAX_RECIPIENTS+1
+   });
+   // Never offer to send to a broader audience than the approved cohort.
+   if(!recipients.length||recipients.length>PALLAS_NEWSLETTER_MAX_RECIPIENTS)
+    return NextResponse.json({error:"PALLAS_AUDIENCE_CHANGED"},{status:409});
+   try{
+    await prisma.marketingCampaign.create({data:{
+     id:PALLAS_NEWSLETTER_ID,name:PALLAS_NEWSLETTER_NAME,segment:"ALL",
+     subjectRu:PALLAS_NEWSLETTER_SUBJECT,subjectDe:PALLAS_NEWSLETTER_SUBJECT,
+     bodyRu:"Фиксированный шаблон Pallas Athene (RU/DE).",bodyDe:"Festes Pallas-Athene-Template (RU/DE).",
+     deliveries:{create:recipients.map(user=>({userId:user.id,status:"QUEUED"}))}
+    }});
+   }catch(e){
+    if(!(e instanceof Prisma.PrismaClientKnownRequestError&&e.code==="P2002"))throw e;
+    const created=await prisma.marketingCampaign.findUnique({where:{id:PALLAS_NEWSLETTER_ID},select:{id:true}});
+    if(!created)throw e;
+   }
+   return NextResponse.json({ok:true,id:PALLAS_NEWSLETTER_ID,queued:recipients.length});
+  }
   if(input.action==="create"){
    const created=await prisma.marketingCampaign.create({data:{
     name:input.name,segment:input.segment,subjectRu:input.subjectRu,subjectDe:input.subjectDe,
@@ -38,22 +71,32 @@ export async function POST(request:Request){
   }
   const campaign=await prisma.marketingCampaign.findUnique({where:{id:input.id}});
   if(!campaign)return NextResponse.json({error:"NOT_FOUND"},{status:404});
+  const pallas=campaign.id===PALLAS_NEWSLETTER_ID;
   if(input.action==="activate"||input.action==="pause"){
+   if(pallas&&input.action==="activate"&&(campaign.status==="DONE"||!await pallasNewsletterPromoReady()))
+    return NextResponse.json({error:"PALLAS_PROMO_NOT_READY"},{status:409});
    const status=input.action==="activate"?"ACTIVE":"PAUSED";
    await prisma.marketingCampaign.update({where:{id:campaign.id},data:{status}});
    return NextResponse.json({ok:true,status});
   }
   if(campaign.status!=="ACTIVE")return NextResponse.json({error:"NOT_ACTIVE"},{status:400});
+  if(pallas&&!await pallasNewsletterPromoReady())
+   return NextResponse.json({error:"PALLAS_PROMO_NOT_READY"},{status:409});
   // Deliberately small manual batches; no background sending or unconsented recipients.
-  const users=await prisma.user.findMany({where:{...audience(campaign.segment),
+  const users=pallas
+   ?(await prisma.marketingDelivery.findMany({where:{campaignId:campaign.id,status:"QUEUED"},
+      select:{user:{select:{id:true,email:true}}},take:5,orderBy:{userId:"asc"}})).map(row=>row.user)
+   :await prisma.user.findMany({where:{...audience(campaign.segment),
     marketingDeliveries:{none:{campaignId:campaign.id}}
-   },select:{id:true,email:true,accountConsent:{select:{locale:true}}},take:5,orderBy:{id:"asc"}});
+   },select:{id:true,email:true},take:5,orderBy:{id:"asc"}});
   if(!users.length){
+   if(pallas&&await prisma.marketingDelivery.count({where:{campaignId:campaign.id,status:"SENDING"}}))
+    return NextResponse.json({ok:true,sent:0,failed:0,done:false});
    await prisma.marketingCampaign.update({where:{id:campaign.id},data:{status:"DONE"}});
    return NextResponse.json({ok:true,sent:0,failed:0,done:true});
   }
   const {randomUUID}=await import("node:crypto");
-  await prisma.marketingDelivery.createMany({data:users.map(user=>({id:randomUUID(),campaignId:campaign.id,userId:user.id,status:"QUEUED"})),skipDuplicates:true});
+  if(!pallas)await prisma.marketingDelivery.createMany({data:users.map(user=>({id:randomUUID(),campaignId:campaign.id,userId:user.id,status:"QUEUED"})),skipDuplicates:true});
   let sent=0,failed=0;
   for(const user of users){
    // Atomic claim: concurrent admin requests cannot send twice.
@@ -61,13 +104,21 @@ export async function POST(request:Request){
    if(!claimed.count)continue;
    try{
     // Check subscription again immediately before delivery.
-    const consent=await prisma.accountConsent.findUnique({where:{userId:user.id},select:{locale:true,marketingConfirmedAt:true,marketingWithdrawnAt:true}});
-    if(!consent?.marketingConfirmedAt||consent.marketingWithdrawnAt)throw new Error("CONSENT_WITHDRAWN");
+    const current=pallas?await prisma.user.findFirst({where:{id:user.id,...audience("ALL"),
+     accountConsent:{is:{marketingConfirmedAt:{not:null,lte:new Date(PALLAS_NEWSLETTER_APPROVED_AT)},marketingWithdrawnAt:null}}},
+     select:{email:true}}):null;
+    if(pallas){if(!current)throw new Error("CONSENT_WITHDRAWN");}
+    else {
+     const consent=await prisma.accountConsent.findUnique({where:{userId:user.id},select:{marketingConfirmedAt:true,marketingWithdrawnAt:true}});
+     if(!consent?.marketingConfirmedAt||consent.marketingWithdrawnAt)throw new Error("CONSENT_WITHDRAWN");
+    }
     const ru=false,locale="de";
     const subject=campaign.subjectDe;
     const body=campaign.bodyDe;
     const unsubscribeUrl=`${base}/${locale}/newsletter/leave?token=${encodeURIComponent(marketingOptOutToken(user.id))}`;
-    const result=await sendEmail(user.email,subject,React.createElement("div",{style:{fontFamily:"Arial,sans-serif",maxWidth:580,margin:"auto",lineHeight:1.7,color:"#242424"}},
+    const result=pallas
+     ?await sendEmail(current!.email,PALLAS_NEWSLETTER_SUBJECT,React.createElement(PallasPromoNewsletter,{unsubscribeUrl}))
+     :await sendEmail(user.email,subject,React.createElement("div",{style:{fontFamily:"Arial,sans-serif",maxWidth:580,margin:"auto",lineHeight:1.7,color:"#242424"}},
      React.createElement("p",{style:{letterSpacing:"3px"}},"EURO PERFUME"),
      React.createElement("p",{style:{whiteSpace:"pre-line"}},body),
      React.createElement("hr"),
