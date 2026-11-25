@@ -1,9 +1,10 @@
-import { fullBottleInclude, withBottleOptions } from "@/src/shared/lib/full-bottle";
+import { fullBottleInclude, withBottleOptions, isCatalogDraftProduct } from "@/src/shared/lib/full-bottle";
 import { prisma } from "@/prisma/prisma-client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
-    const ids = req.nextUrl.searchParams.get("ids")?.split(",").map(Number);
+    const ids = req.nextUrl.searchParams.get("ids")?.split(",").map(Number).filter(id => Number.isSafeInteger(id) && !isCatalogDraftProduct(id)) ?? [];
+    if (!ids.length) return NextResponse.json([]);
     const products = await prisma.product.findMany({
         where: {
             bottleParentId:null,
