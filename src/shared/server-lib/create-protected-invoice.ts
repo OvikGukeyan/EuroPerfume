@@ -8,8 +8,6 @@ import { berlinDate,validateSupplyDate,readPricing,capturePricing,cents,invoiceT
 export async function createProtectedInvoice(orderId:number,supplyDateValue:string) {
  await requireInvoiceAdmin();
  if(!Number.isSafeInteger(orderId)||orderId<=0) throw new Error('Некорректный номер заказа');
- const promotionRecords=await prisma.orderPromotion.findMany({where:{orderId}}).catch(()=>[]);
- const giftLines=promotionRecords.map(record=>record.snapshot as {giftName:string;giftMl:number}).filter(p=>p.giftName && p.giftMl>0).map(p=>({title:p.giftName,ml:p.giftMl}));
  return prisma.$transaction(async tx=>{
   await tx.$queryRaw`SELECT id FROM "Order" WHERE id=${orderId} FOR UPDATE`;
   const exists=await tx.invoice.findUnique({where:{orderId}});
@@ -17,6 +15,8 @@ export async function createProtectedInvoice(orderId:number,supplyDateValue:stri
   if(exists) return {ok:true,invoiceUrl};
   const order=await tx.order.findUnique({where:{id:orderId},include:{items:{include:{product:{include:{brand:true,productGroup:true}}}}}});
   if(!order) throw new Error('Заказ не найден');
+  const promotionRecords=await tx.orderPromotion.findMany({where:{orderId}});
+  const giftLines=promotionRecords.map(record=>record.snapshot as {giftName:string;giftMl:number}).filter(p=>p.giftName && p.giftMl>0).map(p=>({title:p.giftName,ml:p.giftMl}));
   if(order.status==='CENCELLED')throw new Error('Нельзя выставить счёт по отменённой заявке');
   const supplyDate=validateSupplyDate(supplyDateValue,order.createdAt);
   const pricing=readPricing(order.pricingSnapshot)??capturePricing(order.items,order.deliveryCountry,order.discount??0,order.createdAt);

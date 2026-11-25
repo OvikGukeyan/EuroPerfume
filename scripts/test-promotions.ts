@@ -1,3 +1,4 @@
+import {qualifyingGiftAmount,PALLAS_GIFT} from "../src/shared/lib/pallas-gift-rules";
 import assert from "node:assert/strict";
 import { promotionLive,promotionQualified } from "../src/shared/lib/promotion-rules";
 
@@ -15,3 +16,5 @@ assert.equal(promotionLive({...promo,active:false},at),false,"inactive rejected"
 assert.equal(promotionLive({...promo,startsAt:new Date("2026-11-17T00:00:00Z")},at),false,"not started");
 assert.equal(promotionLive({...promo,endsAt:at},at),false,"end time exclusive");
 console.log("Promotion eligibility tests passed: mixed cart, removal, volume, variants and time boundaries.");
+
+if(qualifyingGiftAmount(9999,0,0)||!qualifyingGiftAmount(10000,0,0)||qualifyingGiftAmount(11000,1000,1)||!qualifyingGiftAmount(11000,1000,0)||PALLAS_GIFT.slots*PALLAS_GIFT.ml!==50) throw new Error("Pallas gift threshold/property regression");
