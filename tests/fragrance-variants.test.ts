@@ -1,3 +1,4 @@
+import {compareBrandProducts,isOrderableBrandDecant,useBrandDefaultOrder} from '../src/shared/lib/brand-listing-order';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { publicBottle, withBottleOptions, fragranceName } from '../src/shared/lib/full-bottle';
@@ -49,4 +50,30 @@ test('tile volume and litre price follow the priced bottle, including promotions
  const standalone=cataloguePrice({...product,productGroup:{onTap:false},bottles:[small]});
  assert.equal(standalone.volumeMl,50);
  assert.equal(standalone.pricePerLitre,3097);
+});
+
+const brandFixture=(id:number,day:number,onTap:boolean,available=true)=>({id,createdAt:new Date(Date.UTC(2026,10,day)),available,bottleParentId:null,stockPieces:0,stockMl:0,productGroup:{onTap}});
+test('brand listing gives available decants precedence and sorts both groups newest first',()=>{
+ const enabledUntracked=brandFixture(30,1,true);
+ const unavailableDecant=brandFixture(29,27,true,false);
+ const bottle=brandFixture(28,28,false);
+ const equalTimeNewer=brandFixture(31,1,true);
+ assert.equal(isOrderableBrandDecant(enabledUntracked),true);
+ assert.equal(isOrderableBrandDecant(unavailableDecant),false);
+ assert.equal(isOrderableBrandDecant({...enabledUntracked,saleBottleOnly:true}),false);
+ const rows=[bottle,enabledUntracked,unavailableDecant,equalTimeNewer];
+ assert.deepEqual([...rows].sort((a,b)=>compareBrandProducts(a,b)).map(x=>x.id),[31,30,28,29]);
+ assert.deepEqual([...rows].sort((a,b)=>compareBrandProducts(a,b,true)).map(x=>x.id),[28,29,31,30]);
+});
+test('default brand priority is applied prior to the page boundary; manual sorting wins',()=>{
+ const rows=[...Array.from({length:27},(_,i)=>brandFixture(i+10,27,false)),brandFixture(1,1,true),brandFixture(2,2,true)];
+ const all=[...rows].sort((a,b)=>compareBrandProducts(a,b));
+ assert.deepEqual(all.slice(0,24).slice(0,2).map(x=>x.id),[2,1]);
+ assert.equal(all.slice(24).some(isOrderableBrandDecant),false);
+ assert.equal(new Set(all.map(x=>x.id)).size,rows.length);
+ assert.equal(useBrandDefaultOrder([221],{}),true);
+ assert.equal(useBrandDefaultOrder([221,170],{}),true);
+ assert.equal(useBrandDefaultOrder([221],{price:'asc'}),false);
+ assert.equal(useBrandDefaultOrder([221],{name:'asc'}),false);
+ assert.equal(useBrandDefaultOrder(undefined,{}),false);
 });
