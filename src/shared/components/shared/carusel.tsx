@@ -1,5 +1,6 @@
 "use client";
 import "./storefront-hero.css";
+import { PallasGiftHero } from "./pallas-gift-hero";
 import { BlackFridayHero } from "./black-friday-hero";
 import { BLACK_FRIDAY, blackFridayBannerVisible } from "@/src/shared/lib/black-friday";
 import { PromotionHero } from "./promotion-hero";
@@ -24,13 +25,14 @@ import { useLocale } from "next-intl";
 import { Link } from "@/src/i18n/navigation";
 
 interface Props {
+  pallasGift?: boolean;
   slides: (Slide & { images: SlideImage[] })[];
   className?: string;
   promotions?: HeroPromotion[];
   dayFragrances?: FeaturedDayFragrance[];
   blackFriday?: boolean;
 }
-export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = [], blackFriday = false }) => {
+export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = [], blackFriday = false, pallasGift = false }) => {
   const autoplayPlugin = useMemo(() => Autoplay({ delay: 6000, stopOnInteraction: false }), []);
   const [api,setApi] = useState<CarouselApi>();
   const [selected,setSelected] = useState(0);
@@ -42,7 +44,7 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
   const featured=dayFragrances.find(f=>dayOfferActive({dayOfferStartsAt:f.startsAt,dayOfferEndsAt:f.endsAt},now));
   const showDay=Boolean(featured);
   const showBlackFriday = blackFriday && blackFridayBannerVisible(now);
-  const featuredCount=promotions.length+(showDay?1:0)+(showBlackFriday?1:0);
+  const featuredCount=promotions.length+(showDay?1:0)+(showBlackFriday?1:0)+(pallasGift?1:0);
   const slideCount = featuredCount + visibleSlides.length;
   useEffect(()=>{
     if(!api) return;
@@ -78,6 +80,7 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
     <Carousel className="storefront-carousel mx-auto w-full max-w-[1440px] px-4 md:px-8" opts={{loop:featuredCount+visibleSlides.length>1}} setApi={setApi} plugins={[autoplayPlugin]}>
       <div className="relative">
       <CarouselContent className="items-start">
+        {pallasGift && <CarouselItem className="w-full" key="pallas-gift"><PallasGiftHero/></CarouselItem>}
         {showBlackFriday && <CarouselItem className="w-full" key="black-friday-2026"><BlackFridayHero/></CarouselItem>}
         {showDay && featured && <CarouselItem className="w-full" key="fragrance-week"><FragranceDayHero offer={featured}/></CarouselItem>}
         {promotions.map((promotion,index)=>(
@@ -129,3 +132,4 @@ export const Carusel: FC<Props> = ({ slides, promotions = [], dayFragrances = []
     </Carousel>
   );
 };
+
