@@ -14,3 +14,25 @@
 @media(max-width:767px){.pallas-hero .pallas-kicker{display:none}.pallas-hero .pallas-brand{display:block;margin-bottom:8px}}
 @media(max-width:767px){.pallas-hero{aspect-ratio:4/5;border-radius:18px}.pallas-hero-copy{top:3%;left:5%;width:90%}.pallas-brand{font-size:10px}.pallas-kicker{font-size:clamp(22px,6vw,42px);margin:8px 0}.pallas-threshold{font-size:clamp(15px,4.2vw,26px);margin:4px 0}.pallas-hero h2{font-size:clamp(12px,3.4vw,20px);letter-spacing:.06em}.pallas-gift{font-size:clamp(27px,7.2vw,48px);margin:3px 0}.pallas-limit{font-size:clamp(10px,2.7vw,16px);margin:4px 0}.pallas-hero-action{left:5%;width:90%;bottom:3%}.pallas-hero-action a{padding:9px 22px;font-size:clamp(13px,3.5vw,20px)}.pallas-hero-action p{font-size:clamp(9px,2.4vw,13px);margin-top:7px}}
 
+
+
+/* Keep the same frame as the other offers, without cropping the gift art. */
+.storefront-carousel .pallas-hero{container-type:size;min-height:0;min-width:0}
+.storefront-carousel .pallas-hero-art img{display:block;object-fit:contain}
+@media(max-width:767px){
+ .storefront-carousel .pallas-hero{height:var(--storefront-mobile-promo-height,auto);aspect-ratio:3.6 / 4}
+}
+@media(min-width:768px){
+ .storefront-carousel .pallas-hero{height:var(--storefront-hero-height);aspect-ratio:auto}
+ .storefront-carousel .pallas-hero-art img{object-position:right center}
+ .storefront-carousel .pallas-hero-copy{top:5%}
+ .storefront-carousel .pallas-hero-action{bottom:5%}
+ .storefront-carousel .pallas-brand{font-size:clamp(10px,3.7cqh,16px)}
+ .storefront-carousel .pallas-kicker{font-size:clamp(20px,10cqh,36px);margin:1.5cqh 0}
+ .storefront-carousel .pallas-threshold{font-size:clamp(15px,6.5cqh,25px);margin:1.8cqh 0 1.2cqh}
+ .storefront-carousel .pallas-hero h2{font-size:clamp(12px,4.5cqh,20px)}
+ .storefront-carousel .pallas-gift{font-size:clamp(26px,12cqh,48px);margin:1.2cqh 0}
+ .storefront-carousel .pallas-limit{font-size:clamp(11px,4.5cqh,16px);margin:1.5cqh 0}
+ .storefront-carousel .pallas-hero-action a{padding:clamp(7px,2.6cqh,12px) 22px;font-size:clamp(13px,4.7cqh,19px)}
+ .storefront-carousel .pallas-hero-action p{margin-top:clamp(4px,1.7cqh,10px)}
+}
