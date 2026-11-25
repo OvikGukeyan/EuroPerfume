@@ -4,6 +4,7 @@ import { z } from "zod";
 
 export const checkoutFormSchema = z
   .object({
+    pallasGiftExpected: z.boolean().optional(),
     quotedTotal: z.number().nonnegative().optional(),
     redeemPoints: z.number().int().nonnegative().max(100000000).optional(),
     campaignCode: z.enum(["WOOD_TRIO_GIFT_2026"]).optional(),

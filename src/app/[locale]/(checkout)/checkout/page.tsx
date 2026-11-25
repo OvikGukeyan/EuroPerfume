@@ -1,5 +1,7 @@
 "use client";
 
+import {PallasGiftLine,usePallasOffer} from "@/src/shared/components/shared/pallas-gift-line";
+import {qualifyingGiftAmount} from "@/src/shared/lib/pallas-gift-rules";
 import {pointRedemptionQuote} from "@/src/shared/lib/loyalty-arithmetic";
 import { BLACK_FRIDAY, blackFridayActive, isBlackFridayCode } from "@/src/shared/lib/black-friday";
 import { couponQuote, giftPromotionProductIds } from "@/src/shared/lib/coupon-eligibility";
@@ -46,6 +48,8 @@ export default function Checkout() {
     itemLoading,
   } = useCart();
   const { data: session } = useSession();
+  const [pallasUnavailableFor,setPallasUnavailableFor]=useState<string|null>(null);
+  const pallasState=usePallasOffer(session?.user?.id??"guest");
   const router = useRouter();
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutFormSchema),
@@ -95,6 +99,8 @@ export default function Checkout() {
   const totals=calcTotlalAmountWithDelivery(totalAmount,deliveryCountry,0);
   const totalAmountWithDelivery=(Math.round(totals.totalAmountWithDelivery*100)-coupon.discountCents-redeemPoints)/100;
   const deliveryPrice=totals.deliveryPrice;
+  const pallasEmail=(form.watch("email")||"").trim().toLowerCase();
+  const quotedPallas=pallasState==="eligible"&&pallasUnavailableFor!==pallasEmail&&qualifyingGiftAmount(Math.round(totalAmount*100),coupon.discountCents,redeemPoints);
   useEffect(() => {
     // A removed product or expired offer can make an applied coupon worth zero.
     if (appliedCode && discount>0 && coupon.discountCents===0) {
@@ -136,7 +142,12 @@ export default function Checkout() {
   const onSubmit = async (data: CheckoutFormValues) => {
     try {
       setSubmitting(true);
-      const result=await createOrder({ ...data, redeemPoints, promocode: coupon.discountCents>0 ? appliedCode : "", quotedTotal: totalAmountWithDelivery });
+      const result=await createOrder({ ...data, redeemPoints, promocode: coupon.discountCents>0 ? appliedCode : "", quotedTotal: totalAmountWithDelivery, pallasGiftExpected:quotedPallas });
+      if(result?.code==="PALLAS_GIFT_CHANGED") {
+        setPallasUnavailableFor(data.email.trim().toLowerCase());
+        toast.error(locale==="ru"?"Подарок не удалось закрепить. Заявка не отправлена. Нажмите ещё раз, если хотите оформить заказ без подарка.":"Das Geschenk konnte nicht reserviert werden. Die Anfrage wurde nicht gesendet. Klicke erneut, wenn du ohne Geschenk bestellen möchtest.");
+        return;
+      }
       if(result?.code==="PROMOCODE_INELIGIBLE" || result?.code==="PROMOCODE_INVALID") {
         setAppliedCode("");form.setValue("discount",0);
         await useCartStore.getState().fetchCartItems();
@@ -281,6 +292,7 @@ export default function Checkout() {
             </div>
 
             <div className="w-full lg:sticky lg:top-5">
+              {pallasUnavailableFor===pallasEmail?<p role="status" className="mb-3 text-sm">{locale==="ru"?"Подарок для этой заявки недоступен.":"Für diese Anfrage ist kein Geschenk verfügbar."}</p>:<PallasGiftLine state={pallasState} goodsCents={Math.round(totalAmount*100)} couponCents={coupon.discountCents} pointsCents={redeemPoints} ru={locale==="ru"}/>}
               <CheckoutSidebar
                 itemLoading={itemLoading}
                 loading={loading || submitting}

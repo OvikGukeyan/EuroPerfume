@@ -1,5 +1,6 @@
 "use client";
 
+import {PallasGiftLine,usePallasOffer} from "./pallas-gift-line";
 import { PromotionCartGroup } from "./promotion-cart-group";
 import { formatMoney } from "@/src/shared/lib/money";
 import { AromaBoxSummary } from "@/src/shared/components/shared/aroma-box-summary";
@@ -34,6 +35,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
   } = useCart();
   const [redirecting, setRedirecting] = React.useState(false);
   const [open,setOpen]=React.useState(false);
+  const pallasState=usePallasOffer(open);
   React.useEffect(()=>{
     const handler=()=>setOpen(true);
     document.addEventListener("europerfume:open-cart",handler);
@@ -102,6 +104,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pt-3">
               <div className="mb-4 rounded-md border border-[#e1e9e5] bg-[#f4f9f7] px-4 py-2"><FreeShippingProgress totalAmount={totalAmount}/></div>
               <AromaBoxSummary items={items} />
+              <PallasGiftLine state={pallasState} goodsCents={Math.round(totalAmount*100)} ru={ru} cart/>
               {promotions.map(p=><PromotionCartGroup key={p.id} promotion={p} items={items} onRemove={removeCartItem} renderItem={item=>(
                                   <CartDrawerItem
                     id={item.id}

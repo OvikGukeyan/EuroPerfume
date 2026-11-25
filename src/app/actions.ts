@@ -1,6 +1,9 @@
 "use server";
 import { canOrderQuantity } from "@/src/shared/lib/orderability";
 
+import {z} from "zod";
+import {PALLAS_GIFT} from "@/src/shared/lib/pallas-gift-rules";
+import {linkPallasGift,pallasGiftCampaignPresent,reservePallasGift} from "@/src/shared/server-lib/pallas-gift";
 import {pointRedemptionQuote} from "@/src/shared/lib/loyalty-arithmetic";
 import { findCouponPolicy,checkCouponPolicy } from "@/src/shared/server-lib/coupon-policies";
 import {randomBytes} from "node:crypto";
@@ -370,6 +373,7 @@ export async function createOrder(data: CheckoutFormValues) {
     const boxCookie=(await cookieStore).get("discoveryBoxIds")?.value;
     // Preview can build before a separate staging migration is applied.
     const promotionTablesReady = await prisma.promotion.findFirst({select:{id:true}}).then(()=>true).catch(()=>false);
+    const pallasEnabled=data.pallasGiftExpected||await pallasGiftCampaignPresent();
     const {order,pricing,userCart,boxLabel,campaignNote,snapshots}=await prisma.$transaction(async tx=>{
       await tx.$queryRaw`SELECT id FROM public."Cart" WHERE token=${cartToken} FOR UPDATE`;
       const userCart = await tx.cart.findFirst({
@@ -424,10 +428,6 @@ export async function createOrder(data: CheckoutFormValues) {
           giftGrossCents:0,qualifiedAt:new Date().toISOString()
         }};
       });
-      const campaignNote=snapshots.map(s=>{
-        const gift=s.snapshot;
-        return `[AKTION ${gift.slug}: ${gift.giftName} ${gift.giftMl} ml GRATIS beilegen]`;
-      }).join("\n");
       const cleanComment=(data.comment||"").split(/\\r?\\n/).filter(line=>!line.startsWith("[AKTION ")).join("\n");
       const boxLabel = boxItems.length ? "Aroma Box · 8 × 2 мл\n" + boxItems.map(item => `${item.product.brand?.name || ""} ${item.product.name} — 2 мл`).join("\n") : "";
       const deliveryCountry = deliveryCountryForCheckout(data);
@@ -483,6 +483,20 @@ export async function createOrder(data: CheckoutFormValues) {
       }
       const totalAmountWithDelivery = pricing.totalGrossCents / 100;
       if (data.quotedTotal !== undefined && Math.round(data.quotedTotal*100) !== pricing.totalGrossCents) throw new Error("PRICES_CHANGED");
+      const giftEmail=z.string().trim().max(254).email().safeParse(data.email);
+      const pallasGift=pallasEnabled&&giftEmail.success
+        ?await reservePallasGift(tx,accountSession?Number(accountSession.id):null,giftEmail.data,pricing,Boolean(data.pallasGiftExpected),true)
+        :null;
+      if(data.pallasGiftExpected&&!pallasGift)throw new Error("PALLAS_GIFT_CHANGED");
+      if(pallasGift) snapshots.push({promotionId:pallasGift.promotionId,snapshot:{
+        slug:PALLAS_GIFT.slug,titleRu:"Подарок к заказу",titleDe:"Geschenk zur Bestellung",
+        productIds:[],requiredMl:0,giftId:PALLAS_GIFT.productId,giftName:PALLAS_GIFT.name,giftMl:PALLAS_GIFT.ml,
+        giftGrossCents:0,qualifiedAt:orderedAt.toISOString()
+      }});
+      const campaignNote=snapshots.map(s=>{
+        const gift=s.snapshot;
+        return `[AKTION ${gift.slug}: ${gift.giftName} ${gift.giftMl} ml GRATIS beilegen]`;
+      }).join("\n");
       const fullName = data.firstName + " " + data.lastName;
       const deliveryFullNmae =
         data.deliveryFirstName && data.deliveryFirstName.length > 0
@@ -542,6 +556,7 @@ export async function createOrder(data: CheckoutFormValues) {
         },
       });
 
+      if(pallasGift)await linkPallasGift(tx,order.id,pallasGift);
       if(requestedPoints && accountSession){
         const uid=Number(accountSession.id);
         const debit=await tx.loyaltyWallet.updateMany({where:{userId:uid,balancePoints:{gte:requestedPoints}},data:{balancePoints:{decrement:requestedPoints}}});
@@ -630,6 +645,7 @@ export async function createOrder(data: CheckoutFormValues) {
     if(error instanceof Error && error.message==="PROMOCODE_INVALID") return {code:"PROMOCODE_INVALID"} as const;
     if(error instanceof Error && error.message==="CAMPAIGN_INVALID") return {code:"CAMPAIGN_INVALID"} as const;
     if(error instanceof Error && ["LOYALTY_CHANGED","LOYALTY_INVALID","LOYALTY_DISABLED"].includes(error.message))return {code:error.message} as const;
+    if(error instanceof Error && error.message==="PALLAS_GIFT_CHANGED") return {code:"PALLAS_GIFT_CHANGED"} as const;
     if(error instanceof Error && error.message==="PRICES_CHANGED") return {code:"PRICES_CHANGED"} as const;
     if(error instanceof Error && error.message.includes("Not enough full bottles in stock")) return {code:"BOTTLE_STOCK"} as const;
     console.error("[createOrder] Server error", error);
