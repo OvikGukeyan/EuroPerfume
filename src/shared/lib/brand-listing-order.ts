@@ -7,7 +7,7 @@ type BrandListingProduct=OrderableProduct & {
  saleBottleOnly?:boolean;
 };
 
-export function useBrandDefaultOrder(brands:readonly number[]|undefined,orderBy:{name?:string;price?:string}|null) {
+export function hasDefaultBrandOrder(brands:readonly number[]|undefined,orderBy:{name?:string;price?:string}|null) {
  return Boolean(brands?.some(id=>Number.isSafeInteger(id)&&id>0) && !orderBy?.name && !orderBy?.price);
 }
 

@@ -1,4 +1,4 @@
-import {compareBrandProducts,isOrderableBrandDecant,useBrandDefaultOrder} from '../src/shared/lib/brand-listing-order';
+import {compareBrandProducts,isOrderableBrandDecant,hasDefaultBrandOrder} from '../src/shared/lib/brand-listing-order';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { publicBottle, withBottleOptions, fragranceName } from '../src/shared/lib/full-bottle';
@@ -71,9 +71,9 @@ test('default brand priority is applied prior to the page boundary; manual sorti
  assert.deepEqual(all.slice(0,24).slice(0,2).map(x=>x.id),[2,1]);
  assert.equal(all.slice(24).some(isOrderableBrandDecant),false);
  assert.equal(new Set(all.map(x=>x.id)).size,rows.length);
- assert.equal(useBrandDefaultOrder([221],{}),true);
- assert.equal(useBrandDefaultOrder([221,170],{}),true);
- assert.equal(useBrandDefaultOrder([221],{price:'asc'}),false);
- assert.equal(useBrandDefaultOrder([221],{name:'asc'}),false);
- assert.equal(useBrandDefaultOrder(undefined,{}),false);
+ assert.equal(hasDefaultBrandOrder([221],{}),true);
+ assert.equal(hasDefaultBrandOrder([221,170],{}),true);
+ assert.equal(hasDefaultBrandOrder([221],{price:'asc'}),false);
+ assert.equal(hasDefaultBrandOrder([221],{name:'asc'}),false);
+ assert.equal(hasDefaultBrandOrder(undefined,{}),false);
 });

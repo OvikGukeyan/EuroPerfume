@@ -1,4 +1,4 @@
-import { compareBrandProducts, useBrandDefaultOrder } from "../lib/brand-listing-order";
+import { compareBrandProducts, hasDefaultBrandOrder } from "../lib/brand-listing-order";
 import { cataloguePrice } from "../lib/catalogue-price";
 import { fullBottleInclude, withBottleOptions } from "../lib/full-bottle";
 import "server-only";
@@ -89,7 +89,7 @@ export const findProducts = async (
     const priceFrom = Number((await params).priceFrom) || DEFAULT_MIN_PRICE;
     const priceTo = Number((await params).priceTo) || DEFAULT_MAX_PRICE;
     const orderBy = JSON.parse((await params).orderBy || "{}") ?? {};
-    const brandDefault=useBrandDefaultOrder(brands,orderBy);
+    const brandDefault=hasDefaultBrandOrder(brands,orderBy);
 
     const categoryId = Number((await params).category);
     const productGroupId = Number((await params).productGroup);
