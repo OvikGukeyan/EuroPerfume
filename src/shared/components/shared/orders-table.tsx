@@ -21,7 +21,7 @@ import {
 } from "../ui/select";
 import { useOrders } from "@/src/shared/hooks";
 import { useRouter } from "@/src/i18n/navigation";
-import { OrderStatuses } from "@/prisma/constants";
+import { useLocale } from "use-intl";
 import { convertDate } from "../../lib";
 
 type Props = {
@@ -32,8 +32,16 @@ export const OrdersTable: FC<Props> = ({ className }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const { orders, removeOrder, changeOrderStatus, loading } = useOrders();
   const router = useRouter();
+  const ru = useLocale() === "ru";
+  const statusHeading = ru ? "Статус" : "Status";
+  const statusLabels = {
+    [OrderStatus.NEW]: ru ? "Новый" : "Neu",
+    [OrderStatus.PENDING]: ru ? "В обработке" : "In Bearbeitung",
+    [OrderStatus.SUCCEEDED]: ru ? "Отправлен" : "Versendet",
+    [OrderStatus.CENCELLED]: ru ? "Отменён" : "Storniert",
+  };
   return (
-    <div className={cn("", className)}>
+    <div className={cn("min-w-0", className)}>
       <div
         className={cn(
           "flex rounded-2xl flex-1 justify-between relative h-12 z-30",
@@ -57,7 +65,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
             <TableHead>Имя</TableHead>
             <TableHead>Телефон</TableHead>
             <TableHead>Способ связи</TableHead>
-            <TableHead>Статус</TableHead>
+            <TableHead className="w-44 min-w-44 whitespace-nowrap">{statusHeading}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -85,7 +93,7 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                 <TableCell><div className="flex flex-col gap-1"><span>{order.fullName}</span>{(order.promotions||[]).map(p=><span key={p.slug} className="w-fit rounded bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-900">🎁 {p.titleRu} · {p.giftName} {p.giftMl} мл</span>)}</div></TableCell>
                 <TableCell>{order.phone}</TableCell>
                 <TableCell>{order.contactForm}</TableCell>
-                <TableCell>
+                <TableCell className="w-44 min-w-44">
                   <Select
                     value={order.status}
                     onValueChange={(value) => {
@@ -93,26 +101,17 @@ export const OrdersTable: FC<Props> = ({ className }) => {
                       void changeOrderStatus(order.id, value as OrderStatus);
                     }}
                   >
-                    <SelectTrigger onClick={(e) => e.stopPropagation()}>
-                      <SelectValue
-                        placeholder={
-                          OrderStatuses[
-                            (order.status as keyof typeof OrderStatuses) ||
-                              "NEW"
-                          ]
-                        }
-                      />
+                    <SelectTrigger
+                      aria-label={`${statusHeading}: ${statusLabels[order.status]}`}
+                      className="gap-2 whitespace-nowrap [&>span]:line-clamp-none [&>svg]:shrink-0"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <SelectValue>{statusLabels[order.status]}</SelectValue>
                     </SelectTrigger>
                     <SelectContent onClick={(e) => e.stopPropagation()}>
-                      <SelectItem value={OrderStatus.PENDING}>
-                        В обработке
-                      </SelectItem>
-                      <SelectItem value={OrderStatus.SUCCEEDED}>
-                        Отправлен
-                      </SelectItem>
-                      <SelectItem value={OrderStatus.CENCELLED}>
-                        Отменен
-                      </SelectItem>
+                      <SelectItem value={OrderStatus.PENDING}>{statusLabels[OrderStatus.PENDING]}</SelectItem>
+                      <SelectItem value={OrderStatus.SUCCEEDED}>{statusLabels[OrderStatus.SUCCEEDED]}</SelectItem>
+                      <SelectItem value={OrderStatus.CENCELLED}>{statusLabels[OrderStatus.CENCELLED]}</SelectItem>
                     </SelectContent>
                   </Select>
                 </TableCell>
