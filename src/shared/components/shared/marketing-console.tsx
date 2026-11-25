@@ -4,6 +4,7 @@ import {useState} from "react";
 import {useLocale} from "next-intl";
 import {useRouter} from "next/navigation";
 import {MailPlus, Send, Pause, Play, ShieldCheck} from "lucide-react";
+import {PALLAS_NEWSLETTER_ID} from "@/src/shared/lib/pallas-promo-newsletter";
 type Campaign={id:string;name:string;segment:string;status:string;subjectRu:string;subjectDe:string;sent:number;total:number};
 export function MarketingConsole({ready,counts,campaigns}:{
  ready:boolean;counts:{all:number;noOrders:number;withOrders:number};campaigns:Campaign[]
@@ -27,7 +28,12 @@ export function MarketingConsole({ready,counts,campaigns}:{
  return <div className="grid gap-6 xl:grid-cols-[minmax(300px,390px)_minmax(0,1fr)]">
   <section className="rounded-lg border border-[#e8e3df] bg-[#faf9f7] p-5">
    <h2 className="flex items-center gap-2 text-lg font-medium"><MailPlus size={19}/>{ru?"Новая рассылка":"Neuer Newsletter"}</h2>
-   <p className="mt-2 text-xs leading-5 text-[#656565]">{ru?"Только подтверждённые подписчики EURO PERFUME на Vercel. Все письма отправляются на немецком языке. Отправка по 5 писем за нажатие и только после активации кампании.":"Nur bestätigte Vercel-Newsletter-Abonnenten. Alle E-Mails auf Deutsch. Versand erfolgt manuell in Chargen zu 5."}</p>
+   <p className="mt-2 text-xs leading-5 text-[#656565]">{ru?"Только подтверждённые подписчики EURO PERFUME на Vercel. Обычные письма отправляются на немецком языке. Отправка по 5 писем за нажатие и только после активации кампании.":"Nur bestätigte Vercel-Newsletter-Abonnenten. Standard-E-Mails auf Deutsch. Versand erfolgt manuell in Chargen zu 5."}</p>
+   {!campaigns.some(c=>c.id===PALLAS_NEWSLETTER_ID)&&<button type="button" disabled={busy||!ready}
+    className="mt-4 min-h-10 rounded-md border border-[#ded9d1] px-3 text-xs disabled:opacity-50"
+    onClick={()=>{if(confirm(ru?"Подготовить двуязычный черновик Pallas Athene? Письма не отправляются.":"Zweisprachigen Pallas-Athene-Entwurf erstellen? Es wird keine E-Mail versendet."))void send({action:"create_pallas_draft"})}}>
+    {ru?"Черновик Pallas Athene (RU/DE)":"Pallas-Athene-Entwurf (RU/DE)"}
+   </button>}
    <form className="mt-5 grid gap-3" onSubmit={e=>{e.preventDefault();void send({action:"create",...form,subjectRu:form.subjectDe,bodyRu:form.bodyDe})}}>
     <label className="grid gap-1 text-xs">{ru?"Название кампании":"Kampagnenname"}{input("name")}</label>
     <label className="grid gap-1 text-xs">{ru?"Аудитория":"Zielgruppe"}<select className="h-11 rounded-md border bg-white px-3 text-sm" value={form.segment} onChange={e=>setForm(v=>({...v,segment:e.target.value}))}>
