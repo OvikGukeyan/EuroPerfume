@@ -5,6 +5,7 @@ import { CreateCartItemValues, CartPromotionSummary } from '../services/dto/cart
 
 type ReturnPeops = {
     totalAmount: number;
+    minimumOrderCents: number;
     items: CartStateItem[];
     promotions: CartPromotionSummary[];
     loading: boolean;

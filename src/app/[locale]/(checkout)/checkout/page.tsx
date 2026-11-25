@@ -25,6 +25,8 @@ import {
   CheckoutSidebar,
   Recommendations,
 } from "@/src/shared/components";
+import { SHOP_SETTINGS } from "@/src/config/shop";
+import { meetsMinimumOrder } from "@/src/shared/lib/minimum-order";
 import { useCartStore } from "@/src/shared/store/cart";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, Link } from "@/src/i18n/navigation";
@@ -32,6 +34,7 @@ import { ArrowLeft, MessageCircle, ShoppingBag, Truck } from "lucide-react";
 
 export default function Checkout() {
   const locale=useLocale();
+  const sidebarText=useTranslations("Checkout.sidebar");
   const [walletBalance,setWalletBalance]=useState(0);
   const [loyaltyAvailable,setLoyaltyAvailable]=useState(false);
   const [applyPoints,setApplyPoints]=useState(false);
@@ -40,6 +43,7 @@ export default function Checkout() {
   const [promoError, setPromoError] = useState<string | null>(null);
   const {
     totalAmount,
+    minimumOrderCents,
     items,
     promotions,
     updateItemQuantity,
@@ -140,9 +144,19 @@ export default function Checkout() {
 
 
   const onSubmit = async (data: CheckoutFormValues) => {
+    if (loading || itemLoading || submitting) return;
+    if (!meetsMinimumOrder(minimumOrderCents)) {
+      toast.error(sidebarText("minOrder", {amount:SHOP_SETTINGS.MIN_ORDER_EUR}));
+      return;
+    }
     try {
       setSubmitting(true);
       const result=await createOrder({ ...data, redeemPoints, promocode: coupon.discountCents>0 ? appliedCode : "", quotedTotal: totalAmountWithDelivery, pallasGiftExpected:quotedPallas });
+      if(result?.code==="MINIMUM_ORDER") {
+        await useCartStore.getState().fetchCartItems();
+        toast.error(sidebarText("minOrder", {amount:SHOP_SETTINGS.MIN_ORDER_EUR}));
+        return;
+      }
       if(result?.code==="PALLAS_GIFT_CHANGED") {
         setPallasUnavailableFor(data.email.trim().toLowerCase());
         toast.error(locale==="ru"?"Подарок не удалось закрепить. Заявка не отправлена. Нажмите ещё раз, если хотите оформить заказ без подарка.":"Das Geschenk konnte nicht reserviert werden. Die Anfrage wurde nicht gesendet. Klicke erneut, wenn du ohne Geschenk bestellen möchtest.");
@@ -296,6 +310,7 @@ export default function Checkout() {
               <CheckoutSidebar
                 itemLoading={itemLoading}
                 loading={loading || submitting}
+                minimumOrderMet={meetsMinimumOrder(minimumOrderCents)}
                 totalAmount={totalAmount}
                 deliveryPrice={deliveryPrice}
                 totalAmountWithDelivery={totalAmountWithDelivery}

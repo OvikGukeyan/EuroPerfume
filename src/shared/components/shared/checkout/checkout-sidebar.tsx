@@ -15,17 +15,16 @@ import { SHOP_SETTINGS } from "@/src/config/shop";
 
 interface Props {
  className?:string;loading?:boolean;itemLoading?:boolean;totalAmount:number;
- deliveryPrice:number;totalAmountWithDelivery:number;
+ minimumOrderMet:boolean;deliveryPrice:number;totalAmountWithDelivery:number;
  control:Control<CheckoutFormValues>;onPromocodeSubmit:()=>void;
  discount?:number;discountAmount?:number;hasCouponExclusions?:boolean;promoError:string|null;
  walletBalance:number;redemptionEnabled:boolean;redeemPoints:number;applyPoints:boolean;onApplyPointsChange:(checked:boolean)=>void;
 }
-export const CheckoutSidebar:FC<Props>=({className,loading,itemLoading,totalAmount,deliveryPrice,totalAmountWithDelivery,control,onPromocodeSubmit,discount,discountAmount,hasCouponExclusions,promoError,walletBalance,redemptionEnabled,redeemPoints,applyPoints,onApplyPointsChange})=>{
+export const CheckoutSidebar:FC<Props>=({className,loading,itemLoading,totalAmount,minimumOrderMet,deliveryPrice,totalAmountWithDelivery,control,onPromocodeSubmit,discount,discountAmount,hasCouponExclusions,promoError,walletBalance,redemptionEnabled,redeemPoints,applyPoints,onApplyPointsChange})=>{
  const deliveryCountry=useWatch({control,name:"deliveryCountry"});
  const billingCountry=useWatch({control,name:"country"});
  const shippingMethod=useWatch({control,name:"shippingMethod"});
  const country=deliveryCountryForCheckout({shippingMethod,deliveryCountry,country:billingCountry||"DEU"});
- const isMinOrderAmount=totalAmount>=SHOP_SETTINGS.MIN_ORDER_EUR;
  const ru=useLocale()==="ru";
  const t=useTranslations("Checkout.sidebar");
  return <WhiteBlock className={`overflow-hidden rounded-md border-[#e5e5e5] shadow-none ${className||""}`} contentClassName="p-0">
@@ -58,7 +57,10 @@ export const CheckoutSidebar:FC<Props>=({className,loading,itemLoading,totalAmou
     </div>
     <div className="mt-2"><TaxPriceNotice gross={totalAmountWithDelivery} country={country}/></div>
    </div>
-   <Button loading={loading||itemLoading} type="submit" disabled={!totalAmount||!isMinOrderAmount}
+   <p id="checkout-minimum-order" className={loading||minimumOrderMet?"text-sm text-neutral-600":"text-sm text-red-700"}>
+    {t("minOrder",{amount:SHOP_SETTINGS.MIN_ORDER_EUR})}
+   </p>
+   <Button loading={loading||itemLoading} type="submit" disabled={loading||itemLoading||!minimumOrderMet} aria-describedby="checkout-minimum-order"
     className="mt-1 flex min-h-[54px] w-full items-center justify-center rounded-sm bg-[#242a34] text-sm font-semibold tracking-wide text-white hover:bg-[#39404b]">
     {t("submitButton")} <ArrowRight className="ml-2 h-4 w-4"/>
    </Button>
@@ -66,7 +68,6 @@ export const CheckoutSidebar:FC<Props>=({className,loading,itemLoading,totalAmou
     <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0"/>
     <span>{ru?"Это заявка на заказ. Онлайн-оплата не требуется — мы свяжемся с вами выбранным способом.":"Dies ist eine Bestellanfrage ohne Online-Zahlung. Wir kontaktieren dich auf dem gewählten Weg."}</span>
    </div>
-   {!isMinOrderAmount&&<p className="text-sm text-red-600">{t("minOrder",{amount:SHOP_SETTINGS.MIN_ORDER_EUR})}</p>}
    <details className="group rounded-md border border-[#e5e5e5] bg-white" open={Boolean(discountAmount&&discountAmount>0)}>
     <summary className="flex min-h-12 cursor-pointer items-center justify-between gap-3 px-3 text-xs font-medium uppercase tracking-wide text-[#4d4d4d]">
      <span className="flex items-center gap-2"><TicketPercent size={16}/>{ru?"Промокод или купон":"Rabattcode oder Gutschein"}</span>

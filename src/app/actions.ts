@@ -52,6 +52,7 @@ import { DhlCredantials } from "../shared/components/shared/dhl-button";
 import { euCountriesAlpha3 } from "../shared/lib/calc-total-amount-with-delivery";
 import { createProtectedInvoice } from "../shared/server-lib/create-protected-invoice";
 import prisma from "@/prisma/prisma-client";
+import { meetsMinimumOrder, minimumOrderGoodsCents } from "../shared/lib/minimum-order";
 import { capturePricing, deliveryCountryForCheckout } from "../shared/lib/tax";
 
 import { CreateSupplyInput } from "./[locale]/(dashboard)/supply/page";
@@ -404,6 +405,10 @@ export async function createOrder(data: CheckoutFormValues) {
         throw new Error("Cart is empty!");
       }
 
+      if (!meetsMinimumOrder(minimumOrderGoodsCents(userCart.items))) {
+        throw new Error("MINIMUM_ORDER");
+      }
+
       const boxItems = aromaBoxItems(boxCookie, userCart.items);
       const boxItemIds = new Set(boxItems.map(item => item.id));
       if (userCart.items.some(i=>!canOrderQuantity(i.product,i.quantity,i.variationId))) throw new Error("Not enough full bottles in stock");
@@ -646,6 +651,7 @@ export async function createOrder(data: CheckoutFormValues) {
     if(error instanceof Error && error.message==="CAMPAIGN_INVALID") return {code:"CAMPAIGN_INVALID"} as const;
     if(error instanceof Error && ["LOYALTY_CHANGED","LOYALTY_INVALID","LOYALTY_DISABLED"].includes(error.message))return {code:error.message} as const;
     if(error instanceof Error && error.message==="PALLAS_GIFT_CHANGED") return {code:"PALLAS_GIFT_CHANGED"} as const;
+    if(error instanceof Error && error.message==="MINIMUM_ORDER") return {code:"MINIMUM_ORDER"} as const;
     if(error instanceof Error && error.message==="PRICES_CHANGED") return {code:"PRICES_CHANGED"} as const;
     if(error instanceof Error && error.message.includes("Not enough full bottles in stock")) return {code:"BOTTLE_STOCK"} as const;
     console.error("[createOrder] Server error", error);

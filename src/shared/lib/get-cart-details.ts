@@ -1,4 +1,5 @@
 import { dayOfferActive, offerPrices } from "./day-offer";
+import { minimumOrderGoodsCents } from "./minimum-order";
 import { roundMoney } from "./money";
 import { Brand, ProductGroup } from "@prisma/client";
 import { CartDTO, CartPromotionSummary } from "../services/dto/cart.dto";
@@ -26,6 +27,7 @@ interface ReturnProps {
   items: CartStateItem[];
   promotions: CartPromotionSummary[];
   totalAmount: number;
+  minimumOrderCents: number;
   offerRefreshAt: number | null;
 }
 export const getCartDetails = (data: CartDTO): ReturnProps => {
@@ -54,6 +56,7 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
   })) as CartStateItem[];
   const boundaries = data.items.flatMap(i => [i.product.dayOfferStartsAt, i.product.dayOfferEndsAt]).filter(Boolean).map(d => new Date(d!).getTime()).filter(t => t > Date.now());
   return {
+    minimumOrderCents: minimumOrderGoodsCents(data.items),
     offerRefreshAt: boundaries.length ? Math.min(...boundaries) : null,
     totalAmount: roundMoney(items.reduce((sum, item) => sum + item.price, 0)),
     items,

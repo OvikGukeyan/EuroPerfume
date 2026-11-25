@@ -15,6 +15,7 @@ export interface CartState {
   itemLoading: boolean;
   error: boolean;
   totalAmount: number;
+  minimumOrderCents: number;
   items: CartStateItem[];
   promotions: CartPromotionSummary[];
 
@@ -32,6 +33,7 @@ export const useCartStore = create<CartState>((set, get) => ({
   itemLoading: false,
   error: false,
   totalAmount: 0,
+  minimumOrderCents: 0,
 
   removeCartItem: async (id: number) => {
     try {
