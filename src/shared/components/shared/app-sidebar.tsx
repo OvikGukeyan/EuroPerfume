@@ -29,6 +29,7 @@ export function AppSidebar({className}:Props){
   ]},
   {ru:"Продажи и склад",de:"Verkauf & Lager",items:[
    {ru:"Заказы",de:"Bestellungen",href:"/orders",icon:ShoppingBag},
+   {ru:"Счета",de:"Rechnungen",href:"/invoices",icon:FileText},
    {ru:"Поставка",de:"Wareneingang",href:"/supply",icon:Truck},
   ]},
   {ru:"Каталог и акции",de:"Katalog & Aktionen",items:[
