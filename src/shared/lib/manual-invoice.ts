@@ -26,7 +26,7 @@ export const manualInvoiceInput = z.object({
 });
 export type ManualInvoiceInput = z.infer<typeof manualInvoiceInput>;
 export type ManualInvoiceCatalogItem = {
-  id: number; title: string; onTap: boolean; price: number;
+  id: number; title: string; onTap: boolean; price: number; imageUrl?: string | null;
   variations: { id: number; name: string }[];
 };
 

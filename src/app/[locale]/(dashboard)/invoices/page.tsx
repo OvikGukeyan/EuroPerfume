@@ -21,6 +21,7 @@ export default async function InvoiceArchive({ params, searchParams }: {
   const month = period.slice(5, 7);
   const query = typeof number === "string" ? number.trim().slice(0, 40) : "";
   const showInvoices = Boolean(month || query);
+  const paginate = !month;
   const months = await prisma.$queryRaw<{ period: string; count: number }[]>`
     SELECT to_char(("issuedAt" AT TIME ZONE 'UTC') AT TIME ZONE 'Europe/Berlin', 'YYYY-MM') AS period,
            count(*)::int AS count
@@ -41,8 +42,7 @@ export default async function InvoiceArchive({ params, searchParams }: {
   const invoices = showInvoices ? await prisma.invoice.findMany({
     where: { ...(dateRange ? { issuedAt: dateRange } : {}), ...(query ? { invoiceNumber: { contains: query, mode: "insensitive" as const } } : {}) },
     orderBy: [{ issuedAt: "desc" }, { id: "desc" }],
-    skip: (page - 1) * PAGE_SIZE,
-    take: PAGE_SIZE + 1,
+    ...(paginate ? { skip: (page - 1) * PAGE_SIZE, take: PAGE_SIZE + 1 } : {}),
     select: {
       id: true, invoiceNumber: true, issuedAt: true, orderId: true,
       order: { select: { fullName: true, token: true } },
@@ -86,7 +86,7 @@ export default async function InvoiceArchive({ params, searchParams }: {
     </section> : <>
     {!invoices.length && <p>{tr("Счета не найдены.", "Keine Rechnungen gefunden.")}</p>}
     {!!invoices.length && <ul className="divide-y rounded-lg border bg-white">
-      {invoices.slice(0, PAGE_SIZE).map(invoice => <li className="flex flex-wrap items-center justify-between gap-3 p-4 text-sm" key={invoice.id}>
+      {(paginate ? invoices.slice(0, PAGE_SIZE) : invoices).map(invoice => <li className="flex flex-wrap items-center justify-between gap-3 p-4 text-sm" key={invoice.id}>
         <div>
           <p className="font-semibold">{invoice.invoiceNumber} <span className="font-normal text-neutral-600">· {dates.format(invoice.issuedAt)}</span></p>
           <p className="break-words text-neutral-600">{invoice.order.fullName} · {invoice.order.token.startsWith(MANUAL_ORDER_PREFIX) ? tr("Вручную", "Manuell") : tr("Сайт", "Shop")}</p>
@@ -98,9 +98,9 @@ export default async function InvoiceArchive({ params, searchParams }: {
         </div>
       </li>)}
     </ul>}
-    <nav className="flex gap-5 text-sm" aria-label={tr("Страницы архива", "Archivseiten")}>
+    {paginate && <nav className="flex gap-5 text-sm" aria-label={tr("Страницы архива", "Archivseiten")}>
       {page > 1 && <Link className="underline" href={paginationLink(page - 1)}>{tr("← Назад", "← Zurück")}</Link>}
       {invoices.length > PAGE_SIZE && <Link className="underline" href={paginationLink(page + 1)}>{tr("Далее →", "Weiter →")}</Link>}
-    </nav></>}
+    </nav>}</>}
   </div>;
 }

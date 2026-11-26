@@ -1,6 +1,8 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+import Image from "next/image";
+import { FlaskConical, Search } from "lucide-react";
 import { Link } from "@/src/i18n/navigation";
 import { linePrice } from "@/src/shared/lib/day-offer";
 import { euCountriesAlpha3 } from "@/src/shared/lib/calc-total-amount-with-delivery";
@@ -20,10 +22,9 @@ export default function ManualInvoiceForm({ ru, today }: { ru: boolean; today: s
   const locale = ru ? "ru-RU" : "de-DE";
   const money = (cents: number) => new Intl.NumberFormat(locale, { style: "currency", currency: "EUR" }).format(cents / 100);
   const [query, setQuery] = useState("");
-  const [results, setResults] = useState<ManualInvoiceCatalogItem[]>([]);
-  const [searching, setSearching] = useState(false);
-  const [searched, setSearched] = useState(false);
-  const [searchError, setSearchError] = useState(false);
+  const [lookup, setLookup] = useState<{ query: string; items: ManualInvoiceCatalogItem[]; failed: boolean } | null>(null);
+  const [searchVersion, setSearchVersion] = useState(0);
+  const searchBox = useRef<HTMLInputElement>(null);
   const [rows, setRows] = useState<Row[]>([]);
   const [shipping, setShipping] = useState("0.00");
   const [review, setReview] = useState<ManualInvoiceInput | null>(null);
@@ -35,21 +36,29 @@ export default function ManualInvoiceForm({ ru, today }: { ru: boolean; today: s
   const requestId = useRef("");
   const issueLock = useRef(false);
 
-  async function search(event: FormEvent) {
-    event.preventDefault();
-    const text = query.trim();
-    if (text.length < 2 || searching) return;
-    setSearching(true); setSearchError(false); setSearched(false); setResults([]);
-    try { setResults(await searchInvoiceCatalog(text)); }
-    catch { setSearchError(true); }
-    finally { setSearching(false); setSearched(true); }
-  }
+  const searchTerm = query.trim();
+  const canSearch = searchTerm.length >= 2 || /^\d$/.test(searchTerm);
+  const current = canSearch && lookup?.query === searchTerm ? lookup : null;
+  useEffect(() => {
+    if (!canSearch || review || receipt) return;
+    let active = true;
+    const timer = window.setTimeout(async () => {
+      try {
+        const items = await searchInvoiceCatalog(searchTerm);
+        if (active) setLookup({ query: searchTerm, items, failed: false });
+      } catch {
+        if (active) setLookup({ query: searchTerm, items: [], failed: true });
+      }
+    }, 250);
+    return () => { active = false; window.clearTimeout(timer); };
+  }, [canSearch, searchTerm, searchVersion, review, receipt]);
   function add(item: ManualInvoiceCatalogItem) {
     const key = ++rowKey.current;
     setRows(previous => previous.length >= 30 ? previous : [...previous, {
       key, item, variation: item.variations.length === 1 ? String(item.variations[0].id) : "",
       quantity: "1", amount: price(item, "1"), edited: false,
     }]);
+    setQuery(""); setLookup(null); searchBox.current?.focus();
   }
   function update(key: number, patch: Partial<Row>) {
     setRows(previous => previous.map(row => row.key !== key ? row : { ...row, ...patch }));
@@ -122,18 +131,38 @@ export default function ManualInvoiceForm({ ru, today }: { ru: boolean; today: s
       </div>
     </section> : <>
       <section className="space-y-3 rounded-lg border bg-white p-4" hidden={!!review}>
-        <form onSubmit={search} className="flex flex-wrap items-end gap-2">
-          <label className="flex-1 min-w-40 text-sm">{tr("Аромат: название, бренд или ID", "Duft suchen: Name, Marke oder ID")}
-            <input className={field} value={query} onChange={event => setQuery(event.currentTarget.value)} maxLength={100} minLength={2} required />
-          </label>
-          <button className={button} disabled={searching}>{searching ? tr("Поиск…", "Suche…") : tr("Найти", "Suchen")}</button>
-        </form>
-        {searchError && <p role="alert" className="text-red-700">{tr("Поиск недоступен. Повторите попытку.", "Suche nicht verfügbar. Bitte erneut versuchen.")}</p>}
-        {searched && !searchError && !results.length && <p role="status" className="text-sm">{tr("Ничего не найдено", "Keine Artikel gefunden")}</p>}
-        {!!results.length && <ul className="max-h-64 overflow-auto divide-y">{results.map(item => <li className="flex items-center justify-between gap-3 py-2 text-sm" key={item.id}>
-          <span>{item.title} <small className="text-neutral-600">#{item.id} · {item.onTap ? tr("распив", "Abfüllung") : tr("штуки", "Stück")}</small></span>
-          <button type="button" className="font-semibold underline" disabled={rows.length >= 30} onClick={() => add(item)}>{tr("Добавить", "Hinzufügen")}</button>
-        </li>)}</ul>}
+        <label className="block text-sm">
+          {tr("Добавить аромат по названию, бренду или ID", "Duft hinzufügen: Name, Marke oder ID")}
+          <span className="relative mt-1 block">
+            <Search aria-hidden size={17} className="pointer-events-none absolute left-3 top-3 text-neutral-500" />
+            <input ref={searchBox} className={field + " pl-9"} type="search" maxLength={100} autoComplete="off"
+              placeholder={tr("Начни вводить название…", "Namen eingeben…")} value={query}
+              onChange={event => { setQuery(event.currentTarget.value); setLookup(null); }} />
+          </span>
+        </label>
+        <div aria-live="polite" aria-atomic="true" className="text-sm text-neutral-600">
+          {canSearch && !current ? tr("Ищу…", "Suche…") : current?.failed ? tr("Не удалось загрузить список.", "Die Liste konnte nicht geladen werden.") :
+            current?.items.length === 0 ? tr("Ничего не найдено", "Keine Artikel gefunden") : ""}
+        </div>
+        {current?.failed && <button type="button" className="text-sm underline" onClick={() => { setLookup(null); setSearchVersion(v => v + 1); }}>{tr("Повторить поиск", "Suche wiederholen")}</button>}
+        {!!current?.items.length && <ul className="max-h-80 overflow-auto divide-y rounded-md border" aria-label={tr("Найденные ароматы", "Gefundene Düfte")}>
+          {current.items.map(item => <li key={item.id}>
+            <button type="button" className="flex w-full items-center gap-3 p-2.5 text-left text-sm hover:bg-neutral-50 focus-visible:ring-2 focus-visible:ring-inset disabled:opacity-50"
+              disabled={rows.length >= 30} onClick={() => add(item)}>
+              <span className="relative grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-md bg-neutral-100 text-neutral-400">
+                <FlaskConical aria-hidden size={17} />
+                {item.imageUrl && <Image src={item.imageUrl} alt="" width={48} height={48} unoptimized
+                  className="absolute inset-0 h-full w-full bg-neutral-100 object-contain"
+                  onError={event => { event.currentTarget.hidden = true; }} />}
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block font-medium">{item.title}</span>
+                <small className="block text-neutral-600">#{item.id} · {item.onTap ? tr("отливант", "Abfüllung") : tr("флакон / шт.", "Flakon / Stück")}</small>
+              </span>
+              <span aria-hidden className="shrink-0 font-semibold">＋</span>
+            </button>
+          </li>)}
+        </ul>}
       </section>
       <form onSubmit={preview} className="space-y-4" hidden={!!review}>
         <fieldset className="space-y-3 rounded-lg border bg-white p-4">
