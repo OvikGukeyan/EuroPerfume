@@ -24,7 +24,7 @@ function toCatalogItem(p: CatalogRow): ManualInvoiceCatalogItem {
 export async function lookupManualInvoiceProducts(rawQuery: string) {
   await requireInvoiceAdmin();
   const query = typeof rawQuery === "string" ? rawQuery.trim().slice(0, 100) : "";
-  if (query.length < 2) return [];
+  if (!query || (query.length < 2 && !/^\d$/.test(query))) return [];
   const rows = await prisma.product.findMany({
     where: {
       OR: [
@@ -42,9 +42,18 @@ export async function lookupManualInvoiceProducts(rawQuery: string) {
         ],
       ],
     },
-    select: catalogFields, take: 25, orderBy: [{ name: "asc" }, { id: "asc" }],
+    select: {
+      ...catalogFields, imageUrl: true,
+      variations: { ...catalogFields.variations, select: { ...catalogFields.variations.select, imageUrl: true } },
+    },
+    take: 25, orderBy: [{ name: "asc" }, { id: "asc" }],
   });
-  return rows.map(toCatalogItem);
+  return rows.map(row => {
+    const imageUrl = [...row.imageUrl, ...row.variations.map(variation => variation.imageUrl)]
+      .find(src => src.startsWith("https://") || (src.startsWith("/") && !src.startsWith("//"))) ?? null;
+    const { id, onTap, price, title, variations } = toCatalogItem(row);
+    return { id, onTap, price, title, variations: variations.map(({ id, name }) => ({ id, name })), imageUrl };
+  });
 }
 
 export async function issueManualInvoice(raw: unknown) {
