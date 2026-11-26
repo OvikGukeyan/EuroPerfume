@@ -1,6 +1,7 @@
 /** 27 November 2026, midnight to midnight in Europe/Berlin (CET). */
 export const BLACK_FRIDAY = {
-  code: "BLACK15", discount: 15, minimumEligibleCents: 8_000,
+  code: "BLACK15", discount: 15, minimumEligibleCents: 0,
+  tiers: [{ minimum: 8_000, percent: 15 }, { minimum: 5_000, percent: 10 }, { minimum: 0, percent: 5 }],
   bannerStartsAt: "2026-11-26T18:00:00+01:00",
   startsAt: "2026-11-27T00:00:00+01:00",
   endsAt: "2026-11-28T00:00:00+01:00",
@@ -15,11 +16,13 @@ export function isBlackFridayCode(code: unknown): boolean {
 export function blackFridayActive(now = Date.now()): boolean {
   return now >= Date.parse(BLACK_FRIDAY.startsAt) && now < Date.parse(BLACK_FRIDAY.endsAt);
 }
+export function blackFridayPercent(eligibleCents: number): number {
+  return eligibleCents > 0 ? BLACK_FRIDAY.tiers.find(tier => eligibleCents >= tier.minimum)?.percent ?? 0 : 0;
+}
 export function blackFridayMinimumMessage(ru: boolean): string {
-  const amount = BLACK_FRIDAY.minimumEligibleCents / 100;
   return ru
-    ? `BLACK15 действует от ${amount} € на неакционные товары. Доставка и акционные товары не учитываются.`
-    : `BLACK15 gilt ab ${amount} € Warenwert ohne Aktionsartikel und Versandkosten.`;
+    ? "BLACK15 действует только на неакционные товары. Доставка в расчёт не входит."
+    : "BLACK15 gilt nur für nicht reduzierte Artikel. Versandkosten zählen nicht mit.";
 }
 export function couponDiscountCents(eligibleCents: number, percent: number): number {
   return Math.round(eligibleCents * percent / 100);

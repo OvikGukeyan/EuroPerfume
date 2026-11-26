@@ -90,13 +90,13 @@ export default function Checkout() {
   const promoNow = useDayOfferClock({dayOfferStartsAt:BLACK_FRIDAY.startsAt,dayOfferEndsAt:BLACK_FRIDAY.endsAt});
   const blackFriday = isBlackFridayCode(appliedCode);
   const configuredDiscount = form.watch("discount") || 0;
-  const discount = appliedCode === enteredCode && (!blackFriday || blackFridayActive(promoNow)) ? configuredDiscount : 0;
+  const currentCode = appliedCode === enteredCode ? appliedCode : "";
   const blockedGiftIds = giftPromotionProductIds(promotions);
   const coupon = couponQuote(items.map(item=>({
     productId:item.productId,grossCents:Math.round(item.price*100),
     excluded:Boolean(item.discounted||item.dayOffer||blockedGiftIds.has(item.productId))
-  })),discount,appliedCode);
-  const eligibleAfterCouponCents=Math.max(0,items.reduce((sum,item)=>sum+(item.discounted||item.dayOffer||blockedGiftIds.has(item.productId)?0:Math.round(item.price*100)),0)-coupon.discountCents);
+  })),currentCode ? configuredDiscount : 0,currentCode,promoNow);
+  const eligibleAfterCouponCents=Math.max(0,coupon.eligibleCents-coupon.discountCents);
   const loyaltyQuote=pointRedemptionQuote({balancePoints:walletBalance,eligibleAfterCouponCents});
   const redeemPoints=applyPoints && loyaltyAvailable ? loyaltyQuote.spendPoints:0;
   const deliveryCountry = deliveryCountryForCheckout({shippingMethod:form.watch("shippingMethod"),deliveryCountry:form.watch("deliveryCountry"),country:form.watch("country")});
@@ -107,14 +107,14 @@ export default function Checkout() {
   const quotedPallas=pallasState==="eligible"&&pallasUnavailableFor!==pallasEmail&&qualifyingGiftAmount(Math.round(totalAmount*100),coupon.discountCents,redeemPoints);
   useEffect(() => {
     // A removed product or expired offer can make an applied coupon worth zero.
-    if (appliedCode && discount>0 && coupon.discountCents===0) {
+    if (currentCode && coupon.discountCents===0) {
       setAppliedCode("");
       form.setValue("discount",0);
-      setPromoError(!coupon.meetsMinimum ? blackFridayMinimumMessage(locale==="ru") : locale==="ru"
+      setPromoError(blackFriday && !blackFridayActive(promoNow) ? (locale==="ru" ? "Акция BLACK15 закончилась. Проверьте новую сумму." : "Die BLACK15-Aktion ist beendet. Bitte prüfe den neuen Betrag.") : locale==="ru"
         ? "В корзине нет товаров, на которые распространяется этот промокод."
         : "Im Warenkorb befinden sich keine Artikel, für die dieser Gutscheincode gilt.");
     }
-  },[appliedCode,discount,coupon.discountCents,coupon.meetsMinimum,form,locale]);
+  },[currentCode,coupon.discountCents,blackFriday,promoNow,form,locale]);
 
 
   useEffect(()=>{
@@ -326,7 +326,7 @@ export default function Checkout() {
                 totalAmountWithDelivery={totalAmountWithDelivery}
                 control={form.control}
                 onPromocodeSubmit={onPromocodeSubmit}
-                discount={coupon.discountCents>0?discount:0}
+                discount={coupon.discountCents>0?coupon.percentage:0}
                 discountAmount={coupon.discountCents/100}
                 hasCouponExclusions={coupon.hasExclusions && coupon.discountCents>0}
                 promoError={promoError}
