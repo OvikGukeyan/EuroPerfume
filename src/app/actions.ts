@@ -9,7 +9,7 @@ import { findCouponPolicy,checkCouponPolicy } from "@/src/shared/server-lib/coup
 import {randomBytes} from "node:crypto";
 import {registrationSchema} from "@/src/shared/lib/registration-consent";
 import {legalConsentData} from "@/src/shared/server-lib/registration-consent";
-import { BLACK_FRIDAY, blackFridayActive, isBlackFridayCode } from "../shared/lib/black-friday";
+import { BLACK_FRIDAY, blackFridayActive, blackFridayPercent, isBlackFridayCode } from "../shared/lib/black-friday";
 import { offerPrices } from "../shared/lib/day-offer";
 import { promotionLive, promotionQualified } from "../shared/server-lib/promotions";
 import { bottleGroup } from "@/src/shared/lib/full-bottle";
@@ -463,11 +463,13 @@ export async function createOrder(data: CheckoutFormValues) {
         const failure=await checkCouponPolicy(tx,currentPolicy,accountSession?Number(accountSession.id):null,orderedAt);
         if(failure)throw new Error("PROMOCODE_INVALID");
       }
-      const orderDiscount = blackFriday ? (blackFridayActive(orderedAt.getTime()) ? BLACK_FRIDAY.discount : 0) : promo?.discount ?? 0;
-      if (submittedCode && !orderDiscount) throw new Error("PROMOCODE_INVALID");
+      const configuredDiscount = promo?.discount ?? 0;
+      if (submittedCode && (blackFriday ? !blackFridayActive(orderedAt.getTime()) : !configuredDiscount)) throw new Error("PROMOCODE_INVALID");
       const promotionProductIds = new Set(validPromotions.flatMap(link => link.promotion.productIds));
-      const pricing = capturePricing(userCart.items.map(item => boxItemIds.has(item.id) ? { ...item, product: { ...item.product, name: "Aroma Box · " + item.product.name } } : item), deliveryCountry, orderDiscount, orderedAt, undefined, false, promotionProductIds, submittedCode);
-      if (submittedCode && pricing.discountGrossCents === 0) throw new Error(blackFriday ? "PROMOCODE_MINIMUM_ELIGIBLE" : "PROMOCODE_INELIGIBLE");
+      const pricing = capturePricing(userCart.items.map(item => boxItemIds.has(item.id) ? { ...item, product: { ...item.product, name: "Aroma Box · " + item.product.name } } : item), deliveryCountry, configuredDiscount, orderedAt, undefined, false, promotionProductIds, submittedCode);
+      if (submittedCode && pricing.discountGrossCents === 0) throw new Error("PROMOCODE_INELIGIBLE");
+      const couponBaseCents = pricing.lines.reduce((sum, line) => sum + (line.couponExcluded ? 0 : line.grossCents), 0);
+      const orderDiscount = blackFriday ? blackFridayPercent(couponBaseCents) : configuredDiscount;
       // Redeem points atomically inside the same transaction as the order.
       // Lock wallet so two concurrent checkouts cannot spend the same points.
       const requestedPoints=data.redeemPoints||0;
@@ -480,7 +482,7 @@ export async function createOrder(data: CheckoutFormValues) {
         if(!customer?.verified)throw new Error("LOYALTY_INVALID");
         const walletRows=await tx.$queryRaw<{balancePoints:number}[]>`SELECT "balancePoints" FROM "LoyaltyWallet" WHERE "userId"=${uid} FOR UPDATE`;
         const walletBalance=walletRows[0]?.balancePoints??0;
-        const eligibleCents=Math.max(0,pricing.lines.filter(l=>!l.couponExcluded).reduce((sum,l)=>sum+l.grossCents,0)-pricing.discountGrossCents);
+        const eligibleCents=Math.max(0,couponBaseCents-pricing.discountGrossCents);
         const quote=pointRedemptionQuote({balancePoints:walletBalance,eligibleAfterCouponCents:eligibleCents});
         if(requestedPoints>quote.spendPoints)throw new Error("LOYALTY_CHANGED");
         pricing.loyaltyDiscountCents=requestedPoints;

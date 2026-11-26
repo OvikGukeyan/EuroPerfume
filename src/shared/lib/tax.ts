@@ -61,7 +61,7 @@ export function capturePricing(
   // Delivery threshold uses the pre-coupon merchandise subtotal; shipping is never discounted.
   const deliveryPrice=calcTotlalAmountWithDelivery(subtotalGrossCents/100,country,0).deliveryPrice;
   const shippingGrossCents=cents(deliveryPrice);
-  const discountGrossCents=couponQuote(lines.map(l=>({productId:l.productId,grossCents:l.grossCents,excluded:l.couponExcluded})),discount,couponCode).discountCents;
+  const discountGrossCents=couponQuote(lines.map(l=>({productId:l.productId,grossCents:l.grossCents,excluded:l.couponExcluded})),discount,couponCode,at.getTime()).discountCents;
   const totalGrossCents=subtotalGrossCents+shippingGrossCents-discountGrossCents;
   return {version:1,country,capturedAt:at.toISOString(),policy,lines,subtotalGrossCents,shippingGrossCents,discountGrossCents,totalGrossCents};
 }

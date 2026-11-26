@@ -8,42 +8,34 @@ import toast from "react-hot-toast";
 
 // Original catalogue photography, kept separate from the generated studio scene.
 const bottles = [
-  { name: "Parfums de Marly Delina Exclusif", src: "/assets/campaigns/delina-exclusif-original.webp", position: "left-[-5%] top-[50%] h-[35%] w-[35%] -rotate-6" },
-  { name: "Ex Nihilo Blue Talisman", src: "/assets/campaigns/blue-talisman-original.webp", position: "right-[-4%] top-[51%] h-[34%] w-[34%] rotate-6" },
-  { name: "Maison Francis Kurkdjian Baccarat Rouge 540 Extrait", src: "/assets/campaigns/baccarat-rouge-540-extrait-original.webp", position: "left-[36%] top-[72%] h-[20%] w-[28%]" },
+  { name: "Parfums de Marly Delina Exclusif", src: "/assets/campaigns/delina-exclusif-original.webp" },
+  { name: "Ex Nihilo Blue Talisman", src: "/assets/campaigns/blue-talisman-original.webp" },
+  { name: "Maison Francis Kurkdjian Baccarat Rouge 540 Extrait", src: "/assets/campaigns/baccarat-rouge-540-extrait-original.webp" },
 ];
 export function BlackFridayHero() {
   const cutoutId = useId().replace(/:/g, "");
   const ru = useLocale() === "ru";
-  const minimum = BLACK_FRIDAY.minimumEligibleCents / 100;
-  const terms = ru ? `От ${minimum} € неакционных товаров, без доставки` : `Ab ${minimum} € für nicht reduzierte Artikel, ohne Versand`;
+  const terms = ru ? "Сумма для ступени: только неакционные товары, без доставки. Минимальный заказ 20 €." : "Nur nicht reduzierte Artikel zählen und erhalten Rabatt. Ohne Versand. Mindestbestellwert 20 €.";
   const now = useDayOfferClock({ dayOfferStartsAt: BLACK_FRIDAY.startsAt, dayOfferEndsAt: BLACK_FRIDAY.endsAt });
   if (now >= Date.parse(BLACK_FRIDAY.endsAt)) return null;
   async function copyCode() {
     try { await navigator.clipboard.writeText(BLACK_FRIDAY.code); toast.success(ru ? "BLACK15 скопирован · действует только 27 ноября" : "BLACK15 kopiert · gültig nur am 27. November"); }
     catch { toast(ru ? "Не удалось скопировать. Введите BLACK15 вручную." : "Kopieren nicht möglich. Gib BLACK15 bitte manuell ein."); }
   }
-  return <section aria-label={ru ? "Чёрная пятница — 15% по промокоду BLACK15, только 27 ноября" : "Black Friday — 15% mit BLACK15, nur am 27. November"} className="relative isolate overflow-hidden rounded-[22px] bg-[#f4a7c6] md:rounded-[32px]">
+  return <section aria-label={ru ? "Чёрная пятница: до 15% с BLACK15" : "Black Friday: bis zu 15 % mit BLACK15"} className="relative isolate grid min-h-[320px] w-full items-center overflow-hidden rounded-[22px] bg-[#f4a7c6] px-4 py-5 text-center text-[#291c24] md:h-[380px] md:grid-cols-[1fr_1fr] md:rounded-[32px] md:px-12">
     <svg width="0" height="0" aria-hidden="true" className="absolute"><defs><filter id={cutoutId} colorInterpolationFilters="sRGB"><feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  -10 -10 -10 0 29.5"/><feComposite in2="SourceAlpha" operator="in"/></filter></defs></svg>
-    <div className="relative mx-auto aspect-[1.05/1] w-full md:hidden">
-      <img src="/assets/campaigns/black-friday-square-scene.webp" width="1254" height="1254" alt="Black Friday SALE −15% · BLACK15" fetchPriority="high" className="absolute left-0 top-[5%] h-[88%] w-full object-fill"/>
-      <Link href="/items" aria-label={ru ? "Выбрать ароматы в каталоге" : "Düfte im Katalog entdecken"} className="absolute inset-0 z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-black"/>
-      {bottles.map(bottle => <img key={bottle.name} src={bottle.src} width="500" height="500" alt={bottle.name} style={{filter:`url(#${cutoutId})`}} className={`pointer-events-none absolute object-contain ${bottle.position}`}/>)}
-      <button type="button" onClick={copyCode} aria-label={ru ? "Скопировать промокод BLACK15" : "Gutscheincode BLACK15 kopieren"} title={ru ? "Нажмите, чтобы скопировать BLACK15" : "BLACK15 kopieren"} className="absolute left-[28%] top-[45.5%] z-20 h-[9%] w-[47%] rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"><span aria-hidden="true" className="absolute bottom-0 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-[#251820] px-2 py-0.5 text-[9px] font-semibold leading-none text-white">{ru ? "Скопировать код" : "Code kopieren"}</span></button>
-      <div className="pointer-events-none absolute inset-x-[3%] bottom-[1%] text-center text-[9px] font-medium leading-[1.35] text-[#291c24] min-[390px]:text-[10px] md:text-[13px]">
-        <p>27.11.2026 · 00:00–23:59 · {ru ? "по берлинскому времени" : "Berliner Zeit"}</p>
-        <p>{terms}</p>
+    <Link href="/items" aria-label={ru ? "Выбрать ароматы" : "Düfte entdecken"} className="absolute inset-0 z-10 rounded-[inherit] focus-visible:outline focus-visible:outline-2 focus-visible:outline-black"/>
+    <div className="md:order-2">
+      <p className="text-xs font-semibold uppercase tracking-[0.25em] md:text-sm">Black Friday · {ru ? "27 ноября" : "27. November"}</p>
+      <p className="mt-1 text-[clamp(34px,7vw,80px)] font-semibold leading-none">{ru ? "До −15%" : "Bis zu −15 %"}</p>
+      <div className="mx-auto mt-3 flex max-w-sm justify-center gap-1.5 text-[11px] leading-tight sm:text-sm">
+        {[{rate:"5%",label:ru?"до 50 €":"unter 50 €"},{rate:"10%",label:ru?"от 50 €":"ab 50 €"},{rate:"15%",label:ru?"от 80 €":"ab 80 €"}].map(tier => <div key={tier.rate} className="min-w-0 flex-1 rounded-xl bg-white/55 px-1.5 py-1.5"><strong className="block text-base md:text-xl">{tier.rate}</strong>{tier.label}</div>)}
       </div>
+      <button type="button" onClick={copyCode} className="relative z-20 mt-3 rounded-full bg-[#251820] px-4 py-2 text-sm font-semibold text-white" aria-label={ru?"Скопировать промокод BLACK15":"Gutscheincode BLACK15 kopieren"}>BLACK15 · {ru?"Скопировать":"Kopieren"}</button>
+      <p className="mx-auto mt-2 max-w-[400px] text-[10px] leading-snug md:text-xs">{terms}<br/>00:00–23:59 · {ru ? "берлинское время" : "Berliner Zeit"}</p>
     </div>
-    <div className="storefront-desktop-hero relative hidden md:block">
-      <img src="/assets/campaigns/black-friday-desktop-wide.webp" width="3072" height="1024" alt="Black Friday SALE −15%" loading="lazy" className="storefront-desktop-art"/>
-      <Link href="/items" aria-label={ru?"Выбрать ароматы":"Düfte entdecken"} className="absolute inset-y-0 left-0 z-10 w-[53%]"/>
-      <div className="desktop-bf-content">
-        <p className="desktop-bf-date">{ru?"Только 27 ноября":"Nur am 27. November"} · −15%</p>
-        <div className="desktop-bf-bottles">{bottles.map(bottle=><img key={bottle.name} src={bottle.src} alt={bottle.name} width="500" height="500" loading="lazy" style={{filter:`url(#${cutoutId})`}}/>)}</div>
-        <button type="button" onClick={copyCode} className="desktop-bf-code" aria-label={ru?"Скопировать промокод BLACK15":"Gutscheincode BLACK15 kopieren"}>BLACK15 <span>{ru?"Скопировать":"Kopieren"}</span></button>
-        <p className="desktop-bf-terms">27.11.2026 · 00:00–23:59 · {ru?"по берлинскому времени":"Berliner Zeit"}<br/>{terms}</p>
-      </div>
+    <div className="pointer-events-none relative mx-auto mt-2 h-[95px] w-full max-w-sm md:order-1 md:mt-0 md:h-[300px] md:max-w-none">
+      {bottles.map((bottle,i) => <img key={bottle.name} src={bottle.src} width="500" height="500" alt={bottle.name} style={{filter:`url(#${cutoutId})`}} className={`absolute top-0 h-full w-[39%] object-contain ${["left-0 -rotate-6","right-0 rotate-6","left-[30.5%] z-[1]"][i]}`}/>)}
     </div>
   </section>;
 }

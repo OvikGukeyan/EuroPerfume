@@ -32,21 +32,28 @@ assert.equal(revised.totalGrossCents,p.totalGrossCents);
 assert.ok(readPricing(revised));
 const bf = (items: Parameters<typeof capturePricing>[0], country="DEU", giftIds=new Set<number>()) =>
   capturePricing(items,country,15,at,undefined,false,giftIds,BLACK_FRIDAY.code);
-assert.equal(BLACK_FRIDAY.minimumEligibleCents,8000);
-for (const [id, base, expected] of [[1,79.99,0],[2,80,1200]] as const) {
-  assert.equal(bf([line(id,base)]).discountGrossCents,expected);
+for (const [base, pct, expected] of [[19.99,5,100],[20,5,100],[49.99,5,250],[50,10,500],[79.99,10,800],[80,15,1200],[100,15,1500]] as const) {
+  const cent = Math.round(base*100);
+  assert.equal(bf([line(1,base)]).discountGrossCents,expected);
+  for(const supplied of [0,5,10,15,100]) {
+    const quote=couponQuote([{productId:1,grossCents:cent,excluded:false}],supplied,"BLACK15",start);
+    assert.equal(quote.percentage,pct);
+    assert.equal(quote.discountCents,expected);
+  }
 }
-const belowWithShipping=bf([line(1,79.99)],"FRA");
-assert.equal(belowWithShipping.discountGrossCents,0);
-assert.ok(belowWithShipping.totalGrossCents>8000);
-assert.equal(bf([line(1,70),line(2,40,20)]).discountGrossCents,0);
+assert.equal(bf([line(1,49.99)],"FRA").discountGrossCents,250);
+assert.equal(bf([line(1,50),line(2,40,20)]).discountGrossCents,500);
+assert.equal(bf([line(1,70),line(2,40,20)]).discountGrossCents,700);
 assert.equal(bf([line(1,80),line(2,40,20)]).discountGrossCents,1200);
-assert.equal(bf([line(1,70),daily]).discountGrossCents,0);
+assert.equal(bf([line(1,70),daily]).discountGrossCents,700);
 assert.equal(bf([line(1,80),daily]).discountGrossCents,1200);
-assert.equal(bf([line(1,70),line(2,20)],"DEU",new Set([2])).discountGrossCents,0);
+assert.equal(bf([line(1,70),line(2,20)],"DEU",new Set([2])).discountGrossCents,700);
 assert.equal(bf([line(1,80),line(2,20)],"DEU",new Set([2])).discountGrossCents,1200);
+assert.equal(bf([line(1,90,80),daily]).discountGrossCents,0);
 assert.equal(bf([line(1,70),line(2,10)]).discountGrossCents,1200);
-assert.equal(couponQuote([{productId:1,grossCents:7000,excluded:false}],15,"BLACK15").meetsMinimum,false);
-assert.equal(couponQuote([{productId:1,grossCents:7000,excluded:false}],15,"BRANCH15").discountCents,1050);
-assert.equal(couponQuote([{productId:1,grossCents:7000,excluded:false}],10,"WELCOME10").discountCents,700);
-console.log("Black Friday: exact Berlin day, mixed baskets, existing sales, day offers, shipping, decants and saved pricing passed.");
+const fixed=[{productId:1,grossCents:7000,excluded:false}];
+assert.equal(couponQuote(fixed,15,"BLACK15",start-1).discountCents,0);
+assert.equal(couponQuote(fixed,15,"BLACK15",end).discountCents,0);
+assert.equal(couponQuote(fixed,15,"BRANCH15",start).discountCents,1050);
+assert.equal(couponQuote(fixed,10,"WELCOME10",start).discountCents,700);
+console.log("BLACK15: Berlin window, 5/10/15 boundaries, caller-supplied percentage ignored, excluded lines, shipping and saved pricing passed.");
