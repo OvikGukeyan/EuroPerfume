@@ -137,7 +137,11 @@ export default function ManualInvoiceForm({ ru, today }: { ru: boolean; today: s
             <Search aria-hidden size={17} className="pointer-events-none absolute left-3 top-3 text-neutral-500" />
             <input ref={searchBox} className={field + " pl-9"} type="search" maxLength={100} autoComplete="off"
               placeholder={tr("Начни вводить название…", "Namen eingeben…")} value={query}
-              onChange={event => { setQuery(event.currentTarget.value); setLookup(null); }} />
+              onChange={event => {
+                const value = event.currentTarget.value;
+                if (value.trim() !== searchTerm) setLookup(null);
+                setQuery(value);
+              }} />
           </span>
         </label>
         <div aria-live="polite" aria-atomic="true" className="text-sm text-neutral-600">
