@@ -15,7 +15,7 @@ const bottles = [
 export function BlackFridayHero() {
   const cutoutId = useId().replace(/:/g, "");
   const ru = useLocale() === "ru";
-  const terms = ru ? "Сумма для ступени: только неакционные товары, без доставки. Минимальный заказ 20 €." : "Nur nicht reduzierte Artikel zählen und erhalten Rabatt. Ohne Versand. Mindestbestellwert 20 €.";
+
   const now = useDayOfferClock({ dayOfferStartsAt: BLACK_FRIDAY.startsAt, dayOfferEndsAt: BLACK_FRIDAY.endsAt });
   if (now >= Date.parse(BLACK_FRIDAY.endsAt)) return null;
   async function copyCode() {
@@ -29,10 +29,18 @@ export function BlackFridayHero() {
       <p className="text-xs font-semibold uppercase tracking-[0.25em] md:text-sm">Black Friday · {ru ? "27 ноября" : "27. November"}</p>
       <p className="mt-1 text-[clamp(34px,7vw,80px)] font-semibold leading-none">{ru ? "До −15%" : "Bis zu −15 %"}</p>
       <div className="mx-auto mt-3 flex max-w-sm justify-center gap-1.5 text-[11px] leading-tight sm:text-sm">
-        {[{rate:"5%",label:ru?"до 50 €":"unter 50 €"},{rate:"10%",label:ru?"от 50 €":"ab 50 €"},{rate:"15%",label:ru?"от 80 €":"ab 80 €"}].map(tier => <div key={tier.rate} className="min-w-0 flex-1 rounded-xl bg-white/55 px-1.5 py-1.5"><strong className="block text-base md:text-xl">{tier.rate}</strong>{tier.label}</div>)}
+        {[{rate:"5%",label:ru?"до 50 €":"unter 50 €"},{rate:"10%",label:"50–79,99 €"},{rate:"15%",label:ru?"от 80 €":"ab 80 €"}].map(tier => <div key={tier.rate} className="min-w-0 flex-1 rounded-xl bg-white/55 px-1.5 py-1.5"><strong className="block text-base md:text-xl">{tier.rate}</strong>{tier.label}</div>)}
       </div>
       <button type="button" onClick={copyCode} className="relative z-20 mt-3 rounded-full bg-[#251820] px-4 py-2 text-sm font-semibold text-white" aria-label={ru?"Скопировать промокод BLACK15":"Gutscheincode BLACK15 kopieren"}>BLACK15 · {ru?"Скопировать":"Kopieren"}</button>
-      <p className="mx-auto mt-2 max-w-[400px] text-[10px] leading-snug md:text-xs">{terms}<br/>00:00–23:59 · {ru ? "берлинское время" : "Berliner Zeit"}</p>
+      <div className="mx-auto mt-3 max-w-[450px] space-y-1 text-xs leading-snug md:text-[13px]">
+        <p><strong>{ru ? "Как считается скидка:" : "So wird der Rabatt berechnet:"}</strong>{" "}{ru
+          ? "Учитываем только стоимость неакционных товаров до применения кода. Акционные и уже уценённые товары, а также доставка не учитываются и не получают скидку."
+          : "Es zählt nur der Warenwert nicht reduzierter Artikel vor Eingabe des Codes. Aktionsartikel, bereits reduzierte Artikel und Versandkosten zählen nicht mit und werden nicht rabattiert."}</p>
+        <p>{ru
+          ? "Минимум заказа: 20 € за товары до скидок, без доставки. BLACK15 не суммируется с другими промокодами."
+          : "Mindestbestellwert: 20 € Warenwert vor Rabatten, ohne Versand. BLACK15 ist nicht mit anderen Gutscheincodes kombinierbar."}</p>
+        <p>{ru ? "27 ноября, 00:00–23:59 по Берлину" : "27. November, 00:00–23:59 Uhr (Berliner Zeit)"}</p>
+      </div>
     </div>
     <div className="pointer-events-none relative mx-auto mt-2 h-[95px] w-full max-w-sm md:order-1 md:mt-0 md:h-[300px] md:max-w-none">
       {bottles.map((bottle,i) => <img key={bottle.name} src={bottle.src} width="500" height="500" alt={bottle.name} style={{filter:`url(#${cutoutId})`}} className={`absolute top-0 h-full w-[39%] object-contain ${["left-0 -rotate-6","right-0 rotate-6","left-[30.5%] z-[1]"][i]}`}/>)}
