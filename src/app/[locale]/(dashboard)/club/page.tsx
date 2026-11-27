@@ -16,21 +16,21 @@ export default async function ClubAdmin({params}:{params:Promise<{locale:string}
  let pointsGiven=0;
  let allWalletPoints=0;
  let fulfilledCount=0;
+ const pending=await prisma.order.findMany({where:{userId:{not:null}},orderBy:{createdAt:"desc"},take:30,
+  select:{id:true,userId:true,fullName:true,status:true,createdAt:true,totalAmount:true,pricingSnapshot:true,
+   user:{select:{verified:true}}}});
+ const eligible=pending.filter(o=>accountOrderEligible(o.userId,o.user?.verified||null,o.createdAt));
  try{
   const [ws,ss,ag,allWallets,fulfilled]=await Promise.all([
    prisma.loyaltyWallet.findMany({select:{userId:true,balancePoints:true},orderBy:{balancePoints:"desc"},take:20}),
-   prisma.orderFulfillment.findMany({select:{orderId:true,paymentConfirmedAt:true,shippedConfirmedAt:true,loyaltyAwardedAt:true},take:100}),
+   prisma.orderFulfillment.findMany({select:{orderId:true,paymentConfirmedAt:true,shippedConfirmedAt:true,loyaltyAwardedAt:true},where:{orderId:{in:eligible.map(o=>o.id)}}}),
    prisma.loyaltyEntry.aggregate({_sum:{points:true},where:{kind:"EARN"}}),
    prisma.loyaltyWallet.aggregate({_sum:{balancePoints:true}}),
    prisma.orderFulfillment.count({where:{loyaltyAwardedAt:{not:null}}})
   ]);wallets=ws;states=ss;pointsGiven=ag._sum.points||0;allWalletPoints=allWallets._sum.balancePoints||0;fulfilledCount=fulfilled;
  }catch(e){if(e instanceof Prisma.PrismaClientKnownRequestError&&(e.code==="P2021"||e.code==="P2022"))installed=false;else throw e;}
  const awardsEnabled=process.env.EUROPERFUME_CLUB_AWARD_ENABLED==="true";
- const pending=await prisma.order.findMany({where:{userId:{not:null}},orderBy:{createdAt:"desc"},take:30,
-  select:{id:true,userId:true,fullName:true,status:true,createdAt:true,totalAmount:true,pricingSnapshot:true,
-   user:{select:{verified:true}}}});
  const stateByOrder=new Map(states.map(s=>[s.orderId,s]));
- const eligible=pending.filter(o=>accountOrderEligible(o.userId,o.user?.verified||null,o.createdAt));
  return <main className="mx-auto max-w-[1250px] px-4 py-6 md:px-8">
   <p className="text-[11px] uppercase tracking-[.18em] text-[#96776e]">EURO PERFUME CLUB</p>
   <h1 className="mt-2 text-[30px] font-normal tracking-tight">{ru?"Бонусная программа":"Treueprogramm"}</h1>

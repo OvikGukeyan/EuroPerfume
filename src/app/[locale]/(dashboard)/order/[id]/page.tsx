@@ -8,8 +8,12 @@ import {
   OrderItemsList,
 } from "@/src/shared/components/shared";
 import { convertDate } from "@/src/shared/lib";
-import { ShippingMethods } from "@prisma/client";
-import { getTranslations } from "next-intl/server";
+import { Prisma, ShippingMethods } from "@prisma/client";
+import { getLocale, getTranslations } from "next-intl/server";
+
+import { ClubFulfillmentActions } from "@/src/shared/components/shared/club-fulfillment-actions";
+import { accountOrderEligible } from "@/src/shared/lib/europerfume-club";
+import { orderFulfillmentBlock } from "@/src/shared/lib/order-fulfillment-shortcuts";
 
 export default async function Order({
   params,
@@ -33,7 +37,7 @@ export default async function Order({
       //   },
       // },
       invoice: true,
-      // user: true,
+      user: { select: { verified: true } },
       shipments: true,
     },
   });
@@ -48,6 +52,33 @@ export default async function Order({
   const gifts=promotions.map(p=>p.snapshot as {slug:string;titleRu:string;giftName:string;giftMl:number});
   const t = await getTranslations("Checkout");
   const snapshot = readPricing(order?.pricingSnapshot);
+  const ru = (await getLocale()) === "ru";
+  let fulfillmentUnavailable = false;
+  const fulfillment = order ? await prisma.orderFulfillment.findUnique({
+    where: { orderId: order.id },
+    select: { paymentConfirmedAt: true, shippedConfirmedAt: true },
+  }).catch(error => {
+    if (!(error instanceof Prisma.PrismaClientKnownRequestError) || !["P2021", "P2022"].includes(error.code)) throw error;
+    fulfillmentUnavailable = true;
+    return null;
+  }) : null;
+  const clubEligible = order && accountOrderEligible(order.userId, order.user?.verified ?? null, order.createdAt);
+  const fulfillmentBlock = order ? orderFulfillmentBlock({
+    cancelled: order.status === "CENCELLED",
+    hasInvoice: Boolean(order.invoice),
+    clubEligible: Boolean(clubEligible),
+    awardsEnabled: process.env.EUROPERFUME_CLUB_AWARD_ENABLED === "true",
+    hasPricing: Boolean(snapshot),
+  }) : null;
+  const fulfillmentHint = fulfillmentUnavailable
+    ? (ru ? "Подтверждения пока недоступны." : "Bestätigungen sind derzeit nicht verfügbar.")
+    : fulfillmentBlock === "ORDER_CANCELLED"
+    ? (ru ? "Заказ отменён." : "Bestellung storniert.")
+    : fulfillmentBlock === "INVOICE_REQUIRED_BEFORE_LOYALTY_AWARD"
+    ? (ru ? "Сначала создай Rechnung." : "Zuerst die Rechnung erstellen.")
+    : fulfillmentBlock
+    ? (ru ? "Подтверждения по этому заказу пока недоступны." : "Bestätigungen für diese Bestellung sind derzeit nicht verfügbar.")
+    : null;
   const breakdown = snapshot && snapshot.totalGrossCents === Math.round(Number(order?.totalAmount) * 100)
     ? [
         ["Товары", snapshot.subtotalGrossCents],
@@ -176,8 +207,8 @@ export default async function Order({
           </span>
         </li>
       </ul>
-      <div className="mt-5 flex flex-col gap-2">
-   
+      <div className="mt-5 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap">
+      <div className="flex flex-col gap-2">
         <DhlButton
           orderId={order?.id}
           deliveryFullNmae={order?.deliveryFullNmae || ""}
@@ -201,6 +232,21 @@ export default async function Order({
           invoiceUrl={order?.invoice?.pdfUrl || ""}
           id={order?.id || 0}
         />
+      </div>
+      {order && (
+        <section className="max-w-full rounded-lg border bg-white px-4 py-3">
+          <h2 className="mb-2 text-sm font-medium">{ru ? "Оплата и отправка" : "Zahlung und Versand"}</h2>
+          <ClubFulfillmentActions
+            key={order.id}
+            orderId={order.id}
+            paid={Boolean(fulfillment?.paymentConfirmedAt)}
+            shipped={Boolean(fulfillment?.shippedConfirmedAt)}
+            enabled={!fulfillmentUnavailable && !fulfillmentBlock}
+            source="order_details"
+          />
+          {fulfillmentHint && <p className="mt-2 text-xs text-neutral-600">{fulfillmentHint}</p>}
+        </section>
+      )}
       </div>
     </div>
   );
