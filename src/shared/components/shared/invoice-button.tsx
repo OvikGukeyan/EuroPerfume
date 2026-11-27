@@ -42,7 +42,7 @@ export const InvoiceButton: FC<Props> = ({
           <InvoiceCorrectionsPanel orderId={id} />
         </>
       ) : (
-        <div className="flex flex-col gap-3 w-[300px]">
+        <div className="flex flex-col gap-3 w-full max-w-[300px]">
           <label htmlFor={`invoice-supply-date-${id}`} className="text-sm">Дата фактической поставки / Leistungsdatum</label>
           <input id={`invoice-supply-date-${id}`} type="date" required value={supplyDate} onChange={e => setSupplyDate(e.target.value)} className="rounded border p-2" />
           {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
