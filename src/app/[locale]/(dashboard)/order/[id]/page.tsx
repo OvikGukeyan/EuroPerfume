@@ -53,20 +53,22 @@ export default async function Order({
   const t = await getTranslations("Checkout");
   const snapshot = readPricing(order?.pricingSnapshot);
   const ru = (await getLocale()) === "ru";
+  const clubOrder = order && accountOrderEligible(order.userId, order.user?.verified ?? null, order.createdAt)
+    ? order
+    : null;
   let fulfillmentUnavailable = false;
-  const fulfillment = order ? await prisma.orderFulfillment.findUnique({
-    where: { orderId: order.id },
+  const fulfillment = clubOrder ? await prisma.orderFulfillment.findUnique({
+    where: { orderId: clubOrder.id },
     select: { paymentConfirmedAt: true, shippedConfirmedAt: true },
   }).catch(error => {
     if (!(error instanceof Prisma.PrismaClientKnownRequestError) || !["P2021", "P2022"].includes(error.code)) throw error;
     fulfillmentUnavailable = true;
     return null;
   }) : null;
-  const clubEligible = order && accountOrderEligible(order.userId, order.user?.verified ?? null, order.createdAt);
-  const fulfillmentBlock = order ? orderFulfillmentBlock({
-    cancelled: order.status === "CENCELLED",
-    hasInvoice: Boolean(order.invoice),
-    clubEligible: Boolean(clubEligible),
+  const fulfillmentBlock = clubOrder ? orderFulfillmentBlock({
+    cancelled: clubOrder.status === "CENCELLED",
+    hasInvoice: Boolean(clubOrder.invoice),
+    clubEligible: true,
     awardsEnabled: process.env.EUROPERFUME_CLUB_AWARD_ENABLED === "true",
     hasPricing: Boolean(snapshot),
   }) : null;
@@ -207,46 +209,51 @@ export default async function Order({
           </span>
         </li>
       </ul>
-      <div className="mt-5 flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap">
-      <div className="flex flex-col gap-2">
-        <DhlButton
-          orderId={order?.id}
-          deliveryFullNmae={order?.deliveryFullNmae || ""}
-          addressStreet={order?.deliveryAddress || ""}
-          addressHouse={order?.deliveryHouseNumber || ""}
-          postalCode={order?.deliveryZip || ""}
-          city={order?.deliveryCity || ""}
-          country={order?.deliveryCountry || ""}
-          email={order?.email || ""}
-          labelUrl={order?.shipments[0]?.labelUrl || undefined}
-          trackingCode={order?.trackingCode || undefined}
-          shippingMethod={
-            order?.shippingMethod || ShippingMethods.BILLING_ADDRESS
-          }
-          postOffice={order?.postOffice || ""}
-          packstationNumber={order?.packstationNumber || ""}
-          postNumber={order?.postNumber || ""}
-          totalPrice={Number(order?.totalAmount) || 0}
-        />
-        <InvoiceButton
-          invoiceUrl={order?.invoice?.pdfUrl || ""}
-          id={order?.id || 0}
-        />
-      </div>
-      {order && (
-        <section className="max-w-full rounded-lg border bg-white px-4 py-3">
-          <h2 className="mb-2 text-sm font-medium">{ru ? "Оплата и отправка" : "Zahlung und Versand"}</h2>
-          <ClubFulfillmentActions
-            key={order.id}
-            orderId={order.id}
-            paid={Boolean(fulfillment?.paymentConfirmedAt)}
-            shipped={Boolean(fulfillment?.shippedConfirmedAt)}
-            enabled={!fulfillmentUnavailable && !fulfillmentBlock}
-            source="order_details"
+      <div className={`mt-5 grid gap-3 ${clubOrder ? "max-w-3xl lg:grid-cols-2" : "max-w-sm"}`}>
+          <DhlButton
+            ru={ru}
+            orderId={order?.id}
+            deliveryFullNmae={order?.deliveryFullNmae || ""}
+            addressStreet={order?.deliveryAddress || ""}
+            addressHouse={order?.deliveryHouseNumber || ""}
+            postalCode={order?.deliveryZip || ""}
+            city={order?.deliveryCity || ""}
+            country={order?.deliveryCountry || ""}
+            email={order?.email || ""}
+            labelUrl={order?.shipments[0]?.labelUrl || undefined}
+            trackingCode={order?.trackingCode || undefined}
+            shippingMethod={
+              order?.shippingMethod || ShippingMethods.BILLING_ADDRESS
+            }
+            postOffice={order?.postOffice || ""}
+            packstationNumber={order?.packstationNumber || ""}
+            postNumber={order?.postNumber || ""}
+            totalPrice={Number(order?.totalAmount) || 0}
           />
-          {fulfillmentHint && <p className="mt-2 text-xs text-neutral-600">{fulfillmentHint}</p>}
-        </section>
-      )}
+        {clubOrder && (
+          <section className="flex min-w-0 flex-col gap-3 rounded-lg border bg-white p-4">
+            <h2 className="text-sm font-semibold">{ru ? "Оплата и отправка" : "Zahlung und Versand"}</h2>
+            <p className="text-xs leading-5 text-neutral-600">
+              {ru
+                ? "Подтверди, когда оплата получена и посылка передана DHL."
+                : "Bestätige den Zahlungseingang und die tatsächliche Übergabe an DHL."}
+            </p>
+            {fulfillmentHint && <p className="text-xs text-neutral-600">{fulfillmentHint}</p>}
+            <div className="mt-auto">
+              <ClubFulfillmentActions
+                key={clubOrder.id}
+                orderId={clubOrder.id}
+                paid={Boolean(fulfillment?.paymentConfirmedAt)}
+                shipped={Boolean(fulfillment?.shippedConfirmedAt)}
+                enabled={!fulfillmentUnavailable && !fulfillmentBlock}
+                source="order_details"
+              />
+            </div>
+          </section>
+        )}
+      </div>
+      <div className={`mt-4 rounded-lg border bg-white p-4 ${clubOrder ? "max-w-3xl" : "max-w-sm"}`}>
+        <InvoiceButton invoiceUrl={order?.invoice?.pdfUrl || ""} id={order?.id || 0} />
       </div>
     </div>
   );

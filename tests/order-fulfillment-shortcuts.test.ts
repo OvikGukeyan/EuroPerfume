@@ -9,9 +9,7 @@ test("eligible order requires the same invoice, award switch and pricing prerequ
  assert.equal(orderFulfillmentBlock({...eligible,awardsEnabled:false}),"BONUS_AWARD_NOT_LIVE");
  assert.equal(orderFulfillmentBlock({...eligible,hasPricing:false}),"PRICING_SNAPSHOT_REQUIRED");
 });
-test("guest order can be marked after invoicing without depending on club points",()=>{
- const guest={...eligible,clubEligible:false,awardsEnabled:false,hasPricing:false};
- assert.equal(orderFulfillmentBlock(guest),null);
- assert.equal(orderFulfillmentBlock({...guest,cancelled:true}),"ORDER_CANCELLED");
- assert.equal(orderFulfillmentBlock({...guest,hasInvoice:false}),"INVOICE_REQUIRED_BEFORE_LOYALTY_AWARD");
+test("guest/non-member cannot use bonus confirmations, even with an invoice",()=>{
+ assert.equal(orderFulfillmentBlock({...eligible,clubEligible:false}),"ACCOUNT_NOT_VERIFIED_AT_ORDER");
+ assert.equal(orderFulfillmentBlock({...eligible,cancelled:true}),"ORDER_CANCELLED");
 });

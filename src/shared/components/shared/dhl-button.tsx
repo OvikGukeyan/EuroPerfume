@@ -1,10 +1,9 @@
 "use client";
 import { dhlCreateOrder } from "@/src/app/actions";
-import { useTransition, useState, FC } from "react";
+import { useId, useTransition, useState, FC } from "react";
 import { cn } from "../../lib/utils";
 import { Button, Checkbox, Input } from "../ui";
 import { File } from "lucide-react";
-import { Title } from "..";
 import { ShippingMethods } from "@prisma/client";
 import { Label } from "../ui/label";
 
@@ -25,12 +24,14 @@ export type DhlCredantials = {
 };
 interface Props extends DhlCredantials {
   className?: string;
+  ru: boolean;
   labelUrl?: string;
   trackingCode?: string;
 }
 
 export const DhlButton: FC<Props> = ({
   className,
+  ru,
   labelUrl,
   trackingCode,
   ...props
@@ -40,59 +41,63 @@ export const DhlButton: FC<Props> = ({
   const [weight, setWeight] = useState(0);
   const [small, setSmall] = useState(false);
 
-  // const handleCreate = async () => {
-  //   try {
-  //     await Api.dhl.createShipment(props);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const fieldId = useId();
+  const savedLabel = result?.labelUrl || labelUrl;
 
   return (
-    <div className={cn("", className)}>
-      <div className="flex items-center space-x-2 mb-2">
-        <Checkbox
-          id="toggle-2"
-          checked={small}
-          onCheckedChange={(checked) => setSmall(!!checked)}
-          disabled={props.country !== "DEU"}
-        />
-        <Label htmlFor="toggle">Kleinpaket</Label>
-      </div>
+    <section className={cn("flex min-w-0 flex-col gap-3 rounded-lg border bg-white p-4", className)}>
+      <h2 className="text-sm font-semibold">{ru ? "Отправление DHL" : "DHL-Sendung"}</h2>
       {result?.ok || labelUrl ? (
         <>
-          <Title text="Отправление создано" size="sm" className="font-bold" />
-          <p className="font-bold mb-2">
-            Трек номер: <span>{trackingCode}</span>
-          </p>
-          <a href={result?.labelUrl || labelUrl || ""} download target="_blank">
-            <Button className="flex gap-2" variant="outline">
-              <span>Скачать метку</span>
-              <File />
+          <p className="text-sm">{ru ? "Отправление создано" : "Sendung erstellt"}</p>
+          {trackingCode && (
+            <p className="break-all text-xs text-neutral-600">
+              {ru ? "Трек-номер" : "Sendungsnummer"}: <span className="font-medium">{trackingCode}</span>
+            </p>
+          )}
+          {savedLabel && (
+            <Button asChild className="mt-auto h-10 w-full gap-2" variant="outline">
+              <a href={savedLabel} download target="_blank" rel="noopener noreferrer">
+                <File size={16} aria-hidden="true" />
+                {ru ? "Скачать этикетку" : "Versandetikett herunterladen"}
+              </a>
             </Button>
-          </a>
+          )}
         </>
       ) : (
-        <div className="flex flex-col gap-3 w-[300px]">
-          <Input
-            placeholder="Вес в кг"
-            onChange={(e) => setWeight(Number(e.target.value))}
-          />
+        <>
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id={`${fieldId}-small`}
+              checked={small}
+              onCheckedChange={(checked) => setSmall(checked === true)}
+              disabled={props.country !== "DEU"}
+            />
+            <Label htmlFor={`${fieldId}-small`}>Kleinpaket</Label>
+          </div>
+          <div className="grid gap-1.5">
+            <Label htmlFor={`${fieldId}-weight`}>{ru ? "Вес, кг" : "Gewicht, kg"}</Label>
+            <Input
+              id={`${fieldId}-weight`}
+              inputMode="decimal"
+              className="h-10 w-full"
+              onChange={(e) => setWeight(Number(e.target.value))}
+            />
+          </div>
           <Button
+            type="button"
+            className="mt-auto h-10 w-full"
             disabled={pending}
             onClick={() =>
               start(async () => setResult(await dhlCreateOrder(props, weight, small)))
             }
           >
-            {pending ? "Creating…" : "Create DHL order"}
+            {pending
+              ? (ru ? "Создаю…" : "Wird erstellt…")
+              : (ru ? "Создать отправление DHL" : "DHL-Sendung erstellen")}
           </Button>
-        </div>
+        </>
       )}
-      {/* {result && (
-        <pre className="mt-4 p-3 bg-gray-100 text-xs overflow-auto">
-          {JSON.stringify(result.body, null, 2)}
-        </pre>
-      )} */}
-    </div>
+    </section>
   );
 };
