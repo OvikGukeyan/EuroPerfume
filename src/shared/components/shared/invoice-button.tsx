@@ -4,6 +4,7 @@ import { useTransition, useState, FC } from "react";
 import { cn } from "../../lib/utils";
 import { Button } from "../ui";
 import { File } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { Title } from "..";
 import { InvoiceCorrectionsPanel } from './invoice-corrections-panel';
 
@@ -19,6 +20,7 @@ export const InvoiceButton: FC<Props> = ({
   invoiceUrl,
   id
 }) => {
+  const router = useRouter();
   const [pending, start] = useTransition();
   const [supplyDate, setSupplyDate] = useState("");
   const [error, setError] = useState("");
@@ -47,7 +49,7 @@ export const InvoiceButton: FC<Props> = ({
           <Button
             disabled={pending || !supplyDate}
             onClick={() =>
-              start(async () => { setError(""); try { const response = await createInvoice(id, supplyDate); if (response.ok) setResult(response); else setError(response.message ?? "Не удалось создать счёт"); } catch (e) { setError(e instanceof Error ? e.message : "Не удалось создать счёт"); } })
+              start(async () => { setError(""); try { const response = await createInvoice(id, supplyDate); if (response.ok) { setResult(response); router.refresh(); } else setError(response.message ?? "Не удалось создать счёт"); } catch (e) { setError(e instanceof Error ? e.message : "Не удалось создать счёт"); } })
             }
           >
             {pending ? "Creating…" : "Create invoice"}
