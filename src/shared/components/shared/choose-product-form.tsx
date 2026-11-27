@@ -2,6 +2,7 @@
 import { offerPrices } from "../../lib/day-offer";
 import { useDayOfferClock } from "../../hooks/use-day-offer";
 import { ProductIngredients } from "./product-ingredients";
+import { FragranceBrandInformation } from "./fragrance-brand-information";
 import { FragranceAccordion } from "./fragrance-accordion";
 import { formatMoney, formatUnitPrice } from "@/src/shared/lib/money";
 import { BottleOption, selectedIngredientSource, unitPricePerLitre } from "@/src/shared/lib/full-bottle";
@@ -183,6 +184,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
           <ProductCharacteristics className="fragrance-characteristics" showTitle={false} charactiristics={charactiristics}/>
         </FragranceAccordion>
         {(product.categoryId===1 || product.concentration || product.productGroup.onTap || product.translations.some(t=>Boolean(t.activeIngredients?.trim()))) && <ProductIngredients {...ingredientSource} locale={locale}/>}
+        {product.categoryId===1 && <FragranceBrandInformation brandName={product.brand.name} locale={locale} />}
       </div>
       </div>
     {noteGroups.some(g=>g.notes.length>0) && <section className="fragrance-pyramid"><h2>{ru?"Как раскрывается аромат":"Die Duftpyramide"}</h2><div className="fragrance-notes">{noteGroups.filter(g=>g.notes.length>0).map(g=><div className="fragrance-note-stage" data-stage={g.type} key={g.type}><h3>{g.title}</h3><ul>{g.notes.map(note=><FragranceNoteCard key={note.id} note={note} locale={locale}/>)}</ul></div>)}</div></section>}
