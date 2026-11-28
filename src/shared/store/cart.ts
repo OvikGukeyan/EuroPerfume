@@ -72,7 +72,7 @@ export const useCartStore = create<CartState>((set, get) => ({
       set(state => ({ itemLoading: false, items: state.items.map(item => ({ ...item, disabled: false })) }));
     }
   },
-  addCartItem: async (values: {productId: number, volume: number, variationId?: number}) => {
+  addCartItem: async (values: CreateCartItemValues) => {
     try {
       set({ loading: true, error: false });
       const data = await Api.cart.addCartItem(values);

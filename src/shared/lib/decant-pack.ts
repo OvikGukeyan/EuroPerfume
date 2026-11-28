@@ -1,5 +1,11 @@
 import { volumes } from "../constants/perfume";
 
+export const MAX_DECANT_PACK_COUNT = 99;
+export function decantAddVolume(size: number, count: unknown) {
+  return isDecantPack(size) && typeof count === "number" && Number.isSafeInteger(count)
+    && count >= 1 && count <= MAX_DECANT_PACK_COUNT ? size * count : null;
+}
+
 export const isDecantPack = (value: unknown): value is (typeof volumes)[number] =>
   typeof value === "number" && volumes.some(size => size === value);
 

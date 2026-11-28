@@ -22,5 +22,6 @@ export interface CartDTO extends SafeCart {
 export interface CreateCartItemValues {
   productId: number;
   volume: number; // one atomizer size for a decant, one unit for a bottle
+  packCount?: number;
   variationId?: number;
 }

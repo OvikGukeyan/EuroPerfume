@@ -1,4 +1,5 @@
 "use client";
+import { DecantQuantityPicker } from "./decant-quantity-picker";
 import { hasPreVatPriceHistory, offerPrices, type DayOfferWindow } from "../../lib/day-offer";
 import { useDayOfferClock } from "../../hooks/use-day-offer";
 import { FragranceFormatPicker } from "./fragrance-format-picker";
@@ -64,6 +65,7 @@ export const ByProductDialog: FC<Props> = ({
   const selectedAvailable=bottle?bottle.available:available;
   const [open,setOpen]=useState(false);
   const [busy,setBusy]=useState(false);
+  const [packCount, setPackCount] = useState(1);
   const [volume, setVolume] = useState<Volume>(volumes[0]);
   const [activeVariationId, setActiveVariationId] = useState<number>(
     variations[0]?.id
@@ -85,9 +87,11 @@ export const ByProductDialog: FC<Props> = ({
       await addCartItem({
         productId: bottle?.id ?? id,
         volume: !bottle && productGroup.onTap ? volume : 1,
+        packCount: !bottle && productGroup.onTap ? packCount : undefined,
         variationId: !bottle && activeVariation ? activeVariation.id : undefined,
       });
       setOpen(false);
+      setPackCount(1);
       toast.success(ru?"Добавлено в корзину":"Zum Warenkorb hinzugefügt");
       if(checkout)router.push("/checkout");
     } catch (error) {
@@ -147,6 +151,8 @@ export const ByProductDialog: FC<Props> = ({
             setVolume={setVolume}
           />
         )}
+
+        {!bottle && productGroup.onTap && selectedAvailable && <DecantQuantityPicker count={packCount} volume={volume} onChange={setPackCount} unitPrice={priced.effective}/>}
 
         {!bottle && variations.length > 1 && (
           <ChooseVariation
