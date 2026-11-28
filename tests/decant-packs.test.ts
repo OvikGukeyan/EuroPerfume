@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { cartPackMl, formatPackQuantity, isDecantPack } from "../src/shared/lib/decant-pack";
+import { decantAddVolume, cartPackMl, formatPackQuantity, isDecantPack } from "../src/shared/lib/decant-pack";
 import { capturePricing, invoiceTax, readPricing, reviseOrderPricing } from "../src/shared/lib/tax";
 import { offerPrices } from "../src/shared/lib/day-offer";
 import { minimumOrderGoodsCents } from "../src/shared/lib/minimum-order";
@@ -47,4 +47,12 @@ test("legacy prices still work and small packs cannot imitate the required promo
   const promo={productIds:[1,2],requiredMl:5,active:true,startsAt:null,endsAt:null};
   assert.equal(promotionQualified(promo,[row(3,6),{...row(5,5),productId:2}]),false);
   assert.equal(promotionQualified(promo,[row(5,5),{...row(5,5),productId:2}]),true);
+});
+
+test("quantity can be selected directly before adding a fixed atomizer size", () => {
+  assert.equal(decantAddVolume(3,3),9);
+  assert.equal(decantAddVolume(5,5),25);
+  assert.equal(decantAddVolume(5,1),5);
+  assert.equal(decantAddVolume(7,1),null);
+  for (const n of [0,-1,1.5,100,"3",null]) assert.equal(decantAddVolume(3,n),null);
 });

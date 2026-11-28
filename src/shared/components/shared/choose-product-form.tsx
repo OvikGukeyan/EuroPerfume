@@ -1,4 +1,5 @@
 "use client";
+import { DecantQuantityPicker } from "./decant-quantity-picker";
 import { hasPreVatPriceHistory, offerPrices } from "../../lib/day-offer";
 import { useDayOfferClock } from "../../hooks/use-day-offer";
 import { ProductIngredients } from "./product-ingredients";
@@ -50,6 +51,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
     (variation) => variation.id === activeVariationId
   );
 
+  const [packCount, setPackCount] = useState(1);
   const [volume, setVolume] = useState<Volume>(volumes[0]);
 
   const firstBottle=bottles.find(b=>b.available) ?? bottles[0];
@@ -88,12 +90,15 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
   }, [product.id]);
 
   const onSubmit = async () => {
+    if (loading) return;
     try {
       await addCartItem({
         productId: bottle?.id ?? product.id,
         volume: !bottle && product.productGroup.onTap ? volume : 1,
+        packCount: !bottle && product.productGroup.onTap ? packCount : undefined,
         variationId: bottle ? undefined : activeVariation?.id,
       });
+      setPackCount(1);
       toast.success(locale==="ru"?"Добавлено в корзину":"Zum Warenkorb hinzugefügt");
       document.dispatchEvent(new CustomEvent("europerfume:open-cart"));
     } catch (error) {
@@ -163,6 +168,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
           <FragranceFormatPicker bottles={bottles} selected={bottleId} onSelect={setBottleId} decantAvailable={product.available} hasDecants={Boolean(product.productGroup.onTap)}/>
           {!bottle && product.variations.length>0 && <ChooseVariation setActiveVariationId={setActiveVariationId} activeVariationId={activeVariationId} items={product.variations}/>}
           {!bottle && product.productGroup.onTap && <div><p className="fragrance-volume-label">{ru?"Выберите объём":"Größe wählen"}</p><VolumeSelection className="fragrance-volumes" volume={volume} setVolume={setVolume} volumes={[...volumes]}/></div>}
+          {!bottle && product.productGroup.onTap && product.available && <DecantQuantityPicker count={packCount} volume={volume} onChange={setPackCount} unitPrice={priced.effective}/>}
           {!bottle && product.productGroup.onTap && <p className="fragrance-disclosure">{ru?"Отливант из оригинального флакона. Не является официальным пробником производителя.":"Duftabfüllung aus einem Originalflakon. Keine offizielle Herstellerprobe."}</p>}
           {bottle && <p className="fragrance-disclosure">{ru?"Полный оригинальный флакон · ":"Originalflakon · "}{bottle.ml} ml</p>}
           <p className="fragrance-disclosure">{ru?"Артикул: ":"Artikelnummer: "}EP-{bottle?.id ?? product.id}</p>

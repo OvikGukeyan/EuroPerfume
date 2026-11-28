@@ -7,12 +7,14 @@ interface IconButtonProps {
   size?: CountButtonProps['size'];
   disabled?: boolean;
   type?: 'plus' | 'minus';
+  label?: string;
   onClick?: () => void;
 }
 
 export const CountIconButton: React.FC<IconButtonProps> = ({
   size = 'sm',
   disabled,
+  label,
   type,
   onClick,
 }) => {
@@ -21,6 +23,7 @@ export const CountIconButton: React.FC<IconButtonProps> = ({
       type='button'
       variant="outline"
       disabled={disabled}
+      aria-label={label}
       onClick={onClick}
       className={cn(
         'p-0 hover:bg-primary hover:text-white disabled:bg-white disabled:border-gray-400 disabled:text-gray-400',

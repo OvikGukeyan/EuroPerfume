@@ -4,7 +4,7 @@ import { ProductGroup } from "@prisma/client";
 import { prisma } from "@/prisma/prisma-client";
 
 import { NextRequest, NextResponse } from "next/server";
-import { isDecantPack } from "@/src/shared/lib/decant-pack";
+import { decantAddVolume } from "@/src/shared/lib/decant-pack";
 import { aromaBoxItems } from "@/src/shared/lib/aroma-box";
 import { CreateCartItemValues } from "@/src/shared/services/dto/cart.dto";
 import { updateCartTotalAmount } from "@/src/shared/server-lib/update-cart-total-amount";
@@ -48,12 +48,14 @@ export async function POST(req: NextRequest) {
       const product=await tx.product.findUnique({where:{id:data.productId},select:{available:true,bottleParentId:true,stockPieces:true,allowBackorder:true,productGroup:{select:{onTap:true}}}});
       if(!product?.available || (product.bottleParentId!==null && data.variationId!=null)) return false;
       const onTap = product.bottleParentId === null && Boolean(product.productGroup.onTap);
-      if (onTap ? !isDecantPack(data.volume) : data.volume !== 1) return false;
+      const packCount = data.packCount === undefined ? 1 : data.packCount;
+      const addedQuantity = onTap ? decantAddVolume(data.volume, packCount) : (data.volume === 1 && packCount === 1 ? 1 : null);
+      if (addedQuantity === null) return false;
       const packMl = onTap ? data.volume : null;
       const rows = await tx.cartItem.findMany({where:{cartId:userCart.id,productId:data.productId,variationId:data.variationId??null,...(packMl ? {OR:[{packMl},{packMl:null,quantity:packMl}]} : {packMl:null})}});
       const boxIds = new Set(aromaBoxItems(req.cookies.get("discoveryBoxIds")?.value, await tx.cartItem.findMany({where:{cartId:userCart.id}})).map(row=>row.id));
       const existing = rows.find(row => !boxIds.has(row.id));
-      const quantity=(existing?.quantity??0)+data.volume;
+      const quantity=(existing?.quantity??0)+addedQuantity;
       if(!canOrderQuantity(product,quantity,data.variationId)) return false;
       if(existing) await tx.cartItem.update({where:{id:existing.id},data:{quantity,packMl}});
       else await tx.cartItem.create({data:{cartId:userCart.id,productId:data.productId,quantity,variationId:data.variationId,packMl}});
