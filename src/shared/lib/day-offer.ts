@@ -35,7 +35,12 @@ export function linePrice(price: number, quantity: number, onTap: boolean): numb
   const packaging = onTap ? (quantity <= 10 ? 1 : quantity <= 20 ? 2 : quantity <= 30 ? 3 : quantity <= 40 ? 4 : 5) : 0;
   return Math.round((price * quantity + packaging + Number.EPSILON) * 100) / 100;
 }
-export function offerPrices(product: PriceSource, quantity: number, onTap: boolean, now = Date.now(), applyCatalogVat = true) {
+export function offerPrices(product: PriceSource, quantity: number, onTap: boolean, now = Date.now(), applyCatalogVat = true, packMl?: number | null): { regular: number; effective: number; discounted: boolean; dayOffer: boolean } {
+  if (onTap && packMl && quantity % packMl === 0) {
+    const unit = offerPrices(product, packMl, true, now, applyCatalogVat);
+    const count = quantity / packMl;
+    return {...unit, regular: Math.round(unit.regular * 100) * count / 100, effective: Math.round(unit.effective * 100) * count / 100};
+  }
   const regular = linePrice(Number(product.price), quantity, onTap);
   const sale = Number(product.discountPrice);
   const existing = sale > 0 && sale < Number(product.price) ? linePrice(sale, quantity, onTap) : regular;

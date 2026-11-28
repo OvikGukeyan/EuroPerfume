@@ -29,12 +29,12 @@ export async function POST(req: NextRequest) {
         if (previous.length) await tx.cartItem.deleteMany({ where: { id: { in: boxItemIds }, cartId: cart.id } });
         boxItemIds = [];
         for (const productId of ids) {
-          const item = await tx.cartItem.create({ data: { cartId: cart.id, productId, quantity: 2 } });
+          const item = await tx.cartItem.create({ data: { cartId: cart.id, productId, quantity: 2, packMl: 2 } });
           boxItemIds.push(item.id);
         }
       }
       const items = await tx.cartItem.findMany({ where: { cartId: cart.id }, include: { product: { include: { productGroup: true } } } });
-      const totalAmount = items.reduce((sum, i) => sum + calcCartItemTotalPrice(Number(i.product.price), i.quantity, Boolean(i.product.productGroup.onTap), Number(i.product.discountPrice) || undefined), 0);
+      const totalAmount = items.reduce((sum, i) => sum + calcCartItemTotalPrice(Number(i.product.price), i.quantity, Boolean(i.product.productGroup.onTap), Number(i.product.discountPrice) || undefined, i.product, Date.now(), true, i.packMl), 0);
       await tx.cart.update({ where: { id: cart.id }, data: { totalAmount: Math.round(totalAmount * 100) / 100 } });
       return { status: 200, success: true, boxItemIds };
     }, { timeout: 15000 });

@@ -52,7 +52,7 @@ export async function PATCH(
       const lockedItem=await tx.orderItem.findUnique({where:{id:orderItemId}});
       if(!lockedItem)throw Error("ITEM_NOT_FOUND");
 
-      const newQty = lockedItem.quantity + parsed.data.delta;
+      const newQty = lockedItem.quantity + parsed.data.delta * (lockedItem.packMl ?? 1);
 
       if (newQty <= 0) {
         // можно либо запретить, либо автоматически удалить позицию
@@ -195,6 +195,7 @@ export async function POST(req: NextRequest) {
           orderId,
           productId,
           variationId: variationId ?? null,
+          packMl: null,
         },
         select: { id: true, quantity: true },
       });

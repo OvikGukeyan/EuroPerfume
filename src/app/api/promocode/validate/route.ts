@@ -43,7 +43,7 @@ export async function POST(req: Request) {
     const blocked=new Set(candidatePromotions.filter(link=>link.promotion.giftProductId!==null &&
       availableGiftIds.has(link.promotion.giftProductId)).flatMap(link=>link.promotion.productIds));
     const quote=couponQuote(lines.map(item=>{
-      const price=offerPrices(item.product,item.quantity,Boolean(item.product.productGroup?.onTap),now.getTime());
+      const price=offerPrices(item.product,item.quantity,Boolean(item.product.productGroup?.onTap),now.getTime(),true,item.packMl);
       const dayActive=Boolean(item.product.dayOfferStartsAt && item.product.dayOfferEndsAt &&
         now >= item.product.dayOfferStartsAt && now < item.product.dayOfferEndsAt);
       return {productId:item.productId,grossCents:Math.round(price.effective*100),

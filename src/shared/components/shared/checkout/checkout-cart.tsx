@@ -1,5 +1,6 @@
 "use client";
 import React, { FC } from "react";
+import { DecantPackOptions } from "../decant-pack-options";
 import { PromotionCartGroup } from "../promotion-cart-group";
 import { AromaBoxSummary } from "../aroma-box-summary";
 import { CheckoutItem,CheckoutItemSkeleton,FreeShippingProgress,WhiteBlock } from "..";
@@ -10,7 +11,7 @@ import { useTranslations } from "use-intl";
 interface Props {
   items:CartStateItem[];promotions?:CartPromotionSummary[];totalAmount:number;
   removeCartItem:(id:number)=>void;
-  onClickCountButton:(id:number,quantity:number,type:"plus"|"minus",productGroup:number)=>void;
+  onClickCountButton:(id:number,quantity:number,type:"plus"|"minus",packMl?:number|null)=>void;
   loading?:boolean;itemLoading?:boolean;className?:string;
 }
 export const CheckoutCart:FC<Props>=({className,items,promotions=[],totalAmount,removeCartItem,onClickCountButton,loading})=>{
@@ -22,8 +23,9 @@ export const CheckoutCart:FC<Props>=({className,items,promotions=[],totalAmount,
     key={item.id} id={item.id} imageUrl={item.imageUrl as string}
     name={item.name+(item.dayOffer?(ru?" · Товар дня −10%":" · Tagesangebot −10%"):"")}
     brand={item.brand} price={item.price} onTap={Boolean(item.productGroup?.onTap)}
+    packMl={item.packMl} lockedCount={item.aromaBox || item.invalidPack} options={<DecantPackOptions item={item}/>}
     quantity={item.quantity} disabled={item.disabled} variation={item.variationName}
-    onClickCountButton={type=>onClickCountButton(item.id,item.quantity,type,item.productGroup?.id||2)}
+    onClickCountButton={type=>onClickCountButton(item.id,item.quantity,type,item.packMl)}
     onClickRemove={()=>removeCartItem(item.id)}
   />;
   return <WhiteBlock className={`rounded-md border-[#e5e5e5] shadow-none ${className||""}`} title={t("stepTitle")} contentClassName="px-4 pb-5 pt-4 md:px-6 md:pb-6">

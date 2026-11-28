@@ -1,4 +1,5 @@
 "use server";
+import { cartPackMl } from "@/src/shared/lib/decant-pack";
 import { canOrderQuantity } from "@/src/shared/lib/orderability";
 
 import {z} from "zod";
@@ -405,6 +406,13 @@ export async function createOrder(data: CheckoutFormValues) {
         throw new Error("Cart is empty!");
       }
 
+      for (const item of userCart.items) {
+        if (item.product.bottleParentId === null && item.product.productGroup.onTap) {
+          const packMl = cartPackMl(item.quantity, item.packMl);
+          if (!packMl) throw new Error("DECANT_PACK");
+          item.packMl = packMl;
+        }
+      }
       const orderedAt = new Date();
       if (!meetsMinimumOrder(minimumOrderGoodsCents(userCart.items, orderedAt.getTime()))) {
         throw new Error("MINIMUM_ORDER");
@@ -549,6 +557,7 @@ export async function createOrder(data: CheckoutFormValues) {
             create: userCart.items.map((item) => ({
               name: (boxItemIds.has(item.id) ? "Aroma Box · " : "") + item.product.name,
               quantity: item.quantity,
+              packMl: item.packMl,
               variationId: item.variationId,
               productId: item.productId,
             })),
@@ -654,6 +663,7 @@ export async function createOrder(data: CheckoutFormValues) {
     if(error instanceof Error && error.message==="CAMPAIGN_INVALID") return {code:"CAMPAIGN_INVALID"} as const;
     if(error instanceof Error && ["LOYALTY_CHANGED","LOYALTY_INVALID","LOYALTY_DISABLED"].includes(error.message))return {code:error.message} as const;
     if(error instanceof Error && error.message==="PALLAS_GIFT_CHANGED") return {code:"PALLAS_GIFT_CHANGED"} as const;
+    if(error instanceof Error && error.message==="DECANT_PACK") return {code:"DECANT_PACK"} as const;
     if(error instanceof Error && error.message==="MINIMUM_ORDER") return {code:"MINIMUM_ORDER"} as const;
     if(error instanceof Error && error.message==="PRICES_CHANGED") return {code:"PRICES_CHANGED"} as const;
     if(error instanceof Error && error.message.includes("Not enough full bottles in stock")) return {code:"BOTTLE_STOCK"} as const;

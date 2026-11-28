@@ -1,3 +1,4 @@
+import { formatPackQuantity } from "@/src/shared/lib/decant-pack";
 import { calcCartItemTotalPrice } from "@/src/shared/lib";
 import { CartItemDTO } from "@/src/shared/services/dto/cart.dto";
 import { PricingSnapshot, splitGross } from "@/src/shared/lib/tax";
@@ -84,7 +85,7 @@ export const OrderSuccessTemplate: React.FC<Props> = ({
     {campaignGifts.length > 0 && <section><h3>Aktion · Gratisgeschenke</h3><ul>{campaignGifts.map((gift,index)=><li key={index}>{gift}</li>)}</ul></section>}
     <h3>Bestellübersicht:</h3>
     <ul>
-      {pricing ? pricing.lines.map((line, index) => <li key={index}>{line.title}{line.dayOfferPercent ? " · Tagesangebot −10%" : ""} × {line.quantity} {line.onTap ? "ml" : "Stk."} = <strong>{(line.grossCents / 100).toFixed(2)} €</strong></li>) : items.map((item) => (
+      {pricing ? pricing.lines.map((line, index) => <li key={index}>{line.title}{line.dayOfferPercent ? " · Tagesangebot −10%" : ""} · {formatPackQuantity(line.quantity, line.onTap, line.packMl)} = <strong>{(line.grossCents / 100).toFixed(2)} €</strong></li>) : items.map((item) => (
         <li key={item.id}>
           {item.product.name} | {item.variation?.name} × {item.quantity} ={" "}
           <strong>

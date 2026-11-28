@@ -1,3 +1,4 @@
+import { formatPackQuantity } from "@/src/shared/lib/decant-pack";
 import { Brand, Order, OrderItem, Product, ProductGroup } from "@prisma/client";
 import { PricingSnapshot, invoiceTax, berlinDate } from "../lib/tax";
 import { business } from "../constants/business";
@@ -95,7 +96,7 @@ Leistungsdatum: ${tax.supplyDate}`,
     if (y + height > 590) { doc.addPage(); y = 80; tableHeader(); }
     doc.text(String(index + 1), 50, y);
     doc.text(line.title + (line.dayOfferPercent ? "\nТовар дня / Tagesangebot −10%: " + ((line.regularGrossCents ?? line.grossCents)/100).toFixed(2) + " € → " + (line.grossCents/100).toFixed(2) + " €" : ""), 90, y, { width: 260 });
-    doc.text(String(line.quantity) + (line.onTap ? " ml" : " Stk."), 370, y, { width: 70, align: "right" });
+    doc.text(formatPackQuantity(line.quantity, line.onTap, line.packMl), 370, y, { width: 70, align: "right" });
     doc.text((line.grossCents / 100).toFixed(2) + " €", 465, y, { width: 80, align: "right" });
     y += height;
   }

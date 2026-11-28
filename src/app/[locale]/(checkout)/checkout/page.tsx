@@ -194,6 +194,11 @@ export default function Checkout() {
         toast.error(locale==="ru" ? "Для подарка нужны Cedar Chic 5 мл и Bois Impérial 5 мл в одном заказе." : "Für das Geschenk müssen Cedar Chic 5 ml und Bois Impérial 5 ml im Warenkorb sein.");
         return;
       }
+      if(result?.code==="DECANT_PACK") {
+        await useCartStore.getState().fetchCartItems();
+        toast.error(locale==="ru" ? "Замените нестандартные объёмы в корзине на доступные атомайзеры." : "Bitte ersetze Sondermengen im Warenkorb durch verfügbare Zerstäubergrößen.");
+        return;
+      }
       if(result?.code==="BOTTLE_STOCK"){
         await useCartStore.getState().fetchCartItems();
         toast.error(locale==="ru"?"Этот объём закончился или его осталось меньше. Проверьте количество в корзине.":"Dieser Flakon ist nicht mehr in der gewünschten Menge verfügbar. Bitte prüfen Sie Ihren Warenkorb.");
@@ -265,15 +270,11 @@ export default function Checkout() {
     id: number,
     quantity: number,
     type: "plus" | "minus",
-    productGroup: number
+    packMl?: number | null
   ) => {
-    const isDraft = productGroup < 4;
-    if (isDraft && quantity < 3 && type === "minus") {
-      return;
-    }
-
-    const newQuantity = type === "plus" ? quantity + 1 : quantity - 1;
-    updateItemQuantity(id, newQuantity);
+    const step = packMl ?? 1;
+    const newQuantity = type === "plus" ? quantity + step : quantity - step;
+    if (newQuantity > 0) updateItemQuantity(id, newQuantity);
   };
 
   const t = useTranslations("Checkout");

@@ -1,6 +1,7 @@
 import { dayOfferActive, offerPrices } from "./day-offer";
 import { TAX_SETTINGS } from "../../config/tax";
 import { minimumOrderGoodsCents } from "./minimum-order";
+import { cartPackMl } from "./decant-pack";
 import { roundMoney } from "./money";
 import { Brand, ProductGroup } from "@prisma/client";
 import { CartDTO, CartPromotionSummary } from "../services/dto/cart.dto";
@@ -15,6 +16,9 @@ export type CartStateItem = {
   id: number;
   productId:number;
   quantity: number;
+  packMl?: number | null;
+  invalidPack?: boolean;
+  variationId?: number | null;
   name: string;
   brand: Brand;
   imageUrl?: string;
@@ -36,12 +40,15 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
   const items = data.items.map((item) => ({
     allowBackorder: item.product.allowBackorder === true,
     dayOffer: dayOfferActive(item.product, now),
-    discounted: offerPrices(item.product, item.quantity, Boolean(item.product.productGroup?.onTap), now).discounted,
+    discounted: offerPrices(item.product, item.quantity, Boolean(item.product.productGroup?.onTap), now, true, item.packMl).discounted,
     offerBoundary: item.product.dayOfferEndsAt ? String(item.product.dayOfferEndsAt) : null,
     id: item.id,
     productId:item.productId,
     aromaBox: item.aromaBox,
     quantity: item.quantity,
+    packMl: item.product.productGroup?.onTap ? cartPackMl(item.quantity, item.packMl) : null,
+    invalidPack: Boolean(item.product.productGroup?.onTap) && !cartPackMl(item.quantity, item.packMl),
+    variationId: item.variationId,
     name: item.product.name,
     brand: item.product.brand,
     imageUrl: item.product.imageUrl[0] || item.variation?.imageUrl,
@@ -53,7 +60,7 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
       Boolean(item.product.productGroup?.onTap),
       item.product.discountPrice || undefined,
       item.product,
-      now
+      now, true, item.packMl
     ),
     disabled: false,
   })) as CartStateItem[];
