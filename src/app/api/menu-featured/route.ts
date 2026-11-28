@@ -13,9 +13,11 @@ export async function GET() {
       take:3,
       include:{brand:true,productGroup:true}
     });
+    const at = Date.now();
     return NextResponse.json(products.map(p=>({
       id:p.id,name:p.name.trim(),brand:p.brand.name,image:p.imageUrl[0]||"",
-      price:calcCartItemTotalPrice(Number(p.price),2,true,p.discountPrice?Number(p.discountPrice):undefined,p)
+      price:calcCartItemTotalPrice(Number(p.price),2,true,p.discountPrice?Number(p.discountPrice):undefined,p,at),
+      priceBasis:calcCartItemTotalPrice(Number(p.price),2,true,p.discountPrice?Number(p.discountPrice):undefined,p,at,false)
     })),{headers:{"Cache-Control":"public, max-age=60, s-maxage=300"}});
   }catch{
     return NextResponse.json([],{headers:{"Cache-Control":"no-store"}});

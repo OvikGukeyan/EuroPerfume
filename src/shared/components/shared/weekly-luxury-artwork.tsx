@@ -10,10 +10,10 @@ const money=(value:number)=>new Intl.NumberFormat("de-DE",{style:"currency",curr
  * Dynamic bottle images are composited as multiply to eliminate ordinary white packshot backgrounds.
  */
 export function WeeklyLuxuryArtwork({
- name,brand,image,productId,salePrice,regularPrice,volume,ru,until,preview=false
+ name,brand,image,productId,salePrice,regularPrice,volume,ru,until,preview=false,showPriceComparison=true
 }:{
  name:string;brand:string;image:string;productId:number;salePrice:number;regularPrice:number;
- volume:number;ru:boolean;until?:string;preview?:boolean
+ volume:number;ru:boolean;until?:string;preview?:boolean;showPriceComparison?:boolean
 }){
  return <div className={`weekly-luxury-artwork storefront-desktop-hero relative isolate w-full overflow-hidden text-[#fff5e9] ${preview?"weekly-luxury-preview":""}`}>
   <img src="/assets/day-offers/initio-desktop-wide-scene.webp" alt="" aria-hidden="true"
@@ -24,9 +24,9 @@ export function WeeklyLuxuryArtwork({
    <h2 className="weekly-luxury-title font-serif" title={name}>{name}</h2>
    <p className="weekly-luxury-brand">{brand}</p>
    <div className="weekly-luxury-price">
-    <p className="weekly-luxury-discount font-serif">−10%</p>
+    {showPriceComparison&&<p className="weekly-luxury-discount font-serif">−10%</p>}
     <div className="weekly-luxury-amount">
-     <strong>{money(salePrice)}</strong><del>{money(regularPrice)}</del><span>{volume} ml</span>
+     <strong>{money(salePrice)}</strong>{showPriceComparison&&<del>{money(regularPrice)}</del>}<span>{volume} ml</span>
     </div>
    </div>
    <span className="weekly-luxury-action">

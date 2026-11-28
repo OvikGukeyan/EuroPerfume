@@ -1,5 +1,5 @@
 "use client";
-import { offerPrices, type DayOfferWindow } from "../../lib/day-offer";
+import { hasPreVatPriceHistory, offerPrices, type DayOfferWindow } from "../../lib/day-offer";
 import { useDayOfferClock } from "../../hooks/use-day-offer";
 import "./compact-product-card.css";
 import type { BottleOption } from "../../lib/full-bottle";
@@ -89,6 +89,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
   const displayBottle=priced.bottle;
   const productHref = `/product/${id}${displayBottle ? `?bottle=${displayBottle.id}` : ""}`;
   const displayImage = displayBottle ? displayBottle.image : imageUrl || variations?.[0]?.imageUrl;
+  const showPriceComparison = !hasPreVatPriceHistory(offerNow);
   const finalPrice = priced.regular;
   const finalDiscountPrice = priced.discounted ? priced.effective : undefined;
 
@@ -102,7 +103,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
           {isFavorite ? <HeartBlack /> : <Heart />}
         </button>
         {bottles.length > 0 && <span className="compact-format-badge">{displayBottle ? (locale === "ru" ? "Полный флакон" : "Originalflakon") : (locale === "ru" ? "Есть полный флакон" : "Auch als Originalflakon")}</span>}
-        {priced.discounted ? <span className="home-product-badge home-sale">SALE</span> : isBestseller ? <span className="home-product-badge">BESTSELLER</span> : null}
+        {showPriceComparison && priced.discounted ? <span className="home-product-badge home-sale">SALE</span> : isBestseller ? <span className="home-product-badge">BESTSELLER</span> : null}
       </div>
       <Link href={productHref} className="home-product-description">
         <p className="home-product-brand">{brand.name}</p>
@@ -111,7 +112,7 @@ export const ProductSelectionItem: React.FC<Props> = ({
       <div className="compact-product-meta">
         <p className="home-product-price">
           <small className="compact-product-from">{!displayBottle && productGroup.onTap ? (locale === "ru" ? "Отливант от" : "Abfüllung ab") : bottles.length ? (locale === "ru" ? "Флакон от" : "Originalflakon ab") : ""}</small>
-          {priced.discounted ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalPrice)} €</strong>}
+          {showPriceComparison && priced.discounted ? <><del>{formatMoney(finalPrice)} €</del><strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong></> : <strong>{formatMoney(finalDiscountPrice ?? finalPrice)} €</strong>}
         </p>
         {priced.volumeMl && <span className="compact-product-size">{priced.volumeMl} {locale === "ru" ? "мл" : "ml"}</span>}
       </div>

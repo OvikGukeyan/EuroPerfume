@@ -6,7 +6,7 @@
   "scripts": {
     "test:supplier-import": "tsx --test tests/supplier-import.test.ts tests/supplier-pilot-plan.test.ts tests/bottle-inquiry.test.ts",
     "test:supplier-ordering": "tsx --test tests/supplier-ordering.test.ts",
-    "prebuild": "npm run test:supplier-import && npm run test:supplier-ordering && tsx --test tests/fragrance-variants.test.ts tests/full-bottle.test.ts tests/minimum-order.test.ts",
+    "prebuild": "npm run test:supplier-import && npm run test:supplier-ordering && tsx --test tests/fragrance-variants.test.ts tests/full-bottle.test.ts tests/minimum-order.test.ts tests/vat-catalog-cutover.test.ts",
     "dev": "next dev",
     "build": "npm run test:black-friday && npm run test:day-offer && npm run test:promotions && npm run test:ingredients && npm run test:coupon-policy && npm run test:branch15-limit && npm run test:club && npm run test:club-emails && npm run test:registration-single-email && npm run test:club-workflow && npm run test:legacy-newsletter && npm run test:admin-notifications && npm run test:order-notifications && npm run test:day-offer-search && npm run test:weekly-luxury-hero && npm run test:bottle-background && npm run test:mobile-weekly-parity && npm run test:preinvoice-reservations && prisma generate && next build",
     "postbuild": "next-sitemap --config next-sitemap.config.cjs",
@@ -15,7 +15,7 @@
     "prisma:push": "prisma db push",
     "prisma:studio": "prisma studio",
     "prisma:seed": "prisma db seed",
-    "test:day-offer": "node --experimental-strip-types scripts/test-day-offer.mjs && tsx scripts/test-day-offer-snapshot.ts && tsx scripts/test-day-offer-week.ts",
+    "test:day-offer": "node --import tsx scripts/test-day-offer.mjs && node --import tsx scripts/test-day-offer-snapshot.ts && node --import tsx scripts/test-day-offer-week.ts",
     "test:promotions": "tsx scripts/test-promotions.ts",
     "test:black-friday": "node --import tsx scripts/test-black-friday.ts",
     "test:ingredients": "tsx --test tests/fragrance-ingredients.test.ts",

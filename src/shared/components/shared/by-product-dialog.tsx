@@ -1,5 +1,5 @@
 "use client";
-import { offerPrices, type DayOfferWindow } from "../../lib/day-offer";
+import { hasPreVatPriceHistory, offerPrices, type DayOfferWindow } from "../../lib/day-offer";
 import { useDayOfferClock } from "../../hooks/use-day-offer";
 import { FragranceFormatPicker } from "./fragrance-format-picker";
 import { BottleOption, unitPricePerLitre } from "../../lib/full-bottle";
@@ -99,6 +99,7 @@ export const ByProductDialog: FC<Props> = ({
   const priced = bottle
     ? offerPrices({ ...bottle, price: bottle.regularPrice ?? bottle.price, discountPrice: bottle.discountPrice }, 1, false, offerNow)
     : offerPrices({ price, discountPrice, ...dayOffer }, productGroup.onTap ? volume : 1, Boolean(productGroup.onTap), offerNow);
+  const showPriceComparison = !hasPreVatPriceHistory(offerNow);
   const finalPrice = priced.regular;
   const finalDiscountPrice = priced.discounted ? priced.effective : undefined;
 
@@ -123,7 +124,7 @@ export const ByProductDialog: FC<Props> = ({
             <Title size="xs" text={name} />
             <p className="text-[20px] ">
               <span className="hidden md:inline">{t("price")}</span>{" "}
-              {priced.discounted ? (
+              {showPriceComparison && priced.discounted ? (
                 <>
                   <span className="line-through text-base mr-2">
                     {formatMoney(finalPrice)} €
@@ -131,7 +132,7 @@ export const ByProductDialog: FC<Props> = ({
                   <b className="text-red-500">{formatMoney(finalDiscountPrice ?? finalPrice)} €</b>
                 </>
               ) : (
-                <b>{formatMoney(finalPrice)} €</b>
+                <b>{formatMoney(finalDiscountPrice ?? finalPrice)} €</b>
               )}
             </p>
           </div>
@@ -156,7 +157,7 @@ export const ByProductDialog: FC<Props> = ({
           />
         )}
         {(bottle || productGroup.onTap) && <p className="my-3 text-xs text-neutral-600">({formatUnitPrice(unitPricePerLitre(finalDiscountPrice ?? finalPrice,bottle?.ml ?? volume) ?? 0)} € / 1 l)</p>}
-        {priced.dayOffer && <p className="mt-1 text-[10px] text-neutral-500">{ru ? "Низшая цена за 30 дней: " : "Niedrigster Preis der letzten 30 Tage: "}{formatMoney(finalPrice)} €</p>}
+        {showPriceComparison && priced.dayOffer && <p className="mt-1 text-[10px] text-neutral-500">{ru ? "Низшая цена за 30 дней: " : "Niedrigster Preis der letzten 30 Tage: "}{formatMoney(finalPrice)} €</p>}
         <TaxPriceNotice gross={finalDiscountPrice ?? finalPrice}/>
         <p className="mb-4 text-xs text-neutral-600"><Link href="/delivery-and-payment" className="underline">{ru?"Дополнительно доставка":"Zzgl. Versand"}</Link></p>
         <DialogFooter>

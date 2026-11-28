@@ -1,5 +1,5 @@
 "use client";
-import { offerPrices } from "../../lib/day-offer";
+import { hasPreVatPriceHistory, offerPrices } from "../../lib/day-offer";
 import { useDayOfferClock } from "../../hooks/use-day-offer";
 import { ProductIngredients } from "./product-ingredients";
 import { FragranceAccordion } from "./fragrance-accordion";
@@ -60,6 +60,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
   const priced = bottle
     ? offerPrices({ ...bottle, price: bottle.regularPrice ?? bottle.price, discountPrice: bottle.discountPrice }, 1, false, offerNow)
     : offerPrices(product, product.productGroup.onTap ? volume : 1, Boolean(product.productGroup.onTap), offerNow);
+  const showPriceComparison = !hasPreVatPriceHistory(offerNow);
   const finalPrice = priced.regular;
   const finalDiscountPrice = priced.discounted ? priced.effective : undefined;
 
@@ -166,7 +167,7 @@ export const ChooseProductForm: FC<Props> = ({ product, className, bottles=[], i
           {bottle && <p className="fragrance-disclosure">{ru?"Полный оригинальный флакон · ":"Originalflakon · "}{bottle.ml} ml</p>}
           <p className="fragrance-disclosure">{ru?"Артикул: ":"Artikelnummer: "}EP-{bottle?.id ?? product.id}</p>
           {bottle && <p className="fragrance-disclosure" role="status">{(bottle.stock ?? 0)>0 ? (ru?"В наличии":"Auf Lager") : (ru?"По запросу":"Auf Anfrage")}</p>}
-          <div aria-live="polite">{priced.dayOffer && <p className="mb-2 text-sm font-medium">{ru ? "Товар дня −10%" : "Tagesangebot −10%"}</p>}<p className="fragrance-price">{formatMoney(finalDiscountPrice ?? finalPrice)} €</p>{finalDiscountPrice!=null && <del aria-label={ru ? "Низшая цена за 30 дней" : "Niedrigster Preis der letzten 30 Tage"} className="text-sm text-neutral-500">{formatMoney(finalPrice)} €</del>}{unitPrice!==null && <p className="fragrance-unit">({formatUnitPrice(unitPrice)} € / 1 l)</p>}{priced.dayOffer && <p className="mt-1 text-[10px] text-neutral-500">{ru ? "Низшая цена за 30 дней: " : "Niedrigster Preis der letzten 30 Tage: "}{formatMoney(finalPrice)} €</p>}<TaxPriceNotice gross={finalDiscountPrice ?? finalPrice}/><p className="fragrance-disclosure"><Link href="/delivery-and-payment">{ru?"Дополнительно доставка — условия и стоимость":"Zzgl. Versand — Kosten und Lieferbedingungen"}</Link></p></div>
+          <div aria-live="polite">{showPriceComparison && priced.dayOffer && <p className="mb-2 text-sm font-medium">{ru ? "Товар дня −10%" : "Tagesangebot −10%"}</p>}<p className="fragrance-price">{formatMoney(finalDiscountPrice ?? finalPrice)} €</p>{showPriceComparison && finalDiscountPrice!=null && <del aria-label={ru ? "Низшая цена за 30 дней" : "Niedrigster Preis der letzten 30 Tage"} className="text-sm text-neutral-500">{formatMoney(finalPrice)} €</del>}{unitPrice!==null && <p className="fragrance-unit">({formatUnitPrice(unitPrice)} € / 1 l)</p>}{showPriceComparison && priced.dayOffer && <p className="mt-1 text-[10px] text-neutral-500">{ru ? "Низшая цена за 30 дней: " : "Niedrigster Preis der letzten 30 Tage: "}{formatMoney(finalPrice)} €</p>}<TaxPriceNotice gross={finalDiscountPrice ?? finalPrice}/><p className="fragrance-disclosure"><Link href="/delivery-and-payment">{ru?"Дополнительно доставка — условия и стоимость":"Zzgl. Versand — Kosten und Lieferbedingungen"}</Link></p></div>
           {inquiryHref ? <div className="space-y-3">
             <p className="fragrance-disclosure">{ru?"Наличие уточняется. Срок подтверждается после заявки.":"Verfügbarkeit auf Anfrage. Lieferzeit wird nach Ihrer Anfrage bestätigt."}</p>
             <a href={inquiryHref} className="fragrance-buy flex items-center justify-center text-center">{ru?"Запросить наличие по email":"Verfügbarkeit per E-Mail anfragen"}</a>

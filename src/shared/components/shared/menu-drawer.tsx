@@ -11,7 +11,7 @@ import { useLocale } from "next-intl";
 import { Link } from "@/src/i18n/navigation";
 
 type Props={className?:string};
-type Featured={id:number;name:string;brand:string;image:string;price:number};
+type Featured={id:number;name:string;brand:string;image:string;price:number;priceBasis?:number};
 export const MenuDrawer:FC<Props>=({className})=>{
  const {categories}=useCategories();
  const [open,setOpen]=useState(false);

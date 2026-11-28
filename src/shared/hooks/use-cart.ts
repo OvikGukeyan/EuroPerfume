@@ -26,9 +26,21 @@ export const useCart = (): ReturnPeops => {
     useEffect(() => {
         const refresh = () => { if (!document.hidden) void useCartStore.getState().fetchCartItems(); };
         const next = cartState.offerRefreshAt;
-        const timer = next ? setTimeout(refresh, Math.min(Math.max(0, next - Date.now()) + 50, 2147483647)) : undefined;
+        let timer: ReturnType<typeof setTimeout> | undefined;
+        const arm = () => {
+            if (!next) return;
+            const remaining = next - Date.now();
+            timer = setTimeout(remaining >= 2147483597 ? arm : refresh,
+                Math.min(Math.max(0, remaining) + 50, 2147483647));
+        };
+        arm();
         window.addEventListener("focus", refresh);
-        return () => { clearTimeout(timer); window.removeEventListener("focus", refresh); };
+        document.addEventListener("visibilitychange", refresh);
+        return () => {
+            clearTimeout(timer);
+            window.removeEventListener("focus", refresh);
+            document.removeEventListener("visibilitychange", refresh);
+        };
     }, [cartState.offerRefreshAt]);
     return cartState;
 }
