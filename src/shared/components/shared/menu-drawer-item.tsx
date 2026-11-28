@@ -4,10 +4,13 @@ import React from "react";
 import { ChevronDown } from "lucide-react";
 import { Category, ProductGroup } from "@prisma/client";
 import { Link } from "@/src/i18n/navigation";
-type Featured={id:number;name:string;brand:string;image:string;price:number};
+import { useDayOfferClock } from "@/src/shared/hooks/use-day-offer";
+import { catalogGrossPrice } from "@/src/shared/lib/day-offer";
+type Featured={id:number;name:string;brand:string;image:string;price:number;priceBasis?:number};
 type Props={category:Category & {productGroups:ProductGroup[]};setOpen:(v:boolean)=>void;locale:"ru"|"de";className?:string;featured?:Featured[];showFeatured?:boolean};
 export const MenuDrawerItem:React.FC<Props>=({category,setOpen,locale,featured=[],showFeatured=false,className})=>{
  const [expanded,setExpanded]=React.useState(false);
+ const now = useDayOfferClock();
  const title=locale==="ru"?category.labelRu:category.labelDe;
  const pickCategory=()=>setOpen(false);
  const pickGroup=(group:ProductGroup)=>setOpen(false);
@@ -31,7 +34,7 @@ export const MenuDrawerItem:React.FC<Props>=({category,setOpen,locale,featured=[
        </div>
        <p className="mt-2 line-clamp-2 text-[10px] uppercase leading-tight tracking-[.035em] text-[#777]">{p.brand}</p>
        <p className="mt-1 line-clamp-2 text-[13px] font-medium leading-snug text-[#222]">{p.name}</p>
-       <p className="mt-1 text-[12px] text-[#555]">{locale==="ru"?"от":"ab"} {p.price.toFixed(2).replace(".",",")} €</p>
+       <p className="mt-1 text-[12px] text-[#555]">{locale==="ru"?"от":"ab"} {(p.priceBasis === undefined ? p.price : catalogGrossPrice(p.priceBasis, now)).toFixed(2).replace(".",",")} €</p>
       </Link>)}
     </div>
    </div>}

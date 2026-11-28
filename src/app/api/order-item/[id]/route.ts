@@ -4,10 +4,7 @@ import { UserRole } from "@prisma/client";
 import { getUserSession } from "@/src/shared/server-lib/get-user-session";
 import { updatePreinvoiceOrder,lockEditableOrder } from "@/src/shared/server-lib/preinvoice-loyalty";
 import { prisma } from "@/prisma/prisma-client";
-import {
-  calcCartItemTotalPrice,
-  calcTotlalAmountWithDelivery,
-} from "@/src/shared/lib";
+
 
 const PatchBodySchema = z.object({
   delta: z
@@ -76,16 +73,8 @@ export async function PATCH(
       });
       if (!updated) throw new Error("ORDER_NOT_FOUND");
 
-      let subtotal = 0;
-      for (const it of updated.items)
-        subtotal += calcCartItemTotalPrice(
-          Number(it.product.price),
-          it.quantity,
-          Boolean(it.product.productGroup?.onTap),
-          Number(it.product.discountPrice) || undefined
-        );
-
       const pricing = await updatePreinvoiceOrder(tx,order,updated.items);
+      const subtotal = pricing.subtotalGrossCents / 100;
       const totalAmountWithDelivery = pricing.totalGrossCents / 100;
 
 
@@ -143,17 +132,8 @@ export async function DELETE(
         where:{orderId:order.id},include:{product:{include:{productGroup:true,brand:true}}}
       });
 
-      let subtotal = 0;
-      for (const it of remainingItems) {
-        subtotal += calcCartItemTotalPrice(
-          Number(it.product.price),
-          it.quantity,
-          Boolean(it.product.productGroup?.onTap),
-          Number(it.product.discountPrice) || undefined
-        );
-      }
-
       const pricing = await updatePreinvoiceOrder(tx,order,remainingItems);
+      const subtotal = pricing.subtotalGrossCents / 100;
       const totalAmount = pricing.totalGrossCents / 100;
 
 
@@ -245,16 +225,8 @@ export async function POST(req: NextRequest) {
       });
       if (!updated) throw new Error("ORDER_NOT_FOUND");
 
-      let subtotal = 0;
-      for (const it of updated.items)
-        subtotal += calcCartItemTotalPrice(
-          Number(it.product.price),
-          it.quantity,
-          Boolean(it.product.productGroup?.onTap),
-          Number(it.product.discountPrice) || undefined
-        );
-
       const pricing = await updatePreinvoiceOrder(tx,order,updated.items);
+      const subtotal = pricing.subtotalGrossCents / 100;
       const totalAmount = pricing.totalGrossCents / 100;
 
       return {orderId:updated.id,subtotal,totalAmount,itemsCount:updated.items.length}

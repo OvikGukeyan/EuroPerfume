@@ -3,7 +3,6 @@ import { pointRedemptionQuote } from "./loyalty-arithmetic";
 import { offerPrices, type DayOfferWindow } from "./day-offer";
 import { z } from "zod";
 import { TAX_SETTINGS } from "@/src/config/tax";
-import { calcCartItemTotalPrice } from "./calc-cart-item-total-price";
 import { calcTotlalAmountWithDelivery, euCountriesAlpha3 } from "./calc-total-amount-with-delivery";
 
 export type TaxPolicy = { mode: "exempt" | "vat" | "review"; rateBasisPoints: number | null };
@@ -96,16 +95,23 @@ export function reviseOrderPricing(items: PriceableItem[], country: string, disc
   // Points are reserved at enquiry time. Before Invoice, edits may only RELEASE
   // excess points; increasing the reservation without buyer approval is forbidden.
   // Preserve saved historic exclusion flags; do not re-qualify old orders with today's rules.
-  const revised = capturePricing(items,country,discount,at,previous.policy,false);
+  // Apply the price era of the original enquiry, not the time an admin opens it.
+  const quotedAt = new Date(previous.capturedAt);
+  const revised = capturePricing(items,country,discount,quotedAt,previous.policy,false);
+  const vatFactor = quotedAt.getTime() >= Date.parse(TAX_SETTINGS.VAT_START_AT)
+    ? (10000 + TAX_SETTINGS.GERMAN_RATE_BASIS_POINTS) / 10000 : 1;
   revised.lines = revised.lines.map(line => {
     const old = previous.lines.find(l => l.productId === line.productId && l.variationId === line.variationId);
     if (!old) return line;
     if (old.quantity === line.quantity) return old;
     const packaging = (q:number) => old.onTap ? (q<=10?1:q<=20?2:q<=30?3:q<=40?4:5) : 0;
-    const oldRegular = (old.regularGrossCents ?? old.grossCents) / 100;
-    const perUnit = (oldRegular - packaging(old.quantity)) / old.quantity;
-    const regularGrossCents = Math.round((perUnit * line.quantity + packaging(line.quantity)) * 100);
-    return { ...old, quantity:line.quantity, grossCents:old.dayOfferPercent ? Math.round(regularGrossCents*90/100) : regularGrossCents,
+    // Undo the line uplift in cents before separating the original atomizer
+    // charge; otherwise a volume change would leave part of that charge in €/ml.
+    const oldBaseCents = Math.round((old.regularGrossCents ?? old.grossCents) / vatFactor);
+    const perUnitCents = (oldBaseCents - 100 * packaging(old.quantity)) / old.quantity;
+    const baseCents = Math.round(perUnitCents * line.quantity + 100 * packaging(line.quantity));
+    const regularGrossCents = Math.round(baseCents * vatFactor);
+    return { ...old, quantity:line.quantity, grossCents:old.dayOfferPercent ? Math.round(Math.round(baseCents*90/100)*vatFactor) : regularGrossCents,
       ...(old.dayOfferPercent ? {regularGrossCents} : {}) };
   });
   revised.subtotalGrossCents = revised.lines.reduce((sum,l)=>sum+l.grossCents,0);

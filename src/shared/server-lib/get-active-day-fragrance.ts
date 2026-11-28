@@ -6,7 +6,7 @@ import { offerWeekSlots } from "@/src/shared/lib/day-offer-week";
 export type FeaturedDayFragrance = {
   id:number; name:string; brand:string; image:string;
   startsAt:string; endsAt:string;
-  regularPrice:number; salePrice:number; volume:number;
+  regularPriceBasis:number; salePriceBasis:number; volume:number;
   href:string;
 };
 
@@ -27,12 +27,12 @@ export async function getWeekFragrances():Promise<FeaturedDayFragrance[]> {
     const volume=5;
     // Price at the effective start; future offers are still discounted in their previews.
     const pricingTime=Math.max(now.getTime(),p.dayOfferStartsAt!.getTime());
-    const prices=offerPrices({price:Number(p.price),discountPrice:p.discountPrice?Number(p.discountPrice):undefined,dayOfferStartsAt:p.dayOfferStartsAt,dayOfferEndsAt:p.dayOfferEndsAt},volume,true,pricingTime);
+    const prices=offerPrices({price:Number(p.price),discountPrice:p.discountPrice?Number(p.discountPrice):undefined,dayOfferStartsAt:p.dayOfferStartsAt,dayOfferEndsAt:p.dayOfferEndsAt},volume,true,pricingTime,false);
     return {
       id:p.id,name:p.name.trim(),brand:p.brand.name,
       image:p.imageUrl[0]||"",startsAt:p.dayOfferStartsAt!.toISOString(),
       endsAt:p.dayOfferEndsAt!.toISOString(),volume,
-      regularPrice:prices.regular,salePrice:prices.effective,
+      regularPriceBasis:prices.regular,salePriceBasis:prices.effective,
       href:"/product/"+p.id
     };
   });

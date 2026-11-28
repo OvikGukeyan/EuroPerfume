@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import Image from "next/image";
 import { FlaskConical, Search } from "lucide-react";
 import { Link } from "@/src/i18n/navigation";
-import { linePrice } from "@/src/shared/lib/day-offer";
+import { offerPrices } from "@/src/shared/lib/day-offer";
 import { euCountriesAlpha3 } from "@/src/shared/lib/calc-total-amount-with-delivery";
 import { euroInputToCents, manualInvoiceInput, type ManualInvoiceCatalogItem, type ManualInvoiceInput } from "@/src/shared/lib/manual-invoice";
 import { createManualRechnung, searchInvoiceCatalog } from "../actions";
@@ -12,9 +12,9 @@ import { createManualRechnung, searchInvoiceCatalog } from "../actions";
 type Row = { key: number; item: ManualInvoiceCatalogItem; variation: string; quantity: string; amount: string; edited: boolean };
 const field = "w-full rounded-md border border-neutral-300 bg-white p-2.5 text-sm";
 const button = "rounded-md bg-neutral-900 px-4 py-2.5 text-sm font-medium text-white disabled:opacity-50";
-function price(item: ManualInvoiceCatalogItem, quantity: string) {
+function price(item: ManualInvoiceCatalogItem, quantity: string, date: string) {
   const value = Number(quantity);
-  return Number.isInteger(value) && value > 0 && value <= 500 ? linePrice(item.price, value, item.onTap).toFixed(2) : "";
+  return Number.isInteger(value) && value > 0 && value <= 500 ? offerPrices({ price: item.price }, value, item.onTap, Date.parse(date + "T12:00:00Z")).regular.toFixed(2) : "";
 }
 
 export default function ManualInvoiceForm({ ru, today }: { ru: boolean; today: string }) {
@@ -27,6 +27,7 @@ export default function ManualInvoiceForm({ ru, today }: { ru: boolean; today: s
   const searchBox = useRef<HTMLInputElement>(null);
   const [rows, setRows] = useState<Row[]>([]);
   const [shipping, setShipping] = useState("0.00");
+  const [orderDate, setOrderDate] = useState(today);
   const [review, setReview] = useState<ManualInvoiceInput | null>(null);
   const [receipt, setReceipt] = useState<{ invoiceNumber: string; invoiceUrl: string } | null>(null);
   const [busy, setBusy] = useState(false);
@@ -56,7 +57,7 @@ export default function ManualInvoiceForm({ ru, today }: { ru: boolean; today: s
     const key = ++rowKey.current;
     setRows(previous => previous.length >= 30 ? previous : [...previous, {
       key, item, variation: item.variations.length === 1 ? String(item.variations[0].id) : "",
-      quantity: "1", amount: price(item, "1"), edited: false,
+      quantity: "1", amount: price(item, "1", orderDate), edited: false,
     }]);
     setQuery(""); setLookup(null); searchBox.current?.focus();
   }
@@ -187,7 +188,7 @@ export default function ManualInvoiceForm({ ru, today }: { ru: boolean; today: s
               <label className="text-sm">{row.item.onTap ? tr("Объём, мл", "Füllmenge, ml") : tr("Количество, шт.", "Menge, Stück")}
                 <input className={field} type="number" min={1} max={500} required value={row.quantity} onChange={event => {
                   const quantity = event.currentTarget.value;
-                  update(row.key, { quantity, ...(!row.edited ? { amount: price(row.item, quantity) } : {}) });
+                  update(row.key, { quantity, ...(!row.edited ? { amount: price(row.item, quantity, orderDate) } : {}) });
                 }} />
               </label>
               <label className="text-sm">{tr("Сумма за позицию, €", "Tatsächlicher Positionsbetrag, €")}
@@ -210,7 +211,12 @@ export default function ManualInvoiceForm({ ru, today }: { ru: boolean; today: s
         </fieldset>
         <fieldset className="grid gap-3 rounded-lg border bg-white p-4 sm:grid-cols-3">
           <legend className="px-2 font-semibold">{tr("Даты и доставка", "Daten und Versand")}</legend>
-          <label className="text-sm">{tr("Дата заказа", "Bestelldatum")}<input className={field} type="date" name="orderDate" required max={today} defaultValue={today} /></label>
+          <label className="text-sm">{tr("Дата заказа", "Bestelldatum")}<input className={field} type="date" name="orderDate" required max={today} value={orderDate} onChange={event => {
+            const date = event.currentTarget.value;
+            setOrderDate(date);
+            if (/^\d{4}-\d{2}-\d{2}$/.test(date)) setRows(previous => previous.map(row =>
+              row.edited ? row : { ...row, amount: price(row.item, row.quantity, date) }));
+          }} /></label>
           <label className="text-sm">{tr("Дата поставки", "Leistungsdatum")}<input className={field} type="date" name="supplyDate" required max={today} /></label>
           <label className="text-sm">{tr("Стоимость доставки, €", "Versandkosten, €")}<input className={field} inputMode="decimal" value={shipping} required onChange={event => setShipping(event.currentTarget.value)} /></label>
         </fieldset>

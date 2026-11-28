@@ -405,7 +405,8 @@ export async function createOrder(data: CheckoutFormValues) {
         throw new Error("Cart is empty!");
       }
 
-      if (!meetsMinimumOrder(minimumOrderGoodsCents(userCart.items))) {
+      const orderedAt = new Date();
+      if (!meetsMinimumOrder(minimumOrderGoodsCents(userCart.items, orderedAt.getTime()))) {
         throw new Error("MINIMUM_ORDER");
       }
 
@@ -436,7 +437,6 @@ export async function createOrder(data: CheckoutFormValues) {
       const cleanComment=(data.comment||"").split(/\\r?\\n/).filter(line=>!line.startsWith("[AKTION ")).join("\n");
       const boxLabel = boxItems.length ? "Aroma Box · 8 × 2 мл\n" + boxItems.map(item => `${item.product.brand?.name || ""} ${item.product.name} — 2 мл`).join("\n") : "";
       const deliveryCountry = deliveryCountryForCheckout(data);
-      const orderedAt = new Date();
       const submittedCode = data.promocode?.trim().toUpperCase() || "";
       const blackFriday = isBlackFridayCode(submittedCode);
       const promo = submittedCode && !blackFriday ? await tx.promoCode.findFirst({where:{code:{equals:submittedCode,mode:"insensitive"},isActive:true,OR:[{expiresAt:null},{expiresAt:{gt:orderedAt}}]}}) : null;

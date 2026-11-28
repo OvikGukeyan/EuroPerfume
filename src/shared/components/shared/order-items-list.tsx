@@ -41,7 +41,7 @@ export const OrderItemsList: FC<Props> = ({ className }) => {
               Number(item.product.price),
               item.quantity,
               Boolean(item.product.productGroup?.onTap),
-              Number(item.product.discountPrice)
+              Number(item.product.discountPrice), undefined, Date.now(), false
             )}
             quantity={item.quantity}
             disabled={

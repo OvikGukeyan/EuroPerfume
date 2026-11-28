@@ -1,3 +1,20 @@
+import { TAX_SETTINGS } from "../../config/tax";
+
+export const CATALOG_VAT_START_MS = Date.parse(TAX_SETTINGS.VAT_START_AT);
+export const CATALOG_VAT_HISTORY_END_MS = CATALOG_VAT_START_MS + 30 * 86400000;
+
+/** The new VAT-inclusive regular price is not a pre-cutover 30-day reference. */
+export function hasPreVatPriceHistory(at: number): boolean {
+  return at >= CATALOG_VAT_START_MS && at < CATALOG_VAT_HISTORY_END_MS;
+}
+
+/** Gross price for a new retail quote; catalog records remain the untaxed price basis. */
+export function catalogGrossPrice(amount: number, at = Date.now()): number {
+  if (at < CATALOG_VAT_START_MS) return amount;
+  const basisCents = Math.round(amount * 100);
+  return Math.round(basisCents * (10000 + TAX_SETTINGS.GERMAN_RATE_BASIS_POINTS) / 10000) / 100;
+}
+
 export type DayOfferWindow = {
   dayOfferStartsAt?: Date | string | null;
   dayOfferEndsAt?: Date | string | null;
@@ -18,14 +35,14 @@ export function linePrice(price: number, quantity: number, onTap: boolean): numb
   const packaging = onTap ? (quantity <= 10 ? 1 : quantity <= 20 ? 2 : quantity <= 30 ? 3 : quantity <= 40 ? 4 : 5) : 0;
   return Math.round((price * quantity + packaging + Number.EPSILON) * 100) / 100;
 }
-export function offerPrices(product: PriceSource, quantity: number, onTap: boolean, now = Date.now()) {
+export function offerPrices(product: PriceSource, quantity: number, onTap: boolean, now = Date.now(), applyCatalogVat = true) {
   const regular = linePrice(Number(product.price), quantity, onTap);
   const sale = Number(product.discountPrice);
   const existing = sale > 0 && sale < Number(product.price) ? linePrice(sale, quantity, onTap) : regular;
   // Apply to the complete selling price, including the atomizer. Never stack.
   const day = dayOfferActive(product, now) ? Math.round(Math.round(regular * 100) * 90 / 100) / 100 : regular;
   const effective = Math.min(existing, day);
-  return { regular, effective, discounted: effective < regular, dayOffer: dayOfferActive(product, now) && day <= existing };
+  return { regular: applyCatalogVat ? catalogGrossPrice(regular, now) : regular, effective: applyCatalogVat ? catalogGrossPrice(effective, now) : effective, discounted: effective < regular, dayOffer: dayOfferActive(product, now) && day <= existing };
 }
 export function berlinOfferTime(value: string): Date {
   if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value)) throw new Error("Укажите дату и время по Германии");

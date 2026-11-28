@@ -1,4 +1,5 @@
 import { dayOfferActive, offerPrices } from "./day-offer";
+import { TAX_SETTINGS } from "../../config/tax";
 import { minimumOrderGoodsCents } from "./minimum-order";
 import { roundMoney } from "./money";
 import { Brand, ProductGroup } from "@prisma/client";
@@ -31,10 +32,11 @@ interface ReturnProps {
   offerRefreshAt: number | null;
 }
 export const getCartDetails = (data: CartDTO): ReturnProps => {
+  const now = Date.now();
   const items = data.items.map((item) => ({
     allowBackorder: item.product.allowBackorder === true,
-    dayOffer: dayOfferActive(item.product),
-    discounted: offerPrices(item.product, item.quantity, Boolean(item.product.productGroup?.onTap)).discounted,
+    dayOffer: dayOfferActive(item.product, now),
+    discounted: offerPrices(item.product, item.quantity, Boolean(item.product.productGroup?.onTap), now).discounted,
     offerBoundary: item.product.dayOfferEndsAt ? String(item.product.dayOfferEndsAt) : null,
     id: item.id,
     productId:item.productId,
@@ -50,13 +52,15 @@ export const getCartDetails = (data: CartDTO): ReturnProps => {
       item.quantity,
       Boolean(item.product.productGroup?.onTap),
       item.product.discountPrice || undefined,
-      item.product
+      item.product,
+      now
     ),
     disabled: false,
   })) as CartStateItem[];
-  const boundaries = data.items.flatMap(i => [i.product.dayOfferStartsAt, i.product.dayOfferEndsAt]).filter(Boolean).map(d => new Date(d!).getTime()).filter(t => t > Date.now());
+  const boundaries = [...data.items.flatMap(i => [i.product.dayOfferStartsAt, i.product.dayOfferEndsAt]), TAX_SETTINGS.VAT_START_AT]
+    .filter(Boolean).map(d => new Date(d!).getTime()).filter(t => t > now);
   return {
-    minimumOrderCents: minimumOrderGoodsCents(data.items),
+    minimumOrderCents: minimumOrderGoodsCents(data.items, now),
     offerRefreshAt: boundaries.length ? Math.min(...boundaries) : null,
     totalAmount: roundMoney(items.reduce((sum, item) => sum + item.price, 0)),
     items,

@@ -1,11 +1,11 @@
 "use client";
 import { useEffect, useState } from "react";
-import type { DayOfferWindow } from "../lib/day-offer";
+import { CATALOG_VAT_HISTORY_END_MS, CATALOG_VAT_START_MS, type DayOfferWindow } from "../lib/day-offer";
 // Re-render at schedule boundaries, including tabs restored from the background.
 export function useDayOfferClock(offer?: DayOfferWindow | null | (DayOfferWindow | undefined)[]) {
   const [now, setNow] = useState(() => Date.now());
   const windows = Array.isArray(offer) ? offer : [offer];
-  const boundaries = windows.flatMap(w => [w?.dayOfferStartsAt, w?.dayOfferEndsAt]).filter(Boolean).map(t => new Date(t!).getTime()).filter(t => t > now).sort((a,b) => a-b);
+  const boundaries = [CATALOG_VAT_START_MS, CATALOG_VAT_HISTORY_END_MS, ...windows.flatMap(w => [w?.dayOfferStartsAt, w?.dayOfferEndsAt])].filter(Boolean).map(t => new Date(t!).getTime()).filter(t => t > now).sort((a,b) => a-b);
   const start = boundaries[0] || 0;
   const end = boundaries[1] || 0;
   useEffect(() => {
