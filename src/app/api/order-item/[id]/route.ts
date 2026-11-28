@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { cartPackMl, MAX_DECANT_PACK_COUNT } from "@/src/shared/lib/decant-pack";
 import { UserRole } from "@prisma/client";
 import { getUserSession } from "@/src/shared/server-lib/get-user-session";
 import { updatePreinvoiceOrder,lockEditableOrder } from "@/src/shared/server-lib/preinvoice-loyalty";
@@ -17,7 +18,8 @@ const PostBodySchema = z.object({
   orderId: z.number().int().positive(),
   productId: z.number().int().positive(),
   variationId: z.number().int().positive().optional(),
-  quantity: z.number().int().positive().default(1), // можно всегда слать 1
+  quantity: z.number().int().positive().default(1),
+  packMl: z.number().int().positive().optional(),
 });
 
 export type AddOrderItemBody = z.infer<typeof PostBodySchema>;
@@ -166,7 +168,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { orderId, productId, variationId, quantity } = parsed.data;
+  const { orderId, productId, variationId, quantity, packMl } = parsed.data;
 
   try {
     const result = await prisma.$transaction(async (tx) => {
@@ -180,6 +182,11 @@ export async function POST(req: NextRequest) {
       });
       if (!product) throw new Error("PRODUCT_NOT_FOUND");
       if (product.available === false) throw new Error("PRODUCT_NOT_AVAILABLE");
+
+      const onTap = Boolean(product.productGroup?.onTap);
+      if (onTap ? (!packMl || !cartPackMl(quantity, packMl) || quantity / packMl > MAX_DECANT_PACK_COUNT) : packMl !== undefined) {
+        throw Error("INVALID_ATOMIZER_SIZE_OR_COUNT");
+      }
 
       if (variationId) {
         const v = await tx.productVariation.findFirst({
@@ -195,7 +202,8 @@ export async function POST(req: NextRequest) {
           orderId,
           productId,
           variationId: variationId ?? null,
-          packMl: null,
+          packMl: packMl ?? null,
+          NOT: { name: { startsWith: "Aroma Box · " } },
         },
         select: { id: true, quantity: true },
       });
@@ -212,6 +220,7 @@ export async function POST(req: NextRequest) {
             productId,
             variationId: variationId ?? null,
             quantity,
+            packMl: packMl ?? null,
             name: product.name,
           },
         });

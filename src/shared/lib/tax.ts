@@ -33,7 +33,19 @@ export const pricingSchema = z.object({
   lines: z.array(z.object({ productId: z.number().int(), variationId: z.number().int().nullable(), title: z.string(), quantity: z.number().int().positive(), packMl: z.number().int().positive().nullish(), onTap: z.boolean(), grossCents: amountSchema, regularGrossCents: amountSchema.optional(), dayOfferPercent: z.literal(10).optional(), couponExcluded: z.boolean().optional() })),
 });
 export type PricingSnapshot = z.infer<typeof pricingSchema>;
-type PriceableItem = { productId: number; variationId: number | null; quantity: number; packMl?: number | null; product: DayOfferWindow & { name: string; price: { toString(): string } | number; discountPrice: { toString(): string } | number | null; brand?: { name: string }; productGroup?: { onTap: boolean | null } | null } };
+const BOX_PREFIX = "Aroma Box · ";
+export const isAromaBoxItem = (name?: string) => name?.startsWith(BOX_PREFIX) === true;
+const isAromaBoxTitle = (title: string) => isAromaBoxItem(title) || title.includes(" | " + BOX_PREFIX);
+
+export function findPricingLine(snapshot: PricingSnapshot | null, item: {
+  productId: number; variationId: number | null; packMl?: number | null;
+}, aromaBox: boolean) {
+  return snapshot?.lines.find(line => line.productId === item.productId
+    && line.variationId === item.variationId && (line.packMl ?? null) === (item.packMl ?? null)
+    && isAromaBoxTitle(line.title) === aromaBox);
+}
+
+type PriceableItem = { name?: string; productId: number; variationId: number | null; quantity: number; packMl?: number | null; product: DayOfferWindow & { name: string; price: { toString(): string } | number; discountPrice: { toString(): string } | number | null; brand?: { name: string }; productGroup?: { onTap: boolean | null } | null } };
 
 export function capturePricing(
   items: PriceableItem[], country: string, discount = 0, at = new Date(),
@@ -48,9 +60,11 @@ export function capturePricing(
       at.getTime() >= new Date(item.product.dayOfferStartsAt).getTime() &&
       at.getTime() < new Date(item.product.dayOfferEndsAt).getTime());
     const couponExcluded = price.discounted || activeDayOffer || giftProductIds.has(item.productId);
+    const productName = isAromaBoxItem(item.name) && !isAromaBoxItem(item.product.name)
+      ? BOX_PREFIX + item.product.name : item.product.name;
     return {
       productId:item.productId, variationId:item.variationId,
-      title:`${item.product.brand?.name ? item.product.brand.name + " | " : ""}${item.product.name}`,
+      title:`${item.product.brand?.name ? item.product.brand.name + " | " : ""}${productName}`,
       quantity:item.quantity, ...(item.packMl ? {packMl:item.packMl} : {}), onTap, grossCents:cents(price.effective),
       couponExcluded,
       ...(price.dayOffer ? {regularGrossCents:cents(price.regular),dayOfferPercent:10 as const} : {})
@@ -101,7 +115,7 @@ export function reviseOrderPricing(items: PriceableItem[], country: string, disc
   const vatFactor = quotedAt.getTime() >= Date.parse(TAX_SETTINGS.VAT_START_AT)
     ? (10000 + TAX_SETTINGS.GERMAN_RATE_BASIS_POINTS) / 10000 : 1;
   revised.lines = revised.lines.map(line => {
-    const old = previous.lines.find(l => l.productId === line.productId && l.variationId === line.variationId && (l.packMl ?? null) === (line.packMl ?? null));
+    const old = findPricingLine(previous, line, isAromaBoxTitle(line.title));
     if (!old) return line;
     if (old.quantity === line.quantity) return old;
     if (old.packMl && line.quantity % old.packMl === 0) {

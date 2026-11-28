@@ -16,7 +16,7 @@ export interface OrderItemsState {
 
   fetchOrder: (id: number) => Promise<void>;
   updateItemQuantity: (id: number, quantity: number) => Promise<void>;
-  addOrderItem: (orderId: number, product: ProductDTO,  variationId: number | undefined, quantity?: number,) => Promise<void>;
+  addOrderItem: (orderId: number, product: ProductDTO,  variationId: number | undefined, quantity?: number, packMl?: number) => Promise<void>;
   removeOrderItem: (id: number) => Promise<void>;
 }
 
@@ -66,10 +66,10 @@ export const useOrderItemsStore = create<OrderItemsState>((set) => ({
     }finally{set({itemLoading:false});}
   },
 
-  addOrderItem: async (orderId: number, product: ProductDTO,variationId: number | undefined,quantity=1) => {
+  addOrderItem: async (orderId: number, product: ProductDTO,variationId: number | undefined,quantity=1,packMl) => {
     try{
       set({itemLoading:true,error:false});
-      await Api.orderItem.addOrderItem({orderId,productId:product.id,variationId,quantity});
+      await Api.orderItem.addOrderItem({orderId,productId:product.id,variationId,quantity,packMl});
       const fresh=await Api.orderItem.fetchOrder(orderId);
       set({order:fresh,totalAmount:Number(fresh.totalAmount)});
     }catch(e){

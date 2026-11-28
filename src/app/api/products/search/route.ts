@@ -34,6 +34,7 @@ export async function GET(req: NextRequest) {
       },
       include: {
         variations: true,
+        productGroup: includeVariants,
         brand: true,
       },
       take: Number(limit),

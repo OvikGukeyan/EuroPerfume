@@ -56,3 +56,24 @@ test("quantity can be selected directly before adding a fixed atomizer size", ()
   assert.equal(decantAddVolume(7,1),null);
   for (const n of [0,-1,1.5,100,"3",null]) assert.equal(decantAddVolume(3,n),null);
 });
+
+test("pre-invoice edits preserve distinct box and standalone lines for the same 2 ml product", () => {
+  const regular={...row(2,2), name:"Fixture", product:{...p, brand:{name:"Fixture Brand"}}};
+  const box={...regular, name:"Aroma Box · Fixture"};
+  const other={...row(5,5), productId:2};
+  // Checkout snapshots historically stored the marker inside the product title.
+  const legacyBox={...box, name:undefined, product:{...box.product,name:box.name}};
+  for (const prior of [[regular,legacyBox,other],[legacyBox,regular,other]]) {
+    const snapshot=capturePricing(prior,"DEU",0,nov);
+    const edited=reviseOrderPricing([regular,box,{...other,quantity:10}],"DEU",0,nov,snapshot);
+    assert.deepEqual(edited.lines.slice(0,2).map(l=>l.title),[
+      "Fixture Brand | Fixture", "Fixture Brand | Aroma Box · Fixture"
+    ]);
+    assert.equal(edited.lines[0].grossCents,880);
+    assert.equal(edited.lines[1].grossCents,880);
+    const regularOnly=reviseOrderPricing([regular],"DEU",0,nov,snapshot);
+    assert.equal(regularOnly.lines[0].title,"Fixture Brand | Fixture");
+    const boxOnly=reviseOrderPricing([box],"DEU",0,nov,snapshot);
+    assert.equal(boxOnly.lines[0].title,"Fixture Brand | Aroma Box · Fixture");
+  }
+});
