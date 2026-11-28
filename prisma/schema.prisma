@@ -305,6 +305,7 @@ model Cart {
 }
 
 model CartItem {
+  packMl      Int?     // null means legacy aggregate volume or a non-decant item
   id          Int               @id @default(autoincrement())
   cartId      Int
   quantity    Int               @default(1)
@@ -424,6 +425,7 @@ model InvoiceCounter {
 }
 
 model OrderItem {
+  packMl      Int?     // null means legacy aggregate volume or a non-decant item
   id            Int               @id @default(autoincrement())
   name          String
   quantity      Int

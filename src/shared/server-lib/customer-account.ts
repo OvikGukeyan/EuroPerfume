@@ -1,5 +1,6 @@
 import 'server-only';
 import {prisma} from '@/prisma/prisma-client';
+import {formatPackQuantity} from "@/src/shared/lib/decant-pack";
 import {readPricing} from '@/src/shared/lib/tax';
 import type {AccountData} from '@/src/shared/lib/customer-account';
 import {welcomeExpiresAt} from '@/src/shared/lib/europerfume-club';
@@ -33,8 +34,8 @@ export async function loadCustomerAccount(userId:number):Promise<AccountData|nul
  const pricing=readPricing(o.pricingSnapshot);
  const shipment=o.shipments.find(s=>s.status!=='CANCELED');
  return {id:o.id,date:o.createdAt.toISOString(),status:o.status,tracking:shipment?.shipmentNo||o.trackingCode,carrier:shipment?.carrier||'DHL',shipmentStatus:shipment?.status||null,shippedAt:shipment&&['HANDED_OVER','IN_TRANSIT','DELIVERED'].includes(shipment.status)?shipment.createdAt.toISOString():null,total:Number(o.totalAmount),subtotal:pricing?pricing.subtotalGrossCents/100:null,shipping:pricing?pricing.shippingGrossCents/100:null,discount:pricing?pricing.discountGrossCents/100:null,invoice:Boolean(o.invoice),address:[o.deliveryFullNmae,`${o.deliveryAddress} ${o.deliveryHouseNumber}`,`${o.deliveryZip} ${o.deliveryCity}`,o.deliveryCountry].filter(Boolean).join(' · '),items:o.items.map(i=>{
- const line=pricing?.lines.find(l=>l.productId===i.productId&&l.variationId===i.variationId);
- return {id:i.productId,name:i.name,image:i.product.imageUrl[0]||'',amount:(line?.onTap??i.product.productGroup?.onTap)?`${i.quantity} ml`:`${i.quantity} × ${i.product.volume?i.product.volume+' ml':''}`,total:line?line.grossCents/100:null};
+ const line=pricing?.lines.find(l=>l.productId===i.productId&&l.variationId===i.variationId && (l.packMl??null)===i.packMl);
+ return {id:i.productId,name:i.name,image:i.product.imageUrl[0]||'',amount:(line?.onTap??i.product.productGroup?.onTap)?formatPackQuantity(i.quantity,true,i.packMl):`${i.quantity} × ${i.product.volume?i.product.volume+' ml':''}`,total:line?line.grossCents/100:null};
  })};
  })};
 }

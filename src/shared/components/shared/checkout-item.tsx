@@ -12,6 +12,9 @@ interface Props extends CartItemProps {
   onClickRemove?: () => void;
   variation?: string;
   className?: string;
+  packMl?: number | null;
+  lockedCount?: boolean;
+  options?: React.ReactNode;
   onTap: boolean
 }
 
@@ -26,7 +29,7 @@ export const CheckoutItem: React.FC<Props> = ({
   onClickCountButton,
   onClickRemove,
   variation,
-  onTap
+  onTap, packMl, lockedCount, options
 }) => {
   return (
     <div className={cn("flex w-full items-start gap-4 border-b border-[#ededed] py-5 last:border-b-0", {"opacity-50 pointer-events-none":disabled},className)}>
@@ -34,7 +37,8 @@ export const CheckoutItem: React.FC<Props> = ({
       <div className="min-w-0 flex-1">
         <CartItemDetails.Info name={name} brand={brand?.name} info={variation || ""}/>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3">
-          <CountButton onClick={onClickCountButton} value={quantity} onTap={onTap}/>
+          {lockedCount ? <span>{quantity} ml</span> :
+            <CountButton onClick={onClickCountButton} value={packMl ? quantity/packMl : quantity} onTap={onTap} packMl={packMl}/>}
           <div className="flex items-center gap-2">
             <strong className="text-[16px] font-semibold tabular-nums"><CartItemDetails.Price value={price}/></strong>
             <button type="button" aria-label={"Remove / Удалить: "+name} onClick={onClickRemove} className="flex h-9 w-9 items-center justify-center rounded-full text-neutral-500 hover:bg-neutral-100 hover:text-black">
@@ -42,6 +46,7 @@ export const CheckoutItem: React.FC<Props> = ({
             </button>
           </div>
         </div>
+        {options}
       </div>
     </div>
   );

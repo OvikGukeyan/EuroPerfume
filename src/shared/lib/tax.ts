@@ -30,10 +30,10 @@ const amountSchema = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER)
 export const pricingSchema = z.object({
   version: z.literal(1), country: z.string(), capturedAt: z.string().datetime(), policy: policySchema,
   subtotalGrossCents: amountSchema, shippingGrossCents: amountSchema, discountGrossCents: amountSchema, loyaltyDiscountCents: amountSchema.optional(), totalGrossCents: amountSchema,
-  lines: z.array(z.object({ productId: z.number().int(), variationId: z.number().int().nullable(), title: z.string(), quantity: z.number().int().positive(), onTap: z.boolean(), grossCents: amountSchema, regularGrossCents: amountSchema.optional(), dayOfferPercent: z.literal(10).optional(), couponExcluded: z.boolean().optional() })),
+  lines: z.array(z.object({ productId: z.number().int(), variationId: z.number().int().nullable(), title: z.string(), quantity: z.number().int().positive(), packMl: z.number().int().positive().nullish(), onTap: z.boolean(), grossCents: amountSchema, regularGrossCents: amountSchema.optional(), dayOfferPercent: z.literal(10).optional(), couponExcluded: z.boolean().optional() })),
 });
 export type PricingSnapshot = z.infer<typeof pricingSchema>;
-type PriceableItem = { productId: number; variationId: number | null; quantity: number; product: DayOfferWindow & { name: string; price: { toString(): string } | number; discountPrice: { toString(): string } | number | null; brand?: { name: string }; productGroup?: { onTap: boolean | null } | null } };
+type PriceableItem = { productId: number; variationId: number | null; quantity: number; packMl?: number | null; product: DayOfferWindow & { name: string; price: { toString(): string } | number; discountPrice: { toString(): string } | number | null; brand?: { name: string }; productGroup?: { onTap: boolean | null } | null } };
 
 export function capturePricing(
   items: PriceableItem[], country: string, discount = 0, at = new Date(),
@@ -43,7 +43,7 @@ export function capturePricing(
   if (!Number.isInteger(discount) || discount < 0 || discount > 100) throw new Error("Invalid discount");
   const lines = items.map(item => {
     const onTap = Boolean(item.product.productGroup?.onTap);
-    const price = offerPrices(item.product,item.quantity,onTap,at.getTime());
+    const price = offerPrices(item.product,item.quantity,onTap,at.getTime(),true,item.packMl);
     const activeDayOffer = Boolean(item.product.dayOfferStartsAt && item.product.dayOfferEndsAt &&
       at.getTime() >= new Date(item.product.dayOfferStartsAt).getTime() &&
       at.getTime() < new Date(item.product.dayOfferEndsAt).getTime());
@@ -51,7 +51,7 @@ export function capturePricing(
     return {
       productId:item.productId, variationId:item.variationId,
       title:`${item.product.brand?.name ? item.product.brand.name + " | " : ""}${item.product.name}`,
-      quantity:item.quantity, onTap, grossCents:cents(price.effective),
+      quantity:item.quantity, ...(item.packMl ? {packMl:item.packMl} : {}), onTap, grossCents:cents(price.effective),
       couponExcluded,
       ...(price.dayOffer ? {regularGrossCents:cents(price.regular),dayOfferPercent:10 as const} : {})
     };
@@ -101,9 +101,14 @@ export function reviseOrderPricing(items: PriceableItem[], country: string, disc
   const vatFactor = quotedAt.getTime() >= Date.parse(TAX_SETTINGS.VAT_START_AT)
     ? (10000 + TAX_SETTINGS.GERMAN_RATE_BASIS_POINTS) / 10000 : 1;
   revised.lines = revised.lines.map(line => {
-    const old = previous.lines.find(l => l.productId === line.productId && l.variationId === line.variationId);
+    const old = previous.lines.find(l => l.productId === line.productId && l.variationId === line.variationId && (l.packMl ?? null) === (line.packMl ?? null));
     if (!old) return line;
     if (old.quantity === line.quantity) return old;
+    if (old.packMl && line.quantity % old.packMl === 0) {
+      const scale = (c: number) => Math.round(c * line.quantity / old.quantity);
+      return {...old, quantity:line.quantity, grossCents:scale(old.grossCents),
+        ...(old.regularGrossCents !== undefined ? {regularGrossCents:scale(old.regularGrossCents)} : {})};
+    }
     const packaging = (q:number) => old.onTap ? (q<=10?1:q<=20?2:q<=30?3:q<=40?4:5) : 0;
     // Undo the line uplift in cents before separating the original atomizer
     // charge; otherwise a volume change would leave part of that charge in €/ml.

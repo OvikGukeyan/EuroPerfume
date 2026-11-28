@@ -1,3 +1,4 @@
+import { formatPackQuantity } from "@/src/shared/lib/decant-pack";
 import React, { FC } from "react";
 import { cn } from "@/src/lib/utils";
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
@@ -19,7 +20,7 @@ export const OrderItemsPopover: FC<Props> = ({ className, order }) => {
               <li className="flex justify-between" key={item.id}>
                 <p>{item.name}</p>
                 <p>{item.variation && item.variation.name}</p>
-                <p>{item.quantity}</p>
+                <p>{formatPackQuantity(item.quantity, Boolean(item.product.productGroup?.onTap), item.packMl)}</p>
               </li>
             ))}
           </ul>

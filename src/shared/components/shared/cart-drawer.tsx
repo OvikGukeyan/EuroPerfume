@@ -4,6 +4,7 @@ import {PallasGiftLine,usePallasOffer} from "./pallas-gift-line";
 import { PromotionCartGroup } from "./promotion-cart-group";
 import { formatMoney } from "@/src/shared/lib/money";
 import { AromaBoxSummary } from "@/src/shared/components/shared/aroma-box-summary";
+import { DecantPackOptions } from "./decant-pack-options";
 import React, { FC } from "react";
 import Image from "next/image";
 import {
@@ -49,14 +50,11 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
     id: number,
     quantity: number,
     type: "plus" | "minus",
-    productGroup: number
+    packMl?: number | null
   ) => {
-    const isDraft = productGroup < 4;
-    if (isDraft && quantity < 3 && type === "minus") {
-      return;
-    }
-    const newQuantity = type === "plus" ? quantity + 1 : quantity - 1;
-    updateItemQuantity(id, newQuantity);
+    const step = packMl ?? 1;
+    const newQuantity = type === "plus" ? quantity + step : quantity - step;
+    if (newQuantity > 0) updateItemQuantity(id, newQuantity);
   };
 
 
@@ -117,6 +115,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                     brand={item.brand}
                     price={item.price}
                     quantity={item.quantity}
+                    packMl={item.packMl} lockedCount={item.aromaBox || item.invalidPack} options={<DecantPackOptions item={item}/>}
                     disabled={item.disabled}
                     productGroup={item.productGroup}
                     onClickCountButton={(type) =>
@@ -124,7 +123,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                         item.id,
                         item.quantity,
                         type,
-                        item.productGroup?.id as number
+                        item.packMl
                       )
                     }
                     variation={item.variationName}
@@ -139,6 +138,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                     brand={item.brand}
                     price={item.price}
                     quantity={item.quantity}
+                    packMl={item.packMl} lockedCount={item.aromaBox || item.invalidPack} options={<DecantPackOptions item={item}/>}
                     disabled={item.disabled}
                     productGroup={item.productGroup}
                     onClickCountButton={(type) =>
@@ -146,7 +146,7 @@ export const CartDrawer: FC<React.PropsWithChildren> = ({ children }) => {
                         item.id,
                         item.quantity,
                         type,
-                        item.productGroup?.id as number
+                        item.packMl
                       )
                     }
                     variation={item.variationName}

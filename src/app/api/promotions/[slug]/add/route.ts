@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/prisma/prisma-client";
 import { findOrCreateCart } from "@/src/shared/server-lib/find-or-create-cart";
 import { updateCartTotalAmount } from "@/src/shared/server-lib/update-cart-total-amount";
+import { isDecantPack } from "@/src/shared/lib/decant-pack";
+import { aromaBoxItems } from "@/src/shared/lib/aroma-box";
 import { promotionLive } from "@/src/shared/server-lib/promotions";
 
 export const dynamic="force-dynamic";
@@ -13,17 +15,18 @@ export async function POST(req:NextRequest,{params}:{params:Promise<{slug:string
     if (!campaign || !promotionLive(campaign) || !campaign.giftProductId)
       return NextResponse.json({error:"Campaign not available"},{status:409});
     const ids=[...campaign.productIds,campaign.giftProductId];
-    if (campaign.productIds.length<2 || new Set(ids).size!==ids.length) return NextResponse.json({error:"Invalid promotion"},{status:409});
+    if (!isDecantPack(campaign.requiredMl) || campaign.productIds.length<2 || new Set(ids).size!==ids.length) return NextResponse.json({error:"Invalid promotion"},{status:409});
     const cart=await findOrCreateCart(token);
     const added=await prisma.$transaction(async tx=>{
       await tx.$queryRaw`SELECT id FROM public."Cart" WHERE id=${cart.id} FOR UPDATE`;
       const products=await tx.product.findMany({where:{id:{in:ids},bottleParentId:null,available:true},include:{productGroup:true}});
       if(products.length!==ids.length || products.some(p=>!p.productGroup.onTap)) return false;
-      for(const id of campaign.productIds) {
-        const existing=await tx.cartItem.findFirst({where:{cartId:cart.id,productId:id,variationId:null}});
-        if(existing) {
-          if(existing.quantity<campaign.requiredMl) await tx.cartItem.update({where:{id:existing.id},data:{quantity:campaign.requiredMl}});
-        } else await tx.cartItem.create({data:{cartId:cart.id,productId:id,quantity:campaign.requiredMl}});
+      const rows = await tx.cartItem.findMany({where:{cartId:cart.id}});
+      const boxIds = new Set(aromaBoxItems(req.cookies.get("discoveryBoxIds")?.value,rows).map(row=>row.id));
+      for (const id of campaign.productIds) {
+        const existing = rows.some(row => row.productId === id && row.variationId === null && !boxIds.has(row.id)
+          && (row.packMl === campaign.requiredMl || (row.packMl === null && row.quantity === campaign.requiredMl)));
+        if (!existing) await tx.cartItem.create({data:{cartId:cart.id,productId:id,quantity:campaign.requiredMl,packMl:campaign.requiredMl}});
       }
       await tx.cartPromotion.upsert({
         where:{cartId_promotionId:{cartId:cart.id,promotionId:campaign.id}},
